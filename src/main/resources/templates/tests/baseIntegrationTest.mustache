@@ -41,14 +41,17 @@ public ResponseEntity<String> get(String uri) {
 	public ResponseEntity<String> delete(String uri) {
 		testRestTemplate.delete(this.getBaseUrl() + uri);
 		return ResponseEntity.ok().build();
-		}
+	}
 
-		public ResponseEntity<String> post(String uri, Object request) {
-			return testRestTemplate.postForEntity(this.getBaseUrl() + uri, request, String.class);
-			}
+	public ResponseEntity<String> post(String uri, Object request) {
+		return testRestTemplate.postForEntity(this.getBaseUrl() + uri, request, String.class);
+	}
 
-			public ResponseEntity<String> put(String uri, Object request) {
-				testRestTemplate.put(this.getBaseUrl() + uri, request);
-				return ResponseEntity.ok().build();
-		}
+	public ResponseEntity<String> put(String uri, Object request) {
+		testRestTemplate.put(this.getBaseUrl() + uri, request);
+		return ResponseEntity.ok().build();
+	}
+	public <T> ResponseEntity<T> postForEntity(String uri, Object request, Class<T> responseType) {
+		return this.testRestTemplate.postForEntity(this.getBaseUrl() + uri, request, responseType);
+	}
 }

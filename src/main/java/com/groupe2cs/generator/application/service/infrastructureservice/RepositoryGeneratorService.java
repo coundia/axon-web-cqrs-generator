@@ -37,7 +37,7 @@ public class RepositoryGeneratorService {
         context.put("tableName", definition.getTable());
         context.put("entityName", definition.getName());
         var fields = definition.getFields();
-        context.put("fields", FieldTransformer.realField(fields, definition.getName()));
+        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         var filables = definition.getFields().stream().filter(p -> p.isFilable()).toList();
 

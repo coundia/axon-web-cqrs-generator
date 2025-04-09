@@ -8,6 +8,7 @@ import com.groupe2cs.generator.application.service.domainservice.VoGeneratorServ
 import com.groupe2cs.generator.application.service.infrastructureservice.EntityGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
+import com.groupe2cs.generator.application.service.testservice.ControllerAllIntegrationTestGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.ControllerIntegrationTestGeneratorService;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.application.dto.ApiResponseDto;
@@ -44,6 +45,7 @@ public class GroupMainGenerator {
     private final UpdateControllerGeneratorService updateControllerGeneratorService;
     private final FindByFieldQueryGeneratorService findByFieldQueryGeneratorService;
     private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
+    private final ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService;
 
 
     private EntityDefinition loadFromFileDefinition() {
@@ -81,7 +83,8 @@ public class GroupMainGenerator {
             UpdateControllerGeneratorService updateControllerGeneratorService,
             FindByFieldQueryGeneratorService findByFieldQueryGeneratorService,
             FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService,
-            FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService
+            FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService,
+            ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService
 
     ) {
         this.properties = properties;
@@ -109,6 +112,7 @@ public class GroupMainGenerator {
 
         this.findByFieldQueryGeneratorService=findByFieldQueryGeneratorService;
         this.findByFieldQueryHandlerGeneratorService=findByFieldQueryHandlerGeneratorService;
+        this.controllerAllIntegrationTestGeneratorService = controllerAllIntegrationTestGeneratorService;
     }
 
     public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
@@ -168,6 +172,7 @@ public class GroupMainGenerator {
 
                 emit(sink, "Generating tests...");
                 testControllerIntegrationTestGeneratorService.generate(outputDir);
+                controllerAllIntegrationTestGeneratorService.generate(definition,outputDir);
 
                 emit(sink, "✅ Code generation complete!");
 

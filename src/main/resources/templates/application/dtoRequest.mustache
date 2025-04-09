@@ -1,27 +1,47 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 import java.io.Serializable;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Schema(name = "{{name}}Request", description = "Request payload for {{name}} operations")
 public class {{name}}Request implements Serializable {
 
 {{#fields}}
 	{{^isId}}
 	@Schema(description = "{{description}}", example = "{{example}}")
-	private {{type}} {{name}};
+	private {{realType}} {{name}};
 	{{/isId}}
 {{/fields}}
 
+public static {{name}}Request random() {
+{{name}}Request request = new {{name}}Request();
+{{#fields}}
+	{{^isId}}
+		{{#isString}}
+			request.set{{nameCapitalized}}("Sample {{name}}");
+		{{/isString}}
+		{{#isInteger}}
+			request.set{{nameCapitalized}}(ThreadLocalRandom.current().nextInt(1, 100));
+		{{/isInteger}}
+		{{#isDouble}}
+			request.set{{nameCapitalized}}(Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0);
+		{{/isDouble}}
+	{{/isId}}
+{{/fields}}
+return request;
+}
 }

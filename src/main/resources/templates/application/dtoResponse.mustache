@@ -19,7 +19,7 @@ public class {{name}}Response implements Serializable {
 
 {{#fields}}
 	@Schema(description = "{{description}}", example = "{{example}}")
-	private {{type}} {{name}};
+	private {{realType}} {{name}};
 {{/fields}}
 
 }
