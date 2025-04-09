@@ -1,0 +1,27 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Schema(name = "{{name}}Request", description = "Request payload for {{name}} operations")
+public class {{name}}Request implements Serializable {
+
+{{#fields}}
+	{{^isId}}
+	@Schema(description = "{{description}}", example = "{{example}}")
+	private {{type}} {{name}};
+	{{/isId}}
+{{/fields}}
+
+}

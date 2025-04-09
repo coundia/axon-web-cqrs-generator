@@ -1,0 +1,82 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+
+import {{mapperPackage}}.{{name}}Mapper;
+import {{commandPackage}}.Update{{name}}Command;
+import {{dtoPackage}}.{{name}}Request;
+import {{dtoPackage}}.{{name}}Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
+@Slf4j
+public class Update{{name}}Controller {
+
+private final CommandGateway commandGateway;
+
+public Update{{name}}Controller(CommandGateway commandGateway) {
+this.commandGateway = commandGateway;
+}
+
+@PutMapping("/{id}")
+@Operation(
+summary = "Update an existing {{nameLowercase}}",
+description = "Updates an existing {{nameLowercase}} by ID and returns the updated entity"
+)
+@ApiResponses(value = {
+@ApiResponse(
+responseCode = "200",
+description = "{{name}} updated successfully",
+content = @Content(mediaType = "application/json", schema = @Schema(implementation = {{name}}Response.class))
+),
+@ApiResponse(
+responseCode = "400",
+description = "Invalid input data",
+content = @Content
+),
+@ApiResponse(
+responseCode = "500",
+description = "Internal server error",
+content = @Content
+)
+})
+public ResponseEntity<{{name}}Response> update{{name}}(
+	@Parameter(description = "The ID of the {{nameLowercase}} to update", required = true)
+	@PathVariable String id,
+
+	@RequestBody
+	@io.swagger.v3.oas.annotations.parameters.RequestBody(
+	description = "{{name}} data to update",
+	required = true,
+	content = @Content(schema = @Schema(implementation = {{name}}Request.class))
+	)
+	{{name}}Request {{nameLowercase}}Request
+	) {
+	try {
+
+	Update{{name}}Command command = {{name}}Mapper.toUpdateCommand(id, {{nameLowercase}}Request);
+
+	commandGateway.sendAndWait(command);
+
+	{{name}}Response response = {{name}}Mapper.toResponse(id,{{nameLowercase}}Request);
+	return ResponseEntity.ok(response);
+	} catch (Exception e) {
+	log.error("Failed to update {{nameLowercase}} with id {}: {}", id, e.getMessage());
+	return ResponseEntity.internalServerError().build();
+	}
+	}
+}

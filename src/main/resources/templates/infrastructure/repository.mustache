@@ -1,0 +1,31 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface {{entityName}}Repository extends JpaRepository<{{entityName}}, String> {
+
+//@Query("SELECT t FROM {{entityName}} t ")
+Page<{{entityName}}> findAll(Pageable pageable);
+
+//@Query("SELECT t FROM {{entityName}} t WHERE t.id = :id")
+Optional<{{entityName}}> findById({{entityName}}{{identifier.nameCapitalized}} id);
+
+{{#filables}}
+	{{^isId}}
+	@Query("SELECT t FROM {{entityName}} t WHERE t.{{name}} = :{{name}}")
+	List<{{entityName}}> findBy{{nameCapitalized}}(String {{name}});
+	{{/isId}}
+{{/filables}}
+
+}

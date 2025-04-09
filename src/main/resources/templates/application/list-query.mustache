@@ -1,0 +1,15 @@
+package {{package}};
+{{#imports}}
+import {{.}};
+{{/imports}}
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class List{{name}}Query {
+
+private final int page;
+private final int limit;
+
+}

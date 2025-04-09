@@ -1,0 +1,19 @@
+package {{package}};
+{{#imports}}
+	import {{.}};
+{{/imports}}
+import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class {{className}} extends BaseIntegrationTests {
+
+@Test
+void it_should_{{testAction}}() {
+ResponseEntity<String> response = this.get("{{endpoint}}");
+
+	assertThat(response.getStatusCodeValue()).isEqualTo(200);
+	assertThat(response.getBody()).contains("\"code\":1");
+	assertThat(response.getBody()).contains("\"message\":\"{{expectedMessage}}\"");
+	}
+	}

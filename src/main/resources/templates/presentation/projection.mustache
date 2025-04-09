@@ -1,0 +1,62 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+
+import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+public class {{name}}Projection {
+
+private final {{name}}Repository repository;
+
+public {{name}}Projection({{name}}Repository repository) {
+this.repository = repository;
+}
+
+@EventHandler
+public void on({{name}}CreatedEvent event) {
+try {
+{{name}} entity = new {{name}}(
+{{#fields}}
+	event.get{{nameCapitalized}}().value(){{^last}},{{/last}}
+{{/fields}}
+);
+repository.save(entity);
+log.info("{{name}} inserted: {}", entity);
+} catch (Exception e) {
+log.error("Error saving {{name}}: {}", e.getMessage(), e);
+}
+}
+
+@EventHandler
+public void on({{name}}UpdatedEvent event) {
+try {
+{{name}} entity = repository.findById(event.getId().value())
+.orElseThrow(() -> new RuntimeException("{{name}} not found"));
+
+
+{{#fields}}
+	entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
+{{/fields}}
+
+repository.save(entity);
+log.info("{{name}} updated successfully: {}", event.getId().value());
+} catch (Exception e) {
+log.error("Error updating {{name}}: {}", e.getMessage(), e);
+}
+}
+
+@EventHandler
+public void on({{name}}DeletedEvent event) {
+try {
+repository.deleteById(event.getId().value());
+log.info("{{name}} deleted successfully: {}", event.getId().value());
+} catch (Exception e) {
+log.error("Error deleting {{name}}: {}", e.getMessage(), e);
+}
+}
+}

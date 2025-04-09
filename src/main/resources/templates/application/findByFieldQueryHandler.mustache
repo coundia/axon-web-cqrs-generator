@@ -1,0 +1,35 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import java.util.List;
+import org.axonframework.queryhandling.QueryHandler;
+
+@Component
+@RequiredArgsConstructor
+public class FindBy{{field.nameCapitalized}}{{name}}Handler {
+
+private final {{name}}Repository repository;
+@QueryHandler
+{{^isId}}
+public List<{{name}}Response> handle(FindBy{{field.nameCapitalized}}{{name}}Query query) {
+	String value = query.get{{field.nameCapitalized}}().value();
+	List<{{name}}> entities = repository.getBy{{field.nameCapitalized}}(value);
+	return entities.stream()
+	.map({{name}}Mapper::toResponse)
+	.toList();
+	}
+{{/isId}}
+{{#isId}}
+ public {{name}}Response handle(FindBy{{field.nameCapitalized}}{{name}}Query query) {
+	 String value = query.get{{field.nameCapitalized}}().value();
+	{{name}} entity = repository.findById(value)
+		.orElseThrow(() -> new {{name}}NotFoundException(query.getId()));
+		return {{name}}Mapper.toResponse(entity);
+	}
+{{/isId}}
+
+}

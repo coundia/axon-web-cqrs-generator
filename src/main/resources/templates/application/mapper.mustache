@@ -1,0 +1,43 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+public class {{name}}Mapper {
+
+public static {{name}}Response toResponse({{name}} entity) {
+return new {{name}}Response(
+{{#fields}} entity.get{{nameCapitalized}}(){{^last}},{{/last}}
+{{/fields}}
+);
+}
+
+public static {{name}}Response toResponse(String id, {{name}}Request request) {
+return new {{name}}Response(
+id,
+{{#fields}} {{^isId}}  request.get{{nameCapitalized}}(){{^last}},{{/last}}{{/isId}}
+{{/fields}}
+);
+}
+
+public static Create{{name}}Command toCommand({{name}}Request request) {
+return new Create{{name}}Command(
+{{#fields}} {{^isId}} {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}},{{/last}} {{/isId}}
+{{/fields}}
+);
+}
+
+public static Update{{name}}Command toUpdateCommand(String id, {{name}}Request request) {
+return new Update{{name}}Command(
+{{entity}}Id.create(id),
+{{#fields}}   {{^isId}}         {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}},{{/last}} {{/isId}}
+{{/fields}}
+);
+}
+
+public static Delete{{name}}Command toDeleteCommand({{name}}Id id) {
+return new Delete{{name}}Command(id);
+}
+
+}

@@ -1,0 +1,63 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+
+import {{mapperPackage}}.{{name}}Mapper;
+import {{commandPackage}}.Create{{name}}Command;
+import {{dtoPackage}}.{{name}}Request;
+import {{dtoPackage}}.{{name}}Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
+@Slf4j
+public class Add{{name}}Controller {
+
+private final CommandGateway commandGateway;
+
+public Add{{name}}Controller(CommandGateway commandGateway) {
+this.commandGateway = commandGateway;
+}
+
+@PostMapping
+@Operation(
+summary = "Create a new {{nameLowercase}}",
+description = "Creates a new {{nameLowercase}} and returns the created entity",
+requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+description = "{{name}} request payload",
+required = true,
+content = @Content(schema = @Schema(implementation = {{name}}Request.class))
+)
+)
+@ApiResponses(value = {
+@ApiResponse(responseCode = "200", description = "Successfully created",
+content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
+@ApiResponse(responseCode = "500", description = "Internal server error",
+content = @Content(schema = @Schema()))
+})
+public ResponseEntity<{{name}}Response> add{{name}}(@RequestBody {{name}}Request {{nameLowercase}}Request) {
+	try {
+	Create{{name}}Command command = {{name}}Mapper.toCommand({{nameLowercase}}Request);
+	String responseId = commandGateway.sendAndWait(command).toString();
+
+	{{name}}Response response = {{name}}Mapper.toResponse(responseId, {{nameLowercase}}Request);
+
+	return ResponseEntity.ok(response);
+	} catch (Exception ex) {
+	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage());
+	return ResponseEntity.status(500).build();
+	}
+	}
+	}

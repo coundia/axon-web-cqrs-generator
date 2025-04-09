@@ -1,0 +1,12 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+public class {{name}}NotFoundException extends RuntimeException {
+
+public {{name}}NotFoundException({{name}}Id id) {
+super("{{name}} with ID " + id + " not found");
+}
+}

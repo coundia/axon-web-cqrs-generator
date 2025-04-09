@@ -1,0 +1,74 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import java.util.Date;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Aggregate
+public class {{name}}Aggregate {
+
+@AggregateIdentifier
+private {{name}}Id id;
+{{#fields}}
+{{^isId}}private {{type}} {{name}};
+{{/isId}}
+{{/fields}}
+
+
+@CommandHandler
+public {{name}}Aggregate(Create{{name}}Command command) {
+apply(new {{name}}CreatedEvent(
+	{{#fields}}		command.get{{nameCapitalized}}(){{^last}},{{/last}}
+	{{/fields}}
+));
+}
+
+@CommandHandler
+public void handle(Delete{{name}}Command command) {
+	apply(new {{name}}DeletedEvent(
+		command.getId()
+	));
+}
+
+@CommandHandler
+public void handle(Update{{name}}Command command) {
+apply(new {{name}}UpdatedEvent(
+{{#fields}}		command.get{{nameCapitalized}}(){{^last}},{{/last}}
+{{/fields}}
+));
+}
+
+@EventSourcingHandler
+public void on({{name}}CreatedEvent event) {
+	this.id = event.getId();
+	{{#fields}}
+	{{^isId}}	this.{{name}} = event.get{{nameCapitalized}}();
+		{{/isId}}
+	{{/fields}}
+}
+
+@EventSourcingHandler
+public void on({{name}}DeletedEvent event) {
+this.id = event.getId();
+}
+
+@EventSourcingHandler
+public void on({{name}}UpdatedEvent event) {
+this.id = event.getId();
+{{#fields}}
+	{{^isId}}	this.{{name}} = event.get{{nameCapitalized}}();
+	{{/isId}}
+{{/fields}}
+}
+
+}

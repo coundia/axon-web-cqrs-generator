@@ -1,0 +1,49 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import java.io.Serializable;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.data.domain.Page;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Schema(name = "{{name}}PagedResponse", description = "Paginated response for {{name}} results")
+public class {{name}}PagedResponse implements Serializable {
+
+@Schema(description = "List of paginated {{name}} items")
+private List<{{name}}Response> content;
+
+	@Schema(description = "Current page number", example = "0")
+	private int page;
+
+	@Schema(description = "Page size", example = "10")
+	private int size;
+
+	@Schema(description = "Total number of elements", example = "100")
+	private long totalElements;
+
+	@Schema(description = "Total number of pages", example = "10")
+	private long totalPages;
+
+	public static {{name}}PagedResponse from(Page<{{name}}> page, List<{{name}}Response> content) {
+		return {{name}}PagedResponse.builder()
+		.content(content)
+		.page(page.getNumber())
+		.size(page.getSize())
+		.totalElements(page.getTotalElements())
+		.totalPages(page.getTotalPages())
+		.build();
+		}
+}

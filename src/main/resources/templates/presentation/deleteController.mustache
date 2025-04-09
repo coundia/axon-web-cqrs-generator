@@ -1,0 +1,59 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+
+import {{commandPackage}}.Delete{{name}}Command;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
+@Slf4j
+public class Delete{{name}}Controller {
+
+private final CommandGateway commandGateway;
+
+public Delete{{name}}Controller(CommandGateway commandGateway) {
+this.commandGateway = commandGateway;
+}
+
+@DeleteMapping("/{id}")
+@Operation(
+summary = "Delete a {{nameLowercase}}",
+description = "Deletes a {{nameLowercase}} based on the provided identifier"
+)
+@ApiResponses(value = {
+@ApiResponse(responseCode = "200", description = "{{name}} deleted successfully"),
+@ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
+@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+})
+public ResponseEntity<String> delete{{name}}(
+	@Parameter(description = "ID of the {{nameLowercase}} to delete", required = true)
+	@PathVariable String id
+	) {
+	if (id == null || id.isEmpty()) {
+	return ResponseEntity.badRequest().body("Invalid ID");
+	}
+
+	try {
+	{{name}}Id idVo = {{name}}Id.create(id);
+	commandGateway.sendAndWait(new Delete{{name}}Command(idVo));
+	return ResponseEntity.ok("{{name}} deleted successfully");
+	} catch (Exception e) {
+	log.error("Error deleting {{nameLowercase}} with id {}: {}", id, e.getMessage());
+	return ResponseEntity.internalServerError().body("Error deleting {{nameLowercase}}");
+	}
+	}
+	}

@@ -1,0 +1,18 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+public class {{className}} {
+
+private final {{name}}{{field.nameCapitalized}}  {{field.name}};
+
+public {{className}}( {{name}}{{field.nameCapitalized}} {{field.name}}) {
+	this.{{field.name}} = {{field.name}};
+}
+
+public {{name}}{{field.nameCapitalized}}  get{{field.nameCapitalized}}() {
+return {{field.name}};
+}
+}
