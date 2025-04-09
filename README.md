@@ -54,3 +54,9 @@ Content-Type: application/json
 
 ###
 ``` 
+Voir le projet geneér pour plus de détails  
+
+Entite (Sale)
+
+
+[https://github.com/coundia/spring-axon-rabbitmq-web-jpa-starter](https://github.com/coundia/spring-axon-rabbitmq-web-jpa-starter)
