@@ -3,6 +3,9 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+{{#fieldFiles}}
+import org.springframework.web.multipart.MultipartFile;
+{{/fieldFiles}}
 
 public class {{name}}Mapper {
 
@@ -21,10 +24,14 @@ id,
 );
 }
 
-public static Create{{name}}Command toCommand({{name}}Request request) {
+public static Create{{name}}Command toCommand(
+{{name}}Request request
+{{#hasFiles}},{{#fieldFiles}} MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}{{/hasFiles}}
+) {
 return new Create{{name}}Command(
 {{#fields}} {{^isId}} {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}},{{/last}} {{/isId}}
 {{/fields}}
+{{#hasFiles}},{{#fieldFiles}}{{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}{{/hasFiles}}
 );
 }
 

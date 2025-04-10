@@ -3,7 +3,7 @@ package com.groupe2cs.generator.domain.model;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import lombok.*;
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,16 +15,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Builder
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class EntityDefinition implements Serializable {
 
     private  String name;
     private  String table;
     private  List<FieldDefinition> fields;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public List<FieldDefinition> getFields() {
+        return fields.stream()
+                .filter(f -> !f.isFileType())
+                .toList();
+    }
+
+    public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
+        this.name = name;
+        this.fields = fields;
+        this.table = table;
+    }
 
     public EntityDefinition(String name, List<FieldDefinition> fields) {
         this.name = name;
@@ -113,6 +129,12 @@ public class EntityDefinition implements Serializable {
 
     public   String  getIdentifier(){
         return "id";
+    }
+
+    public List<FieldDefinition> fieldFiles() {
+        return fields.stream()
+                .filter(f -> f.isFileType())
+                .toList();
     }
 
 }

@@ -26,6 +26,10 @@ public class FieldTransformer {
             f.put("isInteger", field.getType().equalsIgnoreCase("Integer"));
             f.put("isDouble", field.getType().equalsIgnoreCase("Double"));
             f.put("last", i == fields.size() - 1);
+
+            f.put("isPrimitiveType", field.isPrimitiveType());
+            f.put("primitiveType", field.getPrimitiveType());
+            f.put("isFileType", field.isFileType());
             result.add(f);
         }
 

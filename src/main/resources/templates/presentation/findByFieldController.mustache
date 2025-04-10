@@ -51,7 +51,7 @@ public ResponseEntity<List<{{name}}Response>> findBy{{field.nameCapitalized}}(
 	@RequestParam String {{field.name}}
 	) {
 	try {
-	{{name}}{{field.nameCapitalized}} value = {{name}}Id.create({{field.name}});
+	{{name}}{{field.nameCapitalized}} value = {{name}}{{field.nameCapitalized}}.create({{field.name}});
 	FindBy{{field.nameCapitalized}}{{name}}Query query = new FindBy{{field.nameCapitalized}}{{name}}Query(value);
 	CompletableFuture<List<{{name}}Response>> future = queryGateway.query(query, multipleInstancesOf({{name}}Response.class));
 		List<{{name}}Response> response = future.join();

@@ -13,6 +13,10 @@ import lombok.Builder;
 import java.util.Date;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import java.util.UUID;
+{{#fieldFiles}}
+import org.springframework.web.multipart.MultipartFile;
+{{/fieldFiles}}
+
 
 @Getter
 @Setter
@@ -25,15 +29,22 @@ public class {{name}}Command implements Serializable {
 {{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
 {{/fields}}
 {{#isDeleted}}private {{entity}}Id id;{{/isDeleted}}
+{{#isCreated}}
+{{#hasFiles}} {{#fieldFiles}} private MultipartFile {{nameCamelCase}};{{/fieldFiles}}{{/hasFiles}}
+{{/isCreated}}
 
 {{#isCreated}}
 	public {{name}}Command(
 	{{#fields}} {{^isId}}  {{entity}}{{nameCapitalized}} {{nameLowerCase}} {{^last}},{{/last}} {{/isId}}
 	{{/fields}}
+	{{#hasFiles}},{{#fieldFiles}} MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}{{/hasFiles}}
 	){
 	this.id = {{entity}}Id.create(UUID.randomUUID().toString());
 	{{#fields}} {{^isId}} this.{{name}} = {{nameLowerCase}} ; {{/isId}}
 	{{/fields}}
+	{{#fieldFiles}}  this.{{name}} = {{nameLowerCase}} ;
+	{{/fieldFiles}}
+
 	}
 {{/isCreated}}
 

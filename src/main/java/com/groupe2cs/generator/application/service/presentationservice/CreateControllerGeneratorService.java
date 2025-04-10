@@ -36,7 +36,18 @@ public class CreateControllerGeneratorService {
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
+
+
+
         String content = templateEngine.render("presentation/createController.mustache", context);
+
+        var fieldFiles = definition.fieldFiles();
+        context.put("hasFiles", !fieldFiles.isEmpty());
+        if (!fieldFiles.isEmpty()) {
+            context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
+            content = templateEngine.render("presentation/createWithFilesController.mustache", context);
+        }
+
         fileWriterService.write(outputDir, "Add" + definition.getName() + "Controller.java", content);
     }
 }

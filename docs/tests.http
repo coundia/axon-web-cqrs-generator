@@ -10,10 +10,10 @@ Content-Type: application/json
       "fields": [
         { "name": "id", "type": "String" },
         { "name": "quantity", "type": "Integer" },
-        { "name": "total_price", "type": "Double" }
+        { "name": "total_price", "type": "Double" },
+        { "name": "facture", "type": "MultipartFile" }
       ]
     }
   }
 
 ###
-

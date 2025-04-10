@@ -23,7 +23,7 @@ public class {{name}}Request implements Serializable {
 {{#fields}}
 	{{^isId}}
 	@Schema(description = "{{description}}", example = "{{example}}")
-	private {{realType}} {{name}};
+	private {{primitiveType}} {{name}};
 	{{/isId}}
 {{/fields}}
 

@@ -1,0 +1,47 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.junit.jupiter.api.Test;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class {{name}}CreateControllerIntegrationTest extends BaseIntegrationTests {
+
+@Test
+void it_should_be_able_to_add_{{nameLower}}() {
+{{name}}Request requestDTO = {{name}}Request.random();
+
+MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+body.add("metadata", requestDTO);
+{{#fieldFiles}}
+body.add("{{nameCamelCase}}", createFile());
+{{/fieldFiles}}
+
+HttpHeaders headers = new HttpHeaders();
+headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+HttpEntity<MultiValueMap<String, Object>> request =
+new HttpEntity<>(body, headers);
+
+String uri = "/v1/commands/{{nameLower}}";
+ResponseEntity<{{name}}Response> response =
+	this.postForEntity(uri, request, {{name}}Response.class);
+
+	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	assertThat(response.getBody()).isNotNull();
+	assertThat(response.getBody().getId()).isNotNull();
+	{{#fields}}
+	{{^isId}}
+	assertThat(response.getBody().get{{nameCapitalized}}())
+	.isEqualTo(requestDTO.get{{nameCapitalized}}());
+	{{/isId}}
+	{{/fields}}
+
+	}
+
+}

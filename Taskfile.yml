@@ -18,7 +18,7 @@ tasks:
   stop:
     desc: Stop apps
     cmds:
-      - sh kill.ports.sh  8070
+      - sh kill.ports.sh  8071
       - docker compose -f docker/main.yml down
 
   check:

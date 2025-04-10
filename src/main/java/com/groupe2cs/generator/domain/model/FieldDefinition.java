@@ -42,4 +42,35 @@ public class FieldDefinition implements Serializable {
     public boolean isId() {
         return name.equalsIgnoreCase("id");
     }
+    public boolean isFileType() {
+        return
+                type.equalsIgnoreCase("MultipartFile") ||
+                type.equalsIgnoreCase("PartFile") ||
+                type.equalsIgnoreCase("files") ||
+                type.equalsIgnoreCase("image") ||
+                type.equalsIgnoreCase("pdf") ||
+                type.equalsIgnoreCase("file")
+                ;
+    }
+
+    public String getPrimitiveType() {
+        if(!isPrimitiveType()){
+            return "String";
+        }
+
+        return type;
+    }
+
+    public boolean isPrimitiveType() {
+        if (isFileType()) {
+            return false;
+        }
+        String lower = type.toLowerCase();
+        return switch (lower) {
+            case "string", "int", "integer", "long", "double",
+                 "float", "boolean", "short", "char" -> true;
+            default -> false;
+        };
+    }
+
 }

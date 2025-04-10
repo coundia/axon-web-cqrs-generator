@@ -9,6 +9,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @SpringBootTest(
 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -58,4 +62,17 @@ public ResponseEntity<String> get(String uri) {
 	public <T> ResponseEntity<T> getForEntity(String uri, Class<T> responseType) {
 		return this.testRestTemplate.getForEntity(this.getBaseUrl() + uri, responseType);
 	}
+	public  HttpEntity<ByteArrayResource> createFile() {
+			byte[] content = "Fake PDF content".getBytes();
+			ByteArrayResource resource = new ByteArrayResource(content) {
+			@Override
+			public String getFilename() {
+			return "file.pdf";
+			}
+			};
+			HttpHeaders partHeaders = new HttpHeaders();
+			partHeaders.setContentType(MediaType.APPLICATION_PDF);
+			return new HttpEntity<>(resource, partHeaders);
+	}
+
 }

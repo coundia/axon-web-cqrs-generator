@@ -17,7 +17,7 @@ private final {{name}}Repository repository;
 {{^isId}}
 public List<{{name}}Response> handle(FindBy{{field.nameCapitalized}}{{name}}Query query) {
 	String value = query.get{{field.nameCapitalized}}().value();
-	List<{{name}}> entities = repository.getBy{{field.nameCapitalized}}(value);
+	List<{{name}}> entities = repository.findBy{{field.nameCapitalized}}(value);
 	return entities.stream()
 	.map({{name}}Mapper::toResponse)
 	.toList();

@@ -42,7 +42,7 @@ public class VoGeneratorService {
 
             context.put("package", Utils.getPackage(outputDir));
             context.put("voName", voName);
-            context.put("type", field.getType());
+            context.put("type", field.getPrimitiveType());
             context.put("name", field.getName());
             context.put("equalsExpression", "this." + field.getName() + ".equals(that." + field.getName() + ")");
             context.put("hashCodeExpression", "java.util.Objects.hash("+field.getName()+")");

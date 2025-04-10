@@ -40,6 +40,11 @@ public class AggregateGeneratorService {
 
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("imports", buildImports(baseDir));
+        var fieldFiles = definition.fieldFiles();
+        context.put("hasFiles", !fieldFiles.isEmpty());
+        if (!fieldFiles.isEmpty()) {
+            context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
+        }
 
         String content = templateEngine.render("domain/aggregate.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Aggregate.java", content);

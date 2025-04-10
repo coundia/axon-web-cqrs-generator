@@ -67,8 +67,18 @@ public class ControllerAllIntegrationTestGeneratorService {
         context.put("base", Utils.getTestPackage(baseDir));
         context.put("vo", Utils.getPackage(generatorProperties.getVoPackage()));
 
-        String content = templateEngine.render("tests/" + className.toLowerCase() + ".mustache", context);
+        var fieldFiles = definition.fieldFiles();
+        context.put("hasFiles", !fieldFiles.isEmpty());
+        context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
 
+        if (!fieldFiles.isEmpty() && className.equalsIgnoreCase("CreateControllerIntegrationTest")) {
+
+            String content = templateEngine.render("tests/createWithFilesControllerIntegrationTest.mustache", context);
+            fileWriterService.write(outputDir, entity+className + ".java", content);
+            return;
+        }
+
+        String content = templateEngine.render("tests/" + className.toLowerCase() + ".mustache", context);
         fileWriterService.write(outputDir, entity+className + ".java", content);
     }
 
