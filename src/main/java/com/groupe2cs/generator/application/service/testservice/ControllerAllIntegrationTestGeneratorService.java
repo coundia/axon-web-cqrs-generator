@@ -26,7 +26,12 @@ public class ControllerAllIntegrationTestGeneratorService {
     public void generate(EntityDefinition definition, String baseDir) {
 
         List<String> classNames = List.of(
-                "CreateControllerIntegrationTest"
+                "CreateControllerIntegrationTest",
+                "UpdateControllerIntegrationTest",
+                "DeleteControllerIntegrationTest",
+                "FindAllControllerIntegrationTest",
+                "FindByIdControllerIntegrationTest",
+                "Fixtures"
         );
 
         classNames.forEach(
@@ -44,15 +49,23 @@ public class ControllerAllIntegrationTestGeneratorService {
         String entity = definition.getName();
         context.put("className", className);
         context.put("name", entity);
+        context.put("entity", entity);
         context.put("nameLower", entity.toLowerCase());
 
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
+
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getSharedPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
+        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
+
         context.put("imports", imports);
+        context.put("base", Utils.getTestPackage(baseDir));
+        context.put("vo", Utils.getPackage(generatorProperties.getVoPackage()));
 
         String content = templateEngine.render("tests/" + className.toLowerCase() + ".mustache", context);
 

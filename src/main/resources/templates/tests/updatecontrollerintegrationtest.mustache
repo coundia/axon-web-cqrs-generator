@@ -1,0 +1,43 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class {{name}}UpdateControllerIntegrationTest extends BaseIntegrationTests {
+
+@Autowired
+private {{name}}Repository {{nameLower}}Repository;
+
+@Autowired
+private CommandGateway commandGateway;
+
+@Test
+void it_should_be_able_to_update_{{nameLower}}() {
+
+String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway);
+
+{{name}}Request requestDTO = {{name}}Request.random();
+HttpEntity<{{name}}Request> request = new HttpEntity<>(requestDTO);
+
+	String uri = "/v1/commands/{{nameLower}}/" + existingId;
+	ResponseEntity<String> response = this.put(uri,request);
+
+	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+	{{name}} found = {{name}}Fixtures.byId({{nameLower}}Repository, existingId);
+	assertThat(found).isNotNull();
+	{{#fields}}
+		{{^isId}}
+			assertThat(found.get{{nameCapitalized}}()).isEqualTo(requestDTO.get{{nameCapitalized}}());
+		{{/isId}}
+	{{/fields}}
+
+	}
+}

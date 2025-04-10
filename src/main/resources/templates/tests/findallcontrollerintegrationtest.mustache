@@ -1,0 +1,31 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+public class {{name}}FindAllControllerIntegrationTest extends BaseIntegrationTests {
+
+@Autowired
+private {{name}}Repository {{nameLower}}Repository;
+
+@Test
+void it_should_be_able_to_get_all_{{nameLower}}s() {
+{{name}}Fixtures.randomMany({{nameLower}}Repository, 5);
+
+String uri = "/v1/queries/list-{{nameLower}}";
+ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
+
+	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+	assertThat(response.getBody()).isNotNull();
+	assertThat(response.getBody().getContent()).isNotEmpty();
+	}
+}

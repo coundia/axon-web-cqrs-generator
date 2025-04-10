@@ -54,4 +54,8 @@ public ResponseEntity<String> get(String uri) {
 	public <T> ResponseEntity<T> postForEntity(String uri, Object request, Class<T> responseType) {
 		return this.testRestTemplate.postForEntity(this.getBaseUrl() + uri, request, responseType);
 	}
+
+	public <T> ResponseEntity<T> getForEntity(String uri, Class<T> responseType) {
+		return this.testRestTemplate.getForEntity(this.getBaseUrl() + uri, responseType);
+	}
 }

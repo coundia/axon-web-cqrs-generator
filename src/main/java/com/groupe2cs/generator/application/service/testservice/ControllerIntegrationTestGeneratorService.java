@@ -64,7 +64,7 @@ public class ControllerIntegrationTestGeneratorService {
         String outputDir = Utils.getTestDir(fullPath);
 
         context.put("testAction","status");
-        context.put("endpoint","/api/v1/status");
+        context.put("endpoint","/v1/status");
         context.put("className","StatusControllerTest");
 
         Set<String> imports = new LinkedHashSet<>();

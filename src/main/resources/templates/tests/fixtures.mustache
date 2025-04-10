@@ -1,0 +1,77 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import {{base}}.{{vo}}.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+
+public class {{name}}Fixtures {
+
+public static {{name}} randomOne({{name}}Repository repository) {
+{{name}} entity = new {{name}}();
+entity.setId(UUID.randomUUID().toString());
+{{#fields}}
+	{{^isId}}
+		{{#isString}}
+			entity.set{{nameCapitalized}}("Sample {{nameCapitalized}}");
+		{{/isString}}
+		{{#isInteger}}
+			entity.set{{nameCapitalized}}(123);
+		{{/isInteger}}
+		{{#isDouble}}
+			entity.set{{nameCapitalized}}(999.99);
+		{{/isDouble}}
+		{{^isString}}
+			{{^isInteger}}
+				{{^isDouble}}
+					entity.set{{nameCapitalized}}(null);
+				{{/isDouble}}
+			{{/isInteger}}
+		{{/isString}}
+	{{/isId}}
+{{/fields}}
+return repository.save(entity);
+}
+
+public static {{name}} existingOrRandom({{name}}Repository repository) {
+return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
+}
+
+public static {{name}} byId({{name}}Repository repository, String id) {
+return repository.findById(id).orElse(null);
+}
+
+public static List<{{name}}> randomMany({{name}}Repository repository, int count) {
+List<{{name}}> items = new ArrayList<>();
+for (int i = 0; i < count; i++) {
+items.add(randomOne(repository));
+}
+return items;
+}
+
+public static void deleteAll({{name}}Repository repository) {
+repository.deleteAll();
+}
+
+public static String randomOneViaCommand(CommandGateway commandGateway) {
+
+Create{{name}}Command command = new Create{{name}}Command(
+{{#fields}}
+	{{^isId}}
+		{{entity}}{{nameCapitalized}}.create(
+		{{#isString}}"Sample {{nameCapitalized}}"{{^last}}),{{/last}}{{/isString}}
+		{{#isInteger}}123{{^last}}),{{/last}}{{/isInteger}}
+		{{#isDouble}}999.99{{^last}}),{{/last}}{{/isDouble}}
+		{{^isString}}{{^isInteger}}{{^isDouble}}null{{^last}},{{/last}}{{/isDouble}}{{/isInteger}}
+		{{/isString}}
+	{{/isId}}
+{{/fields}}
+));
+return commandGateway.sendAndWait(command).toString();
+}
+}

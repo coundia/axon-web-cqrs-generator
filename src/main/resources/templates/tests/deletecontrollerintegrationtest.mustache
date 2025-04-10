@@ -1,0 +1,33 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.axonframework.commandhandling.gateway.CommandGateway;
+
+public class {{name}}DeleteControllerIntegrationTest extends BaseIntegrationTests {
+
+@Autowired
+private {{name}}Repository {{nameLower}}Repository;
+
+@Autowired
+private CommandGateway commandGateway;
+
+@Test
+void it_should_be_able_to_delete_{{nameLower}}() {
+String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway);
+String uri = "/v1/commands/{{nameLower}}/" + existingId;
+
+ResponseEntity<String> rep = this.delete(uri);
+assertThat(rep.getStatusCode().value()).isEqualTo(200);
+
+{{name}} found = {{name}}Fixtures.byId({{nameLower}}Repository, existingId);
+assertThat(found).isNull();
+}
+}
