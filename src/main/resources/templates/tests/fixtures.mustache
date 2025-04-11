@@ -60,21 +60,18 @@ repository.deleteAll();
 }
 
 public static String randomOneViaCommand(CommandGateway commandGateway) {
+{{#hasFiles}}
+MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
+String fileName = files.getName();
+{{/hasFiles}}
 Create{{name}}Command command = new Create{{name}}Command(
-{{#fields}}
-	{{^isId}}
-			{{entity}}{{nameCapitalized}}.create(
-			{{#isString}}"Sample {{nameCapitalized}}"{{/isString}}
-			{{#isInteger}}123{{/isInteger}}
-			{{#isDouble}}999.99{{/isDouble}}
-			{{^isString}}{{^isInteger}}{{^isDouble}}null{{/isDouble}}{{/isInteger}}{{/isString}}
-			){{^last}},{{/last}}
-	{{/isId}}
-{{/fields}}
-{{#hasFiles}},
-{{#fieldFiles}}
-	null
-	//new MockMultipartFile("{{nameCamelCase}}", "fake.txt", "text/plain", "Hello".getBytes()){{^last}},{{/last}}
+{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(
+		{{#isString}}"Sample {{nameCapitalized}}"{{/isString}}
+		{{#isInteger}}123{{/isInteger}}
+		{{#isDouble}}999.99{{/isDouble}}
+		{{^isString}}{{^isInteger}}{{^isDouble}}null{{/isDouble}}{{/isInteger}}{{/isString}}
+		){{^last}},{{/last}}{{/isId}}{{/fields}}{{#hasFiles}},{{#fieldFiles}}
+	{{entity}}{{nameCapitalized}}.create(fileName){{^last}},{{/last}}
 {{/fieldFiles}}
 {{/hasFiles}}
 );

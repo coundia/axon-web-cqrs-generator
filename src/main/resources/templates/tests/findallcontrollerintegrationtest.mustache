@@ -19,10 +19,10 @@ private {{name}}Repository {{nameLower}}Repository;
 
 @Test
 void it_should_be_able_to_get_all_{{nameLower}}s() {
-{{name}}Fixtures.randomMany({{nameLower}}Repository, 5);
+	{{name}}Fixtures.randomMany({{nameLower}}Repository, 5);
 
-String uri = "/v1/queries/list-{{nameLower}}";
-ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
+	String uri = "/v1/queries/list-{{nameLower}}";
+	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	assertThat(response.getBody()).isNotNull();

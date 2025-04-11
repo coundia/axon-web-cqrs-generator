@@ -17,11 +17,11 @@ private {{name}}Repository {{nameLower}}Repository;
 
 @Test
 void it_should_be_able_to_get_{{nameLower}}_by_id() {
-{{name}} entity = {{name}}Fixtures.randomOne({{nameLower}}Repository);
-String existingId = entity.getId();
+	{{name}} entity = {{name}}Fixtures.randomOne({{nameLower}}Repository);
+	String existingId = entity.getId();
 
-String uri = "/v1/queries/{{nameLower}}/by-id?id=" + existingId;
-ResponseEntity<{{name}}Response> response = this.getForEntity(uri, {{name}}Response.class);
+	String uri = "/v1/queries/{{nameLower}}/by-id?id=" + existingId;
+	ResponseEntity<{{name}}Response> response = this.getForEntity(uri, {{name}}Response.class);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	assertThat(response.getBody()).isNotNull();

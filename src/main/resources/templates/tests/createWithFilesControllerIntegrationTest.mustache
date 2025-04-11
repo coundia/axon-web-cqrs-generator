@@ -31,18 +31,17 @@ headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
 HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-String uri = "/api/v1/commands/{{nameLower}}";
+String uri = "/v1/commands/{{nameLower}}";
 ResponseEntity<{{name}}Response> response =
 	this.postForEntity(uri, requestEntity, {{name}}Response.class);
-
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	assertThat(response.getBody()).isNotNull();
 	assertThat(response.getBody().getId()).isNotNull();
 
 	{{#fields}}
 		{{^isId}}
-			assertThat(response.getBody().get{{nameCapitalized}}().toString())
-			.isEqualTo(requestDTO.get{{nameCapitalized}}().toString());
+	assertThat(response.getBody().get{{nameCapitalized}}().toString())
+	.isEqualTo(requestDTO.get{{nameCapitalized}}().toString());
 		{{/isId}}
 	{{/fields}}
 	}
