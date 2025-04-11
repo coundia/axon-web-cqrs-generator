@@ -73,7 +73,8 @@ Create{{name}}Command command = new Create{{name}}Command(
 {{/fields}}
 {{#hasFiles}},
 {{#fieldFiles}}
-	new MockMultipartFile("{{nameCamelCase}}", "fake.txt", "text/plain", "Hello".getBytes()){{^last}},{{/last}}
+	null
+	//new MockMultipartFile("{{nameCamelCase}}", "fake.txt", "text/plain", "Hello".getBytes()){{^last}},{{/last}}
 {{/fieldFiles}}
 {{/hasFiles}}
 );

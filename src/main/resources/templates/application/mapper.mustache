@@ -3,48 +3,37 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-{{#fieldFiles}}
-import org.springframework.web.multipart.MultipartFile;
-{{/fieldFiles}}
+
 
 public class {{name}}Mapper {
 
 public static {{name}}Response toResponse({{name}} entity) {
 return new {{name}}Response(
-{{#fields}} entity.get{{nameCapitalized}}(){{^last}},{{/last}}
-{{/fields}}
+{{#fields}}entity.get{{nameCapitalized}}(){{^last}}, {{/last}}{{/fields}}
 );
 }
 
 public static {{name}}Response toResponse(String id, {{name}}Request request) {
 return new {{name}}Response(
-id,
-{{#fields}} {{^isId}}  request.get{{nameCapitalized}}(){{^last}},{{/last}}{{/isId}}
-{{/fields}}
+id{{#fields}}{{^isId}}, request.get{{nameCapitalized}}(){{/isId}}{{/fields}}
 );
 }
 
 public static Create{{name}}Command toCommand(
-{{name}}Request request
-{{#hasFiles}},{{#fieldFiles}} MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}{{/hasFiles}}
+{{name}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 ) {
 return new Create{{name}}Command(
-{{#fields}} {{^isId}} {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}},{{/last}} {{/isId}}
-{{/fields}}
-{{#hasFiles}},{{#fieldFiles}}{{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}{{/hasFiles}}
+{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}}, {{/last}}{{/isId}}{{/fields}}{{#hasFiles}}, {{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 );
 }
 
 public static Update{{name}}Command toUpdateCommand(String id, {{name}}Request request) {
 return new Update{{name}}Command(
-{{entity}}Id.create(id),
-{{#fields}}   {{^isId}}         {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}},{{/last}} {{/isId}}
-{{/fields}}
+{{entity}}Id.create(id){{#fields}}{{^isId}}, {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{/isId}}{{/fields}}
 );
 }
 
 public static Delete{{name}}Command toDeleteCommand({{name}}Id id) {
 return new Delete{{name}}Command(id);
 }
-
 }

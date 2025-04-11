@@ -1,0 +1,11 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+
+public interface FileStorageService {
+
+String storeFile(MultipartFile file);
+}

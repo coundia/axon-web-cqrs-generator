@@ -1,0 +1,41 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class FileStorageServiceS3Impl implements FileStorageService {
+
+private final AmazonS3 amazonS3;
+
+@Value("${app.s3.bucket}")
+private String bucket;
+
+@Override
+public String storeFile(MultipartFile file) {
+try {
+String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+ObjectMetadata metadata = new ObjectMetadata();
+metadata.setContentLength(file.getSize());
+metadata.setContentType(file.getContentType());
+
+amazonS3.putObject(bucket, filename, file.getInputStream(), metadata);
+
+return amazonS3.getUrl(bucket, filename).toString();
+} catch (IOException ex) {
+throw new RuntimeException("Failed to upload file to S3: " + ex.getMessage(), ex);
+}
+}
+}

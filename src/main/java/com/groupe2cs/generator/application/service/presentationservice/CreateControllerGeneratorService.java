@@ -34,16 +34,18 @@ public class CreateControllerGeneratorService {
         context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
         var fields = definition.getFields();
+        Set<String> imports = new LinkedHashSet<>();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-
-
-
+        context.put("imports", imports);
 
         String content = templateEngine.render("presentation/createController.mustache", context);
 
         var fieldFiles = definition.fieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
+            Set<String> importsBis = new LinkedHashSet<>();
+            importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+            context.put("imports", importsBis);
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
             content = templateEngine.render("presentation/createWithFilesController.mustache", context);
         }

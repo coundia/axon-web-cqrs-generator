@@ -1,12 +1,9 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
-import {{mapperPackage}}.{{name}}Mapper;
-import {{commandPackage}}.Create{{name}}Command;
-import {{dtoPackage}}.{{name}}Request;
 import {{dtoPackage}}.{{name}}Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,60 +11,56 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-{{#fieldFiles}}
 import org.springframework.web.multipart.MultipartFile;
-{{/fieldFiles}}
 
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
+@RequiredArgsConstructor
 @Slf4j
 public class Add{{name}}Controller {
 
-private final CommandGateway commandGateway;
+private final {{name}}ApplicationService {{nameLowercase}}ApplicationService;
 
-public Add{{name}}Controller(CommandGateway commandGateway) {
-this.commandGateway = commandGateway;
-}
-
-@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-@Operation(
-summary = "Create a new {{nameLowercase}}",
-description = "Creates a new {{nameLowercase}} with file uploads and returns the created entity",
-requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-description = "{{name}} request payload plus file(s)",
-required = true,
-content = @Content(schema = @Schema(implementation = {{name}}Request.class))
-)
-)
+@Operation(summary = "Create a new {{nameLowercase}}")
 @ApiResponses(value = {
-@ApiResponse(responseCode = "200", description = "Successfully created",
-content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
+@ApiResponse(responseCode = "200", description = "{{name}} created",
+content = @Content(mediaType = "application/json",
+schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
-content = @Content(schema = @Schema()))
+content = @Content)
 })
+@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<{{name}}Response> add{{name}}(
-	@RequestPart("metadata") {{name}}Request {{nameLowercase}}Request,
+	{{#hasFiles}}
 	{{#fieldFiles}}
 		@RequestPart("{{nameCamelCase}}") MultipartFile {{nameCamelCase}}{{^last}},{{/last}}
-	{{/fieldFiles}}
+	{{/fieldFiles}},
+	{{/hasFiles}}
+	{{#fields}}
+		{{^isId}}
+			@RequestParam("{{nameCamelCase}}") {{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
+		{{/isId}}
+	{{/fields}}
 	) {
 	try {
-	Create{{name}}Command command = {{name}}Mapper.toCommand(
-	{{nameLowercase}}Request,
-	{{#fieldFiles}}{{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}}
+	String responseId = {{nameLowercase}}ApplicationService.create{{name}}(
+	{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}
+	{{#fields}}{{^isId}}, {{nameCamelCase}}{{/isId}}{{/fields}}
 	);
-	String responseId = commandGateway.sendAndWait(command).toString();
-	{{name}}Response response = {{name}}Mapper.toResponse(responseId, {{nameLowercase}}Request);
+
+	{{name}}Response response = new {{name}}Response(responseId
+	{{#fields}}{{^isId}}, {{nameCamelCase}}{{/isId}}{{/fields}});
 	return ResponseEntity.ok(response);
+
 	} catch (Exception ex) {
-	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage());
-	return ResponseEntity.status(500).build();
+	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage(), ex);
+	return ResponseEntity.internalServerError().build();
 	}
-}
-}
+	}
+	}

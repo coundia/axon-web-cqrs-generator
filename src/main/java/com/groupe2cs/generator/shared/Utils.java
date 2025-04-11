@@ -1,5 +1,8 @@
 package com.groupe2cs.generator.shared;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Utils {
 
     public static String capitalize(String value) {
@@ -17,6 +20,18 @@ public class Utils {
 
         return normalized.replace("/", ".");
     }
+    public static  String getRootDir(String outputDir, String entityName) {
+        Path path = Paths.get(outputDir);
+        Path last = path.getFileName();
+        if (last != null && last.toString().equalsIgnoreCase(entityName)) {
+            return path.getParent().toString();
+        }
+        if (last != null && last.toString().equalsIgnoreCase(entityName+"s")) {
+            return path.getParent().toString();
+        }
+        return outputDir;
+    }
+
 
     public static String getTestPackage(String fullPath) {
 
