@@ -32,17 +32,19 @@ public class UpdateControllerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
         context.put("nameLowercase", definition.getName().toLowerCase());
-        context.put("mapperPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()));
-        context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
-        context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()+".*"));
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
 
         context.put("imports", imports);
 
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
+        context.put("hasFiles",!definition.getFieldFiles().isEmpty());
 
         String content = templateEngine.render("presentation/updateController.mustache", context);
         fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);

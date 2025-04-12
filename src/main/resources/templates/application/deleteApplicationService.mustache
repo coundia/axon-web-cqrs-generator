@@ -1,0 +1,22 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class {{className}} {
+
+private final CommandGateway commandGateway;
+
+public void delete{{name}}({{name}}Id idVo) {
+
+Delete{{name}}Command command = new Delete{{name}}Command(idVo);
+commandGateway.sendAndWait(command);
+}
+}

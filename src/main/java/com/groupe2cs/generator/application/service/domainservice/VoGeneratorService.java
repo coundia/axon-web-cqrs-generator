@@ -35,7 +35,7 @@ public class VoGeneratorService {
 
         String outputDir = baseDir +"/" + this.generatorProperties.getVoPackage();
         Set<String> imports = new LinkedHashSet<>();
-        for (FieldDefinition field : definition.getFields()) {
+        for (FieldDefinition field : definition.getAllFields()) {
             String voName = definition.getName() + Utils.capitalize(field.getName());
 
             Map<String, Object> context = new HashMap<>(definition.toMap());

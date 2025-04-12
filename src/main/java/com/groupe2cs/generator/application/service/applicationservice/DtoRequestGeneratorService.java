@@ -36,7 +36,7 @@ public class DtoRequestGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
         context.put("imports", imports);
 
-        var fieldFiles = definition.fieldFiles();
+        var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));

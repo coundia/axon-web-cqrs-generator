@@ -29,9 +29,7 @@ public class CreateControllerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
         context.put("nameLowercase", definition.getName().toLowerCase());
-        context.put("mapperPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()));
         context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
-        context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
         var fields = definition.getFields();
         Set<String> imports = new LinkedHashSet<>();
@@ -40,11 +38,12 @@ public class CreateControllerGeneratorService {
 
         String content = templateEngine.render("presentation/createController.mustache", context);
 
-        var fieldFiles = definition.fieldFiles();
+        var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             Set<String> importsBis = new LinkedHashSet<>();
             importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+            importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
             context.put("imports", importsBis);
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
             content = templateEngine.render("presentation/createWithFilesController.mustache", context);

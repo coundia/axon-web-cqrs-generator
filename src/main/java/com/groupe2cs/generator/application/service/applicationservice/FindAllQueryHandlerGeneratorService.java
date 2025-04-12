@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class ListQueryHandlerGeneratorService {
+public class FindAllQueryHandlerGeneratorService {
 
     private final TemplateEngine templateEngine;
     private final FileWriterService fileWriterService;
     private final GeneratorProperties generatorProperties;
 
-    public ListQueryHandlerGeneratorService(
+    public FindAllQueryHandlerGeneratorService(
             TemplateEngine templateEngine,
             FileWriterService fileWriterService,
             GeneratorProperties generatorProperties
@@ -49,7 +49,7 @@ public class ListQueryHandlerGeneratorService {
 
         context.put("imports", imports);
 
-        String content = templateEngine.render("application/list-query-handler.mustache", context);
-        fileWriterService.write(outputDir, "List" + definition.getName() + "QueryHandler.java", content);
+        String content = templateEngine.render("application/findAllQueryHandler.mustache", context);
+        fileWriterService.write(outputDir, "FindAll" + definition.getName() + "QueryHandler.java", content);
     }
 }

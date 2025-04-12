@@ -29,7 +29,7 @@ public class AggregateGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getDomainPackage();
         context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.getFields();
+        var fields = definition.getAllFields();
         var idField = fields.stream()
                 .filter(f -> f.getName().equalsIgnoreCase("id"))
                 .findFirst()
@@ -40,7 +40,7 @@ public class AggregateGeneratorService {
 
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("imports", buildImports(baseDir));
-        var fieldFiles = definition.fieldFiles();
+        var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));

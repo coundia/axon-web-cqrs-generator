@@ -21,11 +21,11 @@ Page<{{entityName}}> findAll(Pageable pageable);
 //@Query("SELECT t FROM {{entityName}} t WHERE t.id = :id")
 Optional<{{entityName}}> findById({{entityName}}{{identifier.nameCapitalized}} id);
 
-{{#filables}}
+{{#searchable}}
 	{{^isId}}
 	@Query("SELECT t FROM {{entityName}} t WHERE t.{{name}} = :{{name}}")
-	List<{{entityName}}> findBy{{nameCapitalized}}(String {{name}});
+	List<{{entityName}}> findBy{{nameCapitalized}}({{primitiveType}} {{name}});
 	{{/isId}}
-{{/filables}}
+{{/searchable}}
 
 }

@@ -38,7 +38,7 @@ public class EventGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
         context.put("eventType", eventType);
 
-        var fields = definition.getFields();
+        var fields = definition.getAllFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();

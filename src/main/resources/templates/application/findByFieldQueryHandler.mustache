@@ -10,13 +10,13 @@ import org.axonframework.queryhandling.QueryHandler;
 
 @Component
 @RequiredArgsConstructor
-public class FindBy{{field.nameCapitalized}}{{name}}Handler {
+public class FindBy{{name}}{{field.nameCapitalized}}Handler {
 
 private final {{name}}Repository repository;
 @QueryHandler
 {{^isId}}
-public List<{{name}}Response> handle(FindBy{{field.nameCapitalized}}{{name}}Query query) {
-	String value = query.get{{field.nameCapitalized}}().value();
+public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
+{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
 	List<{{name}}> entities = repository.findBy{{field.nameCapitalized}}(value);
 	return entities.stream()
 	.map({{name}}Mapper::toResponse)
@@ -24,8 +24,8 @@ public List<{{name}}Response> handle(FindBy{{field.nameCapitalized}}{{name}}Quer
 	}
 {{/isId}}
 {{#isId}}
- public {{name}}Response handle(FindBy{{field.nameCapitalized}}{{name}}Query query) {
-	 String value = query.get{{field.nameCapitalized}}().value();
+ public {{name}}Response handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
+	{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
 	{{name}} entity = repository.findById(value)
 		.orElseThrow(() -> new {{name}}NotFoundException(query.getId()));
 		return {{name}}Mapper.toResponse(entity);

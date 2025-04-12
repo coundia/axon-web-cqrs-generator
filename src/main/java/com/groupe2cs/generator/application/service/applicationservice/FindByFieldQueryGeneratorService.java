@@ -1,7 +1,9 @@
 package com.groupe2cs.generator.application.service.applicationservice;
 
+import com.groupe2cs.generator.domain.engine.FieldTransformer;
 import com.groupe2cs.generator.domain.engine.FileWriterService;
 import com.groupe2cs.generator.domain.engine.TemplateEngine;
+import com.groupe2cs.generator.domain.model.FieldDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.shared.Utils;
@@ -29,7 +31,7 @@ public class FindByFieldQueryGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getQueryPackage();
         String packageName = Utils.getPackage(outputDir);
 
-        var fields = definition.getFields().stream().filter(p -> p.isFilable()).toList();
+        var fields = definition.searchFields();
 
         for (var field : fields) {
             field.setNameCapitalized(capitalize(field.getName()));
@@ -39,7 +41,7 @@ public class FindByFieldQueryGeneratorService {
             context.put("field", field);
             context.put("name", definition.getName());
 
-            String className = "FindBy" + field.getNameCapitalized() + definition.getName() + "Query";
+            String className = "FindBy" + definition.getName() + field.getNameCapitalized()  + "Query";
             context.put("className", className);
 
             Set<String> imports = new LinkedHashSet<>();

@@ -29,7 +29,7 @@ public class DtoResponseGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getDtoPackage();
         context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.getFields();
+        var fields = definition.getAllFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();

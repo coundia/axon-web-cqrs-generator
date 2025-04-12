@@ -11,16 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 @Component
-public class List{{entity}}QueryHandler {
+public class FindAll{{entity}}QueryHandler {
 
 private final {{entity}}Repository repository;
 
-public List{{entity}}QueryHandler({{entity}}Repository repository) {
+public FindAll{{entity}}QueryHandler({{entity}}Repository repository) {
 	this.repository = repository;
 }
 
 @QueryHandler
-public {{entity}}PagedResponse handle(List{{entity}}Query query) {
+public {{entity}}PagedResponse handle(FindAll{{entity}}Query query) {
 int limit = query.getLimit();
 int offset = query.getPage() * limit;
 

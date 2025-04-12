@@ -43,7 +43,7 @@ public class CommandGeneratorService {
         context.put("commandType", prefix);
         context.put("entity", definition.getName());
 
-        var fields = definition.getFields();
+        var fields = definition.getAllFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
@@ -53,7 +53,7 @@ public class CommandGeneratorService {
         context.put("isDeleted", prefix.equalsIgnoreCase("Delete"));
         context.put("isCreated", prefix.equalsIgnoreCase("Create"));
 
-        var fieldFiles = definition.fieldFiles();
+        var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));

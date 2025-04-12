@@ -36,6 +36,16 @@ public class EntityDefinition implements Serializable {
                 .toList();
     }
 
+    public List<FieldDefinition> getFieldsWithoutId() {
+        return fields.stream()
+                .filter(f -> !f.isId())
+                .toList();
+    }
+
+    public List<FieldDefinition> getAllFields() {
+        return fields;
+    }
+
     public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
         this.name = name;
         this.fields = fields;
@@ -131,10 +141,13 @@ public class EntityDefinition implements Serializable {
         return "id";
     }
 
-    public List<FieldDefinition> fieldFiles() {
+    public List<FieldDefinition> getFieldFiles() {
         return fields.stream()
                 .filter(f -> f.isFileType())
                 .toList();
+    }
+    public List<FieldDefinition> searchFields() {
+        return fields;
     }
 
 }

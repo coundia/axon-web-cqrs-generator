@@ -1,13 +1,9 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
-import {{mapperPackage}}.{{name}}Mapper;
-import {{commandPackage}}.Create{{name}}Command;
-import {{dtoPackage}}.{{name}}Request;
-import {{dtoPackage}}.{{name}}Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,17 +14,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
 @Slf4j
+
 public class Add{{name}}Controller {
 
-private final CommandGateway commandGateway;
+private final {{name}}CreateApplicationService applicationService;
 
-public Add{{name}}Controller(CommandGateway commandGateway) {
-this.commandGateway = commandGateway;
+public Add{{name}}Controller({{name}}CreateApplicationService applicationService) {
+	this.applicationService = applicationService;
 }
 
 @PostMapping
@@ -50,9 +48,8 @@ content = @Content(schema = @Schema()))
 public ResponseEntity<{{name}}Response> add{{name}}(@RequestBody {{name}}Request {{nameLowercase}}Request) {
 	try {
 	Create{{name}}Command command = {{name}}Mapper.toCommand({{nameLowercase}}Request);
-	String responseId = commandGateway.sendAndWait(command).toString();
 
-	{{name}}Response response = {{name}}Mapper.toResponse(responseId, {{nameLowercase}}Request);
+	{{name}}Response response =  applicationService.create{{name}}(command);
 
 	return ResponseEntity.ok(response);
 	} catch (Exception ex) {

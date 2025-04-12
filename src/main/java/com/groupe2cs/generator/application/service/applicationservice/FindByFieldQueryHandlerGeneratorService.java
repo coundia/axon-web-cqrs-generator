@@ -29,7 +29,7 @@ public class FindByFieldQueryHandlerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getQueryHandlerPackage();
         String packageName = Utils.getPackage(outputDir);
 
-        var fields = definition.getFields().stream().filter(p -> p.isFilable()).toList();
+        var fields = definition.searchFields();
 
         for (var field : fields) {
 
@@ -41,7 +41,7 @@ public class FindByFieldQueryHandlerGeneratorService {
             context.put("name", definition.getName());
             context.put("isId", field.isId());
 
-            String className = "FindBy" + field.getNameCapitalized() + definition.getName() + "Handler";
+            String className = "FindBy" +definition.getName() + field.getNameCapitalized() +  "Handler";
             context.put("className", className);
 
             Set<String> imports = new LinkedHashSet<>();

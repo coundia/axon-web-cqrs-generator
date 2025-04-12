@@ -1,0 +1,50 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+@Service
+@RequiredArgsConstructor
+public class {{className}} {
+
+private final QueryGateway queryGateway;
+
+
+public {{name}}PagedResponse findAll(int page, int limit) {
+
+	FindAll{{name}}Query query = new FindAll{{name}}Query(page, limit);
+	CompletableFuture<{{name}}PagedResponse> future = queryGateway.query(query,
+	org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf({{name}}PagedResponse.class));
+	return future.join();
+}
+
+
+public {{name}}Response findBy{{name}}Id({{name}}Id value) {
+
+	FindBy{{name}}IdQuery query = new FindBy{{name}}IdQuery(value);
+	CompletableFuture<{{name}}Response> future = queryGateway.query(query,
+	org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf({{name}}Response.class));
+	return future.join();
+}
+
+
+{{#searchFields}}
+{{^isId}}
+public List<{{entity}}Response> findBy{{entity}}{{nameCapitalized}}({{entity}}{{nameCapitalized}} value) {
+
+	FindBy{{entity}}{{nameCapitalized}}Query query = new FindBy{{entity}}{{nameCapitalized}}Query(value);
+	CompletableFuture<List<{{entity}}Response>> future = queryGateway.query(query,
+	org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf({{entity}}Response.class));
+	return future.join();
+}
+{{/isId}}
+{{/searchFields}}
+
+}

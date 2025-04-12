@@ -11,15 +11,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class {{name}}ApplicationService {
+public class {{className}} {
 
 private final FileStorageService fileStorageService;
 private final CommandGateway commandGateway;
 
-public String create{{name}}(
-{{#fieldFiles}}
-	MultipartFile {{nameCamelCase}}{{^last}},{{/last}}
-{{/fieldFiles}},
+public {{name}}Response create{{name}}(
+{{#fieldFiles}}MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},
 {{#fields}}
 	{{^isId}}
 		{{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
@@ -41,6 +39,8 @@ request,
 {{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}
 );
 
-return commandGateway.sendAndWait(command).toString();
+commandGateway.sendAndWait(command);
+
+return {{name}}Mapper.toResponse(command);
 }
 }

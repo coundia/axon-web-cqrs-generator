@@ -4,7 +4,6 @@ package {{package}};
 import {{.}};
 {{/imports}}
 
-import {{dtoPackage}}.{{name}}Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,15 +16,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
-@RequiredArgsConstructor
 @Slf4j
 public class Add{{name}}Controller {
 
-private final {{name}}ApplicationService {{nameLowercase}}ApplicationService;
+private final {{name}}CreateApplicationService applicationService;
+
+public Add{{name}}Controller({{name}}CreateApplicationService  applicationService) {
+	this.applicationService = applicationService;
+}
 
 @Operation(summary = "Create a new {{nameLowercase}}")
 @ApiResponses(value = {
@@ -39,8 +42,7 @@ content = @Content)
 public ResponseEntity<{{name}}Response> add{{name}}(
 	{{#hasFiles}}
 	{{#fieldFiles}}
-		@RequestPart("{{nameCamelCase}}") MultipartFile {{nameCamelCase}}{{^last}},{{/last}}
-	{{/fieldFiles}},
+		@RequestPart("{{nameCamelCase}}") MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},
 	{{/hasFiles}}
 	{{#fields}}
 		{{^isId}}
@@ -49,13 +51,11 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 	{{/fields}}
 	) {
 	try {
-	String responseId = {{nameLowercase}}ApplicationService.create{{name}}(
-	{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}
-	{{#fields}}{{^isId}}, {{nameCamelCase}}{{/isId}}{{/fields}}
+	{{name}}Response response = applicationService.create{{name}}(
+	{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{#fields}}{{^isId}},
+		{{nameCamelCase}}{{/isId}}{{/fields}}
 	);
 
-	{{name}}Response response = new {{name}}Response(responseId
-	{{#fields}}{{^isId}}, {{nameCamelCase}}{{/isId}}{{/fields}});
 	return ResponseEntity.ok(response);
 
 	} catch (Exception ex) {

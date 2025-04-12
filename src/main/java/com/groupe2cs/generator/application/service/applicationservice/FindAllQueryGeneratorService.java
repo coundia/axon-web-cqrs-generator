@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ListQueryGeneratorService {
+public class FindAllQueryGeneratorService {
 
     private final TemplateEngine templateEngine;
     private final FileWriterService fileWriterService;
     private final GeneratorProperties generatorProperties;
 
-    public ListQueryGeneratorService(
+    public FindAllQueryGeneratorService(
             TemplateEngine templateEngine,
             FileWriterService fileWriterService,
             GeneratorProperties generatorProperties
@@ -34,7 +34,7 @@ public class ListQueryGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
         context.put("name", definition.getName());
 
-        String content = templateEngine.render("application/list-query.mustache", context);
-        fileWriterService.write(outputDir, "List" + definition.getName() + "Query.java", content);
+        String content = templateEngine.render("application/findAllQuery.mustache", context);
+        fileWriterService.write(outputDir, "FindAll" + definition.getName() + "Query.java", content);
     }
 }

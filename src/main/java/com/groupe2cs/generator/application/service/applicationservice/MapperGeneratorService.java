@@ -31,6 +31,7 @@ public class MapperGeneratorService {
 
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        context.put("allFields", FieldTransformer.transform(definition.getAllFields(), definition.getName()));
         context.put("entity", definition.getName());
 
         Set<String> imports = new LinkedHashSet<>();
@@ -42,7 +43,7 @@ public class MapperGeneratorService {
 
         context.put("imports", imports);
 
-        var fieldFiles = definition.fieldFiles();
+        var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));

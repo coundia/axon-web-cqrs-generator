@@ -1,5 +1,6 @@
 package com.groupe2cs.generator.application.service.infrastructureservice;
 
+import com.groupe2cs.generator.domain.engine.FieldTransformer;
 import com.groupe2cs.generator.domain.engine.FileWriterService;
 import com.groupe2cs.generator.domain.engine.TemplateEngine;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
@@ -29,13 +30,8 @@ public class EntityGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
         context.put("tableName", definition.getTable());
 
-        var fields = definition.getFields();
 
-        fields = fields.stream().filter(
-                f-> !f.getName().equalsIgnoreCase("id")
-        ).toList();
-
-        context.put("fields", fields);
+        context.put("fields", FieldTransformer.transform(definition.getAllFields(), definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");

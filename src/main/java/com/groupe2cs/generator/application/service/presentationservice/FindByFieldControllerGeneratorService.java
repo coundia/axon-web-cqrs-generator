@@ -31,16 +31,9 @@ public class FindByFieldControllerGeneratorService {
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLowercase", definition.getName().toLowerCase());
-        context.put("queryPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()));
-        context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
 
-        var fields = definition.getFields();
+        var fields = definition.searchFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-
-        fields = fields.stream().filter(
-                p -> p.isFilable()
-        ).toList();
 
         for (var field : fields) {
             Map<String, Object> fieldContext = new HashMap<>(context);
@@ -53,6 +46,9 @@ public class FindByFieldControllerGeneratorService {
             Set<String> imports = new LinkedHashSet<>();
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
+            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
+            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
             fieldContext.put("imports", imports);
 
             String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);

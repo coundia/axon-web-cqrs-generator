@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class Delete{{name}}Controller {
 
-private final CommandGateway commandGateway;
+private final {{name}}DeleteApplicationService applicationService;
 
-public Delete{{name}}Controller(CommandGateway commandGateway) {
-this.commandGateway = commandGateway;
+public Delete{{name}}Controller({{name}}DeleteApplicationService applicationService) {
+    this.applicationService = applicationService;
 }
+
 
 @DeleteMapping("/{id}")
 @Operation(
@@ -49,7 +50,7 @@ public ResponseEntity<String> delete{{name}}(
 
 	try {
 	{{name}}Id idVo = {{name}}Id.create(id);
-	commandGateway.sendAndWait(new Delete{{name}}Command(idVo));
+	applicationService.delete{{name}}(idVo);
 	return ResponseEntity.ok("{{name}} deleted successfully");
 	} catch (Exception e) {
 	log.error("Error deleting {{nameLowercase}} with id {}: {}", id, e.getMessage());

@@ -1,11 +1,9 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
-import {{queryPackage}}.FindBy{{field.nameCapitalized}}{{name}}Query;
-import {{dtoPackage}}.{{name}}Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,14 +11,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import static org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf;
-import static org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import static org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf;
+import static org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf;
 
 @RestController
 @RequestMapping("/api/v1/queries/{{nameLowercase}}")
@@ -28,55 +29,35 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class {{className}} {
 
-private final QueryGateway queryGateway;
+private final {{name}}ReadApplicationService applicationService;
 
-public {{className}}(QueryGateway queryGateway) {
-this.queryGateway = queryGateway;
+public {{className}}({{name}}ReadApplicationService  applicationService) {
+	this.applicationService = applicationService;
 }
 
 @GetMapping("/by-{{field.name}}")
 @Operation(
 summary = "Find {{nameLowercase}} by {{field.name}}",
-description = "Returns a list of {{nameLowercase}}s that match the given {{field.name}}"
+description = "Returns {{#isId}}a single{{/isId}}{{^isId}}a list of{{/isId}} {{nameLowercase}}s that match the given {{field.name}}"
 )
 @ApiResponses(value = {
-@ApiResponse(responseCode = "200", description = "List of matching {{nameLowercase}}s",
+@ApiResponse(responseCode = "200", description = "Query successful",
 content = @Content(mediaType = "application/json", schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "400", description = "Invalid parameter", content = @Content),
 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
 })
-{{^isId}}
-public ResponseEntity<List<{{name}}Response>> findBy{{field.nameCapitalized}}(
+
+public ResponseEntity<{{#isId}}{{name}}Response{{/isId}}{{^isId}}List<{{name}}Response>{{/isId}}> findBy{{field.nameCapitalized}}(
 	@Parameter(description = "Value of the {{field.name}} to filter by", required = true)
-	@RequestParam String {{field.name}}
+	@RequestParam {{field.primitiveType}} {{field.name}}
 	) {
 	try {
-	{{name}}{{field.nameCapitalized}} value = {{name}}{{field.nameCapitalized}}.create({{field.name}});
-	FindBy{{field.nameCapitalized}}{{name}}Query query = new FindBy{{field.nameCapitalized}}{{name}}Query(value);
-	CompletableFuture<List<{{name}}Response>> future = queryGateway.query(query, multipleInstancesOf({{name}}Response.class));
-		List<{{name}}Response> response = future.join();
-			return ResponseEntity.ok(response);
-			} catch (Exception e) {
-			log.error("Failed to find {{nameLowercase}} by {{field.name}}: {}", e.getMessage());
-			return ResponseEntity.internalServerError().build();
-		}
-	}
-{{/isId}}
-{{#isId}}
-public ResponseEntity<{{name}}Response> findBy{{field.nameCapitalized}}(
-@Parameter(description = "Value of the {{field.name}} to filter by", required = true)
-@RequestParam String {{field.name}}
-) {
-try {
-	{{name}}{{field.nameCapitalized}} value = {{name}}Id.create({{field.name}});
-	FindBy{{field.nameCapitalized}}{{name}}Query query = new FindBy{{field.nameCapitalized}}{{name}}Query(value);
-	CompletableFuture<{{name}}Response> future = queryGateway.query(query, instanceOf({{name}}Response.class));
-	{{name}}Response response = future.join();
-	return ResponseEntity.ok(response);
+
+	var future = applicationService.findBy{{name}}{{field.nameCapitalized}}({{name}}{{field.nameCapitalized}}.create({{field.name}}));
+	return ResponseEntity.ok(future);
 	} catch (Exception e) {
-	log.error("Failed to find {{nameLowercase}} by {{field.name}}: {}", e.getMessage());
+	log.error("Failed to find {{nameLowercase}} by {{field.name}}: {}", e.getMessage(), e);
 	return ResponseEntity.internalServerError().build();
-}
-}
-{{/isId}}
+	}
+	}
 }

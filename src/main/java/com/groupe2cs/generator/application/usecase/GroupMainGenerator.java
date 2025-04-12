@@ -35,8 +35,8 @@ public class GroupMainGenerator {
     private final ExceptionGeneratorService exceptionGeneratorService;
     private final RepositoryGeneratorService repositoryGeneratorService;
     private final EntityGeneratorService entityGeneratorService;
-    private final ListQueryGeneratorService listQueryGeneratorService;
-    private final ListQueryHandlerGeneratorService listQueryHandlerGeneratorService;
+    private final FindAllQueryGeneratorService listQueryGeneratorService;
+    private final FindAllQueryHandlerGeneratorService listQueryHandlerGeneratorService;
     private final ListControllerGeneratorService listControllerGeneratorService;
     private final PagedResponseGeneratorService pagedResponseGeneratorService;
     private final CreateControllerGeneratorService createControllerGeneratorService;
@@ -48,6 +48,7 @@ public class GroupMainGenerator {
     private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
     private final ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService;
     private final SharedGeneratorService sharedGeneratorService;
+    private final UsecaseGeneratorService usecaseGeneratorService;
 
 
     private EntityDefinition loadFromFileDefinition() {
@@ -74,8 +75,8 @@ public class GroupMainGenerator {
             ExceptionGeneratorService exceptionGeneratorService,
             RepositoryGeneratorService repositoryGeneratorService,
             EntityGeneratorService entityGeneratorService,
-            ListQueryGeneratorService listQueryGeneratorService,
-            ListQueryHandlerGeneratorService listQueryHandlerGeneratorService,
+            FindAllQueryGeneratorService listQueryGeneratorService,
+            FindAllQueryHandlerGeneratorService listQueryHandlerGeneratorService,
             ListControllerGeneratorService listControllerGeneratorService,
             PagedResponseGeneratorService pagedResponseGeneratorService,
             CreateControllerGeneratorService createControllerGeneratorService,
@@ -87,7 +88,8 @@ public class GroupMainGenerator {
             FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService,
             FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService,
             ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService,
-            SharedGeneratorService sharedGeneratorService
+            SharedGeneratorService sharedGeneratorService,
+            UsecaseGeneratorService usecaseGeneratorService
 
     ) {
         this.properties = properties;
@@ -117,6 +119,7 @@ public class GroupMainGenerator {
         this.findByFieldQueryHandlerGeneratorService=findByFieldQueryHandlerGeneratorService;
         this.controllerAllIntegrationTestGeneratorService = controllerAllIntegrationTestGeneratorService;
         this.sharedGeneratorService = sharedGeneratorService;
+        this.usecaseGeneratorService = usecaseGeneratorService;
     }
 
     public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
@@ -140,8 +143,9 @@ public class GroupMainGenerator {
                 emit(sink, "Generating Aggregate...");
                 aggregateGenerator.generate(definition, outputDir);
 
-                emit(sink, "Generating Exception...");
+                emit(sink, "Generating Application...");
                 exceptionGeneratorService.generate(definition, outputDir);
+                usecaseGeneratorService.generate(definition, outputDir);
 
                 emit(sink, "Generating Commands...");
                 commandGenerator.generate(definition, outputDir);

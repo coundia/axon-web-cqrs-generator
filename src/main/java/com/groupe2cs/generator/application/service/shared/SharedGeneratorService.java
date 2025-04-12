@@ -27,7 +27,6 @@ public class SharedGeneratorService {
     public void generate(EntityDefinition definition, String baseDir) {
 
         String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
-        String outputApplicationUseCase = baseDir + "/" + generatorProperties.getApplicationUseCasePackage();
 
         List<SharedTemplate> sharedTemplates = List.of(
                 new SharedTemplate(
@@ -36,7 +35,7 @@ public class SharedGeneratorService {
                         Set.of(
                                 "org.springframework.web.multipart.MultipartFile"
                         ),
-                        outputShared+"/"+generatorProperties.getInfrastructurePackage()
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()
                 )
                 ,
                 new SharedTemplate(
@@ -51,20 +50,7 @@ public class SharedGeneratorService {
                                 "java.nio.file.Paths",
                                 "java.util.UUID"
                         ),
-                        outputShared+"/"+generatorProperties.getInfrastructurePackage()
-                        ),
-
-                new SharedTemplate(
-                        definition.getName() + "ApplicationService",
-                        "application/applicationService.mustache",
-                        Set.of(
-                                Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage())+".*",
-                                Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage())+".*",
-                                Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage())+".*",
-                                Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage())+".*",
-                                Utils.getPackage(outputShared+"/"+generatorProperties.getInfrastructurePackage())+".*"
-                        ),
-                        outputApplicationUseCase
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()
                 )
         );
 
@@ -83,7 +69,6 @@ public class SharedGeneratorService {
         context.put("entity", Utils.capitalize(definition.getName()));
 
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
-        context.put("fieldFiles", FieldTransformer.transform(definition.fieldFiles(), definition.getName()));
 
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);

@@ -24,8 +24,10 @@ public class {{name}} {
 	//@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 {{#fields}}
+{{^isId}}
 	@Column(nullable = false)
 	private {{primitiveType}} {{name}};
+{{/isId}}
 {{/fields}}
 
 }

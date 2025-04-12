@@ -3,7 +3,7 @@ package com.groupe2cs.generator.tests.application.services;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.tests.infrastrucutre.config.GeneratorPropertiesTestConfig;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
-import com.groupe2cs.generator.application.service.applicationservice.ListQueryHandlerGeneratorService;
+import com.groupe2cs.generator.application.service.applicationservice.FindAllQueryHandlerGeneratorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ListQueryHandlerGeneratorServiceTest {
 
     @Autowired
-    ListQueryHandlerGeneratorService service;
+    FindAllQueryHandlerGeneratorService service;
 
     @Autowired
     GeneratorProperties generatorProperties;

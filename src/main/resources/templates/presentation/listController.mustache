@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +24,12 @@ import java.util.concurrent.CompletableFuture;
 @Tag(name = "{{name}} Queries", description = "Endpoints for listing paginated {{nameLower}}s")
 public class {{name}}ListController {
 
-private final QueryGateway queryGateway;
+private final {{name}}ReadApplicationService applicationService;
 
-public {{name}}ListController(QueryGateway queryGateway) {
-this.queryGateway = queryGateway;
+public {{name}}ListController({{name}}ReadApplicationService  applicationService) {
+	this.applicationService = applicationService;
 }
+
 
 @GetMapping
 @Operation(
@@ -55,8 +55,6 @@ public {{name}}PagedResponse list(
 @Parameter(description = "Number of items per page", example = "10")
 @RequestParam(defaultValue = "10") int limit
 ) {
-List{{name}}Query query = new List{{name}}Query(page, limit);
-CompletableFuture<{{name}}PagedResponse> future = queryGateway.query(query, {{name}}PagedResponse.class);
-	return future.join();
-	}
+	return applicationService.findAll(page,limit);
+ }
 }
