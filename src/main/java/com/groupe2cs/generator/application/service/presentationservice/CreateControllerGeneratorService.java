@@ -33,9 +33,12 @@ public class CreateControllerGeneratorService {
 
         var fields = definition.getFields();
         Set<String> imports = new LinkedHashSet<>();
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
         context.put("imports", imports);
 
+        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         String content = templateEngine.render("presentation/createController.mustache", context);
 
         var fieldFiles = definition.getFieldFiles();

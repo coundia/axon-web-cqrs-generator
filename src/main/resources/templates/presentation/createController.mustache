@@ -45,11 +45,10 @@ content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
 content = @Content(schema = @Schema()))
 })
-public ResponseEntity<{{name}}Response> add{{name}}(@RequestBody {{name}}Request {{nameLowercase}}Request) {
+public ResponseEntity<{{name}}Response> add{{name}}(@RequestBody {{name}}Request request) {
 	try {
-	Create{{name}}Command command = {{name}}Mapper.toCommand({{nameLowercase}}Request);
 
-	{{name}}Response response =  applicationService.create{{name}}(command);
+	{{name}}Response response =  applicationService.create{{name}}(request);
 
 	return ResponseEntity.ok(response);
 	} catch (Exception ex) {

@@ -9,8 +9,8 @@ import com.groupe2cs.generator.application.service.infrastructureservice.EntityG
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
 import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
-import com.groupe2cs.generator.application.service.testservice.ControllerAllIntegrationTestGeneratorService;
-import com.groupe2cs.generator.application.service.testservice.ControllerIntegrationTestGeneratorService;
+import com.groupe2cs.generator.application.service.testservice.AllTestGeneratorService;
+import com.groupe2cs.generator.application.service.testservice.SharedTestGeneratorService;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.application.dto.ApiResponseDto;
 import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
@@ -40,13 +40,13 @@ public class GroupMainGenerator {
     private final ListControllerGeneratorService listControllerGeneratorService;
     private final PagedResponseGeneratorService pagedResponseGeneratorService;
     private final CreateControllerGeneratorService createControllerGeneratorService;
-    private final ControllerIntegrationTestGeneratorService testControllerIntegrationTestGeneratorService;
+    private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final DeleteControllerGeneratorService deleteControllerGeneratorService;
     private final FindByFieldControllerGeneratorService findByFieldControllerGeneratorService;
     private final UpdateControllerGeneratorService updateControllerGeneratorService;
     private final FindByFieldQueryGeneratorService findByFieldQueryGeneratorService;
     private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
-    private final ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService;
+    private final AllTestGeneratorService controllerAllIntegrationTestGeneratorService;
     private final SharedGeneratorService sharedGeneratorService;
     private final UsecaseGeneratorService usecaseGeneratorService;
 
@@ -80,14 +80,14 @@ public class GroupMainGenerator {
             ListControllerGeneratorService listControllerGeneratorService,
             PagedResponseGeneratorService pagedResponseGeneratorService,
             CreateControllerGeneratorService createControllerGeneratorService,
-            ControllerIntegrationTestGeneratorService testControllerIntegrationTestGeneratorService,
+            SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
             DeleteControllerGeneratorService deleteControllerGeneratorService,
             FindByFieldControllerGeneratorService findByFieldControllerGeneratorService,
             UpdateControllerGeneratorService updateControllerGeneratorService,
             FindByFieldQueryGeneratorService findByFieldQueryGeneratorService,
             FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService,
             FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService,
-            ControllerAllIntegrationTestGeneratorService controllerAllIntegrationTestGeneratorService,
+            AllTestGeneratorService controllerAllIntegrationTestGeneratorService,
             SharedGeneratorService sharedGeneratorService,
             UsecaseGeneratorService usecaseGeneratorService
 

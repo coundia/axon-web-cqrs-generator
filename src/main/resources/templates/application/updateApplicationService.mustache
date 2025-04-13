@@ -16,9 +16,10 @@ public class {{className}} {
 private final FileStorageService fileStorageService;
 private final CommandGateway commandGateway;
 
+{{#hasFiles}}
 public {{name}}Response update{{name}}(
-{{name}}Id id,
-{{#fieldFiles}}MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},
+{{name}}Id id, {{#hasFiles}}
+{{#fieldFiles}}MultipartFile {{nameCamelCase}}, {{/fieldFiles}}{{/hasFiles}}
 {{#fields}}
 	{{^isId}}
 		{{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
@@ -37,12 +38,28 @@ public {{name}}Response update{{name}}(
 
 Update{{name}}Command command = {{name}}Mapper.toUpdateCommand(
 id,
-request,
-{{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}
+request{{#hasFiles}},
+{{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 );
 
 commandGateway.sendAndWait(command);
 
 return {{name}}Mapper.toResponse(command);
 }
+{{/hasFiles}}
+
+{{^hasFiles}}
+public {{name}}Response update{{name}}({{name}}Id id,{{name}}Request request){
+
+Update{{name}}Command command = {{name}}Mapper.toUpdateCommand(
+id,
+request
+);
+
+commandGateway.sendAndWait(command);
+
+return {{name}}Mapper.toResponse(command);
+}
+{{/hasFiles}}
+
 }

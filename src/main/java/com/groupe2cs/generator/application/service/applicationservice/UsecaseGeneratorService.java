@@ -103,6 +103,7 @@ public class UsecaseGeneratorService {
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
         context.put("allFields", FieldTransformer.transform(definition.getAllFields(), definition.getName()));
         context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
+        context.put("hasFiles", !definition.getFieldFiles().isEmpty());
         context.put("searchFields", FieldTransformer.transform(definition.searchFields(), definition.getName()));
 
         String content = templateEngine.render(template.getTemplatePath(), context);

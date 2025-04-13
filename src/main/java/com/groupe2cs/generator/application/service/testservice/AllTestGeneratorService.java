@@ -6,24 +6,25 @@ import com.groupe2cs.generator.domain.engine.TemplateEngine;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.shared.Utils;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@AllArgsConstructor
 @Service
-public class ControllerAllIntegrationTestGeneratorService {
+public class AllTestGeneratorService {
 
     private final TemplateEngine templateEngine;
     private final FileWriterService fileWriterService;
     private final GeneratorProperties generatorProperties;
-
-    public ControllerAllIntegrationTestGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+    private final DomainTestGeneratorService domainTestGeneratorService;
+    private final CommandApplicationTestGeneratorService commandApplicationTestGeneratorService;
 
     public void generate(EntityDefinition definition, String baseDir) {
+
+        domainTestGeneratorService.generate(definition,baseDir);
+        commandApplicationTestGeneratorService.generate(definition,baseDir);
 
         List<String> classNames = List.of(
                 "CreateControllerIntegrationTest",

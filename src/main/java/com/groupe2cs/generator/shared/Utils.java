@@ -37,14 +37,14 @@ public class Utils {
 
          String relativePath = getPackage(fullPath);
 
-         String testPath = relativePath.replace("main", "test");
+         String testPath = relativePath.replace("/main/", "/test/");
          testPath = getPackage(testPath);
 
         return testPath;
     }
     public static String getTestDir(String fullPath) {
 
-        return fullPath.replace("main", "test");
+        return fullPath.replace("/main/", "/test/");
     }
 
 

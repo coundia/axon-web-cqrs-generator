@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,11 +38,25 @@ schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
 content = @Content)
 })
-@PutMapping(value="{id}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<{{name}}Response> update{{name}}(@PathVariable String id, @RequestBody {{name}}Request request) { {
+@PutMapping(value="{id}",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<{{name}}Response> add{{name}}(
+	@PathVariable String id,
+	{{#hasFiles}}
+		{{#fieldFiles}}
+			@RequestPart("{{nameCamelCase}}") MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},
+	{{/hasFiles}}
+	{{#fields}}
+		{{^isId}}
+			@RequestParam("{{nameCamelCase}}") {{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
+		{{/isId}}
+	{{/fields}}
+	) {
 	try {
-
-	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id), request);
+	{{name}}Response response = applicationService.update{{name}}(
+	{{name}}Id.create(id),
+	{{#hasFiles}}{{#fieldFiles}}{{nameCamelCase}},{{/fieldFiles}}{{/hasFiles}}{{#fields}}{{^isId}}
+		{{nameCamelCase}}{{^last}},{{/last}}{{/isId}}{{/fields}}
+	);
 
 	return ResponseEntity.ok(response);
 
@@ -51,5 +65,4 @@ public ResponseEntity<{{name}}Response> update{{name}}(@PathVariable String id, 
 	return ResponseEntity.internalServerError().build();
 	}
 	}
-}
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @NoArgsConstructor
 public class EntityDefinition implements Serializable {
 
@@ -28,6 +29,18 @@ public class EntityDefinition implements Serializable {
 
     public String getTable() {
         return table;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    public void setFields(List<FieldDefinition> fields) {
+        this.fields = fields;
     }
 
     public List<FieldDefinition> getFields() {

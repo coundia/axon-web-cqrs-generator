@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class ControllerIntegrationTestGeneratorService {
+public class SharedTestGeneratorService {
 
     private final TemplateEngine templateEngine;
     private final FileWriterService fileWriterService;
     private final GeneratorProperties generatorProperties;
 
-    public ControllerIntegrationTestGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+    public SharedTestGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
         this.templateEngine = templateEngine;
         this.fileWriterService = fileWriterService;
         this.generatorProperties = generatorProperties;

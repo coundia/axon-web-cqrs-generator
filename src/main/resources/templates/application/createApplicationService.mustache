@@ -6,18 +6,22 @@ import {{.}};
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.stereotype.Service;
+{{#hasFiles}}
 import org.springframework.web.multipart.MultipartFile;
+{{/hasFiles}}
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class {{className}} {
-
+{{#hasFiles}}
 private final FileStorageService fileStorageService;
+{{/hasFiles}}
 private final CommandGateway commandGateway;
 
+{{#hasFiles}}
 public {{name}}Response create{{name}}(
-{{#fieldFiles}}MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},
+{{#hasFiles}}{{#fieldFiles}}MultipartFile {{nameCamelCase}},{{/fieldFiles}}{{/hasFiles}}
 {{#fields}}
 	{{^isId}}
 		{{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
@@ -35,12 +39,26 @@ public {{name}}Response create{{name}}(
 );
 
 Create{{name}}Command command = {{name}}Mapper.toCommand(
-request,
-{{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}
+request{{#hasFiles}},
+{{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 );
 
 commandGateway.sendAndWait(command);
 
 return {{name}}Mapper.toResponse(command);
 }
+
+{{/hasFiles}}
+{{^hasFiles}}
+public {{name}}Response create{{name}}({{name}}Request request){
+
+Create{{name}}Command command = {{name}}Mapper.toCommand(
+request
+);
+commandGateway.sendAndWait(command);
+return {{name}}Mapper.toResponse(command);
+}
+{{/hasFiles}}
+
+
 }

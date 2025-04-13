@@ -1,0 +1,43 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+public class {{className}} extends BaseUnitTests {
+
+@Mock
+private CommandGateway commandGateway;
+
+@Test
+void it_should_send_command_to_command_gateway() {
+{{commandName}} command = new {{commandName}}(
+{{#fields}} {{entity}}{{nameCapitalized}}.create({{{testValue}}}) {{^last}}, {{/last}}{{/fields}}
+);
+commandGateway.send(command);
+
+ArgumentCaptor<{{commandName}}> commandCaptor = ArgumentCaptor.forClass({{commandName}}.class);
+verify(commandGateway, times(1)).send(commandCaptor.capture());
+
+{{commandName}} sentCommand = commandCaptor.getValue();
+{{#fields}}assertThat(sentCommand.get{{nameCapitalized}}().value()).isEqualTo({{{testValue}}});
+{{/fields}}
+}
+
+@Test
+void test_event_serialization() throws JsonProcessingException {
+{{eventName}} event = new {{eventName}}({{#fields}} {{entity}}{{nameCapitalized}}.create({{{testValue}}}){{^last}}, {{/last}}{{/fields}});
+String json = new ObjectMapper().writeValueAsString(event);
+assertThat(json).isNotEmpty();
+}
+}

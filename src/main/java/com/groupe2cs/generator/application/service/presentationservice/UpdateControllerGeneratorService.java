@@ -44,9 +44,18 @@ public class UpdateControllerGeneratorService {
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
-        context.put("hasFiles",!definition.getFieldFiles().isEmpty());
 
-        String content = templateEngine.render("presentation/updateController.mustache", context);
+        Boolean hasFiles = !definition.getFieldFiles().isEmpty();
+        context.put("hasFiles",hasFiles);
+
+        if(!hasFiles){
+            String content = templateEngine.render("presentation/updateController.mustache", context);
+            fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
+            return;
+        }
+
+        String content = templateEngine.render("presentation/updateWithFilesController.mustache", context);
         fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
+
     }
 }
