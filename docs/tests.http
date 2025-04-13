@@ -10,7 +10,8 @@ Content-Type: application/json
 	"table": "products",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "Integer" }
+	  { "name": "name", "type": "String" },
+	  { "name": "price", "type": "Double" }
 	]
   }
 }
