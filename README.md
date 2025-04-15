@@ -35,6 +35,27 @@ Ce projet est un générateur de code backend basé sur **Spring Boot**, **Axon 
 
 ```http
 
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/products",
+  "definition": {
+	"name": "Product",
+	"table": "products",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "price", "type": "Double" },
+	  { "name": "sales", "type": "List<com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale>", "relation":"oneToMany" }
+	]
+  }
+}
+
+###
+
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -47,10 +68,15 @@ Content-Type: application/json
       "fields": [
         { "name": "id", "type": "String" },
         { "name": "quantity", "type": "Integer" },
-        { "name": "total_price", "type": "Double" }
+        { "name": "total_price", "type": "Double" },
+        { "name": "facture", "type": "String" },
+        { "name": "Product", "type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product", "relation":"manyToOne" }
       ]
     }
   }
+
+###
+
 
 ###
 ``` 
