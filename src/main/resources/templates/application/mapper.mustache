@@ -9,7 +9,14 @@ public class {{name}}Mapper {
 
 public static {{name}}Response toResponse({{name}} entity) {
 return new {{name}}Response(
-{{#allFields}}entity.get{{nameCapitalized}}(){{^last}}, {{/last}}{{/allFields}}
+{{#allFields}}
+	{{#isManyToOne}}
+		entity.get{{nameCapitalized}}().getId(){{^last}}, {{/last}}
+	{{/isManyToOne}}
+	{{^isManyToOne}}
+		entity.get{{nameCapitalized}}(){{^last}}, {{/last}}
+	{{/isManyToOne}}
+{{/allFields}}
 );
 }
 

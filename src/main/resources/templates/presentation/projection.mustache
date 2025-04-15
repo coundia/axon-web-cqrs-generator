@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
 import org.springframework.stereotype.Component;
@@ -22,7 +22,17 @@ public void on({{name}}CreatedEvent event) {
 try {
 {{name}} entity = new {{name}}(
 {{#fields}}
-	event.get{{nameCapitalized}}().value(){{^last}},{{/last}}
+	{{#isManyToOne}}
+		new {{realType}}(event.get{{nameCapitalized}}().value()){{^last}},{{/last}}
+	{{/isManyToOne}}
+	{{^isManyToOne}}
+		{{#isOneToMany}}
+		null{{^last}},{{/last}}
+		{{/isOneToMany}}
+		{{^isOneToMany}}
+		event.get{{nameCapitalized}}().value(){{^last}},{{/last}}
+		{{/isOneToMany}}
+	{{/isManyToOne}}
 {{/fields}}
 );
 repository.save(entity);
@@ -35,19 +45,21 @@ log.error("Error saving {{name}}: {}", e.getMessage(), e);
 @EventHandler
 public void on({{name}}UpdatedEvent event) {
 try {
-{{name}} entity = repository.findById(event.getId().value())
-.orElseThrow(() -> new RuntimeException("{{name}} not found"));
-
-
-{{#fields}}
+	{{name}} entity = repository.findById(event.getId().value())
+	.orElseThrow(() -> new RuntimeException("{{name}} not found"));
+{{#fieldWithoutRelations}}
+{{#isManyToOne}}
+	entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
+{{/isManyToOne}}
+{{^isManyToOne}}
 	entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
-{{/fields}}
-
-repository.save(entity);
-log.info("{{name}} updated successfully: {}", event.getId().value());
-} catch (Exception e) {
-log.error("Error updating {{name}}: {}", e.getMessage(), e);
-}
+{{/isManyToOne}}
+{{/fieldWithoutRelations}}
+	repository.save(entity);
+	log.info("{{name}} updated successfully: {}", event.getId().value());
+	} catch (Exception e) {
+	log.error("Error updating {{name}}: {}", e.getMessage(), e);
+	}
 }
 
 @EventHandler

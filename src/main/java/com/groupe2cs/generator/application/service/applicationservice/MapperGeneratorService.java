@@ -29,9 +29,9 @@ public class MapperGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getMapperPackage();
         context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.getFields();
+        var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-        context.put("allFields", FieldTransformer.transform(definition.getAllFields(), definition.getName()));
+        context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
         context.put("entity", definition.getName());
 
         Set<String> imports = new LinkedHashSet<>();

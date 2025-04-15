@@ -32,7 +32,7 @@ public class FindByFieldControllerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.searchFields();
+        var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
         for (var field : fields) {

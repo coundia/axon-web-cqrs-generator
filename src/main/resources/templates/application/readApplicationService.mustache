@@ -35,7 +35,7 @@ public {{name}}Response findBy{{name}}Id({{name}}Id value) {
 }
 
 
-{{#allFields}}
+{{#searchFields}}
 {{^isId}}
 public List<{{entity}}Response> findBy{{entity}}{{nameCapitalized}}({{entity}}{{nameCapitalized}} value) {
 
@@ -45,6 +45,6 @@ public List<{{entity}}Response> findBy{{entity}}{{nameCapitalized}}({{entity}}{{
 	return future.join();
 }
 {{/isId}}
-{{/allFields}}
+{{/searchFields}}
 
 }

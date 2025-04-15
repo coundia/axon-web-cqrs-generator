@@ -62,7 +62,7 @@ public class DomainTestGeneratorService {
         context.put("aggregateName", aggregateName);
         context.put("lowerName", lowerName);
 
-        var fields = FieldTransformer.transform(definition.getAllFields(), definition.getName());
+        var fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
         context.put("fields", fields);
 
         context.put("imports", template.getImports());

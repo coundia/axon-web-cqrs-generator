@@ -33,7 +33,7 @@ public class CommandApplicationTestGeneratorService {
         String packageName = Utils.getTestPackage(packagePath);
         String outputDir = Utils.getTestDir(packagePath);
 
-        List<Map<String, Object>> fields = FieldTransformer.transform(definition.getAllFields(), definition.getName());
+        List<Map<String, Object>> fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
 
         Map<String, Object> context = new HashMap<>();
         context.put("package", packageName);

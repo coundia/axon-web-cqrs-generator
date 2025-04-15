@@ -3,7 +3,6 @@ package com.groupe2cs.generator.domain.model;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,12 +15,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@NoArgsConstructor
 public class EntityDefinition implements Serializable {
 
     private  String name;
     private  String table;
     private  List<FieldDefinition> fields;
+
+    public EntityDefinition() {
+    }
 
     public String getName() {
         return name;
@@ -30,6 +31,7 @@ public class EntityDefinition implements Serializable {
     public String getTable() {
         return table;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -45,6 +47,20 @@ public class EntityDefinition implements Serializable {
 
     public List<FieldDefinition> getFields() {
         return fields.stream()
+                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+                .filter(f -> !f.isFileType())
+                .toList();
+    }
+
+    public List<FieldDefinition> getFieldsWithoutRelations() {
+        return fields.stream()
+                .filter(f -> !f.isFileType())
+                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+                .toList();
+    }
+
+    public List<FieldDefinition> getFieldsWithRelations() {
+        return fields.stream()
                 .filter(f -> !f.isFileType())
                 .toList();
     }
@@ -56,9 +72,15 @@ public class EntityDefinition implements Serializable {
     }
 
     public List<FieldDefinition> getAllFields() {
-        return fields;
+        return fields.stream()
+                .toList();
     }
 
+    public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
+        return fields.stream()
+                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+                .toList();
+    }
     public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
         this.name = name;
         this.fields = fields;
@@ -160,7 +182,13 @@ public class EntityDefinition implements Serializable {
                 .toList();
     }
     public List<FieldDefinition> searchFields() {
-        return fields;
+        return getFieldsWithoutRelations();
     }
+
+    public boolean hasRelation(String relationType) {
+        return fields.stream()
+                .anyMatch(f -> relationType.equalsIgnoreCase(f.getRelation()));
+    }
+
 
 }

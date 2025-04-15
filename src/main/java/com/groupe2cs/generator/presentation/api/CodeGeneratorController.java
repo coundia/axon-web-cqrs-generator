@@ -21,7 +21,10 @@ public class CodeGeneratorController {
     public Flux<ApiResponseDto> generate(@RequestBody EntityDefinitionDTO request) {
 
         log.info("📨 Requête reçue pour générer l'entité: {}", request.getDefinition().getName());
-        log.info("📦 Champs: {}", request.getDefinition().getFields().toString());
+        log.info("📦 Fields: {}", request.getDefinition().getFields().toString());
+        request.getDefinition().getFields().forEach(
+                p->log.info("Field : {} \n ",p.toString())
+        );
         log.info("📂 Dossier de sortie: {}", request.getOutputDir());
         log.info("📂   table: {}", request.getDefinition().getTable());
 

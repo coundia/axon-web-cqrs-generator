@@ -36,8 +36,9 @@ public class ProjectionGeneratorService {
         imports.add("org.axonframework.eventhandling.EventHandler");
 
         context.put("imports", imports);
-        var fields = definition.getAllFields();
+        var fields = definition.getFieldsWithRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        context.put("fieldWithoutRelations", FieldTransformer.transform(definition.getFieldsWithoutRelations(), definition.getName()));
 
         String content = templateEngine.render("presentation/projection.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Projection.java", content);

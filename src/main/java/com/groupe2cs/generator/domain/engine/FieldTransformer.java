@@ -34,6 +34,11 @@ public class FieldTransformer {
             String exceptionName = entityName + Utils.capitalize(field.getName()) + "NotValid";
             f.put("exceptionName", exceptionName);
 
+            f.put("relation", field.getRelation());
+
+            f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()));
+            f.put("isManyToOne", "manyToOne".equalsIgnoreCase(field.getRelation()));
+
             result.add(f);
         }
 

@@ -3,14 +3,12 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.*;
 
 @Getter
 @Setter
@@ -18,16 +16,32 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "{{tableName}}")
-public class {{name}} {
+public class {{entity}} {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 {{#fields}}
 {{^isId}}
+{{#relation}}
+{{#isOneToMany}}
+	@OneToMany(mappedBy = "{{entityLowerCase}}", cascade = CascadeType.ALL)
+	private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
+{{/isOneToMany}}
+{{#isManyToOne}}
+	@ManyToOne
+	@JoinColumn(name = "{{nameLowerCase}}_id", nullable = false)
+	private {{realType}} {{nameLowerCase}};
+{{/isManyToOne}}
+{{/relation}}
+{{^relation}}
 	@Column(nullable = false)
 	private {{primitiveType}} {{name}};
+{{/relation}}
 {{/isId}}
 {{/fields}}
+
+	public {{entity}}(String id) {
+		this.id = id;
+	}
 
 }

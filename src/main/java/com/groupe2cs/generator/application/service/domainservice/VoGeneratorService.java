@@ -31,7 +31,7 @@ public class VoGeneratorService {
         String outputDir = baseDir + "/" + this.generatorProperties.getVoPackage();
         Set<String> imports = new LinkedHashSet<>();
 
-        for (FieldDefinition field : definition.getAllFields()) {
+        for (FieldDefinition field : definition.getAllFieldsWithoutOneToMany()) {
             String voName = definition.getName() + Utils.capitalize(field.getName());
             String exceptionName = voName + "NotValid";
 
