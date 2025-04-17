@@ -34,6 +34,7 @@ public class DtoRequestGeneratorService {
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+        imports.add("java.util.UUID");
         context.put("imports", imports);
 
         var fieldFiles = definition.getFieldFiles();

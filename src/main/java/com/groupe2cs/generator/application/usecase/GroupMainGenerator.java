@@ -40,7 +40,6 @@ public class GroupMainGenerator {
     private final ListControllerGeneratorService listControllerGeneratorService;
     private final PagedResponseGeneratorService pagedResponseGeneratorService;
     private final CreateControllerGeneratorService createControllerGeneratorService;
-    private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final DeleteControllerGeneratorService deleteControllerGeneratorService;
     private final FindByFieldControllerGeneratorService findByFieldControllerGeneratorService;
     private final UpdateControllerGeneratorService updateControllerGeneratorService;
@@ -48,6 +47,7 @@ public class GroupMainGenerator {
     private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
     private final AllTestGeneratorService controllerAllIntegrationTestGeneratorService;
     private final SharedGeneratorService sharedGeneratorService;
+    private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final UsecaseGeneratorService usecaseGeneratorService;
 
 
@@ -80,7 +80,6 @@ public class GroupMainGenerator {
             ListControllerGeneratorService listControllerGeneratorService,
             PagedResponseGeneratorService pagedResponseGeneratorService,
             CreateControllerGeneratorService createControllerGeneratorService,
-            SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
             DeleteControllerGeneratorService deleteControllerGeneratorService,
             FindByFieldControllerGeneratorService findByFieldControllerGeneratorService,
             UpdateControllerGeneratorService updateControllerGeneratorService,
@@ -89,6 +88,7 @@ public class GroupMainGenerator {
             FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService,
             AllTestGeneratorService controllerAllIntegrationTestGeneratorService,
             SharedGeneratorService sharedGeneratorService,
+            SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
             UsecaseGeneratorService usecaseGeneratorService
 
     ) {

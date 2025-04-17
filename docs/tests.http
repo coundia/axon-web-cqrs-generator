@@ -1,42 +1,20 @@
+###
 
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/products",
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
   "definition": {
-	"name": "Product",
-	"table": "products",
+	"name": "Transactions",
+	"table": "transactions",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "price", "type": "Double" },
-	  { "name": "sales", "type": "List<com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale>", "relation":"oneToMany" }
+	  { "name": "reference", "type": "String" },
+	  { "name": "amount", "type": "Double" }
 	]
   }
 }
 
 ###
-
-POST http://127.0.0.1:8071/api/v1/generator/all
-Accept: application/x-ndjson
-Content-Type: application/json
-
-{
-    "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/sales",
-    "definition": {
-      "name": "Sale",
-      "table": "sales",
-      "fields": [
-        { "name": "id", "type": "String" },
-        { "name": "quantity", "type": "Integer" },
-        { "name": "total_price", "type": "Double" },
-        { "name": "facture", "type": "String" },
-        { "name": "Product", "type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product", "relation":"manyToOne" }
-      ]
-    }
-  }
-
-###
-

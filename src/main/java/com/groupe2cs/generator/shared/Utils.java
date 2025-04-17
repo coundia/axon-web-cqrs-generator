@@ -31,14 +31,23 @@ public class Utils {
         }
         return outputDir;
     }
+    public static  String getParent(String outputDir) {
+        Path path = Paths.get(outputDir);
+
+        if(path.getParent() != null) {
+            return path.getParent().toString();
+        }
+
+        return outputDir;
+    }
 
 
     public static String getTestPackage(String fullPath) {
 
-         String relativePath = getPackage(fullPath);
+        String relativePath = getPackage(fullPath);
 
-         String testPath = relativePath.replace("/main/", "/test/");
-         testPath = getPackage(testPath);
+        String testPath = relativePath.replace("/main/", "/test/");
+        testPath = getPackage(testPath);
 
         return testPath;
     }

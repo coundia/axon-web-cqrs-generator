@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +30,8 @@ ArgumentCaptor<{{commandName}}> commandCaptor = ArgumentCaptor.forClass({{comman
 verify(commandGateway, times(1)).send(commandCaptor.capture());
 
 {{commandName}} sentCommand = commandCaptor.getValue();
-{{#fields}}assertThat(sentCommand.get{{nameCapitalized}}().value()).isEqualTo({{{testValue}}});
+{{#fields}}assertThat(sentCommand.get{{nameCapitalized}}().value()).isEqualTo(
+command.get{{nameCapitalized}}().value());
 {{/fields}}
 }
 

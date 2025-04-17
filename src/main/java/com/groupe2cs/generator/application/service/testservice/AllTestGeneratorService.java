@@ -58,11 +58,12 @@ public class AllTestGeneratorService {
 
         Set<String> imports = new LinkedHashSet<>();
 
-        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getSharedPackage()) + ".*");
+        imports.add(Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
+        imports.add("java.util.UUID");
 
         context.put("imports", imports);
         context.put("base", Utils.getTestPackage(baseDir));

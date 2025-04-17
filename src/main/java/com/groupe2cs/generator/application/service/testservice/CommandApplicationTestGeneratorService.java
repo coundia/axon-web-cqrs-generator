@@ -44,12 +44,13 @@ public class CommandApplicationTestGeneratorService {
         context.put("entity", definition.getName());
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getSharedPackage()) + ".*");
+        imports.add(Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
         imports.add("org.axonframework.commandhandling.gateway.CommandGateway");
         imports.add("com.fasterxml.jackson.databind.ObjectMapper");
+        imports.add("java.util.UUID");
 
         context.put("imports", imports);
 

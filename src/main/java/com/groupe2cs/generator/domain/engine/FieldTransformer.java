@@ -4,6 +4,7 @@ import com.groupe2cs.generator.domain.model.FieldDefinition;
 import com.groupe2cs.generator.shared.Utils;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FieldTransformer {
 
@@ -30,7 +31,7 @@ public class FieldTransformer {
             f.put("hasValidation", true);
             f.put("errorType", "IllegalArgumentException");
             f.put("errorTestValue", getErrorTestValue(field));
-            f.put("errorMessage", Utils.capitalize(field.getName())+" is invalid");
+            f.put("errorMessage", Utils.capitalize(field.getName()) + " is invalid");
             String exceptionName = entityName + Utils.capitalize(field.getName()) + "NotValid";
             f.put("exceptionName", exceptionName);
 
@@ -49,19 +50,36 @@ public class FieldTransformer {
         String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
         String type = field.getType().toLowerCase();
 
-        if (type.contains("price")) return "99.99";
-        if (type.contains("name") || type.contains("facture")) return "\"TestValue\"";
-        if (type.contains("id")) return "\"12345678-aaaa-bbbb-cccc-123456789abc\"";
+        if (type.contains("price") || type.contains("amount")) {
+            double value = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 1000.0) * 100.0) / 100.0;
+            return String.valueOf(value);
+        }
+
+        if (type.contains("name") || type.contains("title") || type.contains("facture")) {
+            return "\"TestValue" + ThreadLocalRandom.current().nextInt(1000) + "\"";
+        }
+
+        if (type.contains("id")) {
+            return "\"" + UUID.randomUUID().toString() + "\"";
+        }
+
+        if(field.getRelation()!=null) {
+            return "null";
+        }
 
         return switch (primitive) {
-            case "int", "integer" -> "42";
-            case "long" -> "9999L";
-            case "double" -> "99.99";
-            case "boolean" -> "true";
-            case "string" -> "\"test\"";
-            default -> "\"sample\"";
+            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+            case "double" -> {
+                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+                yield String.valueOf(d);
+            }
+            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+            case "string" -> "UUID.randomUUID().toString()";
+            default -> "null";
         };
     }
+
 
     private static String getErrorTestValue(FieldDefinition field) {
         String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();

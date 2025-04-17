@@ -31,7 +31,7 @@ HttpEntity<{{name}}Request> request = new HttpEntity<>(requestDTO);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-	{{name}} found = {{name}}Fixtures.byId({{nameLower}}Repository, existingId);
+	{{name}} found = {{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
 	assertThat(found).isNotNull();
 	{{#fields}}
 		{{^isId}}

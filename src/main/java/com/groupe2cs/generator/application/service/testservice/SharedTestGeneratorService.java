@@ -25,6 +25,9 @@ public class SharedTestGeneratorService {
     }
 
     public void generate(String baseDir) {
+
+        baseDir = Utils.getParent(baseDir);
+
         generateBaseIntegrationTests(baseDir);
         generateBaseUnitTests(baseDir);
         generateControllerTest(baseDir);
@@ -45,6 +48,7 @@ public class SharedTestGeneratorService {
 
     private void generateBaseUnitTests(String baseDir) {
         Map<String, Object> context = new HashMap<>();
+
         String fullPath = baseDir + "/" + generatorProperties.getSharedPackage();
 
         String packageName = Utils.getTestPackage(fullPath);
@@ -68,7 +72,8 @@ public class SharedTestGeneratorService {
         context.put("className","StatusControllerTest");
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getSharedPackage()) + ".*");
+        imports.add(Utils.getTestPackage(baseDir+ "/" + generatorProperties.getSharedPackage()) + ".*");
+        imports.add("java.util.UUID");
         context.put("imports", imports);
 
         String content = templateEngine.render("tests/controllerIntegrationTest.mustache", context);

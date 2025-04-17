@@ -30,6 +30,12 @@ public class SharedGeneratorService {
 
         List<SharedTemplate> sharedTemplates = List.of(
                 new SharedTemplate(
+                        "ApiResponseDto",
+                        "shared/apiResponseDto.mustache",
+                        Set.of("lombok.Builder"),
+                        outputShared + "/" + generatorProperties.getApplicationPackage()
+                ),
+                new SharedTemplate(
                         "FileStorageService",
                         "shared/fileStorageService.mustache",
                         Set.of(

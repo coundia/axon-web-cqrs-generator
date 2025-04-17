@@ -27,7 +27,7 @@ String uri = "/v1/commands/{{nameLower}}/" + existingId;
 ResponseEntity<String> rep = this.delete(uri);
 assertThat(rep.getStatusCode().value()).isEqualTo(200);
 
-{{name}} found = {{name}}Fixtures.byId({{nameLower}}Repository, existingId);
+{{name}} found = {{name}}Fixtures.byIdWaitNotExist({{nameLower}}Repository, existingId);
 assertThat(found).isNull();
 }
 }

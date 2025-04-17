@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
@@ -27,21 +27,13 @@ public class {{name}}Request implements Serializable {
 	{{/isId}}
 {{/fields}}
 
-public static {{name}}Request random() {
-{{name}}Request request = new {{name}}Request();
-{{#fields}}
+	public static {{name}}Request random() {
+	{{name}}Request request = new {{name}}Request();
+	{{#fields}}
 	{{^isId}}
-		{{#isString}}
-			request.set{{nameCapitalized}}("Sample {{name}}");
-		{{/isString}}
-		{{#isInteger}}
-			request.set{{nameCapitalized}}(ThreadLocalRandom.current().nextInt(1, 100));
-		{{/isInteger}}
-		{{#isDouble}}
-			request.set{{nameCapitalized}}(Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0);
-		{{/isDouble}}
+	request.set{{nameCapitalized}}({{{testValue}}});
 	{{/isId}}
-{{/fields}}
-return request;
+	{{/fields}}
+	return request;
 }
 }
