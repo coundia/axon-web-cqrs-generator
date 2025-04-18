@@ -3,45 +3,61 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder;
+
 import java.util.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "{{tableName}}")
 public class {{entity}} {
 
-	@Id
-	private String id;
+@Id
+private String id;
+
 {{#fields}}
-{{^isId}}
-{{#relation}}
-{{#isOneToMany}}
-	@OneToMany(mappedBy = "{{entityLowerCase}}", cascade = CascadeType.ALL)
-	private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
-{{/isOneToMany}}
-{{#isManyToOne}}
-	@ManyToOne
-	@JoinColumn(name = "{{nameLowerCase}}_id", nullable = false)
-	private {{realType}} {{nameLowerCase}};
-{{/isManyToOne}}
-{{/relation}}
-{{^relation}}
-	@Column(nullable = false)
-	private {{primitiveType}} {{name}};
-{{/relation}}
-{{/isId}}
+	{{^isId}}
+		{{#relation}}
+			{{#isOneToMany}}
+				@OneToMany(mappedBy = "{{entityLowerCase}}", cascade = CascadeType.ALL)
+				private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
+			{{/isOneToMany}}
+			{{#isManyToOne}}
+				@ManyToOne
+				@JoinColumn(name = "{{nameLowerCase}}_id", nullable = false)
+				private {{realType}} {{nameLowerCase}};
+			{{/isManyToOne}}
+		{{/relation}}
+		{{^relation}}
+			@Column(nullable = false)
+			private {{primitiveType}} {{name}};
+		{{/relation}}
+	{{/isId}}
 {{/fields}}
 
-	public {{entity}}(String id) {
-		this.id = id;
-	}
+public {{entity}}(String id) {
+this.id = id;
+}
 
+@Override
+public String toString() {
+return "{{entity}}{" +
+"id='" + id + '\'' +
+{{#fields}}
+	{{^isId}}
+		", {{name}}=" + {{name}} +
+	{{/isId}}
+{{/fields}}
+'}';
+}
 }

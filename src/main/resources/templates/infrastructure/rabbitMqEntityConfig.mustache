@@ -1,0 +1,54 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.springframework.amqp.core.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class {{className}} {
+
+@Bean
+public TopicExchange {{entityLowerCase}}Exchange() {
+return new TopicExchange("{{entityLowerCase}}.exchange", true, false);
+}
+
+@Bean
+public Queue {{entityLowerCase}}CreatedQueue() {
+return QueueBuilder.durable("{{entityLowerCase}}.created.queue").build();
+}
+
+@Bean
+public Queue {{entityLowerCase}}UpdatedQueue() {
+return QueueBuilder.durable("{{entityLowerCase}}.updated.queue").build();
+}
+
+@Bean
+public Queue {{entityLowerCase}}DeletedQueue() {
+return QueueBuilder.durable("{{entityLowerCase}}.deleted.queue").build();
+}
+
+@Bean
+public Binding {{entityLowerCase}}CreatedBinding() {
+return BindingBuilder.bind({{entityLowerCase}}CreatedQueue())
+.to({{entityLowerCase}}Exchange())
+.with("{{entityLowerCase}}.created");
+}
+
+@Bean
+public Binding {{entityLowerCase}}UpdatedBinding() {
+return BindingBuilder.bind({{entityLowerCase}}UpdatedQueue())
+.to({{entityLowerCase}}Exchange())
+.with("{{entityLowerCase}}.updated");
+}
+
+@Bean
+public Binding {{entityLowerCase}}DeletedBinding() {
+return BindingBuilder.bind({{entityLowerCase}}DeletedQueue())
+.to({{entityLowerCase}}Exchange())
+.with("{{entityLowerCase}}.deleted");
+}
+}

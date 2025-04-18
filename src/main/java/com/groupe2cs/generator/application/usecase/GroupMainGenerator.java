@@ -6,6 +6,7 @@ import com.groupe2cs.generator.application.service.domainservice.EventGeneratorS
 import com.groupe2cs.generator.application.service.domainservice.ExceptionGeneratorService;
 import com.groupe2cs.generator.application.service.domainservice.VoGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.EntityGeneratorService;
+import com.groupe2cs.generator.application.service.infrastructureservice.RabbitMqGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
 import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
@@ -50,6 +51,8 @@ public class GroupMainGenerator {
     private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final UsecaseGeneratorService usecaseGeneratorService;
 
+    private final RabbitMqGeneratorService rabbitMqGeneratorService;
+
 
     private EntityDefinition loadFromFileDefinition() {
         return EntityDefinition.fromSource(
@@ -89,7 +92,8 @@ public class GroupMainGenerator {
             AllTestGeneratorService controllerAllIntegrationTestGeneratorService,
             SharedGeneratorService sharedGeneratorService,
             SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
-            UsecaseGeneratorService usecaseGeneratorService
+            UsecaseGeneratorService usecaseGeneratorService,
+            RabbitMqGeneratorService rabbitMqGeneratorService
 
     ) {
         this.properties = properties;
@@ -120,6 +124,7 @@ public class GroupMainGenerator {
         this.controllerAllIntegrationTestGeneratorService = controllerAllIntegrationTestGeneratorService;
         this.sharedGeneratorService = sharedGeneratorService;
         this.usecaseGeneratorService = usecaseGeneratorService;
+        this.rabbitMqGeneratorService = rabbitMqGeneratorService;
     }
 
     public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
@@ -172,8 +177,15 @@ public class GroupMainGenerator {
                 emit(sink, "Generating Repositories...");
                 repositoryGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "Generating Projections...");
-                projectionGenerator.generate(definition, outputDir);
+                if(!definition.hasRabbitMq()) {
+                    emit(sink, "Generating Projections...");
+                    projectionGenerator.generate(definition, outputDir);
+                }
+
+                if(definition.hasRabbitMq()){
+                    emit(sink, "Generating RabbitMQ Config...");
+                    rabbitMqGeneratorService.generate(definition, outputDir);
+                }
 
                 emit(sink, "Generating Controllers...");
                 listControllerGeneratorService.generate(definition, outputDir);

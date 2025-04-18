@@ -1,0 +1,31 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import lombok.RequiredArgsConstructor;
+import org.axonframework.eventhandling.EventHandler;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class {{className}} {
+
+private final RabbitTemplate rabbitTemplate;
+
+@EventHandler
+public void on({{entity}}CreatedEvent event) {
+rabbitTemplate.convertAndSend("{{entityLowerCase}}.exchange", "{{entityLowerCase}}.created", event);
+}
+
+@EventHandler
+public void on({{entity}}UpdatedEvent event) {
+rabbitTemplate.convertAndSend("{{entityLowerCase}}.exchange", "{{entityLowerCase}}.updated", event);
+}
+
+@EventHandler
+public void on({{entity}}DeletedEvent event) {
+rabbitTemplate.convertAndSend("{{entityLowerCase}}.exchange", "{{entityLowerCase}}.deleted", event);
+}
+}

@@ -1,0 +1,58 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class {{className}} {
+
+	private final {{entity}}Repository repository;
+
+	@RabbitListener(queues = "{{entityLowerCase}}.created.queue")
+	public void handleCreated({{entity}}CreatedEvent e) {
+	try {
+	{{entity}} entity = {{entity}}.builder()
+	{{#fields}}
+		.{{nameLowerCase}}(e.get{{nameCapitalized}}().value())
+	{{/fields}}
+	.build();
+	repository.save(entity);
+	log.info("Persisted from RabbitMQ: {}", entity);
+	} catch (Exception ex) {
+	log.error("Failed to persist created event: {}", ex.getMessage(), ex);
+	}
+	}
+
+	@RabbitListener(queues = "{{entityLowerCase}}.updated.queue")
+	public void handleUpdated({{entity}}UpdatedEvent e) {
+	try {
+	repository.findById(e.getId().value()).ifPresentOrElse(existing -> {
+	{{#fields}}
+		{{^isId}}existing.set{{nameCapitalized}}(e.get{{nameCapitalized}}().value());{{/isId}}
+	{{/fields}}
+	repository.save(existing);
+	log.info("Updated from RabbitMQ: {}", existing);
+	}, () -> log.warn("{{entity}} not found for update: {}", e.getId().value()));
+	} catch (Exception ex) {
+	log.error("Failed to process updated event: {}", ex.getMessage(), ex);
+	}
+	}
+
+	@RabbitListener(queues = "{{entityLowerCase}}.deleted.queue")
+	public void handleDeleted({{entity}}DeletedEvent e) {
+	try {
+	repository.deleteById(e.getId().value());
+	log.info("Deleted from RabbitMQ: {}", e.getId().value());
+	} catch (Exception ex) {
+	log.error("Failed to delete from RabbitMQ: {}", ex.getMessage(), ex);
+	}
+	}
+}

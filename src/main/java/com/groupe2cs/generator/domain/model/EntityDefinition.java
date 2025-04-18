@@ -3,6 +3,7 @@ package com.groupe2cs.generator.domain.model;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import lombok.Data;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -14,12 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Data
 public class EntityDefinition implements Serializable {
 
     private  String name;
     private  String table;
     private  List<FieldDefinition> fields;
+    private  List<String> stack;
 
     public EntityDefinition() {
     }
@@ -31,7 +33,6 @@ public class EntityDefinition implements Serializable {
     public String getTable() {
         return table;
     }
-
 
     public void setName(String name) {
         this.name = name;
@@ -190,5 +191,12 @@ public class EntityDefinition implements Serializable {
                 .anyMatch(f -> relationType.equalsIgnoreCase(f.getRelation()));
     }
 
+    public boolean isInStack(String stack) {
+        return this.stack.stream()
+                .anyMatch(s -> s.equalsIgnoreCase(stack));
+    }
 
+    public boolean hasRabbitMq() {
+        return true;//this.isInStack("rabbitMq");
+    }
 }
