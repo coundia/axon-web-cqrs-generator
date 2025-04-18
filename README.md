@@ -44,13 +44,16 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
   "definition": {
-	"name": "Transactions",
+	"name": "Transaction",
 	"table": "transactions",
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "reference", "type": "String" },
 	  { "name": "amount", "type": "Double" }
-	]
+	],
+    "stack": [
+	  "RabbitMq"
+    ]
   }
 }
 

@@ -192,11 +192,16 @@ public class EntityDefinition implements Serializable {
     }
 
     public boolean isInStack(String stack) {
+
+        if (this.stack == null || this.stack.isEmpty()) {
+            return false;
+        }
+
         return this.stack.stream()
                 .anyMatch(s -> s.equalsIgnoreCase(stack));
     }
 
     public boolean hasRabbitMq() {
-        return true;//this.isInStack("rabbitMq");
+        return this.isInStack("rabbitMq");
     }
 }

@@ -5,7 +5,7 @@ cd cqrs-generator/
 
 mvn spring-boot:run
 
-curl -N -X POST http://localhost:8070/api/v1/generator/all \
+curl -N -X POST http://localhost:8071/api/v1/generator/all \
   -H "Content-Type: application/json" \
   -H "Accept: application/x-ndjson" \
   -d '{
