@@ -34,5 +34,7 @@ public class GeneratorProperties {
     private String  sharedPackage;
     private String  applicationUseCasePackage;
     private String domainUseCasePackage;
+    private String securityPackage;
+    private String configPackage;
 
 }

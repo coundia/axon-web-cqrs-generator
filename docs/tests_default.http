@@ -13,11 +13,7 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "reference", "type": "String" },
 	  { "name": "amount", "type": "Double" }
-	],
-    "stack": [
-	  "RabbitMq",
-      "Security"
-    ]
+	]
   }
 }
 

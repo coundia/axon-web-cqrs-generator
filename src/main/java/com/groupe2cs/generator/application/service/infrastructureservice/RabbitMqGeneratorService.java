@@ -32,7 +32,7 @@ public class RabbitMqGeneratorService {
         List<SharedTemplate> templates = List.of(
                 new SharedTemplate(
                         Utils.capitalize(definition.getName()) + "EventConsumer",
-                        "infrastructure/rabbitMqEventConsumer.mustache",
+                        "infrastructure/rabbitMq/rabbitMqEventConsumer.mustache",
                         Set.of(
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "." + definition.getName(),
@@ -42,7 +42,7 @@ public class RabbitMqGeneratorService {
                 ),
                 new SharedTemplate(
                         Utils.capitalize(definition.getName()) + "EventPublisher",
-                        "infrastructure/rabbitMqEventPublisher.mustache",
+                        "infrastructure/rabbitMq/rabbitMqEventPublisher.mustache",
                         Set.of(
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*"
                         ),
@@ -50,13 +50,13 @@ public class RabbitMqGeneratorService {
                 ),
                 new SharedTemplate(
                         Utils.capitalize(definition.getName()) + "RabbitMqConfig",
-                        "infrastructure/rabbitMqEntityConfig.mustache",
+                        "infrastructure/rabbitMq/rabbitMqEntityConfig.mustache",
                         null,
                         outputInfra + "/rabbitMq"
                 ),
                 new SharedTemplate(
                         "RabbitMqConfig",
-                        "infrastructure/rabbitMqSharedConfig.mustache",
+                        "infrastructure/rabbitMq/rabbitMqSharedConfig.mustache",
                         null,
                         sharedInfra + "/infrastructure/rabbitMq"
                 )

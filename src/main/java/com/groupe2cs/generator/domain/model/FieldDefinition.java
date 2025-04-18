@@ -74,9 +74,9 @@ public class FieldDefinition implements Serializable {
 
     public boolean isFilable() {
 
-        return name.equalsIgnoreCase("id") ||
-                name.equalsIgnoreCase("name") ||
-                name.equalsIgnoreCase("label")
+        return name.contains("id") ||
+                name.contains("name") ||
+                name.contains("label")
                 ;
     }
 

@@ -8,6 +8,7 @@ import com.groupe2cs.generator.application.service.domainservice.VoGeneratorServ
 import com.groupe2cs.generator.application.service.infrastructureservice.EntityGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RabbitMqGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
+import com.groupe2cs.generator.application.service.infrastructureservice.SecurityGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
 import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.AllTestGeneratorService;
@@ -52,6 +53,7 @@ public class GroupMainGenerator {
     private final UsecaseGeneratorService usecaseGeneratorService;
 
     private final RabbitMqGeneratorService rabbitMqGeneratorService;
+    private final SecurityGeneratorService securityGeneratorService;
 
 
     private EntityDefinition loadFromFileDefinition() {
@@ -93,7 +95,8 @@ public class GroupMainGenerator {
             SharedGeneratorService sharedGeneratorService,
             SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
             UsecaseGeneratorService usecaseGeneratorService,
-            RabbitMqGeneratorService rabbitMqGeneratorService
+            RabbitMqGeneratorService rabbitMqGeneratorService,
+            SecurityGeneratorService securityGeneratorService
 
     ) {
         this.properties = properties;
@@ -119,12 +122,14 @@ public class GroupMainGenerator {
         this.findByFieldControllerGeneratorService = findByFieldControllerGeneratorService;
         this.updateControllerGeneratorService = updateControllerGeneratorService;
 
-        this.findByFieldQueryGeneratorService=findByFieldQueryGeneratorService;
-        this.findByFieldQueryHandlerGeneratorService=findByFieldQueryHandlerGeneratorService;
+        this.findByFieldQueryGeneratorService = findByFieldQueryGeneratorService;
+        this.findByFieldQueryHandlerGeneratorService = findByFieldQueryHandlerGeneratorService;
         this.controllerAllIntegrationTestGeneratorService = controllerAllIntegrationTestGeneratorService;
         this.sharedGeneratorService = sharedGeneratorService;
         this.usecaseGeneratorService = usecaseGeneratorService;
+
         this.rabbitMqGeneratorService = rabbitMqGeneratorService;
+        this.securityGeneratorService = securityGeneratorService;
     }
 
     public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
@@ -177,12 +182,12 @@ public class GroupMainGenerator {
                 emit(sink, "Generating Repositories...");
                 repositoryGeneratorService.generate(definition, outputDir);
 
-                if(!definition.hasRabbitMq()) {
+                if (!definition.hasRabbitMq()) {
                     emit(sink, "Generating Projections...");
                     projectionGenerator.generate(definition, outputDir);
                 }
 
-                if(definition.hasRabbitMq()){
+                if (definition.hasRabbitMq()) {
                     emit(sink, "Generating RabbitMQ Config...");
                     rabbitMqGeneratorService.generate(definition, outputDir);
                 }
@@ -196,9 +201,14 @@ public class GroupMainGenerator {
 
                 emit(sink, "Generating tests...");
                 testControllerIntegrationTestGeneratorService.generate(outputDir);
-                controllerAllIntegrationTestGeneratorService.generate(definition,outputDir);
+                controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "✅ Code generation complete!");
+                if (definition.isInStack("Security")) {
+                    emit(sink, "Generating Security...");
+                    securityGeneratorService.generate(definition, outputDir);
+                }
+
+                emit(sink, "Completed!");
 
                 sink.tryEmitComplete();
 
