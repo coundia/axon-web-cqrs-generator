@@ -15,8 +15,7 @@ Content-Type: application/json
 	  { "name": "amount", "type": "Double" }
 	],
     "stack": [
-	  "RabbitMq",
-      "Security"
+	  "RabbitMq"
     ]
   }
 }
