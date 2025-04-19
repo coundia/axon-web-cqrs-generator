@@ -200,7 +200,7 @@ public class GroupMainGenerator {
                 updateControllerGeneratorService.generate(definition, outputDir);
 
                 emit(sink, "Generating tests...");
-                testControllerIntegrationTestGeneratorService.generate(outputDir);
+                testControllerIntegrationTestGeneratorService.generate(outputDir,definition);
                 controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
 
                 if (definition.isInStack("Security")) {

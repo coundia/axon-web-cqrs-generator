@@ -2,6 +2,7 @@ package com.groupe2cs.generator.application.service.testservice;
 
 import com.groupe2cs.generator.domain.engine.FileWriterService;
 import com.groupe2cs.generator.domain.engine.TemplateEngine;
+import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.shared.Utils;
 import org.springframework.stereotype.Service;
@@ -24,16 +25,16 @@ public class SharedTestGeneratorService {
         this.generatorProperties = generatorProperties;
     }
 
-    public void generate(String baseDir) {
+    public void generate(String baseDir, EntityDefinition definition) {
 
         baseDir = Utils.getParent(baseDir);
 
-        generateBaseIntegrationTests(baseDir);
+        generateBaseIntegrationTests(baseDir,definition);
         generateBaseUnitTests(baseDir);
         generateControllerTest(baseDir);
     }
 
-    private void generateBaseIntegrationTests(String baseDir) {
+    private void generateBaseIntegrationTests(String baseDir,EntityDefinition definition) {
         Map<String, Object> context = new HashMap<>();
 
         String fullPath = baseDir + "/" + generatorProperties.getSharedPackage();
@@ -41,6 +42,15 @@ public class SharedTestGeneratorService {
         String packageName = Utils.getTestPackage(fullPath);
         context.put("package", packageName);
         String outputDir = Utils.getTestDir(fullPath);
+
+        Set<String> imports = new LinkedHashSet<>();
+        if(definition.isInStack("security")) {
+            imports.add(Utils.getTestPackage(baseDir+ "/" +
+                    generatorProperties.getSecurityPackage()+"/"+generatorProperties.getDtoPackage()) + ".*");
+        }
+
+        context.put("imports", imports);
+        context.put("security", definition.isInStack("security"));
 
         String content = templateEngine.render("tests/baseIntegrationTest.mustache", context);
         fileWriterService.write(outputDir, "BaseIntegrationTests.java", content);

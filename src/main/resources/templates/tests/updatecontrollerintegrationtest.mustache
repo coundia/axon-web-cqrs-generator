@@ -21,13 +21,12 @@ private CommandGateway commandGateway;
 @Test
 void it_should_be_able_to_update_{{nameLower}}() {
 
-String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway);
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway);
 
-{{name}}Request requestDTO = {{name}}Request.random();
-HttpEntity<{{name}}Request> request = new HttpEntity<>(requestDTO);
+	{{name}}Request requestDTO = {{name}}Request.random();
 
 	String uri = "/v1/commands/{{nameLower}}/" + existingId;
-	ResponseEntity<String> response = this.put(uri,request);
+	ResponseEntity<String> response = this.put(uri,requestDTO);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
