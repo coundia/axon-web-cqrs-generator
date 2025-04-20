@@ -27,6 +27,10 @@ public class SharedTestGeneratorService {
 
     public void generate(String baseDir, EntityDefinition definition) {
 
+        if("Security".equalsIgnoreCase(definition.getModule())){
+            return;
+        }
+
         baseDir = Utils.getParent(baseDir);
 
         generateBaseIntegrationTests(baseDir,definition);

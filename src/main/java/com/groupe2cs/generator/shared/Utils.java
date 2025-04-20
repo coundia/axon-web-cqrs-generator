@@ -9,6 +9,10 @@ public class Utils {
         return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
+    public static String unCapitalize(String value) {
+        return value.substring(0, 1).toLowerCase() + value.substring(1);
+    }
+
     public static String getPackage(String fullPath) {
         String normalized = fullPath.replace("\\", "/");
 

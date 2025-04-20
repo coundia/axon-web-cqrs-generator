@@ -17,7 +17,8 @@ public class FieldTransformer {
 
             f.put("name", field.getName());
             f.put("nameCapitalized", Utils.capitalize(field.getName()));
-            f.put("nameLowerCase", Utils.lowerCase(field.getName()));
+            f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
+            f.put("nameLowerCase", Utils.unCapitalize(field.getName()));
             f.put("nameCamelCase", Utils.camelCase(field.getName()));
             f.put("type", entityName + Utils.capitalize(field.getName()));
             f.put("realType", field.getType());
@@ -28,6 +29,8 @@ public class FieldTransformer {
             f.put("isFileType", field.isFileType());
 
             f.put("testValue", getTestValue(field));
+            f.put("testDomainValue", getTestDomainValue(field));
+
             f.put("hasValidation", true);
             f.put("errorType", "IllegalArgumentException");
             f.put("errorTestValue", getErrorTestValue(field));
@@ -39,6 +42,11 @@ public class FieldTransformer {
 
             f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()));
             f.put("isManyToOne", "manyToOne".equalsIgnoreCase(field.getRelation()));
+
+            f.put("unique", field.getUnique());
+
+            f.put("nullable", field.getNullable());
+            f.put("isUnique", field.getUnique() || field.isId());
 
             result.add(f);
         }
@@ -62,9 +70,24 @@ public class FieldTransformer {
         if (type.contains("id")) {
             return "\"" + UUID.randomUUID().toString() + "\"";
         }
+        if (type.contains("date") || type.contains("time")) {
+            return "LocalDateTime.now()";
+        }
 
-        if(field.getRelation()!=null) {
+        if(type.contains("url")) {
+            return "\"https://example.com/test" + ThreadLocalRandom.current().nextInt(1000) + ".jpg\"";
+        }
+
+        if (field.getRelation()!= null && field.getRelation().equalsIgnoreCase("manyToOne")) {
+            return field.getNameCapitalized()+"Fixtures.randomOneViaCommand(commandGateway).getId().value()";
+        }
+
+        if(field.getRelation()!= null && field.getRelation().equalsIgnoreCase("oneToMany")) {
             return "null";
+        }
+
+        if(type.contains("email")) {
+            return "\"test" + ThreadLocalRandom.current().nextInt(1000) + "@example.com\"";
         }
 
         return switch (primitive) {
@@ -75,8 +98,21 @@ public class FieldTransformer {
                 yield String.valueOf(d);
             }
             case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
-            case "string" -> "UUID.randomUUID().toString()";
-            default -> "null";
+            default -> "UUID.randomUUID().toString()";
+        };
+    }
+
+    private static String getTestDomainValue(FieldDefinition field) {
+        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+        return switch (primitive) {
+            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+            case "double" -> {
+                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+                yield String.valueOf(d);
+            }
+            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+            default -> "UUID.randomUUID().toString()";
         };
     }
 

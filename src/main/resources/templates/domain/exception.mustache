@@ -6,7 +6,7 @@ import {{.}};
 
 public class {{name}}NotFoundException extends RuntimeException {
 
-public {{name}}NotFoundException({{name}}Id id) {
-super("{{name}} with ID " + id + " not found");
+public {{name}}NotFoundException(String object, String value) {
+super("{{name}} with "+object+": '" + value + "' not found");
 }
 }

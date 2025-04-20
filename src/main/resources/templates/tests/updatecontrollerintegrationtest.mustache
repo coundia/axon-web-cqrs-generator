@@ -18,12 +18,28 @@ private {{name}}Repository {{nameLower}}Repository;
 @Autowired
 private CommandGateway commandGateway;
 
+@Autowired
+private CommandGateway commandGatewayUpdate;
+
+
 @Test
 void it_should_be_able_to_update_{{nameLower}}() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway);
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway).getId().value();
 
-	{{name}}Request requestDTO = {{name}}Request.random();
+	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate);
+
+	{{name}}Request requestDTO = new {{name}}Request();
+	{{#fields}}
+		{{^isId}}
+		{{#relation}}
+	 requestDTO.set{{nameCapitalized}}( updated.get{{nameCapitalized}}().value());
+		{{/relation}}
+		{{^relation}}
+	 requestDTO.set{{nameCapitalized}}({{testDomainValue}});
+		{{/relation}}
+		{{/isId}}
+	{{/fields}}
 
 	String uri = "/v1/commands/{{nameLower}}/" + existingId;
 	ResponseEntity<String> response = this.put(uri,requestDTO);

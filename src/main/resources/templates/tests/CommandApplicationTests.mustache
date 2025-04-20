@@ -22,7 +22,7 @@ private CommandGateway commandGateway;
 @Test
 void it_should_send_command_to_command_gateway() {
 {{commandName}} command = new {{commandName}}(
-{{#fields}} {{entity}}{{nameCapitalized}}.create({{{testValue}}}) {{^last}}, {{/last}}{{/fields}}
+{{#fields}} {{entity}}{{nameCapitalized}}.create({{{testDomainValue}}}) {{^last}}, {{/last}}{{/fields}}
 );
 commandGateway.send(command);
 
@@ -37,7 +37,7 @@ command.get{{nameCapitalized}}().value());
 
 @Test
 void test_event_serialization() throws JsonProcessingException {
-{{eventName}} event = new {{eventName}}({{#fields}} {{entity}}{{nameCapitalized}}.create({{{testValue}}}){{^last}}, {{/last}}{{/fields}});
+{{eventName}} event = new {{eventName}}({{#fields}} {{entity}}{{nameCapitalized}}.create({{{testDomainValue}}}){{^last}}, {{/last}}{{/fields}});
 String json = new ObjectMapper().writeValueAsString(event);
 assertThat(json).isNotEmpty();
 }

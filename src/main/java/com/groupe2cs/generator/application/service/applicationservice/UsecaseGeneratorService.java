@@ -29,7 +29,8 @@ public class UsecaseGeneratorService {
 
     public void generate(EntityDefinition definition, String baseDir) {
 
-        String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
+      //  String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
+        String outputShared = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
         String outputApplicationUseCase = baseDir + "/" + generatorProperties.getApplicationUseCasePackage();
 
         List<SharedTemplate> sharedTemplates = List.of(

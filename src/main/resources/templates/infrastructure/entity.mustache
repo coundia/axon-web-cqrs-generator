@@ -22,42 +22,41 @@ import java.util.*;
 @Table(name = "{{tableName}}")
 public class {{entity}} {
 
-@Id
-private String id;
+	@Id
+	private String id;
 
 {{#fields}}
-	{{^isId}}
-		{{#relation}}
-			{{#isOneToMany}}
-				@OneToMany(mappedBy = "{{entityLowerCase}}", cascade = CascadeType.ALL)
-				private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
-			{{/isOneToMany}}
-			{{#isManyToOne}}
-				@ManyToOne
-				@JoinColumn(name = "{{nameLowerCase}}_id", nullable = false)
-				private {{realType}} {{nameLowerCase}};
-			{{/isManyToOne}}
-		{{/relation}}
-		{{^relation}}
-			@Column(nullable = false)
-			private {{primitiveType}} {{name}};
-		{{/relation}}
-	{{/isId}}
+{{^isId}}
+{{#relation}}
+{{#isOneToMany}}
+	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
+{{/isOneToMany}}
+{{#isManyToOne}}
+	@ManyToOne
+	@JoinColumn(name = "{{nameLowerCase}}_id", nullable = {{nullable}})
+	private {{realType}} {{nameLowerCase}};
+{{/isManyToOne}}
+{{/relation}}
+{{^relation}}
+	@Column(nullable = {{nullable}}, unique = {{unique}})
+	private {{primitiveType}} {{nameLowerCase}};
+{{/relation}}
+{{/isId}}
 {{/fields}}
-
-public {{entity}}(String id) {
-this.id = id;
+	public {{entity}}(String id) {
+	this.id = id;
 }
 
-@Override
-public String toString() {
-return "{{entity}}{" +
-"id='" + id + '\'' +
-{{#fields}}
+	@Override
+ public String toString() {
+	return "{{entity}}{" +
+	"id='" + id + '\'' +
+	{{#fields}}
 	{{^isId}}
-		", {{name}}=" + {{name}} +
+		", {{nameLowerCase}}=" + {{nameLowerCase}} +
 	{{/isId}}
-{{/fields}}
-'}';
-}
+	{{/fields}}
+	'}';
+	}
 }

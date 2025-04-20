@@ -10,7 +10,7 @@ public class {{className}} extends BaseUnitTests {
 @Test
 void it_should_create_{{lowerName}}_with_valid_values() {
 {{#fields}}
-	{{type}} {{name}} = {{type}}.create({{{testValue}}});
+	{{type}} {{name}} = {{type}}.create({{{testDomainValue}}});
 {{/fields}}
 	{{aggregateName}} {{lowerName}} = new {{aggregateName}}({{#fields}}{{name}}{{^last}}, {{/last}}{{/fields}});
 	assertThat({{lowerName}}.getId()).isNotNull();

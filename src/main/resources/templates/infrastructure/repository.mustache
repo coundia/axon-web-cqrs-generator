@@ -22,9 +22,14 @@ public interface {{entityName}}Repository extends JpaRepository<{{entityName}}, 
 	Optional<{{entityName}}> findById({{entityName}}{{identifier.nameCapitalized}} id);
 {{#fields}}
 	{{^isId}}
+	{{^isUnique}}
 	@Query("SELECT t FROM {{entityName}} t WHERE t.{{nameLowerCase}} = :{{nameLowerCase}}")
 	List<{{entityName}}> findBy{{nameCapitalized}}({{primitiveType}} {{nameLowerCase}});
-
+	{{/isUnique}}
+	{{#isUnique}}
+	@Query("SELECT t FROM {{entityName}} t WHERE t.{{nameLowerCase}} = :{{nameLowerCase}}")
+	Optional<{{entityName}}> findBy{{nameCapitalized}}({{primitiveType}} {{nameLowerCase}});
+	{{/isUnique}}
 	{{/isId}}
 {{/fields}}
 

@@ -26,6 +26,12 @@ public class SharedGeneratorService {
 
     public void generate(EntityDefinition definition, String baseDir) {
 
+        if(
+                "Security".equalsIgnoreCase(definition.getModule())
+        ){
+            return;
+        }
+
         String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
 
         List<SharedTemplate> sharedTemplates = List.of(
@@ -57,6 +63,20 @@ public class SharedGeneratorService {
                                 "java.util.UUID"
                         ),
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()
+                )
+                ,
+                new SharedTemplate(
+                        "RetryTwoTimesHandler",
+                        "shared/retryTwoTimesHandler.mustache",
+                        null,
+                        outputShared + "/" +generatorProperties.getInfrastructurePackage()+ "/axon"
+                )
+                ,
+                new SharedTemplate(
+                        "AxonConfig",
+                        "shared/axonConfig.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+ "/axon"
                 )
         );
 

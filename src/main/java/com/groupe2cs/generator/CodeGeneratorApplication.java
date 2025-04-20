@@ -12,7 +12,6 @@ public class CodeGeneratorApplication  {
     public CodeGeneratorApplication(GroupMainGenerator groupMainGenerator
 
     ) {
-
         this.groupMainGenerator = groupMainGenerator;
     }
 

@@ -10,8 +10,16 @@ Content-Type: application/json
 	"name": "Transaction",
 	"table": "transactions",
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "reference", "type": "String" },
+	  {
+        "name": "id",
+        "type": "String"
+      },
+	  {
+        "name": "reference",
+        "type": "String",
+        "nullable": true,
+		"unique": true
+	  },
 	  { "name": "amount", "type": "Double" }
 	],
     "stack": [

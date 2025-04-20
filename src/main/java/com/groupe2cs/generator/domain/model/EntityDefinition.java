@@ -3,7 +3,7 @@ package com.groupe2cs.generator.domain.model;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import lombok.Data;
+import lombok.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,16 +15,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Data
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EntityDefinition implements Serializable {
 
     private  String name;
     private  String table;
     private  List<FieldDefinition> fields;
     private  List<String> stack;
+    private  String module;
 
-    public EntityDefinition() {
-    }
 
     public String getName() {
         return name;

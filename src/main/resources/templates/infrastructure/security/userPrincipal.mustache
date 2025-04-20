@@ -16,15 +16,18 @@ public class UserPrincipal implements UserDetails {
 
 	private final User user;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-	return user.getRoles().stream()
-	.flatMap(role -> role.getPermissions().stream())
-	.map(permission -> new SimpleGrantedAuthority(permission.getName()))
-	.collect(Collectors.toSet());
-	}
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
 
-	@Override
+	return user.getUserRoles().stream()
+				.map(UserRole::getRole)
+				.flatMap(role -> role.getRolePermissions().stream())
+				.map(rp -> new SimpleGrantedAuthority(rp.getPermission().getName()))
+				.collect(Collectors.toSet());
+}
+
+
+@Override
 	public String getPassword() {
 	return user.getPassword();
 	}

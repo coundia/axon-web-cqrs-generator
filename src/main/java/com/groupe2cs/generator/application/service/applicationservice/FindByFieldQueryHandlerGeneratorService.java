@@ -40,6 +40,7 @@ public class FindByFieldQueryHandlerGeneratorService {
             context.put("field", field);
             context.put("name", definition.getName());
             context.put("isId", field.isId());
+            context.put("isUnique", field.isUnique());
 
             String className = "FindBy" +definition.getName() + field.getNameCapitalized() +  "Handler";
             context.put("className", className);

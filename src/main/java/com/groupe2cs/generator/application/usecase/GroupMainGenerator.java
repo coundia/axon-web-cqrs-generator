@@ -8,7 +8,6 @@ import com.groupe2cs.generator.application.service.domainservice.VoGeneratorServ
 import com.groupe2cs.generator.application.service.infrastructureservice.EntityGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RabbitMqGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
-import com.groupe2cs.generator.application.service.infrastructureservice.SecurityGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
 import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.AllTestGeneratorService;
@@ -17,11 +16,13 @@ import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.application.dto.ApiResponseDto;
 import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+@RequiredArgsConstructor
 @Service
 public class GroupMainGenerator {
 
@@ -51,9 +52,8 @@ public class GroupMainGenerator {
     private final SharedGeneratorService sharedGeneratorService;
     private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final UsecaseGeneratorService usecaseGeneratorService;
-
     private final RabbitMqGeneratorService rabbitMqGeneratorService;
-    private final SecurityGeneratorService securityGeneratorService;
+
 
 
     private EntityDefinition loadFromFileDefinition() {
@@ -65,71 +65,6 @@ public class GroupMainGenerator {
 
     private void log(String message) {
         System.out.println(message);
-    }
-
-    public GroupMainGenerator(
-            GeneratorProperties properties,
-            CommandGeneratorService commandGenerator,
-            AggregateGeneratorService aggregateGenerator,
-            VoGeneratorService voGenerator,
-            EventGeneratorService eventGenerator,
-            ProjectionGeneratorService projectionGenerator,
-            DtoRequestGeneratorService dtoRequestGeneratorService,
-            MapperGeneratorService mapperGenerator,
-            DtoResponseGeneratorService dtoResponseGeneratorService,
-            ExceptionGeneratorService exceptionGeneratorService,
-            RepositoryGeneratorService repositoryGeneratorService,
-            EntityGeneratorService entityGeneratorService,
-            FindAllQueryGeneratorService listQueryGeneratorService,
-            FindAllQueryHandlerGeneratorService listQueryHandlerGeneratorService,
-            ListControllerGeneratorService listControllerGeneratorService,
-            PagedResponseGeneratorService pagedResponseGeneratorService,
-            CreateControllerGeneratorService createControllerGeneratorService,
-            DeleteControllerGeneratorService deleteControllerGeneratorService,
-            FindByFieldControllerGeneratorService findByFieldControllerGeneratorService,
-            UpdateControllerGeneratorService updateControllerGeneratorService,
-            FindByFieldQueryGeneratorService findByFieldQueryGeneratorService,
-            FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService,
-            FindByFieldProjectionGeneratorService findByFieldProjectionGeneratorService,
-            AllTestGeneratorService controllerAllIntegrationTestGeneratorService,
-            SharedGeneratorService sharedGeneratorService,
-            SharedTestGeneratorService testControllerIntegrationTestGeneratorService,
-            UsecaseGeneratorService usecaseGeneratorService,
-            RabbitMqGeneratorService rabbitMqGeneratorService,
-            SecurityGeneratorService securityGeneratorService
-
-    ) {
-        this.properties = properties;
-        this.commandGenerator = commandGenerator;
-        this.aggregateGenerator = aggregateGenerator;
-        this.voGenerator = voGenerator;
-        this.eventGenerator = eventGenerator;
-        this.projectionGenerator = projectionGenerator;
-        this.dtoRequestGeneratorService = dtoRequestGeneratorService;
-        this.mapperGenerator = mapperGenerator;
-        this.dtoResponseGeneratorService = dtoResponseGeneratorService;
-        this.exceptionGeneratorService = exceptionGeneratorService;
-        this.repositoryGeneratorService = repositoryGeneratorService;
-        this.entityGeneratorService = entityGeneratorService;
-        this.listQueryGeneratorService = listQueryGeneratorService;
-        this.listQueryHandlerGeneratorService = listQueryHandlerGeneratorService;
-        this.listControllerGeneratorService = listControllerGeneratorService;
-        this.pagedResponseGeneratorService = pagedResponseGeneratorService;
-        this.createControllerGeneratorService = createControllerGeneratorService;
-        this.testControllerIntegrationTestGeneratorService = testControllerIntegrationTestGeneratorService;
-
-        this.deleteControllerGeneratorService = deleteControllerGeneratorService;
-        this.findByFieldControllerGeneratorService = findByFieldControllerGeneratorService;
-        this.updateControllerGeneratorService = updateControllerGeneratorService;
-
-        this.findByFieldQueryGeneratorService = findByFieldQueryGeneratorService;
-        this.findByFieldQueryHandlerGeneratorService = findByFieldQueryHandlerGeneratorService;
-        this.controllerAllIntegrationTestGeneratorService = controllerAllIntegrationTestGeneratorService;
-        this.sharedGeneratorService = sharedGeneratorService;
-        this.usecaseGeneratorService = usecaseGeneratorService;
-
-        this.rabbitMqGeneratorService = rabbitMqGeneratorService;
-        this.securityGeneratorService = securityGeneratorService;
     }
 
     public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
@@ -203,10 +138,6 @@ public class GroupMainGenerator {
                 testControllerIntegrationTestGeneratorService.generate(outputDir,definition);
                 controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
 
-                if (definition.isInStack("Security")) {
-                    emit(sink, "Generating Security...");
-                    securityGeneratorService.generate(definition, outputDir);
-                }
 
                 emit(sink, "Completed!");
 

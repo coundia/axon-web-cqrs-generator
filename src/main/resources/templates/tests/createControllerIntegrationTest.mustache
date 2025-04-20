@@ -7,15 +7,26 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class {{name}}CreateControllerIntegrationTest extends BaseIntegrationTests {
 
+@Autowired
+private CommandGateway commandGateway;
+
 @Test
 void it_should_be_able_to_add_{{nameLower}}() {
 
-		{{name}}Request requestDTO = {{name}}Request.random();
+		{{name}}Request requestDTO = new {{name}}Request();
+
+		{{#fields}}
+			{{^isId}}
+		requestDTO.set{{nameCapitalized}}({{{testValue}}});
+			{{/isId}}
+		{{/fields}}
+
  		String uri = "/v1/commands/{{nameLower}}";
 		ResponseEntity<{{name}}Response> response = this.postForEntity(uri, requestDTO, {{name}}Response.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

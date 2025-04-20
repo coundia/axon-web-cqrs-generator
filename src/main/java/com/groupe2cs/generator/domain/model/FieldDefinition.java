@@ -1,7 +1,14 @@
 package com.groupe2cs.generator.domain.model;
 
+import lombok.*;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FieldDefinition implements Serializable {
     private String type;
     private String name;
@@ -9,12 +16,32 @@ public class FieldDefinition implements Serializable {
     private String nameCamelCase;
     private Boolean isId;
     private String relation;
+    private Boolean unique;
+    private Boolean nullable;
 
     public FieldDefinition(String type, String name) {
         this.type = type;
         this.name = name;
         this.nameCapitalized = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
         this.isId = this.isId();
+    }
+
+    public Boolean getUnique() {
+
+        if (unique == null) {
+            return false;
+        }
+
+        return unique;
+    }
+
+    public Boolean getNullable() {
+
+        if (nullable == null) {
+            return false;
+        }
+
+        return nullable;
     }
 
     public String getType() {
@@ -82,6 +109,18 @@ public class FieldDefinition implements Serializable {
 
     public boolean isId() {
         return name.equalsIgnoreCase("id");
+    }
+
+    public boolean isUnique() {
+
+        if (isId()){
+            return true;
+        }
+        if( unique == null) {
+            return false;
+        }
+
+        return unique;
     }
 
     public boolean isFileType() {

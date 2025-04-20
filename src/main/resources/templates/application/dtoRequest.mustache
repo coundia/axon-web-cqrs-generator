@@ -27,13 +27,4 @@ public class {{name}}Request implements Serializable {
 	{{/isId}}
 {{/fields}}
 
-	public static {{name}}Request random() {
-	{{name}}Request request = new {{name}}Request();
-	{{#fields}}
-	{{^isId}}
-	request.set{{nameCapitalized}}({{{testValue}}});
-	{{/isId}}
-	{{/fields}}
-	return request;
-}
 }

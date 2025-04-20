@@ -16,18 +16,20 @@ import static org.awaitility.Awaitility.await;
 public class {{name}}Fixtures {
 
 public static {{name}} randomOne({{name}}Repository repository) {
-{{name}} entity = new {{name}}();
-entity.setId(UUID.randomUUID().toString());
-{{#fields}}
-	{{^isId}}
-		entity.set{{nameCapitalized}}({{{testValue}}});
-	{{/isId}}
-{{/fields}}
-return repository.save(entity);
+	{{name}} entity = new {{name}}();
+	entity.setId(UUID.randomUUID().toString());
+	{{#fields}}
+		{{^isId}}
+			{{^relation}}
+			entity.set{{nameCapitalized}}({{{testValue}}});
+			{{/relation}}
+		{{/isId}}
+	{{/fields}}
+	return repository.save(entity);
 }
 
 public static {{name}} existingOrRandom({{name}}Repository repository) {
-return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
+	return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
 }
 
 public static {{name}} byId({{name}}Repository repository, String id) {
@@ -50,30 +52,32 @@ return repository.findById(id).orElse(null);
 }
 
 public static List<{{name}}> randomMany({{name}}Repository repository, int count) {
-List<{{name}}> items = new ArrayList<>();
-for (int i = 0; i < count; i++) {
-items.add(randomOne(repository));
-}
-return items;
+	List<{{name}}> items = new ArrayList<>();
+	for (int i = 0; i < count; i++) {
+	items.add(randomOne(repository));
+	}
+	return items;
 }
 
 public static void deleteAll({{name}}Repository repository) {
-repository.deleteAll();
+	repository.deleteAll();
 }
 
-public static String randomOneViaCommand(CommandGateway commandGateway) {
-{{#hasFiles}}
-MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
-String fileName = files.getName();
-{{/hasFiles}}
-Create{{name}}Command command = new Create{{name}}Command(
-{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(
-		{{{testValue}}}){{^last}},{{/last}}{{/isId}}{{/fields}}{{#hasFiles}},{{#fieldFiles}}
-	{{entity}}{{nameCapitalized}}.create(fileName){{^last}},{{/last}}
-{{/fieldFiles}}
-{{/hasFiles}}
-);
-return commandGateway.sendAndWait(command).toString();
+public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway) {
+	{{#hasFiles}}
+		MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
+		String fileName = files.getName();
+		{{/hasFiles}}
+		Create{{name}}Command command = new Create{{name}}Command(
+		{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(
+				{{{testValue}}}){{^last}},{{/last}}{{/isId}}{{/fields}}{{#hasFiles}},{{#fieldFiles}}
+			{{entity}}{{nameCapitalized}}.create(fileName){{^last}},{{/last}}
+		{{/fieldFiles}}
+		{{/hasFiles}}
+		);
+	 commandGateway.sendAndWait(command);
+
+	return command;
 }
 
 }

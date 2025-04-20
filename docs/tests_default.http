@@ -11,7 +11,7 @@ Content-Type: application/json
 	"table": "transactions",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "reference", "type": "String" },
+	  { "name": "reference", "type": "String" , "nullable": false, "unique": true },
 	  { "name": "amount", "type": "Double" }
 	]
   }

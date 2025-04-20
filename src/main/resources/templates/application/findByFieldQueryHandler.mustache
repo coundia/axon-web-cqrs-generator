@@ -14,7 +14,7 @@ public class FindBy{{name}}{{field.nameCapitalized}}Handler {
 
 private final {{name}}Repository repository;
 @QueryHandler
-{{^isId}}
+{{^isUnique}}
 public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
 {{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
 	List<{{name}}> entities = repository.findBy{{field.nameCapitalized}}(value);
@@ -22,14 +22,15 @@ public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Quer
 	.map({{name}}Mapper::toResponse)
 	.toList();
 	}
-{{/isId}}
-{{#isId}}
+{{/isUnique}}
+
+{{#isUnique}}
  public {{name}}Response handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
 	{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
-	{{name}} entity = repository.findById(value)
-		.orElseThrow(() -> new {{name}}NotFoundException(query.getId()));
+	{{name}} entity = repository.findBy{{field.nameCapitalized}}(value)
+		.orElseThrow(() -> new {{name}}NotFoundException("{{field.nameCapitalized}}", value));
 		return {{name}}Mapper.toResponse(entity);
 	}
-{{/isId}}
+{{/isUnique}}
 
 }
