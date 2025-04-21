@@ -205,6 +205,11 @@ public class EntityDefinition implements Serializable {
                 .anyMatch(s -> s.equalsIgnoreCase(stack));
     }
 
+    public boolean hasField(String fieldName) {
+        return fields.stream()
+                .anyMatch(f -> f.getName().equalsIgnoreCase(fieldName));
+    }
+
     public boolean hasRabbitMq() {
         return this.isInStack("rabbitMq");
     }

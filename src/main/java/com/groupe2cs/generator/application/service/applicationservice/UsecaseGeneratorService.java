@@ -83,6 +83,14 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
                         ),
                         outputApplicationUseCase
+                ),
+                new SharedTemplate(
+                        definition.getName() + "Gate",
+                        "infrastructure/security/gate.mustache",
+                        Set.of(
+                                Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
+                        ),
+                        outputApplicationUseCase
                 )
         );
 

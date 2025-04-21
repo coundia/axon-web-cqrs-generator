@@ -30,6 +30,7 @@ public class FieldTransformer {
 
             f.put("testValue", getTestValue(field));
             f.put("testDomainValue", getTestDomainValue(field));
+            f.put("primitiveValue", getPrimitiveValue(field));
 
             f.put("hasValidation", true);
             f.put("errorType", "IllegalArgumentException");
@@ -113,6 +114,20 @@ public class FieldTransformer {
             }
             case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
             default -> "UUID.randomUUID().toString()";
+        };
+    }
+
+    private static String getPrimitiveValue(FieldDefinition field) {
+        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+        return switch (primitive) {
+            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+            case "double" -> {
+                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+                yield String.valueOf(d);
+            }
+            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+            default ->   UUID.randomUUID().toString();
         };
     }
 

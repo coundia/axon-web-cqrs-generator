@@ -37,7 +37,7 @@ command.get{{nameCapitalized}}().value());
 
 @Test
 void test_event_serialization() throws JsonProcessingException {
-{{eventName}} event = new {{eventName}}({{#fields}} {{entity}}{{nameCapitalized}}.create({{{testDomainValue}}}){{^last}}, {{/last}}{{/fields}});
+{{eventName}} event = new {{eventName}}({{#fields}} {{entity}}{{nameCapitalized}}.create({{testDomainValue}}){{^last}}, {{/last}}{{/fields}});
 String json = new ObjectMapper().writeValueAsString(event);
 assertThat(json).isNotEmpty();
 }

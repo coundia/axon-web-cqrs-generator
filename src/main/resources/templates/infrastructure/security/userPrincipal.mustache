@@ -26,6 +26,12 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
 				.collect(Collectors.toSet());
 }
 
+	public Set<String> getRoles() {
+		return user.getUserRoles().stream()
+		.map(UserRole::getRole)
+		.map(Role::getName)
+		.collect(Collectors.toSet());
+	 }
 
 @Override
 	public String getPassword() {

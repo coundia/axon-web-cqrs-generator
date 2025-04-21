@@ -17,7 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+{{#security}}
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+{{/security}}
 
+{{#security}}
+@PreAuthorize("@{{nameLowercase}}Gate.canEdit(authentication, #id)")
+{{/security}}
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
@@ -39,7 +47,7 @@ schema = @Schema(implementation = {{name}}Response.class))),
 content = @Content)
 })
 @PutMapping(value="{id}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<{{name}}Response> update{{name}}(@PathVariable String id, @RequestBody {{name}}Request request) { {
+public ResponseEntity<{{name}}Response> update{{name}}(@Valid @PathVariable String id, @RequestBody {{name}}Request request) { {
 	try {
 
 	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id), request);

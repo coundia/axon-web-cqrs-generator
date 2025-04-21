@@ -30,7 +30,7 @@ public class EntityGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
         context.put("tableName", definition.getTable());
         context.put("entity", definition.getName());
-        context.put("entityLowerCase", definition.getName().toLowerCase());
+        context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 
 
         context.put("fields", FieldTransformer.transform(definition.getFieldsWithRelations(), definition.getName()));

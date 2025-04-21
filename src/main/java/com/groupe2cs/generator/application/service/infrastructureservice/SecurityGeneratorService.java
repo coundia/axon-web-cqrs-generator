@@ -35,14 +35,13 @@ public class SecurityGeneratorService {
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("username").type("String").unique(true).build(),
 						FieldDefinition.builder().name("password").type("String").build(),
-						FieldDefinition.builder().name("email").type("String").unique(true).nullable(true).build(),
-						FieldDefinition.builder().name("userRoles").type("List<UserRole>").relation("OneToMany").build()
+						FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
 				), "users"),
 
 				new EntityDefinition("Role", List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").type("String").unique(true).build(),
-						FieldDefinition.builder().name("rolePermissions").type("List<RolePermission>").relation("OneToMany").build()
+						FieldDefinition.builder().name("rolePermissions").type("Set<RolePermission>").relation("OneToMany").build()
 				), "roles"),
 
 				new EntityDefinition("Permission", List.of(
@@ -66,6 +65,11 @@ public class SecurityGeneratorService {
 		return Flux.fromIterable(entities)
 				.flatMap(entity -> {
 					entity.setModule("Security");
+					entity.setStack(
+							List.of(
+									"Security"
+							)
+					);
 					return groupMainGenerator.generateStreaming(
 							EntityDefinitionDTO.builder()
 									.outputDir(baseDir)
@@ -84,6 +88,9 @@ public class SecurityGeneratorService {
 		}
 
 		String baseDir = Utils.getParent(fullDir) + "/" + generatorProperties.getSecurityPackage();
+
+		String shareDir = Utils.getParent(fullDir) + "/" + generatorProperties.getSharedPackage();
+
 		List<String> messages = new ArrayList<>();
 
 		List<SharedTemplate> templates = List.of(
@@ -91,18 +98,31 @@ public class SecurityGeneratorService {
 						"infrastructure/security/jwtAuthenticationFilter.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 				new SharedTemplate("SecurityConfig",
 						"infrastructure/security/securityConfig.mustache",
 						null,
 						baseDir + "/" + generatorProperties.getConfigPackage()),
+
+				new SharedTemplate("SecurityInitializer",
+						"infrastructure/security/securityInitializer.mustache",
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
+						),
+						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 				new SharedTemplate("JwtProperties",
 						"infrastructure/security/jwtProperties.mustache",
 						null,
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 				new SharedTemplate("UserPrincipal",
 						"infrastructure/security/userPrincipal.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*"),
-						baseDir + "/" + generatorProperties.getServicePackage()),
+						Set.of(
+								Utils.getPackage(
+								baseDir + "/" + generatorProperties.getEntityPackage()) + ".*"),
+						baseDir + "/" + generatorProperties.getServicePackage()
+				),
 				new SharedTemplate("JwtService",
 						"infrastructure/security/jwtService.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*"),
@@ -134,11 +154,24 @@ public class SecurityGeneratorService {
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
 						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+
 				new SharedTemplate("AuthController",
 						"infrastructure/security/authController.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
+						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+				new SharedTemplate("AuthMe",
+						"infrastructure/security/authMe.mustache",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
+						),
 						baseDir + "/" + generatorProperties.getControllerPackage())
+
+
+
 		);
 
 		templates.forEach(template -> {

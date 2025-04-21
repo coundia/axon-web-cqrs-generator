@@ -43,12 +43,12 @@ void authenticate() {
 
   {{#security}}
 	AuthRequestDto authRequest = AuthRequestDto.builder()
-		.username("username" + java.util.UUID.randomUUID())
-		.password("testpass" + java.util.UUID.randomUUID())
+		.username("admin")
+		.password("admin")
 		.build();
 
 	ResponseEntity<AuthResponseDto> response = testRestTemplate.postForEntity(
-		getBaseUrl() + "/auth/register",
+		getBaseUrl() + "/auth/login",
 		new HttpEntity<>(authRequest),
 		AuthResponseDto.class
 	);

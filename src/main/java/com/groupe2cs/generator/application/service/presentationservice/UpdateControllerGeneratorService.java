@@ -31,7 +31,7 @@ public class UpdateControllerGeneratorService {
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLowercase", definition.getName().toLowerCase());
+        context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()+".*"));
@@ -47,13 +47,15 @@ public class UpdateControllerGeneratorService {
 
         Boolean hasFiles = !definition.getFieldFiles().isEmpty();
         context.put("hasFiles",hasFiles);
+        context.put("security", definition.isInStack("security"));
+
 
         if(!hasFiles){
             String content = templateEngine.render("presentation/updateController.mustache", context);
             fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
             return;
         }
-
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         String content = templateEngine.render("presentation/updateWithFilesController.mustache", context);
         fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
 

@@ -12,17 +12,46 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
-@Tag(name = "Auth", description = "Endpoints login ")
+@Tag(name = "Auth", description = "Endpoints for authentication")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
 private final AuthenticationManager authenticationManager;
 private final UserDetailsService userDetailsService;
 private final JwtService jwtService;
+
 @PostMapping("/login")
-public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto request) {
+@Operation(
+summary = "Authenticate user",
+description = "Authenticates a user with username and password, and returns a JWT token",
+requestBody = @RequestBody(
+description = "Authentication credentials",
+required = true,
+content = @Content(schema = @Schema(implementation = AuthRequestDto.class))
+)
+)
+@ApiResponses(value = {
+@ApiResponse(
+responseCode = "200",
+description = "Login successful",
+content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+),
+@ApiResponse(
+responseCode = "401",
+description = "Unauthorized - invalid credentials",
+content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+)
+})
+public ResponseEntity<AuthResponseDto> authenticate(@org.springframework.web.bind.annotation.RequestBody AuthRequestDto request) {
 	try {
 	authenticationManager.authenticate(
 	new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -30,8 +59,7 @@ public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto 
 	UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
 	String token = jwtService.generateToken(user);
 	return ResponseEntity.ok(
-	AuthResponseDto
-	.builder()
+	AuthResponseDto.builder()
 	.token(token)
 	.username(user.getUsername())
 	.code(1)
@@ -40,14 +68,11 @@ public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequestDto 
 	);
 	} catch (Exception e) {
 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	.body(
-	AuthResponseDto
-	.builder()
+	.body(AuthResponseDto.builder()
 	.token(null)
 	.code(0)
-	.message(e.getMessage())
-	.build()
-	);
+	.message("Unauthorized")
+	.build());
 	}
 	}
 	}

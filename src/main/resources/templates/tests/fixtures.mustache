@@ -59,6 +59,14 @@ public static List<{{name}}> randomMany({{name}}Repository repository, int count
 	return items;
 }
 
+public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count) {
+		List<Create{{name}}Command> items = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			items.add(randomOneViaCommand(commandGateway));
+		}
+	return items;
+}
+
 public static void deleteAll({{name}}Repository repository) {
 	repository.deleteAll();
 }

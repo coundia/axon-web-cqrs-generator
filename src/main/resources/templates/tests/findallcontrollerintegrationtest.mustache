@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 
 import java.util.List;
 
@@ -17,11 +18,14 @@ public class {{name}}FindAllControllerIntegrationTest extends BaseIntegrationTes
 @Autowired
 private {{name}}Repository {{nameLower}}Repository;
 
+@Autowired
+private CommandGateway commandGateway;
+
 @Test
 void it_should_be_able_to_get_all_{{nameLower}}s() {
-	{{name}}Fixtures.randomMany({{nameLower}}Repository, 5);
+	List<?> list = {{name}}Fixtures.randomManyViaCommand(commandGateway, 5);
 
-	String uri = "/v1/queries/list-{{nameLower}}";
+	String uri = "/v1/queries/{{entityUnCapitalized}}s";
 	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -22,7 +22,14 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf;
 import static org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf;
+{{#security}}
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+{{/security}}
 
+{{#security}}
+@PreAuthorize("@{{nameLowercase}}Gate.canRead(authentication, #id)")
+{{/security}}
 @RestController
 @RequestMapping("/api/v1/queries/{{nameLowercase}}")
 @Tag(name = "{{name}} Queries", description = "Endpoints for querying {{nameLowercase}}s by {{field.name}}")
@@ -35,7 +42,7 @@ public {{className}}({{name}}ReadApplicationService  applicationService) {
 	this.applicationService = applicationService;
 }
 
-@GetMapping("/by-{{field.name}}")
+@GetMapping("/{{field.name}}")
 @Operation(
 summary = "Find {{nameLowercase}} by {{field.name}}",
 description = "Returns {{#isId}}a single{{/isId}}{{^isId}}a list of{{/isId}} {{nameLowercase}}s that match the given {{field.name}}"

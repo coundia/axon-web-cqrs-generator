@@ -52,6 +52,7 @@ public class AllTestGeneratorService {
         context.put("name", entity);
         context.put("entity", entity);
         context.put("nameLower", entity.toLowerCase());
+        context.put("entityUnCapitalized", Utils.unCapitalize(entity));
 
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));

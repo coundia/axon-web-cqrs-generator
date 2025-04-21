@@ -34,12 +34,13 @@ public class ProjectionGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
         imports.add("org.axonframework.eventhandling.EventHandler");
+        context.put("security", definition.isInStack("security"));
 
         context.put("imports", imports);
         var fields = definition.getFieldsWithRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("fieldWithoutRelations", FieldTransformer.transform(definition.getFieldsWithoutRelations(), definition.getName()));
-
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         String content = templateEngine.render("presentation/projection.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Projection.java", content);
     }

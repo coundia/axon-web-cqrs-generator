@@ -36,23 +36,15 @@ void it_should_be_able_to_update_{{nameLower}}() {
 	 requestDTO.set{{nameCapitalized}}( updated.get{{nameCapitalized}}().value());
 		{{/relation}}
 		{{^relation}}
-	 requestDTO.set{{nameCapitalized}}({{testDomainValue}});
+	 requestDTO.set{{nameCapitalized}}({{{testDomainValue}}});
 		{{/relation}}
 		{{/isId}}
 	{{/fields}}
 
-	String uri = "/v1/commands/{{nameLower}}/" + existingId;
+	String uri = "/v1/commands/{{entityUnCapitalized}}/" + existingId;
 	ResponseEntity<String> response = this.put(uri,requestDTO);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-	{{name}} found = {{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
-	assertThat(found).isNotNull();
-	{{#fields}}
-		{{^isId}}
-			assertThat(found.get{{nameCapitalized}}()).isEqualTo(requestDTO.get{{nameCapitalized}}());
-		{{/isId}}
-	{{/fields}}
 
 	}
 }

@@ -30,7 +30,7 @@ public class {{entity}} {
 {{#relation}}
 {{#isOneToMany}}
 	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private {{{realType}}} {{nameLowerCase}} = new ArrayList<>();
+	private {{{realType}}} {{nameLowerCase}} = new HashSet<>();
 {{/isOneToMany}}
 {{#isManyToOne}}
 	@ManyToOne

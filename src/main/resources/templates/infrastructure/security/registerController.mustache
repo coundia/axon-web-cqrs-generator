@@ -1,14 +1,19 @@
 package {{package}};
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@Tag(name = "Auth", description = "Endpoints registration ")
+@Tag(name = "Auth", description = "Endpoints registration")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -17,19 +22,37 @@ public class RegisterController {
 private final RegisterUser registerUser;
 
 @PostMapping("/register")
+@Operation(
+summary = "Register a new user",
+description = "Creates a new user account with username and password",
+requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+description = "Registration credentials",
+required = true,
+content = @Content(schema = @Schema(implementation = AuthRequestDto.class))
+)
+)
+@ApiResponses(value = {
+@ApiResponse(
+responseCode = "200",
+description = "User registered successfully",
+content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+),
+@ApiResponse(
+responseCode = "400",
+description = "Invalid request or user already exists",
+content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+)
+})
 public ResponseEntity<AuthResponseDto> register(@RequestBody AuthRequestDto request) {
 	try {
 	return ResponseEntity.ok(registerUser.handle(request));
 	} catch (Exception e) {
 	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	.body(
-	AuthResponseDto
-	.builder()
+	.body(AuthResponseDto.builder()
 	.token(null)
 	.code(0)
 	.message(e.getMessage())
-	.build()
-	);
+	.build());
 	}
 	}
-}
+	}

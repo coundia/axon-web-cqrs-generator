@@ -16,7 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+{{#security}}
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+{{/security}}
 
+{{#security}}
+@PreAuthorize("@{{nameLowercase}}Gate.canDelete(authentication, #id)")
+{{/security}}
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")

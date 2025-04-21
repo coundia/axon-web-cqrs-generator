@@ -31,9 +31,10 @@ public class FindByFieldControllerGeneratorService {
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        context.put("security", definition.isInStack("security"));
 
         for (var field : fields) {
             Map<String, Object> fieldContext = new HashMap<>(context);
@@ -41,7 +42,7 @@ public class FindByFieldControllerGeneratorService {
             fieldContext.put("field", field);
             String className = "FindBy" + capitalize(field.getName()) + definition.getName() + "Controller";
             fieldContext.put("className", className);
-            fieldContext.put("nameLowercase", definition.getName().toLowerCase());
+            fieldContext.put("nameLowercase", Utils.unCapitalize(definition.getName()));
             fieldContext.put("isId", field.isId());
 
             Set<String> imports = new LinkedHashSet<>();

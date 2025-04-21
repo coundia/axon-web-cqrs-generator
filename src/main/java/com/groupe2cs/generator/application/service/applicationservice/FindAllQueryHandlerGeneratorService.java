@@ -35,7 +35,7 @@ public class FindAllQueryHandlerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getQueryHandlerPackage();
         context.put("package", Utils.getPackage(outputDir));
         context.put("entity", definition.getName());
-        context.put("entityLower", definition.getName().toLowerCase());
+        context.put("entityLower", Utils.unCapitalize(definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add("org.axonframework.queryhandling.QueryHandler");

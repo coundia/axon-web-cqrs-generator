@@ -30,9 +30,11 @@ public class DeleteControllerGeneratorService {
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLowercase", definition.getName().toLowerCase());
+        context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
+        context.put("security", definition.isInStack("security"));
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");

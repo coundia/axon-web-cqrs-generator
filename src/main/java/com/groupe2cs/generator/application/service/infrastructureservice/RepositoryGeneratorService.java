@@ -30,7 +30,7 @@ public class RepositoryGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "." + definition.getName());
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
 
         context.put("imports", imports);
 
@@ -38,6 +38,28 @@ public class RepositoryGeneratorService {
         context.put("entityName", definition.getName());
         var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+
+        var compositeKeys = definition.getFields().stream()
+                .filter(f -> f.getRelation()!= null)
+                .toList();
+
+        if (compositeKeys.size() == 2) {
+            Map<String, Object> left = new HashMap<>();
+            left.put("name", compositeKeys.get(0).getName());
+            left.put("nameCapitalized", Utils.capitalize(compositeKeys.get(0).getName()));
+            left.put("type", compositeKeys.get(0).getType());
+
+            Map<String, Object> right = new HashMap<>();
+            right.put("name", compositeKeys.get(1).getName());
+            right.put("nameCapitalized", Utils.capitalize(compositeKeys.get(1).getName()));
+            right.put("type", compositeKeys.get(1).getType());
+
+            Map<String, Object> composite = new HashMap<>();
+            composite.put("left", left);
+            composite.put("right", right);
+
+            context.put("compositeKeys", List.of(composite));
+        }
 
         String content = templateEngine.render("infrastructure/repository.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);

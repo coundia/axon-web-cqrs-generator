@@ -39,9 +39,11 @@ public class FindByFieldProjectionGeneratorService {
             context.put("repositoryPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()));
             context.put("queryPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()));
             context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
-            context.put("nameLowercase", definition.getName().toLowerCase());
+            context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
             String className = "FindBy" + field.getNameCapitalized() + definition.getName() + "Projection";
             context.put("className", className);
+            context.put("nameUpperCase", definition.getName().toUpperCase());
+            context.put("security", definition.isInStack("security"));
 
             String content = templateEngine.render("presentation/findByFieldProjection.mustache", context);
             fileWriterService.write(outputDir, className + ".java", content);

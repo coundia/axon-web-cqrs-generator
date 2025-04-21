@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,4 +33,7 @@ public interface {{entityName}}Repository extends JpaRepository<{{entityName}}, 
 	{{/isId}}
 {{/fields}}
 
+{{#compositeKeys}}
+	Optional<{{entityName}}> findBy{{left.nameCapitalized}}And{{right.nameCapitalized}}({{left.type}} {{left.name}}, {{right.type}} {{right.name}});
+{{/compositeKeys}}
 }

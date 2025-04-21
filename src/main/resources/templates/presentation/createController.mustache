@@ -15,6 +15,15 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+{{#security}}
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+{{/security}}
+
+{{#security}}
+@PreAuthorize("@{{nameLowercase}}Gate.canCreate(authentication)")
+{{/security}}
 
 @RestController
 @RequestMapping("/api/v1/commands/{{nameLowercase}}")
@@ -45,7 +54,7 @@ content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
 content = @Content(schema = @Schema()))
 })
-public ResponseEntity<{{name}}Response> add{{name}}(@RequestBody {{name}}Request request) {
+public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}Request request) {
 	try {
 
 	{{name}}Response response =  applicationService.create{{name}}(request);

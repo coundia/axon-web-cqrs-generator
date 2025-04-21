@@ -27,13 +27,14 @@ public class ListControllerGeneratorService {
 
         String outputDir = baseDir + "/" + properties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLower", definition.getName().toLowerCase());
-
+        context.put("nameLower", Utils.unCapitalize(definition.getName()));
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + properties.getDtoPackage()+".*"));
         imports.add(Utils.getPackage(baseDir + "/" + properties.getApplicationUseCasePackage()) + ".*");
 
         context.put("imports", imports);
+        context.put("security", definition.isInStack("security"));
 
         String content = templateEngine.render("presentation/listController.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "ListController.java", content);

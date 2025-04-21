@@ -28,7 +28,8 @@ public class CreateControllerGeneratorService {
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLowercase", definition.getName().toLowerCase());
+        context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
+        context.put("nameUpperCase", definition.getName().toUpperCase());
         context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
 
         var fields = definition.getFields();
@@ -37,6 +38,7 @@ public class CreateControllerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
         context.put("imports", imports);
+        context.put("security", definition.isInStack("security"));
 
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         String content = templateEngine.render("presentation/createController.mustache", context);
