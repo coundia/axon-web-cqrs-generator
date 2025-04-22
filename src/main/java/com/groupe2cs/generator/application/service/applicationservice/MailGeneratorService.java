@@ -26,6 +26,7 @@ public class MailGeneratorService {
 		String domainDir = sharedDir + "/" + generatorProperties.getDomainPackage();
 		String infraDir = sharedDir + "/" + generatorProperties.getInfrastructurePackage();
 		String applicationDir = sharedDir + "/" + generatorProperties.getApplicationPackage();
+		String presentationDir = sharedDir + "/" + generatorProperties.getPresentationPackage();
 
 		String domainPkg = Utils.getPackage(domainDir);
 		String applicationPkg = Utils.getPackage(applicationDir);
@@ -75,6 +76,16 @@ public class MailGeneratorService {
 						),
 						testDir,
 						Utils.getTestPackage(infraDir)
+				)
+				,
+				new SharedTemplate(
+						"SendTestsMailController",
+						"presentation/sendMailController.mustache",
+						Set.of(
+								domainPkg + ".MailSender",
+								applicationPkg+".NotificationService"
+						),
+						presentationDir
 				)
 		);
 

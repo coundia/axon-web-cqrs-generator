@@ -14,10 +14,10 @@ public class {{className}}  {
 
 private final MailSender mailSender;
 
-	public void notifyByEmail(String to, String subject, String content) {
+	public void notifyByEmail(String from,String to, String subject, String content) {
 
-		log.info("MAIL → To: {}, Subject: {}, Content: {}", to, subject, content);
-		mailSender.send(to, subject, content);
+		log.info("MAIL → From: {}, To: {}, Subject: {}, Content: {}",from, to, subject, content);
+		mailSender.send(from, to, subject, content);
 
 	}
 }

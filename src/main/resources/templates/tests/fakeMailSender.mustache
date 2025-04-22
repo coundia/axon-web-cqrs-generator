@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Profile("test")
 public class {{className}} implements MailSender {
 	@Override
-	public void send(String to, String subject, String content) {
-		log.info("FAKE MAIL → To: {}, Subject: {}, Content: {}", to, subject, content);
+	public void send(String from, String to, String subject, String content) {
+		log.info("FAKE MAIL → from: {}, To: {}, Subject: {}, Content: {}",from, to, subject, content);
 	}
 }

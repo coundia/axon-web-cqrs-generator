@@ -21,7 +21,7 @@ public class {{className}} {
 
 		MailSender service = new MailSenderImpl(mailSender);
 
-		service.send("to@example.com", "subject", "content");
+		service.send("noreply@example.com", "to@example.com", "subject", "content");
 
 		verify(mailSender, times(1)).send(any(MimeMessage.class));
 	}
