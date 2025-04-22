@@ -54,6 +54,7 @@ public class GroupMainGenerator {
     private final UsecaseGeneratorService usecaseGeneratorService;
     private final RabbitMqGeneratorService rabbitMqGeneratorService;
     private final SyncGeneratorService syncGeneratorService;
+    private final MailGeneratorService mailGeneratorService;
 
 
 
@@ -142,6 +143,11 @@ public class GroupMainGenerator {
                 if (definition.isInStack("sync")) {
                     emit(sink, "Generating Sync Modules...");
                     syncGeneratorService.generate(definition, outputDir);
+                }
+
+                if (definition.isInStack("mail")) {
+                    emit(sink, "Generating Mail Modules...");
+                    mailGeneratorService.generate(definition, outputDir);
                 }
 
                 emit(sink, "Completed!");

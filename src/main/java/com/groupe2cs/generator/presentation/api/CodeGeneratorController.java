@@ -30,6 +30,7 @@ public class CodeGeneratorController {
         String outputDir = request.getOutputDir();
 
         definition.getStack().add("sync");
+        definition.getStack().add("mail");
 
         log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
         log.info("📦 Fields: {}", definition.getFields().toString());

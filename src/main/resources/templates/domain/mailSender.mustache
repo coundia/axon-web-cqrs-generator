@@ -1,0 +1,9 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+public interface {{className}}  {
+	void send(String to, String subject, String content);
+}
