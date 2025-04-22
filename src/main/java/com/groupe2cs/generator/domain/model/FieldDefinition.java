@@ -148,8 +148,12 @@ public class FieldDefinition implements Serializable {
         }
         String lower = type.toLowerCase();
         return switch (lower) {
-            case "string", "int", "integer", "long", "double",
-                 "float", "boolean", "short", "char" -> true;
+            case "string",
+                 "int", "integer", "long", "double",
+                 "float", "boolean", "short", "char",
+                    "byte", "bigdecimal", "bigint",
+                    "java.time.instant","java.util.date","java.time.localdate","java.time.localdatetime"
+                    -> true;
             default -> false;
         };
     }

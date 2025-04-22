@@ -38,6 +38,13 @@ public class SecurityGeneratorService {
 						FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
 				), "users"),
 
+				new EntityDefinition("PasswordReset", List.of(
+						FieldDefinition.builder().name("id").type("String").build(),
+						FieldDefinition.builder().name("token").type("String").unique(true).build(),
+						FieldDefinition.builder().name("username").type("String").build(),
+						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
+				), "password_resets"),
+
 				new EntityDefinition("Role", List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").type("String").unique(true).build(),
@@ -168,6 +175,60 @@ public class SecurityGeneratorService {
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
 						),
+						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+				new SharedTemplate("ForgotPasswordRequestDto",
+						"infrastructure/security/forgotPasswordRequestDto.mustache",
+						Set.of(
+						),
+						baseDir + "/" + generatorProperties.getDtoPackage()),
+
+				new SharedTemplate("ResetPasswordDto",
+						"infrastructure/security/dtoResetPassword.mustache",
+						Set.of(
+						),
+						baseDir + "/" + generatorProperties.getDtoPackage()),
+
+				new SharedTemplate("RefreshTokenDto",
+						"infrastructure/security/dtoRefreshToken.mustache",
+						Set.of(
+						),
+						baseDir + "/" + generatorProperties.getDtoPackage()),
+
+				new SharedTemplate("PasswordResetService",
+						"infrastructure/security/passwordResetService.mustache",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDomainPackage()) + ".MailSender",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".PasswordResetCreatedEvent",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*"
+						),
+						baseDir + "/" + generatorProperties.getServicePackage()),
+
+				new SharedTemplate("RefreshTokenService",
+						"infrastructure/security/refreshTokenService.mustache",
+						Set.of(
+						),
+						baseDir + "/" + generatorProperties.getServicePackage()),
+
+				new SharedTemplate("ForgotPasswordController",
+						"infrastructure/security/forgotPasswordController.mustache",
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
+						),
+						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+
+				new SharedTemplate("RefreshTokenController",
+						"infrastructure/security/refreshTokenController.mustache",
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
+						),
 						baseDir + "/" + generatorProperties.getControllerPackage())
 
 
@@ -188,6 +249,7 @@ public class SecurityGeneratorService {
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
 						fullDir),
+
 				new SharedTemplate("RegisterControllerTests",
 						"infrastructure/security/registerControllerTests.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
@@ -195,7 +257,25 @@ public class SecurityGeneratorService {
 								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
+						fullDir),
+
+				new SharedTemplate("RefreshTokenControllerTest",
+						"infrastructure/security/refreshTokenControllerTest.mustache",
+						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
+						fullDir),
+				new SharedTemplate("ForgotPasswordControllerTest",
+						"infrastructure/security/forgotPasswordControllerTest.mustache",
+						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
 						fullDir)
+
 		);
 
 		tests.forEach(t -> {
@@ -228,6 +308,7 @@ public class SecurityGeneratorService {
 		String packageName = Utils.getTestPackage(fullPath);
 		context.put("package", packageName);
 		context.put("imports", template.getImports());
+		context.put("className", template.getClassName());
 		String outputDir = Utils.getTestDir(fullPath);
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(outputDir, template.getClassName() + ".java", content);

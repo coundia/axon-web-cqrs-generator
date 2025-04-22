@@ -71,8 +71,11 @@ public class FieldTransformer {
         if (type.contains("id")) {
             return "\"" + UUID.randomUUID().toString() + "\"";
         }
-        if (type.contains("date") || type.contains("time")) {
-            return "LocalDateTime.now()";
+        if (type.contains("date")) {
+            return "java.time.LocalDateTime.now()";
+        }
+        if(type.contains("instant")) {
+            return "java.time.Instant.now().plusSeconds(3600)";
         }
 
         if(type.contains("url")) {
@@ -113,6 +116,8 @@ public class FieldTransformer {
                 yield String.valueOf(d);
             }
             case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+            case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
+            case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
             default -> "UUID.randomUUID().toString()";
         };
     }
@@ -127,6 +132,8 @@ public class FieldTransformer {
                 yield String.valueOf(d);
             }
             case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+            case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
+            case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
             default ->   UUID.randomUUID().toString();
         };
     }
