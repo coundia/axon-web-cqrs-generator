@@ -53,6 +53,7 @@ public class GroupMainGenerator {
     private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
     private final UsecaseGeneratorService usecaseGeneratorService;
     private final RabbitMqGeneratorService rabbitMqGeneratorService;
+    private final SyncGeneratorService syncGeneratorService;
 
 
 
@@ -138,6 +139,10 @@ public class GroupMainGenerator {
                 testControllerIntegrationTestGeneratorService.generate(outputDir,definition);
                 controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
 
+                if (definition.isInStack("sync")) {
+                    emit(sink, "Generating Sync Modules...");
+                    syncGeneratorService.generate(definition, outputDir);
+                }
 
                 emit(sink, "Completed!");
 

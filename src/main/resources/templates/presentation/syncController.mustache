@@ -1,0 +1,64 @@
+package {{package}};
+
+{{#imports}}
+	import {{.}};
+{{/imports}}
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+{{#security}}
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+
+@PreAuthorize("@{{nameLowercase}}Gate.canSync(authentication)")
+{{/security}}
+@RestController
+@RequestMapping("/api/v1/commands/{{nameLowercase}}/sync")
+@Tag(name = "{{name}} commands", description = "Endpoint to synchronize {{nameLowercase}}s")
+@Slf4j
+@RequiredArgsConstructor
+public class {{className}} {
+
+		private final {{name}}SyncApplicationService applicationService;
+
+		@PostMapping
+		@Operation(
+		summary = "Sync {{nameLowercase}}s",
+		description = "Initiates synchronization of {{nameLowercase}} deltas without blocking the client"
+		)
+		@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "Sync initiated",
+		content = @Content(schema = @Schema(implementation = ApiResponseDto.class))),
+		@ApiResponse(responseCode = "500", description = "Internal server error",
+		content = @Content(schema = @Schema()))
+		})
+		public ResponseEntity<ApiResponseDto> sync{{name}}(@Valid @RequestBody {{name}}SyncRequest request) {
+			try {
+
+			applicationService.sync{{name}}(request);
+			return ResponseEntity.ok(ApiResponseDto.builder()
+				.code(1)
+				.message("Sync in progress")
+				.build()
+			);
+			} catch (Exception ex) {
+
+			log.error("Failed to initiate sync of {{nameLowercase}}s: {}", ex.getMessage());
+
+			return ResponseEntity.status(500)
+				.body(ApiResponseDto.builder()
+				.code(0)
+				.message(ex.getMessage())
+				.build()
+			);
+		}
+	}
+}

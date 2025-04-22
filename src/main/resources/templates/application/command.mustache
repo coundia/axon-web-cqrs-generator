@@ -21,19 +21,27 @@ import java.util.UUID;
 @Builder
 public class {{name}}Command implements Serializable {
 @TargetAggregateIdentifier
-{{#fields}}
-{{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
-{{/fields}}
-{{#isDeleted}}private {{entity}}Id id;{{/isDeleted}}
+{{^isCreated}}
+	private {{entity}}Id id;
+{{/isCreated}}
 {{#isCreated}}
-public {{name}}Command(
-{{#fields}} {{^isId}}  {{entity}}{{nameCapitalized}} {{nameLowerCase}} {{^last}},{{/last}} {{/isId}}
+	@Builder.Default
+	private {{entity}}Id id = {{entity}}Id.create(UUID.randomUUID().toString());
+{{/isCreated}}
+{{#fields}}
+	{{^isId}}
+ 	{{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
+	{{/isId}}
 {{/fields}}
-){
-this.id = {{entity}}Id.create(UUID.randomUUID().toString());
-{{#fields}} {{^isId}} this.{{name}} = {{nameLowerCase}} ; {{/isId}}
-{{/fields}}
-}
+{{#isCreated}}
+	public {{name}}Command(
+		{{#fields}} {{^isId}}  {{entity}}{{nameCapitalized}} {{nameLowerCase}} {{^last}},{{/last}} {{/isId}}
+		{{/fields}}
+		){
+			this.id = {{entity}}Id.create(UUID.randomUUID().toString());
+			{{#fields}} {{^isId}} this.{{name}} = {{nameLowerCase}} ; {{/isId}}
+			{{/fields}}
+	}
 {{/isCreated}}
 
 

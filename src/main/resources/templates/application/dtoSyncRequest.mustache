@@ -3,6 +3,7 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+import java.util.List;
 import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "{{name}}Response", description = "Response payload for {{name}}")
-public class {{name}}Response implements Serializable {
+@Schema(name = "{{className}}", description = "Request payload for synchronizing {{nameLowercase}}s")
+public class {{className}} implements Serializable {
 
-{{#fields}}
-	@Schema(description = "{{description}}", example = "{{example}}")
-	private {{primitiveType}} {{name}};
-{{/fields}}
+@Schema(description = "Batch of {{nameLowercase}} deltas")
+private List<{{name}}DeltaDto> deltas;
+	}
 
-}

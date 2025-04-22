@@ -29,6 +29,8 @@ public class CodeGeneratorController {
         EntityDefinition definition = request.getDefinition();
         String outputDir = request.getOutputDir();
 
+        definition.getStack().add("sync");
+
         log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
         log.info("📦 Fields: {}", definition.getFields().toString());
         definition.getFields().forEach(

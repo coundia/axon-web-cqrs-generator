@@ -9,10 +9,7 @@ import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.shared.Utils;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UsecaseGeneratorService {
@@ -29,11 +26,11 @@ public class UsecaseGeneratorService {
 
     public void generate(EntityDefinition definition, String baseDir) {
 
-      //  String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
         String outputShared = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
         String outputApplicationUseCase = baseDir + "/" + generatorProperties.getApplicationUseCasePackage();
 
-        List<SharedTemplate> sharedTemplates = List.of(
+        List<SharedTemplate> sharedTemplates = new ArrayList<>();
+        sharedTemplates.addAll(List.of(
                 new SharedTemplate(
                         definition.getName() + "CreateApplicationService",
                         "application/createApplicationService.mustache",
@@ -83,16 +80,21 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
                         ),
                         outputApplicationUseCase
-                ),
-                new SharedTemplate(
-                        definition.getName() + "Gate",
-                        "infrastructure/security/gate.mustache",
-                        Set.of(
-                                Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
-                        ),
-                        outputApplicationUseCase
                 )
-        );
+        ));
+
+        if (definition.isInStack("security")) {
+            sharedTemplates.add(
+                    new SharedTemplate(
+                            definition.getName() + "Gate",
+                            "infrastructure/security/gate.mustache",
+                            Set.of(
+                                    Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
+                            ),
+                            outputApplicationUseCase
+                    )
+            );
+        }
 
         sharedTemplates.forEach(template -> generateSharedFile(template, definition));
     }

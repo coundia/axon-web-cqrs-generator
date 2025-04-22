@@ -1,0 +1,44 @@
+package {{package}};
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import java.time.Instant;
+
+@Service
+@RequiredArgsConstructor
+public class {{className}} {
+
+	private final CommandGateway commandGateway;
+
+	public void sync{{name}}({{name}}SyncRequest request) {
+		for (var d : request.getDeltas()) {
+			switch (d.getType()) {
+				case "CREATE" -> commandGateway.sendAndWait(
+					Create{{name}}Command.builder()
+						{{#fields}}
+							{{^isId}}
+								.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+							{{/isId}}
+						{{/fields}}
+						.build()
+		);
+		case "UPDATE" -> commandGateway.sendAndWait(
+					Update{{name}}Command.builder()
+						{{#fields}}
+								.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+						{{/fields}}
+						.build()
+		);
+		case "DELETE" -> commandGateway.sendAndWait(
+					Delete{{entity}}Command.builder()
+									.id({{entity}}Id.create(d.getId()) )
+									.build()
+				);
+			}
+		}
+	}
+}
