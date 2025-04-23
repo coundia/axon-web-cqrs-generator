@@ -4,25 +4,37 @@ package {{package}};
 import {{.}};
 {{/imports}}
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.Instant;
-import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class {{className}} {
+public class RefreshTokenControllerTest  extends BaseIntegrationTests {
 
-}
+
+@Test
+void it_should_return_new_token_when_refresh_token_valid() throws Exception {
+RefreshTokenDto dto = new RefreshTokenDto();
+dto.setRefreshToken("invalid-token");
+String uri = "/auth/refresh";
+ResponseEntity<PasswordResetResponse>
+	response =
+	this.postForEntity(uri, dto, PasswordResetResponse.class);
+	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+	}
+
+	@Test
+	void it_should_return_bad_request_when_refresh_token_invalid() throws Exception {
+	RefreshTokenDto dto = new RefreshTokenDto();
+	dto.setRefreshToken("invalid-token");
+	String uri = "/auth/refresh";
+	ResponseEntity<PasswordResetResponse>
+	response =
+	this.postForEntity(uri, dto, PasswordResetResponse.class);
+	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
+
+	}
+	}

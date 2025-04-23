@@ -101,10 +101,7 @@ public class SecurityGeneratorService {
 		List<String> messages = new ArrayList<>();
 
 		List<SharedTemplate> templates = List.of(
-				new SharedTemplate("JwtAuthenticationFilter",
-						"infrastructure/security/jwtAuthenticationFilter.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
-						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 
 				new SharedTemplate("SecurityConfig",
 						"infrastructure/security/securityConfig.mustache",
@@ -119,10 +116,7 @@ public class SecurityGeneratorService {
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
-				new SharedTemplate("JwtProperties",
-						"infrastructure/security/jwtProperties.mustache",
-						null,
-						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 				new SharedTemplate("UserPrincipal",
 						"infrastructure/security/userPrincipal.mustache",
 						Set.of(
@@ -226,6 +220,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenController",
 						"infrastructure/security/refreshTokenController.mustache",
 						Set.of(
+								Utils.getPackage(shareDir+ "/" + generatorProperties.getApplicationPackage())+".ApiResponseDto",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
 						),
@@ -239,6 +234,7 @@ public class SecurityGeneratorService {
 			generateFile(template, definition);
 			messages.add("✔️ Generated: " + template.getClassName());
 		});
+
 
 		List<SharedTemplate> tests = List.of(
 				new SharedTemplate("AuthControllerTests",
@@ -262,11 +258,18 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenControllerTest",
 						"infrastructure/security/refreshTokenControllerTest.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
+								Utils.getPackage(shareDir )+".BaseIntegrationTests"
+						),
 						fullDir),
+
+				new SharedTemplate("AuthMeControllerIntegrationTest",
+						"infrastructure/security/authMeControllerIntegrationTest.mustache",
+						Set.of(
+
+								Utils.getPackage(shareDir)+".BaseIntegrationTests"
+						),
+						fullDir),
+
 				new SharedTemplate("ForgotPasswordControllerTest",
 						"infrastructure/security/forgotPasswordControllerTest.mustache",
 						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",

@@ -15,100 +15,87 @@ import java.util.*;
 @RequiredArgsConstructor
 public class SecurityInitializer {
 
-private final RoleRepository roleRepository;
-private final PermissionRepository permissionRepository;
-private final RolePermissionRepository rolePermissionRepository;
-private final UserRepository userRepository;
-private final UserRoleRepository userRoleRepository;
-private final PasswordEncoder passwordEncoder;
+private static final String ROLE_ADMIN = "ROLE_ADMIN";
+private static final String ROLE_USER = "ROLE_USER";
+private static final String ADMIN_USERNAME = "admin";
+private static final String USER_USERNAME = "user";
+private static final String PASSWORD_ADMIN = "admin";
+private static final String PASSWORD_USER = "user";
+private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "DELETE");
 
-public static final String ROLE_ADMIN = "ROLE_ADMIN";
-public static final String ROLE_USER = "ROLE_USER";
-
-public static final String ADMIN_USERNAME = "admin";
-public static final String USER_USERNAME = "user";
-
-public static final String PASSWORD_ADMIN = "admin";
-public static final String PASSWORD_USER = "user";
-
-public static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "DELETE");
+	private final RoleRepository roleRepository;
+	private final PermissionRepository permissionRepository;
+	private final RolePermissionRepository rolePermissionRepository;
+	private final UserRepository userRepository;
+	private final UserRoleRepository userRoleRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@PostConstruct
 	public void init() {
 	createPermissions();
-	Map<String, Role> roles = createRoles();
+	var roles = createRoles();
 	assignPermissionsToRole(roles.get(ROLE_ADMIN));
 	createUserIfNotExist(ADMIN_USERNAME, PASSWORD_ADMIN, roles.get(ROLE_ADMIN));
 	createUserIfNotExist(USER_USERNAME, PASSWORD_USER, roles.get(ROLE_USER));
 	}
 
 	private void createPermissions() {
-	DEFAULT_PERMISSIONS.forEach(name -> {
-	permissionRepository.findByName(name)
-	.orElseGet(() -> permissionRepository.save(
-	Permission.builder()
+	DEFAULT_PERMISSIONS.forEach(name ->
+	permissionRepository.findByName(name).orElseGet(() ->
+	permissionRepository.save(Permission.builder()
 	.id(UUID.randomUUID().toString())
 	.name(name)
 	.build()
-	));
-	});
+	)
+	)
+	);
 	}
 
 	private Map<String, Role> createRoles() {
 	Map<String, Role> result = new HashMap<>();
-
-	result.put(ROLE_ADMIN, roleRepository.findByName(ROLE_ADMIN)
-	.orElseGet(() -> roleRepository.save(
-	Role.builder()
-	.id(UUID.randomUUID().toString())
-	.name(ROLE_ADMIN)
-	.build()
-	)));
-
-	result.put(ROLE_USER, roleRepository.findByName(ROLE_USER)
-	.orElseGet(() -> roleRepository.save(
-	Role.builder()
-	.id(UUID.randomUUID().toString())
-	.name(ROLE_USER)
-	.build()
-	)));
-
+	result.put(ROLE_ADMIN, findOrCreateRole(ROLE_ADMIN));
+	result.put(ROLE_USER, findOrCreateRole(ROLE_USER));
 	return result;
 	}
 
+	private Role findOrCreateRole(String name) {
+	return roleRepository.findByName(name).orElseGet(() ->
+	roleRepository.save(Role.builder()
+	.id(UUID.randomUUID().toString())
+	.name(name)
+	.build()
+	)
+	);
+	}
+
 	private void assignPermissionsToRole(Role role) {
-	List<Permission> allPermissions = permissionRepository.findAll();
-		allPermissions.forEach(permission -> {
-		rolePermissionRepository.findByRoleAndPermission(role, permission)
-		.orElseGet(() -> rolePermissionRepository.save(
-		RolePermission.builder()
-		.id(UUID.randomUUID().toString())
-		.role(role)
-		.permission(permission)
-		.build()
-		));
-		});
-		}
+	permissionRepository.findAll().forEach(permission ->
+	rolePermissionRepository.findByRoleAndPermission(role, permission).orElseGet(() ->
+	rolePermissionRepository.save(RolePermission.builder()
+	.id(UUID.randomUUID().toString())
+	.role(role)
+	.permission(permission)
+	.build()
+	)
+	)
+	);
+	}
 
-		private void createUserIfNotExist(String username, String rawPassword, Role role) {
-		userRepository.findByUsername(username).orElseGet(() -> {
-		User user = userRepository.save(
-		User.builder()
-		.id(UUID.randomUUID().toString())
-		.username(username)
-		.password(passwordEncoder.encode(rawPassword))
-		.build()
-		);
+	private void createUserIfNotExist(String username, String rawPassword, Role role) {
+	userRepository.findByUsername(username).orElseGet(() -> {
+	User user = userRepository.save(User.builder()
+	.id(UUID.randomUUID().toString())
+	.username(username)
+	.password(passwordEncoder.encode(rawPassword))
+	.build());
 
-		userRoleRepository.save(
-		UserRole.builder()
-		.id(UUID.randomUUID().toString())
-		.user(user)
-		.role(role)
-		.build()
-		);
+	userRoleRepository.save(UserRole.builder()
+	.id(UUID.randomUUID().toString())
+	.user(user)
+	.role(role)
+	.build());
 
-		return user;
-		});
-		}
-		}
+	return user;
+	});
+	}
+	}

@@ -2,6 +2,8 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
+
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,33 +16,37 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-	private final User user;
+private final User user;
 
 @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
+if (user == null || user.getUserRoles() == null) return Set.of();
 
-	return user.getUserRoles().stream()
-				.map(UserRole::getRole)
-				.flatMap(role -> role.getRolePermissions().stream())
-				.map(rp -> new SimpleGrantedAuthority(rp.getPermission().getName()))
-				.collect(Collectors.toSet());
+return user.getUserRoles().stream()
+.map(UserRole::getRole)
+.filter(role -> role.getRolePermissions() != null)
+.flatMap(role -> role.getRolePermissions().stream())
+.map(rp -> new SimpleGrantedAuthority(rp.getPermission().getName()))
+.collect(Collectors.toSet());
 }
 
-	public Set<String> getRoles() {
-		return user.getUserRoles().stream()
-		.map(UserRole::getRole)
-		.map(Role::getName)
-		.collect(Collectors.toSet());
-	 }
+public Set<String> getRoles() {
+	if (user == null || user.getUserRoles() == null) return Set.of();
 
-@Override
+	return user.getUserRoles().stream()
+	.map(UserRole::getRole)
+	.map(Role::getName)
+	.collect(Collectors.toSet());
+	}
+
+	@Override
 	public String getPassword() {
-	return user.getPassword();
+	return user != null ? user.getPassword() : null;
 	}
 
 	@Override
 	public String getUsername() {
-	return user.getUsername();
+	return user != null ? user.getUsername() : null;
 	}
 
 	@Override
@@ -63,3 +69,4 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
 	return true;
 	}
 }
+
