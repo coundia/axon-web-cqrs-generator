@@ -135,6 +135,15 @@ public class SecurityGeneratorService {
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
+				new SharedTemplate("ApiKeyFilter",
+						"infrastructure/security/apiKeyFilter.mustache",
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".ApiKeyResponse",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".ApiKeyKey",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".FindByApiKeyKeyQuery"
+						),
+						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 
 				new SharedTemplate("UserPrincipal",
 						"infrastructure/security/userPrincipal.mustache",

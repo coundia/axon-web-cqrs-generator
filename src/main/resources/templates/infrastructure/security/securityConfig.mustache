@@ -12,6 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,7 +70,7 @@ http
 ).permitAll()
 .anyRequest().authenticated()
 )
-.oauth2ResourceServer(oauth2 ->  oauth2.jwt(withDefaults()));
+.oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
 
 return http.build();
 }
@@ -97,11 +98,28 @@ public OpenAPI customOpenAPI() {
 return new OpenAPI()
 .info(new Info().title("API").version("1.0"))
 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+.addSecurityItem(new SecurityRequirement().addList("ApiKeyAuth"))
 .components(new io.swagger.v3.oas.models.Components()
 .addSecuritySchemes("bearerAuth",
 new SecurityScheme()
 .type(SecurityScheme.Type.HTTP)
 .scheme("bearer")
-.bearerFormat("JWT")));
+.bearerFormat("JWT"))
+.addSecuritySchemes("ApiKeyAuth",
+new SecurityScheme()
+.type(SecurityScheme.Type.APIKEY)
+.in(SecurityScheme.In.HEADER)
+.name("X-API-KEY"))
+);
 }
-}
+
+@Bean(name = "apiKeyFilterBean")
+public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter(ApiKeyFilter filter) {
+	FilterRegistrationBean<ApiKeyFilter> registration = new FilterRegistrationBean<>();
+		registration.setFilter(filter);
+		registration.addUrlPatterns("/api/v1/*");
+		registration.setOrder(1);
+		return registration;
+		}
+		}
+
