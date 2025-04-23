@@ -2,6 +2,7 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,6 +55,7 @@ public ResponseEntity<AuthResponseDto> authenticate(@org.springframework.web.bin
 	AuthResponseDto.builder()
 	.token(token)
 	.username(authentication.getName())
+	.expirationAt(jwtService.extractExpiration(token))
 	.code(1)
 	.message("Login successful")
 	.build()

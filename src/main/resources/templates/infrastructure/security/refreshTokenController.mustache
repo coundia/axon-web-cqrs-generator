@@ -1,15 +1,17 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -26,14 +28,17 @@ private final RefreshTokenService refreshTokenService;
 private final UserDetailsService userDetailsService;
 
 @PostMapping("/refresh")
-public ResponseEntity<ApiResponseDto> refresh(@RequestBody RefreshTokenDto dto) {
-	String username = jwtService.extractUsername(dto.getRefreshToken());
+public ResponseEntity<AuthResponseDto> refresh(@AuthenticationPrincipal Jwt jwt) {
 
-	if (!refreshTokenService.isValid(username, dto.getRefreshToken())) {
-	return ResponseEntity.badRequest().body(ApiResponseDto.error("Invalid refresh token"));
+	if (jwt == null) {
+	return ResponseEntity.badRequest()
+	.body(AuthResponseDto.builder()
+	.code(0)
+	.message("Invalid JWT token")
+	.build());
 	}
 
-	//UserDetails user = userDetailsService.loadUserByUsername(username);
+	String username =  jwt.getSubject();
 
 	Authentication authentication = new UsernamePasswordAuthenticationToken(
 	username,
@@ -42,9 +47,14 @@ public ResponseEntity<ApiResponseDto> refresh(@RequestBody RefreshTokenDto dto) 
 	);
 	String accessToken = jwtService.generateToken(authentication);
 
-	return ResponseEntity.ok(ApiResponseDto.ok(AuthResponseDto.builder()
-	.username(username)
+	return ResponseEntity.ok(
+	AuthResponseDto.builder()
 	.token(accessToken)
-	.build()));
+	.username(username)
+	.expirationAt(jwtService.extractExpiration(accessToken))
+	.code(1)
+	.message("Token refreshed successfully")
+	.build()
+	);
 	}
 	}

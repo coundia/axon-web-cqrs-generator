@@ -3,10 +3,11 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
+
 import lombok.AllArgsConstructor;
-
 import java.io.Serializable;
-
+import java.time.Instant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,7 @@ public class AuthResponseDto implements Serializable {
 	private String message;
 	private String username;
 	private String token;
+	private Instant expirationAt;
 
 }
+

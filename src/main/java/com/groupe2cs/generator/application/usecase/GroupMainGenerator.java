@@ -129,16 +129,19 @@ public class GroupMainGenerator {
                     rabbitMqGeneratorService.generate(definition, outputDir);
                 }
 
-                emit(sink, "Generating Controllers...");
-                listControllerGeneratorService.generate(definition, outputDir);
-                createControllerGeneratorService.generate(definition, outputDir);
-                deleteControllerGeneratorService.generate(definition, outputDir);
-                findByFieldControllerGeneratorService.generate(definition, outputDir);
-                updateControllerGeneratorService.generate(definition, outputDir);
+                if(!definition.isSkipped("presentation")) {
 
-                emit(sink, "Generating tests...");
-                testControllerIntegrationTestGeneratorService.generate(outputDir,definition);
-                controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
+                    emit(sink, "Generating Controllers...");
+                    listControllerGeneratorService.generate(definition, outputDir);
+                    createControllerGeneratorService.generate(definition, outputDir);
+                    deleteControllerGeneratorService.generate(definition, outputDir);
+                    findByFieldControllerGeneratorService.generate(definition, outputDir);
+                    updateControllerGeneratorService.generate(definition, outputDir);
+
+                    emit(sink, "Generating tests...");
+                    testControllerIntegrationTestGeneratorService.generate(outputDir, definition);
+                    controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
+                }
 
                 if (definition.isInStack("sync")) {
                     emit(sink, "Generating Sync Modules...");

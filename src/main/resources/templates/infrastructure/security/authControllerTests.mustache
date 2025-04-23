@@ -2,6 +2,8 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
@@ -61,6 +64,11 @@ String response = mockMvc.perform(post("/api/auth/login")
 
 AuthResponseDto dto = objectMapper.readValue(response, AuthResponseDto.class);
 assertThat(dto.getToken()).isNotNull();
+assertThat(dto.getUsername()).isEqualTo("admin");
+assertThat(dto.getCode()).isEqualTo(1);
+assertThat(dto.getMessage()).isEqualTo("Login successful");
+assertThat(dto.getExpirationAt()).isNotNull();
+
 }
 
 @Test

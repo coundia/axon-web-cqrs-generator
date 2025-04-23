@@ -28,7 +28,15 @@ public class SecurityGeneratorService {
 
 	private Mono<Void> createEntityDefinitionForSecurity(String baseDir) {
 
-		String entityPackage = Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage());
+
+		EntityDefinition refreshToken = new EntityDefinition("RefreshToken", List.of(
+				FieldDefinition.builder().name("id").type("String").build(),
+				FieldDefinition.builder().name("token").type("String").unique(true).build(),
+				FieldDefinition.builder().name("username").type("String").unique(true).build(),
+				FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
+		), "refresh_tokens");
+
+		refreshToken.getSkip().add("presentation");
 
 		List<EntityDefinition> entities = List.of(
 				new EntityDefinition("User", List.of(
@@ -44,6 +52,17 @@ public class SecurityGeneratorService {
 						FieldDefinition.builder().name("username").type("String").build(),
 						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
 				), "password_resets"),
+
+				new EntityDefinition("ApiKey", List.of(
+						FieldDefinition.builder().name("id").type("String").build(),
+						FieldDefinition.builder().name("key").type("String").unique(true).build(),
+						FieldDefinition.builder().name("username").type("String").unique(true).build(),
+						FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
+						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
+				), "api_keys"),
+
+				refreshToken,
+
 
 				new EntityDefinition("Role", List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
@@ -205,6 +224,10 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenService",
 						"infrastructure/security/refreshTokenService.mustache",
 						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*"
 						),
 						baseDir + "/" + generatorProperties.getServicePackage()),
 

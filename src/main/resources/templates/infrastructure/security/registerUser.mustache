@@ -2,6 +2,7 @@ package {{package}};
 {{#imports}}
 	import {{.}};
 {{/imports}}
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,8 +46,10 @@ return AuthResponseDto.builder()
 .token(token)
 .username(user.getUsername())
 .code(1)
+.expirationAt(jwtService.extractExpiration(token))
 .message("Login successful")
 .build();
 }
 }
+
 

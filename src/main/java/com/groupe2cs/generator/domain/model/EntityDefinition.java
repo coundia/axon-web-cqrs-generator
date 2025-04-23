@@ -28,6 +28,7 @@ public class EntityDefinition implements Serializable {
     private  String table;
     private  List<FieldDefinition> fields;
     private  List<String> stack = new ArrayList<>();
+    private  List<String> skip = new ArrayList<>();
     private  String module;
 
 
@@ -209,6 +210,11 @@ public class EntityDefinition implements Serializable {
     public boolean hasField(String fieldName) {
         return fields.stream()
                 .anyMatch(f -> f.getName().equalsIgnoreCase(fieldName));
+    }
+
+    public boolean isSkipped(String module) {
+        return  this.skip.stream()
+                .anyMatch(s -> s.equalsIgnoreCase(module));
     }
 
     public boolean hasRabbitMq() {
