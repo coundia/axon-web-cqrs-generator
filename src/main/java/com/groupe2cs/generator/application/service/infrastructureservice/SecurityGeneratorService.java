@@ -148,8 +148,9 @@ public class SecurityGeneratorService {
 				new SharedTemplate("UserPrincipal",
 						"infrastructure/security/userPrincipal.mustache",
 						Set.of(
-								Utils.getPackage(
-								baseDir + "/" + generatorProperties.getEntityPackage()) + ".*"),
+								Utils.getPackage(shareDir + "/infrastructure/audit")+".IdentifiableUser",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*"
+						),
 						baseDir + "/" + generatorProperties.getServicePackage()
 				),
 				new SharedTemplate("JwtService",

@@ -1,0 +1,44 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+@Slf4j
+public class RequestContext {
+
+private static final ThreadLocal<String> tenantHolder = new ThreadLocal<>();
+	private static final ThreadLocal<String> userHolder = new ThreadLocal<>();
+
+		public static void setTenantId(String tenantId) {
+		tenantHolder.set(tenantId);
+		}
+
+		public static String getTenantId() {
+		return tenantHolder.get();
+		}
+
+		public static void setUsername(String username) {
+		userHolder.set(username);
+		}
+
+		public static String getCurrentUsername() {
+		String username = userHolder.get();
+		if (username != null) return username;
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof UserPrincipal principal) {
+		return principal.getUsername();
+		}
+
+		return "System";
+		}
+
+		public static void clear() {
+		tenantHolder.remove();
+		userHolder.remove();
+		}
+		}

@@ -24,200 +24,212 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EntityDefinition implements Serializable {
 
-    private  String name;
-    private  String table;
-    private  List<FieldDefinition> fields;
-    private  List<String> stack = new ArrayList<>();
-    private  List<String> skip = new ArrayList<>();
-    private  String module;
+	private String name;
+	private String table;
+	private List<FieldDefinition> fields;
+	private List<String> stack = new ArrayList<>();
+	private List<String> skip = new ArrayList<>();
+	private String module;
+	private Boolean auditable = false;
+	private Boolean multiTenant = false;
 
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getTable() {
-        return table;
-    }
+	public String getTable() {
+		return table;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setTable(String table) {
-        this.table = table;
-    }
+	public void setTable(String table) {
+		this.table = table;
+	}
 
-    public void setFields(List<FieldDefinition> fields) {
-        this.fields = fields;
-    }
+	public void setFields(List<FieldDefinition> fields) {
+		this.fields = fields;
+	}
 
-    public List<FieldDefinition> getFields() {
-        return fields.stream()
-                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-                .filter(f -> !f.isFileType())
-                .toList();
-    }
+	public List<FieldDefinition> getFields() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.filter(f -> !f.isFileType())
+				.toList();
+	}
 
-    public List<FieldDefinition> getFieldsWithoutRelations() {
-        return fields.stream()
-                .filter(f -> !f.isFileType())
-                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-                .toList();
-    }
+	public List<FieldDefinition> getFieldsWithoutRelations() {
+		return fields.stream()
+				.filter(f -> !f.isFileType())
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.toList();
+	}
 
-    public List<FieldDefinition> getFieldsWithRelations() {
-        return fields.stream()
-                .filter(f -> !f.isFileType())
-                .toList();
-    }
+	public List<FieldDefinition> getFieldsWithRelations() {
+		return fields.stream()
+				.filter(f -> !f.isFileType())
+				.toList();
+	}
 
-    public List<FieldDefinition> getFieldsWithoutId() {
-        return fields.stream()
-                .filter(f -> !f.isId())
-                .toList();
-    }
+	public List<FieldDefinition> getFieldsWithoutId() {
+		return fields.stream()
+				.filter(f -> !f.isId())
+				.toList();
+	}
 
-    public List<FieldDefinition> getAllFields() {
-        return fields.stream()
-                .toList();
-    }
+	public List<FieldDefinition> getAllFields() {
+		return fields;
+	}
 
-    public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
-        return fields.stream()
-                .filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-                .toList();
-    }
-    public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
-        this.name = name;
-        this.fields = fields;
-        this.table = table;
-    }
+	public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.toList();
+	}
 
-    public EntityDefinition(String name, List<FieldDefinition> fields) {
-        this.name = name;
-        this.fields = fields;
-    }
+	public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
+		this.name = name;
+		this.fields = fields;
+		this.table = table;
+	}
 
-    public static EntityDefinition fromClassName(String className) {
-        try {
-            Class<?> clazz = Class.forName(className);
-            String simpleName = clazz.getSimpleName();
-            List<FieldDefinition> fields = List.of(clazz.getDeclaredFields()).stream()
-                    .map(f -> new FieldDefinition(f.getType().getSimpleName(), f.getName()))
-                    .collect(Collectors.toList());
-            return new EntityDefinition(simpleName, fields);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Entity class not found: " + className);
-        }
-    }
+	public EntityDefinition(String name, List<FieldDefinition> fields) {
+		this.name = name;
+		this.fields = fields;
+	}
 
-    public static EntityDefinition fromSource(String className, String sourceRoot) {
-        try {
-            CompilationUnit cu = getCompilationUnit(className, sourceRoot);
-            ClassOrInterfaceDeclaration clazz = cu.getClassByName(getSimpleName(className))
-                    .orElseThrow(() -> new RuntimeException("Class not found in file: " + className));
+	public static EntityDefinition fromClassName(String className) {
+		try {
+			Class<?> clazz = Class.forName(className);
+			String simpleName = clazz.getSimpleName();
+			List<FieldDefinition> fields = List.of(clazz.getDeclaredFields()).stream()
+					.map(f -> new FieldDefinition(f.getType().getSimpleName(), f.getName()))
+					.collect(Collectors.toList());
+			return new EntityDefinition(simpleName, fields);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Entity class not found: " + className);
+		}
+	}
 
-            List<FieldDefinition> fields = clazz.getFields().stream()
-                    .flatMap(f -> f.getVariables().stream())
-                    .map(v -> new FieldDefinition(v.getType().asString(), v.getNameAsString()))
-                    .collect(Collectors.toList());
+	public static EntityDefinition fromSource(String className, String sourceRoot) {
+		try {
+			CompilationUnit cu = getCompilationUnit(className, sourceRoot);
+			ClassOrInterfaceDeclaration clazz = cu.getClassByName(getSimpleName(className))
+					.orElseThrow(() -> new RuntimeException("Class not found in file: " + className));
 
-            return new EntityDefinition(clazz.getNameAsString(), fields);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse source for class 'sourceRoot': " + className, e);
-        }
-    }
+			List<FieldDefinition> fields = clazz.getFields().stream()
+					.flatMap(f -> f.getVariables().stream())
+					.map(v -> new FieldDefinition(v.getType().asString(), v.getNameAsString()))
+					.collect(Collectors.toList());
 
-    public static CompilationUnit getCompilationUnit(String className, String sourceRoot) {
-        try {
-            Path sourceFile = Paths.get(sourceRoot).resolve(className.replace('.', '/') + ".java");
-            if (!Files.exists(sourceFile)) {
-                throw new IllegalArgumentException("Class file not found: " + sourceFile);
-            }
-            return StaticJavaParser.parse(sourceFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading or parsing source file", e);
-        }
-    }
+			return new EntityDefinition(clazz.getNameAsString(), fields);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to parse source for class 'sourceRoot': " + className, e);
+		}
+	}
 
-    public static EntityDefinition fromClass(Class<?> clazz) {
-        List<FieldDefinition> fields = List.of(clazz.getDeclaredFields()).stream()
-                .map(f -> new FieldDefinition(f.getType().getSimpleName(), f.getName()))
-                .collect(Collectors.toList());
-        return new EntityDefinition(clazz.getSimpleName(), fields);
-    }
+	public static CompilationUnit getCompilationUnit(String className, String sourceRoot) {
+		try {
+			Path sourceFile = Paths.get(sourceRoot).resolve(className.replace('.', '/') + ".java");
+			if (!Files.exists(sourceFile)) {
+				throw new IllegalArgumentException("Class file not found: " + sourceFile);
+			}
+			return StaticJavaParser.parse(sourceFile);
+		} catch (IOException e) {
+			throw new RuntimeException("Error reading or parsing source file", e);
+		}
+	}
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        map.put("fields", fields);
-        map.put("aggregateIdField", findIdField());
-        map.put("aggregateIdType", findIdType());
-        map.put("package", "com.pcoundia.app." + name.toLowerCase());
-        return map;
-    }
+	public static EntityDefinition fromClass(Class<?> clazz) {
+		List<FieldDefinition> fields = List.of(clazz.getDeclaredFields()).stream()
+				.map(f -> new FieldDefinition(f.getType().getSimpleName(), f.getName()))
+				.collect(Collectors.toList());
+		return new EntityDefinition(clazz.getSimpleName(), fields);
+	}
 
-    private String findIdField() {
-        return fields.stream()
-                .filter(f -> f.getName().equalsIgnoreCase("id"))
-                .map(FieldDefinition::getName)
-                .findFirst()
-                .orElse("id");
-    }
+	public Map<String, Object> toMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("name", name);
+		map.put("fields", fields);
+		map.put("aggregateIdField", findIdField());
+		map.put("aggregateIdType", findIdType());
+		map.put("package", "com.pcoundia.app." + name.toLowerCase());
+		return map;
+	}
 
-    private String findIdType() {
-        return fields.stream()
-                .filter(f -> f.getName().equalsIgnoreCase("id"))
-                .map(FieldDefinition::getType)
-                .findFirst()
-                .orElse("String");
-    }
+	private String findIdField() {
+		return fields.stream()
+				.filter(f -> f.getName().equalsIgnoreCase("id"))
+				.map(FieldDefinition::getName)
+				.findFirst()
+				.orElse("id");
+	}
 
-    private static String getSimpleName(String className) {
-        int lastDot = className.lastIndexOf(".");
-        return lastDot != -1 ? className.substring(lastDot + 1) : className;
-    }
+	private String findIdType() {
+		return fields.stream()
+				.filter(f -> f.getName().equalsIgnoreCase("id"))
+				.map(FieldDefinition::getType)
+				.findFirst()
+				.orElse("String");
+	}
 
-    public   String  getIdentifier(){
-        return "id";
-    }
+	private static String getSimpleName(String className) {
+		int lastDot = className.lastIndexOf(".");
+		return lastDot != -1 ? className.substring(lastDot + 1) : className;
+	}
 
-    public List<FieldDefinition> getFieldFiles() {
-        return fields.stream()
-                .filter(f -> f.isFileType())
-                .toList();
-    }
-    public List<FieldDefinition> searchFields() {
-        return getFieldsWithoutRelations();
-    }
+	public String getIdentifier() {
+		return "id";
+	}
 
-    public boolean hasRelation(String relationType) {
-        return fields.stream()
-                .anyMatch(f -> relationType.equalsIgnoreCase(f.getRelation()));
-    }
+	public List<FieldDefinition> getFieldFiles() {
+		return fields.stream()
+				.filter(f -> f.isFileType())
+				.toList();
+	}
 
-    public boolean isInStack(String stack) {
+	public List<FieldDefinition> searchFields() {
+		return getFieldsWithoutRelations();
+	}
 
-        if (this.stack == null || this.stack.isEmpty()) {
-            return false;
-        }
+	public boolean hasRelation(String relationType) {
+		return fields.stream()
+				.anyMatch(f -> relationType.equalsIgnoreCase(f.getRelation()));
+	}
 
-        return this.stack.stream()
-                .anyMatch(s -> s.equalsIgnoreCase(stack));
-    }
+	public boolean isInStack(String stack) {
 
-    public boolean hasField(String fieldName) {
-        return fields.stream()
-                .anyMatch(f -> f.getName().equalsIgnoreCase(fieldName));
-    }
+		if (this.stack == null || this.stack.isEmpty()) {
+			return false;
+		}
 
-    public boolean isSkipped(String module) {
-        return  this.skip.stream()
-                .anyMatch(s -> s.equalsIgnoreCase(module));
-    }
+		return this.stack.stream()
+				.anyMatch(s -> s.equalsIgnoreCase(stack));
+	}
 
-    public boolean hasRabbitMq() {
-        return this.isInStack("rabbitMq");
-    }
+	public boolean hasField(String fieldName) {
+		return fields.stream()
+				.anyMatch(f -> f.getName().equalsIgnoreCase(fieldName));
+	}
+
+	public boolean isSkipped(String module) {
+		return this.skip.stream()
+				.anyMatch(s -> s.equalsIgnoreCase(module));
+	}
+
+	public boolean hasRabbitMq() {
+		return this.isInStack("rabbitMq");
+	}
+
+	public List<FieldDefinition> getDtoFields() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.filter(f -> !f.getName().equalsIgnoreCase("createdBy"))
+				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
+				.toList();
+	}
+
 }

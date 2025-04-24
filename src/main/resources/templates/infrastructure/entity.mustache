@@ -13,14 +13,22 @@ import lombok.Builder;
 
 import java.util.*;
 
+{{#isAuditable}}
+import {{base}}.shared.infrastructure.audit.AbstractAuditableEntity;
+import {{base}}.shared.infrastructure.audit.AuditListener;
+{{/isAuditable}}
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
+{{#isAuditable}}
+@EntityListeners(AuditListener.class)
+{{/isAuditable}}
 @Table(name = "{{tableName}}")
-public class {{entity}} {
+public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isAuditable}} {
 
 	@Id
 	private String id;
@@ -45,18 +53,18 @@ public class {{entity}} {
 {{/isId}}
 {{/fields}}
 	public {{entity}}(String id) {
-	this.id = id;
-}
+		this.id = id;
+	}
 
 	@Override
- public String toString() {
-	return "{{entity}}{" +
-	"id='" + id + '\'' +
-	{{#fields}}
-	{{^isId}}
-		", {{nameLowerCase}}=" + {{nameLowerCase}} +
-	{{/isId}}
-	{{/fields}}
-	'}';
+ 	public String toString() {
+		return "{{entity}}{" +
+		"id='" + id + '\'' +
+		{{#fields}}
+		{{^isId}}
+			", {{nameLowerCase}}=" + {{nameLowerCase}} +
+		{{/isId}}
+		{{/fields}}
+		'}';
 	}
 }

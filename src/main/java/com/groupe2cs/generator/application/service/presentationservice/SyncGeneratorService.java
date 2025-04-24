@@ -10,10 +10,7 @@ import com.groupe2cs.generator.shared.Utils;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +66,8 @@ public class SyncGeneratorService {
 						definition.getName() + "SyncControllerTests",
 						"tests/syncControllerTests.mustache",
 						Set.of(
+								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getControllerPackage()) + ".UserFixtures",
+								//Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getControllerPackage()) + ".TenantFixtures",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
 								Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"

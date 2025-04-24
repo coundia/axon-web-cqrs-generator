@@ -24,7 +24,7 @@ public class {{className}} extends BaseIntegrationTests {
 		.deltas(List.of(
 		{{name}}DeltaDto.builder()
 		{{#fields}}
-			{{^isId}}.{{nameCamelCase}}({{{testValue}}})
+			{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 			{{/isId}}
 		{{/fields}}
 		.type("CREATE")
@@ -52,7 +52,7 @@ public class {{className}} extends BaseIntegrationTests {
 			{{name}}DeltaDto.builder()
 			.id(existingId)
 			{{#fields}}
-				{{^isId}}.{{nameCamelCase}}({{{testValue}}})
+				{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 				{{/isId}}
 			{{/fields}}
 			.type("UPDATE")

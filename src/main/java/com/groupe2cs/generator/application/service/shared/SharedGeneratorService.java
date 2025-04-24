@@ -32,6 +32,8 @@ public class SharedGeneratorService {
             return;
         }
 
+        String rootDir = Utils.getRootDir(baseDir, definition.getName());
+
         String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
 
         List<SharedTemplate> sharedTemplates = List.of(
@@ -84,6 +86,52 @@ public class SharedGeneratorService {
                         "shared/AxonNotificationErrorHandler.mustache",
                         null,
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()+ "/axon"
+                )
+                ,
+                new SharedTemplate(
+                        "AbstractAuditableEntity",
+                        "shared/audit/abstractAuditableEntity.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "Auditable",
+                        "shared/audit/auditable.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "RequestContext",
+                        "shared/audit/requestContext.mustache",
+                        Set.of(
+                                Utils.getPackage(rootDir + "/security/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
+                        ),
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "IdentifiableUser",
+                        "shared/audit/identifiableUser.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "RequestContextFilter",
+                        "shared/audit/requestContextFilter.mustache",
+                        Set.of(
+                            Utils.getPackage(rootDir + "/security/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
+                        ),
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "AuditListener",
+                        "shared/audit/auditListener.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
                 )
         );
 

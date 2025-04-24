@@ -29,12 +29,22 @@ public class ProjectionGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getProjectionPackage();
         context.put("package", Utils.getPackage(outputDir));
 
+        String rootDir = Utils.getParent(baseDir);
+
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+
+        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+
+        if(definition.isInStack("isMultiTenant")){
+            imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
+        }
+
         imports.add("org.axonframework.eventhandling.EventHandler");
         context.put("security", definition.isInStack("security"));
+
 
         context.put("imports", imports);
         var fields = definition.getFieldsWithRelations();

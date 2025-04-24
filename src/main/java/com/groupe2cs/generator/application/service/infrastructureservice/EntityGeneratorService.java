@@ -26,17 +26,25 @@ public class EntityGeneratorService {
     public void generate(EntityDefinition definition, String baseDir) {
         Map<String, Object> context = new HashMap<>(definition.toMap());
 
+        String rootDir = Utils.getParent(baseDir);
+
         String outputDir = baseDir + "/" + generatorProperties.getEntityPackage();
         context.put("package", Utils.getPackage(outputDir));
+        context.put("base", Utils.getPackage(rootDir));
         context.put("tableName", definition.getTable());
         context.put("entity", definition.getName());
         context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 
 
         context.put("fields", FieldTransformer.transform(definition.getFieldsWithRelations(), definition.getName()));
+        context.put("isAuditable", definition.getAuditable());
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+
+        if(definition.isInStack("isMultiTenant")){
+            imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
+        }
 
         if (definition.hasRelation("oneToMany")) {
             imports.add("jakarta.persistence.OneToMany");
