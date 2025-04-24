@@ -32,6 +32,7 @@ public class MapperGeneratorService {
         var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
         context.put("entity", definition.getName());
 
         Set<String> imports = new LinkedHashSet<>();

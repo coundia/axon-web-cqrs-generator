@@ -49,11 +49,11 @@ ResponseEntity<{{name}}Response> response =
 	assertThat(response.getBody()).isNotNull();
 	assertThat(response.getBody().getId()).isNotNull();
 
-	{{#fields}}
+	{{#editableFields}}
 		{{^isId}}
 	assertThat(response.getBody().get{{nameCapitalized}}().toString())
 	.isEqualTo(requestDTO.get{{nameCapitalized}}().toString());
 		{{/isId}}
-	{{/fields}}
+	{{/editableFields}}
 	}
 	}

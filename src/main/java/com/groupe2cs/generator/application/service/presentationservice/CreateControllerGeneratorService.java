@@ -27,6 +27,7 @@ public class CreateControllerGeneratorService {
         Map<String, Object> context = new HashMap<>(definition.toMap());
 
         String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
+
         context.put("package", Utils.getPackage(outputDir));
         context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
         context.put("nameUpperCase", definition.getName().toUpperCase());
@@ -37,6 +38,11 @@ public class CreateControllerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
+
+        String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+
+
         context.put("imports", imports);
         context.put("security", definition.isInStack("security"));
 

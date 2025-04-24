@@ -35,30 +35,6 @@ public class AllGenerator implements Generator {
 		definition.getStack().add("sync");
 		definition.getStack().add("mail");
 
-		if(!definition.hasField("createdBy")) {
-			 FieldDefinition createdBy = FieldDefinition
-					 .builder()
-					 .name("createdBy")
-					 .type("User")
-					 .relation("ManyToOne")
-					 .unique(false)
-					 .nullable(true)
-					 .build();
-			 fields.add(createdBy);
-		}
-
-		if(!definition.hasField("tenant") && definition.getMultiTenant()) {
-			FieldDefinition tenant = FieldDefinition
-					.builder()
-					.name("tenant")
-					.type("Tenant")
-					.relation("ManyToOne")
-					.unique(false)
-					.nullable(true)
-					.build();
-			fields.add(tenant);
-		}
-
 		log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
 		log.info("📦 Fields: {}", fields.toString());
 		fields.forEach(
@@ -69,8 +45,6 @@ public class AllGenerator implements Generator {
 
 		log.info("📦 Generation de la sécurité");
 
-		//maj
-		definition.setFields(fields);
 
 		securityGeneratorService
 				.generate(definition, outputDir)

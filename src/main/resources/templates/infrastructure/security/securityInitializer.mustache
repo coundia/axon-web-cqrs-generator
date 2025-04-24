@@ -70,13 +70,13 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 
 	private void assignPermissionsToRole(Role role) {
 	permissionRepository.findAll().forEach(permission ->
-	rolePermissionRepository.findByRoleAndPermission(role, permission).orElseGet(() ->
+	//rolePermissionRepository.findByRoleAndPermission(role, permission).orElseGet(() ->
 	rolePermissionRepository.save(RolePermission.builder()
 	.id(UUID.randomUUID().toString())
 	.role(role)
 	.permission(permission)
 	.build()
-	)
+	//)
 	)
 	);
 	}

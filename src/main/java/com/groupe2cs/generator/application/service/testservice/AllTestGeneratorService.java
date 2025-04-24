@@ -79,6 +79,7 @@ public class AllTestGeneratorService {
         var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
         context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 
         if (!fieldFiles.isEmpty() && className.equalsIgnoreCase("CreateControllerIntegrationTest")) {
 

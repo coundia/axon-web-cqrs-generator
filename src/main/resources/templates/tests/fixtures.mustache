@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 
 import {{base}}.{{vo}}.*;
@@ -16,76 +16,77 @@ import static org.awaitility.Awaitility.await;
 public class {{name}}Fixtures {
 
 public static {{name}} randomOne({{name}}Repository repository) {
-	{{name}} entity = new {{name}}();
-	entity.setId(UUID.randomUUID().toString());
-	{{#fields}}
-		{{^isId}}
-			{{^relation}}
-			entity.set{{nameCapitalized}}({{{testValue}}});
-			{{/relation}}
-		{{/isId}}
-	{{/fields}}
-	return repository.save(entity);
+{{name}} entity = {{name}}.builder()
+.id(UUID.randomUUID().toString())
+{{#editableFields}}
+	{{^isId}}
+		{{^relation}}
+			.{{nameLowerCase}}({{{testValue}}})
+		{{/relation}}
+	{{/isId}}
+{{/editableFields}}
+.build();
+return repository.save(entity);
 }
 
 public static {{name}} existingOrRandom({{name}}Repository repository) {
-	return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
+return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
 }
 
 public static {{name}} byId({{name}}Repository repository, String id) {
-
-	return repository.findById(id).orElse(null);
+return repository.findById(id).orElse(null);
 }
 
 public static {{name}} byIdWaitExist({{name}}Repository repository, String id) {
-
-	await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) != null);
-
-	return repository.findById(id).orElse(null);
+await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) != null);
+return repository.findById(id).orElse(null);
 }
 
 public static {{name}} byIdWaitNotExist({{name}}Repository repository, String id) {
-
-	await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) == null);
-
+await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) == null);
 return repository.findById(id).orElse(null);
 }
 
 public static List<{{name}}> randomMany({{name}}Repository repository, int count) {
-	List<{{name}}> items = new ArrayList<>();
-	for (int i = 0; i < count; i++) {
-	items.add(randomOne(repository));
-	}
-	return items;
+List<{{name}}> items = new ArrayList<>();
+for (int i = 0; i < count; i++) {
+items.add(randomOne(repository));
+}
+return items;
 }
 
-public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count) {
-		List<Create{{name}}Command> items = new ArrayList<>();
+public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count,String userId) {
+	List<Create{{name}}Command> items = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
-			items.add(randomOneViaCommand(commandGateway));
+		items.add(randomOneViaCommand(commandGateway,userId));
 		}
-	return items;
-}
+		return items;
+		}
 
-public static void deleteAll({{name}}Repository repository) {
-	repository.deleteAll();
-}
+		public static void deleteAll({{name}}Repository repository) {
+		repository.deleteAll();
+		}
 
-public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway) {
-	{{#hasFiles}}
-		MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
-		String fileName = files.getName();
+		public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway,String userId) {
+		{{#hasFiles}}
+			MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
+			String fileName = files.getName();
 		{{/hasFiles}}
-		Create{{name}}Command command = new Create{{name}}Command(
-		{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(
-				{{{testValue}}}){{^last}},{{/last}}{{/isId}}{{/fields}}{{#hasFiles}},{{#fieldFiles}}
-			{{entity}}{{nameCapitalized}}.create(fileName){{^last}},{{/last}}
-		{{/fieldFiles}}
+
+		Create{{name}}Command command = Create{{name}}Command.builder()
+		{{#editableFields}}{{^isId}}
+			.{{nameLowerCase}}({{entity}}{{nameCapitalized}}.create({{{testValue}}}))
+		{{/isId}}{{/editableFields}}
+		{{#hasFiles}}
+			{{#fieldFiles}}
+				.{{nameLowerCase}}({{entity}}{{nameCapitalized}}.create(fileName))
+			{{/fieldFiles}}
 		{{/hasFiles}}
-		);
-	 commandGateway.sendAndWait(command);
+		.build();
 
-	return command;
-}
+		command.setCreatedBy({{name}}CreatedBy.create(userId));
 
-}
+		commandGateway.sendAndWait(command);
+		return command;
+		}
+		}

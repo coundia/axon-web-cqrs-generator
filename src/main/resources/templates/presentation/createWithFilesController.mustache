@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,7 @@ content = @Content)
 })
 @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<{{name}}Response> add{{name}}(
+	@AuthenticationPrincipal Jwt jwt,
 	{{#hasFiles}}
 	{{#fieldFiles}}
 		@RequestPart("{{nameCamelCase}}") MultipartFile {{nameCamelCase}}{{^last}},{{/last}}{{/fieldFiles}},

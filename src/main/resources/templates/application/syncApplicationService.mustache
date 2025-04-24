@@ -14,30 +14,58 @@ public class {{className}} {
 
 	private final CommandGateway commandGateway;
 
-	public void sync{{name}}({{name}}SyncRequest request) {
+	public void sync{{name}}({{name}}SyncRequest request, String userId {{#isMultiTenant}},
+	String tenantId
+	{{/isMultiTenant}}) {
 		for (var d : request.getDeltas()) {
 			switch (d.getType()) {
-				case "CREATE" -> commandGateway.sendAndWait(
-					Create{{name}}Command.builder()
-						{{#fields}}
-							{{^isId}}
-								.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
-							{{/isId}}
-						{{/fields}}
-						.build()
-		);
-		case "UPDATE" -> commandGateway.sendAndWait(
-					Update{{name}}Command.builder()
-						{{#fields}}
-								.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
-						{{/fields}}
-						.build()
-		);
-		case "DELETE" -> commandGateway.sendAndWait(
-					Delete{{entity}}Command.builder()
-									.id({{entity}}Id.create(d.getId()) )
-									.build()
+				case "CREATE" -> {
+
+Create{{name}}Command command = Create{{name}}Command.builder()
+{{#editableFields}}
+	{{^isId}}
+		.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+	{{/isId}}
+{{/editableFields}}
+.build();
+
+		if(userId != null) {
+			command.setCreatedBy({{name}}CreatedBy.create(userId));
+		}
+
+		commandGateway.sendAndWait(
+							command
 				);
+
+		}
+				case "UPDATE" -> {
+		Update{{name}}Command update = Update{{name}}Command.builder()
+		{{#editableFields}}
+			.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+		{{/editableFields}}
+		.build();
+
+		if(userId != null) {
+			//update.setUpdatedBy({{name}}UpdatedBy.create(userId));
+		}
+
+		commandGateway.sendAndWait(
+		update
+				);
+
+		}
+		case "DELETE" -> {
+				Delete{{entity}}Command delete = Delete{{entity}}Command.builder()
+					.id({{entity}}Id.create(d.getId()) )
+					.build();
+
+				if(userId != null) {
+					//delete.setDeletedBy({{name}}DeletedBy.create(userId));
+				}
+				commandGateway.sendAndWait(
+				delete
+				 );
+				}
 			}
 		}
 	}

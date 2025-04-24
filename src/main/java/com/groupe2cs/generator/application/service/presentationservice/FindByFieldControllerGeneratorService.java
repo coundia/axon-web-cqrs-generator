@@ -51,6 +51,11 @@ public class FindByFieldControllerGeneratorService {
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+
+            String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
+            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+
+
             fieldContext.put("imports", imports);
 
             String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);

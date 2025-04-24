@@ -26,15 +26,19 @@ this.repository = repository;
 public void on({{name}}CreatedEvent event) {
 try {
 {{name}} entity = {{name}}.builder()
-{{#fields}}
+{{#editableFields}}
 	{{^isOneToMany}} {{^isManyToOne}}
 		.{{nameLowerCase}}(event.get{{nameCapitalized}}().value())
 	{{/isManyToOne}} {{/isOneToMany}}
 	{{#isManyToOne}}
 		.{{nameLowerCase}}(new {{realType}}(event.get{{nameCapitalized}}().value()))
 	{{/isManyToOne}}
-{{/fields}}
+{{/editableFields}}
 .build();
+
+if(event.getCreatedBy() !=null){
+	entity.setCreatedBy( new User(event.getCreatedBy().value()));
+}
 
 repository.save(entity);
 log.info("{{name}} inserted: {}", entity);
@@ -50,14 +54,19 @@ try {
 {{name}} entity = repository.findById(event.getId().value())
 .orElseThrow(() -> new RuntimeException("{{name}} not found"));
 
-{{#fieldWithoutRelations}}
+{{#editableFields}}
 	{{#isManyToOne}}
 		entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
 	{{/isManyToOne}}
 	{{^isManyToOne}}
 		entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
 	{{/isManyToOne}}
-{{/fieldWithoutRelations}}
+{{/editableFields}}
+
+if(event.getCreatedBy() !=null){
+	entity.setCreatedBy( new User(event.getCreatedBy().value()));
+}
+
 
 repository.save(entity);
 log.info("{{name}} updated successfully: {}", event.getId().value());

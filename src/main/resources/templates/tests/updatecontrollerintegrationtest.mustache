@@ -25,12 +25,12 @@ private CommandGateway commandGatewayUpdate;
 @Test
 void it_should_be_able_to_update_{{nameLower}}() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway).getId().value();
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
 
-	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate);
+	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate, getUserId());
 
 	{{name}}Request requestDTO = new {{name}}Request();
-	{{#fields}}
+	{{#editableFields}}
 		{{^isId}}
 		{{#relation}}
 	 requestDTO.set{{nameCapitalized}}( updated.get{{nameCapitalized}}().value());
@@ -39,7 +39,7 @@ void it_should_be_able_to_update_{{nameLower}}() {
 	 requestDTO.set{{nameCapitalized}}({{{testDomainValue}}});
 		{{/relation}}
 		{{/isId}}
-	{{/fields}}
+	{{/editableFields}}
 
 	String uri = "/v1/commands/{{entityUnCapitalized}}/" + existingId;
 	ResponseEntity<String> response = this.put(uri,requestDTO);

@@ -12,16 +12,22 @@ import com.groupe2cs.generator.application.service.presentationservice.*;
 import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.AllTestGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.SharedTestGeneratorService;
+import com.groupe2cs.generator.domain.model.FieldDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.application.dto.ApiResponseDto;
 import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class GroupMainGenerator {
@@ -75,7 +81,36 @@ public class GroupMainGenerator {
         EntityDefinition definition = definitionDto.getDefinition();
         String outputDir = definitionDto.getOutputDir();
 
+        List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
 
+        if(!definition.hasField("createdBy")) {
+            FieldDefinition createdBy = FieldDefinition
+                    .builder()
+                    .name("createdBy")
+                    .type("User")
+                    .relation("ManyToOne")
+                    .unique(false)
+                    .nullable(true)
+                    .build();
+            fields.add(createdBy);
+            log.info("Adding field createdBy in {} ", definition.getName());
+        }else{
+            log.info("Not added field createdBy in {} ", definition.getName());
+        }
+
+        if(!definition.hasField("tenant") && definition.getMultiTenant()) {
+            FieldDefinition tenant = FieldDefinition
+                    .builder()
+                    .name("tenant")
+                    .type("Tenant")
+                    .relation("ManyToOne")
+                    .unique(false)
+                    .nullable(true)
+                    .build();
+            fields.add(tenant);
+        }
+
+        definition.setFields(fields);
 
         Mono.fromRunnable(() -> {
             try {

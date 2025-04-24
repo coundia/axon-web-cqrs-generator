@@ -23,10 +23,10 @@ public class {{className}} extends BaseIntegrationTests {
 		{{name}}SyncRequest requestDTO = {{name}}SyncRequest.builder()
 		.deltas(List.of(
 		{{name}}DeltaDto.builder()
-		{{#fields}}
+		{{#editableFields}}
 			{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 			{{/isId}}
-		{{/fields}}
+		{{/editableFields}}
 		.type("CREATE")
 		.build()
 		))
@@ -45,16 +45,16 @@ public class {{className}} extends BaseIntegrationTests {
 			@Test
 			void it_should_initiate_update_of_{{nameLowercase}}s() {
 
-			String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway).getId().value();
+			String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
 
 			{{name}}SyncRequest requestDTO = {{name}}SyncRequest.builder()
 			.deltas(List.of(
 			{{name}}DeltaDto.builder()
 			.id(existingId)
-			{{#fields}}
+			{{#editableFields}}
 				{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 				{{/isId}}
-			{{/fields}}
+			{{/editableFields}}
 			.type("UPDATE")
 			.build()
 			))
@@ -71,7 +71,7 @@ public class {{className}} extends BaseIntegrationTests {
 
 					@Test
 					void it_should_initiate_delete_of_{{nameLowercase}}s() {
-					String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway).getId().value();
+					String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
 					{{name}}SyncRequest requestDTO = {{name}}SyncRequest.builder()
 					.deltas(List.of(
 					{{name}}DeltaDto.builder()

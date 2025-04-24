@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +49,18 @@ schema = @Schema(implementation = {{name}}Response.class))),
 content = @Content)
 })
 @PutMapping(value="{id}",  consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<{{name}}Response> update{{name}}(@Valid @PathVariable String id, @RequestBody {{name}}Request request) { {
+public ResponseEntity<{{name}}Response> update{{name}}(
+	@Valid @PathVariable String id,
+	@RequestBody {{name}}Request request,
+	@AuthenticationPrincipal Jwt jwt
+	) { {
 	try {
 
-	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id), request);
+	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id),
+	request,
+	RequestContext.getUserId(jwt) {{#isMultiTenant}},
+		RequestContext.getTenantId(jwt) {{/isMultiTenant}}
+	);
 
 	return ResponseEntity.ok(response);
 

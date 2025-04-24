@@ -28,7 +28,12 @@ public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Quer
  public {{name}}Response handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
 	{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
 	{{name}} entity = repository.findBy{{field.nameCapitalized}}(value)
-		.orElseThrow(() -> new {{name}}NotFoundException("{{field.nameCapitalized}}", value));
+		.orElse(null);
+
+		if (entity == null) {
+			return null;
+		}
+
 		return {{name}}Mapper.toResponse(entity);
 	}
 {{/isUnique}}

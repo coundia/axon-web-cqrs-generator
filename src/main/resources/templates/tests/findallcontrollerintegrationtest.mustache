@@ -23,7 +23,7 @@ private CommandGateway commandGateway;
 
 @Test
 void it_should_be_able_to_get_all_{{nameLower}}s() {
-	List<?> list = {{name}}Fixtures.randomManyViaCommand(commandGateway, 5);
+	List<?> list = {{name}}Fixtures.randomManyViaCommand(commandGateway, 5, getUserId());
 
 	String uri = "/v1/queries/{{entityUnCapitalized}}s";
 	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);

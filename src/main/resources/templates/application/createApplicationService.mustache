@@ -50,11 +50,18 @@ return {{name}}Mapper.toResponse(command);
 
 {{/hasFiles}}
 {{^hasFiles}}
-public {{name}}Response create{{name}}({{name}}Request request){
+public {{name}}Response create{{name}}({{name}}Request request,
+String createdBy {{#isMultiTenant}},
+String tenantId {{/isMultiTenant}}){
 
 Create{{name}}Command command = {{name}}Mapper.toCommand(
 request
 );
+
+if(createdBy != null) {
+	command.setCreatedBy( {{name}}CreatedBy.create(createdBy));
+}
+
 commandGateway.sendAndWait(command);
 return {{name}}Mapper.toResponse(command);
 }

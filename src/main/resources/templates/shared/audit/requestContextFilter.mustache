@@ -22,18 +22,18 @@ public class RequestContextFilter implements Filter {
 
 	String tenantId = httpRequest.getHeader("X-Tenant-ID");
 	if (tenantId != null) {
-		RequestContext.setTenantId(tenantId);
+		//RequestContext.setTenantId(tenantId);
 	}
 
 	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	if (auth != null && auth.getPrincipal() instanceof UserPrincipal principal) {
-		RequestContext.setUsername(principal.getUsername());
+		//RequestContext.setUsername(principal.getUsername());
 	}
 
 	try {
 		chain.doFilter(request, response);
 	} finally {
-		RequestContext.clear();
+		//RequestContext.clear();
 	}
 	}
 }

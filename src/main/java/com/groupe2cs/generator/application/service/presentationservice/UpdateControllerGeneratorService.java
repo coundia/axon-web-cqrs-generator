@@ -39,6 +39,10 @@ public class UpdateControllerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
 
+        String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+
+
         context.put("imports", imports);
 
         var fields = definition.getFields();

@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,10 +56,15 @@ content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
 content = @Content(schema = @Schema()))
 })
-public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}Request request) {
+public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}Request request,
+	@AuthenticationPrincipal Jwt jwt) {
 	try {
 
-	{{name}}Response response =  applicationService.create{{name}}(request);
+	{{name}}Response response =  applicationService.create{{name}}(
+	request,
+	RequestContext.getUserId(jwt) {{#isMultiTenant}},
+	RequestContext.getTenantId(jwt) {{/isMultiTenant}}
+	);
 
 	return ResponseEntity.ok(response);
 	} catch (Exception ex) {

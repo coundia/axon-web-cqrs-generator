@@ -1,65 +1,85 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
-
 
 public class {{name}}Mapper {
 
 public static {{name}}Response toResponse({{name}} entity) {
-return new {{name}}Response(
-{{#allFields}}
+return {{name}}Response.builder()
+{{#editableFields}}
 	{{#isManyToOne}}
-		entity.get{{nameCapitalized}}().getId(){{^last}}, {{/last}}
+		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}().getId())
 	{{/isManyToOne}}
 	{{^isManyToOne}}
-		entity.get{{nameCapitalized}}(){{^last}}, {{/last}}
+		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}())
 	{{/isManyToOne}}
-{{/allFields}}
-);
+{{/editableFields}}
+.build();
 }
 
 public static {{name}}Response toResponse(Create{{name}}Command command) {
-return new {{name}}Response(
-{{#allFields}}command.get{{nameCapitalized}}().value(){{^last}}, {{/last}}{{/allFields}}
-);
+return {{name}}Response.builder()
+{{#editableFields}}
+	.{{nameUnCapitalized}}(command.get{{nameCapitalized}}().value())
+{{/editableFields}}
+.build();
 }
 
 public static {{name}}Response toResponse(Update{{name}}Command command) {
-return new {{name}}Response(
-{{#allFields}}command.get{{nameCapitalized}}().value(){{^last}}, {{/last}}{{/allFields}}
-);
+return {{name}}Response.builder()
+{{#editableFields}}
+	.{{nameUnCapitalized}}(command.get{{nameCapitalized}}().value())
+{{/editableFields}}
+.build();
 }
-
 
 public static Create{{name}}Command toCommand(
-{{name}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
+{{name}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 ) {
-return new Create{{name}}Command(
-{{#fields}}{{^isId}}{{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{^last}}, {{/last}}{{/isId}}{{/fields}}{{#hasFiles}}, {{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
-);
+return Create{{name}}Command.builder()
+{{#editableFields}}{{^isId}}
+	.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+{{/isId}}{{/editableFields}}{{#hasFiles}}
+	{{#fieldFiles}}
+		.{{nameUnCapitalized}}({{nameUnCapitalized}})
+	{{/fieldFiles}}{{/hasFiles}}
+.build();
 }
+
 {{^hasFiles}}
-public static Update{{name}}Command toUpdateCommand({{name}}Id id, {{name}}Request request) {
-return new Update{{name}}Command(
-id{{#allFields}}{{^isId}}, {{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()){{/isId}}{{/allFields}}
-);
-}
-{{/hasFiles}}
-{{#hasFiles}}
-public static Update{{name}}Command toUpdateCommand({{name}}Id id, {{name}}Request request{{#hasFiles}},
-{{#fieldFiles}}{{entity}}{{nameCapitalized}}  {{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}) {
-return new Update{{name}}Command(
-id{{#fields}}{{^isId}}, {{entity}}{{nameCapitalized}}.create(
-request.get{{nameCapitalized}}()){{/isId}}{{/fields}}{{#hasFiles}},
-{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
-);
-}
+	public static Update{{name}}Command toUpdateCommand({{name}}Id id, {{name}}Request request) {
+	return Update{{name}}Command.builder()
+	.id(id)
+	{{#editableFields}}{{^isId}}
+		.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+	{{/isId}}{{/editableFields}}
+	.build();
+	}
 {{/hasFiles}}
 
+{{#hasFiles}}
+	public static Update{{name}}Command toUpdateCommand(
+	{{name}}Id id,
+	{{name}}Request request,
+	{{#editableFields}}{{entity}}{{nameCapitalized}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/editableFields}}
+	) {
+	return Update{{name}}Command.builder()
+	.id(id)
+	{{#editableFields}}{{^isId}}
+		.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+	{{/isId}}{{/editableFields}}
+	{{#editableFields}}
+		.{{nameUnCapitalized}}({{nameUnCapitalized}})
+	{{/editableFields}}
+	.build();
+	}
+{{/hasFiles}}
 
 public static Delete{{name}}Command toDeleteCommand({{name}}Id id) {
-return new Delete{{name}}Command(id);
+return Delete{{name}}Command.builder()
+.id(id)
+.build();
 }
 }

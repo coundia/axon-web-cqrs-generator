@@ -3,42 +3,36 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestContext {
 
-private static final ThreadLocal<String> tenantHolder = new ThreadLocal<>();
-	private static final ThreadLocal<String> userHolder = new ThreadLocal<>();
+public static String getUserId(Jwt jwt) {
+Object claim = jwt.getClaims().get("userId");
+if (claim == null) {
+log.error("Missing 'userId' in JWT claims");
+throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User ID is required");
+}
+return claim.toString();
+}
+{{#isMultiTenant}}
+public static String getTenantId(Jwt jwt) {
+Object claim = jwt.getClaims().get("tenantId");
+if (claim == null) {
+log.warn("Missing 'tenantId' in JWT claims");
+return null;
+}
+return claim.toString();
+}
+{{/isMultiTenant}}
 
-		public static void setTenantId(String tenantId) {
-		tenantHolder.set(tenantId);
-		}
+}
 
-		public static String getTenantId() {
-		return tenantHolder.get();
-		}
-
-		public static void setUsername(String username) {
-		userHolder.set(username);
-		}
-
-		public static String getCurrentUsername() {
-		String username = userHolder.get();
-		if (username != null) return username;
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getPrincipal() instanceof UserPrincipal principal) {
-		return principal.getUsername();
-		}
-
-		return "System";
-		}
-
-		public static void clear() {
-		tenantHolder.remove();
-		userHolder.remove();
-		}
-		}

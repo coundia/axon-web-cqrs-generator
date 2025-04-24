@@ -28,7 +28,6 @@ public class SyncGeneratorService {
 		String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
 		String testDir = Utils.getTestDir(baseDir) + "/" + generatorProperties.getControllerPackage();
 
-
 		List<SharedTemplate> syncTemplates = List.of(
 				new SharedTemplate(
 						definition.getName() + "SyncRequest",
@@ -56,6 +55,7 @@ public class SyncGeneratorService {
 						 definition.getName() + "SyncController",
 						"presentation/syncController.mustache",
 						Set.of(
+								Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"
@@ -99,6 +99,7 @@ public class SyncGeneratorService {
 		context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
 		context.put("hasFiles", !definition.getFieldFiles().isEmpty());
 		context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
+		context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + ".java", content);

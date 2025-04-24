@@ -231,5 +231,12 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
 				.toList();
 	}
+	public List<FieldDefinition> getEditableFields() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.filter(f -> !f.getName().equalsIgnoreCase("createdBy"))
+				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
+				.toList();
+	}
 
 }

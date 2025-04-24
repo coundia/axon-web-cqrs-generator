@@ -50,6 +50,7 @@ public class ProjectionGeneratorService {
         var fields = definition.getFieldsWithRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("fieldWithoutRelations", FieldTransformer.transform(definition.getFieldsWithoutRelations(), definition.getName()));
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
         context.put("nameUpperCase", definition.getName().toUpperCase());
         String content = templateEngine.render("presentation/projection.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Projection.java", content);

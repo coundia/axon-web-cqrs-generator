@@ -42,6 +42,9 @@ public class DeleteControllerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
 
+        String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+
         context.put("imports", imports);
 
         String content = templateEngine.render("presentation/deleteController.mustache", context);
