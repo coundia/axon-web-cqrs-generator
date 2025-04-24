@@ -49,6 +49,8 @@ public class FieldTransformer {
             f.put("nullable", field.getNullable());
             f.put("isUnique", field.getUnique() || field.isId());
 
+            f.put("size", field.getSize());
+
             result.add(f);
         }
 

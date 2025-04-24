@@ -31,7 +31,7 @@ public class SecurityGeneratorService {
 
 		EntityDefinition refreshToken = new EntityDefinition("RefreshToken", List.of(
 				FieldDefinition.builder().name("id").type("String").build(),
-				FieldDefinition.builder().name("token").type("String").unique(true).build(),
+				FieldDefinition.builder().name("token").type("String").size(2048).unique(true).build(),
 				FieldDefinition.builder().name("username").type("String").unique(true).build(),
 				FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
 		), "refresh_tokens");
@@ -55,7 +55,7 @@ public class SecurityGeneratorService {
 
 				new EntityDefinition("ApiKey", List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("key").type("String").unique(true).build(),
+						FieldDefinition.builder().name("key").size(2048).type("String").unique(true).build(),
 						FieldDefinition.builder().name("username").type("String").unique(true).build(),
 						FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
 						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
@@ -121,10 +121,11 @@ public class SecurityGeneratorService {
 
 		List<SharedTemplate> templates = List.of(
 
-
 				new SharedTemplate("SecurityConfig",
 						"infrastructure/security/securityConfig.mustache",
-						null,
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".CustomUserDetailsService"
+						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
 				new SharedTemplate("SecurityInitializer",
@@ -332,6 +333,7 @@ public class SecurityGeneratorService {
 		context.put("entityLowerCase", Utils.lowerCase(definition.getName()));
 		context.put("className", template.getClassName());
 		context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
+		context.put("isMultiTenant", definition.getMultiTenant());
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(outputDir, template.getClassName() + ".java", content);
 	}

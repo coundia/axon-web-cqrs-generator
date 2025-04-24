@@ -47,7 +47,7 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 {{/isManyToOne}}
 {{/relation}}
 {{^relation}}
-	@Column(nullable = {{nullable}}, unique = {{unique}})
+	@Column(nullable = {{nullable}}, unique = {{unique}}  {{#size}}, length = {{size}}{{/size}}  )
 	private {{primitiveType}} {{nameLowerCase}};
 {{/relation}}
 {{/isId}}

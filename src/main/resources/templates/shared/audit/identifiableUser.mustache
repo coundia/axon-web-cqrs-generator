@@ -3,5 +3,9 @@ package {{package}};
 public interface IdentifiableUser {
 
 	String getUsername();
+	public String getId() ;
+{{#isMultitenant}}
+	public String getTenantId() ;
+{{/isMultitenant}}
 
 }

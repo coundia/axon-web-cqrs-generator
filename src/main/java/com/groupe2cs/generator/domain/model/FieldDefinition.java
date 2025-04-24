@@ -16,6 +16,7 @@ public class FieldDefinition implements Serializable {
     private String nameCamelCase;
     private Boolean isId;
     private String relation;
+    private Integer size = 250;
     private Boolean unique;
     private Boolean nullable;
 

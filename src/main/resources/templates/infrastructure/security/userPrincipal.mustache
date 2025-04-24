@@ -69,5 +69,31 @@ public Set<String> getRoles() {
 	public boolean isEnabled() {
 	return true;
 	}
+
+	@Override
+	public String getId() {
+
+		if (user == null)
+		return null;
+
+	return user.getId();
+	}
+
+	{{#isMultitenant}}
+	@Override
+	public String getTenantId() {
+
+		if (user == null)
+		return null;
+
+		if(user.getTenant() == null)
+			return null;
+
+		if(user.getTenant().getTenantId() == null)
+			return null;
+
+	return user.getTenant().getTenantId();
+	}
+	{{/isMultitenant}}
 }
 

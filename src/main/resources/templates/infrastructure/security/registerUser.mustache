@@ -32,12 +32,12 @@ User user = User.builder()
 .password(passwordEncoder.encode(request.getPassword()))
 .build();
 
-userRepository.save(user);
+UserPrincipal userPrincipal = new UserPrincipal(user);
 
 Authentication authentication = new UsernamePasswordAuthenticationToken(
-user.getUsername(),
-null,
-List.of(new SimpleGrantedAuthority("ROLE_USER"))
+	userPrincipal,
+	null,
+	userPrincipal.getAuthorities()
 );
 
 String token = jwtService.generateToken(authentication);
