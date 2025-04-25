@@ -68,6 +68,7 @@ public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}
 
 	return ResponseEntity.ok(response);
 	} catch (Exception ex) {
+	//e.printStackTrace();
 	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage());
 	return ResponseEntity.status(500).build();
 	}

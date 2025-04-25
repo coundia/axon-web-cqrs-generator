@@ -25,7 +25,7 @@ public class SecurityGeneratorService {
 	private final GeneratorProperties generatorProperties;
 	private final GroupMainGenerator groupMainGenerator;
 
-	private Mono<Void> createEntityDefinitionForSecurity(String baseDir) {
+	private Mono<Void> createEntityDefinitionForSecurity(String baseDir,EntityDefinition parentEntityDefinition) {
 
 
 		EntityDefinition refreshToken = new EntityDefinition("RefreshToken", List.of(
@@ -54,7 +54,7 @@ public class SecurityGeneratorService {
 
 				new EntityDefinition("ApiKey", List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("key").size(2048).type("String").unique(true).build(),
+						FieldDefinition.builder().name("appKey").size(2048).type("String").unique(true).build(),
 						FieldDefinition.builder().name("username").type("String").unique(true).build(),
 						FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
 						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
@@ -95,6 +95,8 @@ public class SecurityGeneratorService {
 									"Security"
 							)
 					);
+					entity.setIsGenerated(true);
+					entity.setMultiTenant(parentEntityDefinition.getMultiTenant());
 					return groupMainGenerator.generateStreaming(
 							EntityDefinitionDTO.builder()
 									.outputDir(baseDir)
@@ -118,6 +120,29 @@ public class SecurityGeneratorService {
 
 		List<String> messages = new ArrayList<>();
 
+		Set<String> importInit = new HashSet<>();
+
+		String rootDir = Utils.getParent(fullDir);
+
+		importInit.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+		importInit.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
+
+		Set<String> importsRegisterUser = new HashSet<>(
+				Set.of(
+						Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
+						Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
+				)
+		);
+
+		if(definition.getMultiTenant()) {
+			importInit.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
+			importsRegisterUser.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
+			importInit.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository");
+		}
+
+
+
 		List<SharedTemplate> templates = List.of(
 
 				new SharedTemplate("SecurityConfig",
@@ -127,20 +152,19 @@ public class SecurityGeneratorService {
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
+
+
 				new SharedTemplate("SecurityInitializer",
 						"infrastructure/security/securityInitializer.mustache",
-						Set.of(
-								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
-						),
+						importInit,
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
 				new SharedTemplate("ApiKeyFilter",
 						"infrastructure/security/apiKeyFilter.mustache",
 						Set.of(
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".ApiKeyResponse",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".ApiKeyKey",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".FindByApiKeyKeyQuery"
+								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".ApiKeyAppKey",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".FindByApiKeyAppKeyQuery"
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
@@ -175,9 +199,8 @@ public class SecurityGeneratorService {
 						baseDir + "/" + generatorProperties.getControllerPackage()),
 				new SharedTemplate("RegisterUser",
 						"infrastructure/security/registerUser.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"),
+						importsRegisterUser
+						,
 						baseDir + "/" + generatorProperties.getServicePackage()),
 				new SharedTemplate("RegisterController",
 						"infrastructure/security/registerController.mustache",
@@ -319,12 +342,13 @@ public class SecurityGeneratorService {
 			messages.add("🧪 Test generated: " + t.getClassName());
 		});
 
-		return createEntityDefinitionForSecurity(baseDir).thenMany(Flux.fromIterable(messages));
+		return createEntityDefinitionForSecurity(baseDir,definition).thenMany(Flux.fromIterable(messages));
 	}
 
 	private void generateFile(SharedTemplate template, EntityDefinition definition) {
 		Map<String, Object> context = new HashMap<>();
 		String outputDir = template.getOutput();
+
 		context.put("package", Utils.getPackage(outputDir));
 		context.put("packageTest", Utils.getTestPackage(Utils.getPackage(outputDir)));
 		context.put("imports", template.getImports());

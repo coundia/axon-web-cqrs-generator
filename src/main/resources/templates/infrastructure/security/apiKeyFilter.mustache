@@ -18,48 +18,48 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class {{className}} implements Filter {
+public class ApiKeyFilter implements Filter {
 
-		private final QueryGateway queryGateway;
+private final QueryGateway queryGateway;
 
-		@Value("${module.apiKey:false}")
-		private String activeApiKeyService;
+@Value("${module.apiKey:false}")
+private String activeApiKeyService;
 
-		@Override
-		public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-		throws IOException, ServletException {
+@Override
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+throws IOException, ServletException {
 
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String apiKey = httpRequest.getHeader("X-API-KEY");
+HttpServletRequest httpRequest = (HttpServletRequest) request;
+String apiKey = httpRequest.getHeader("X-API-KEY");
 
-		String requestURI = httpRequest.getRequestURI();
+String requestURI = httpRequest.getRequestURI();
 
-		if (
-		requestURI.startsWith("/api/v1/queries/apiKey") ||
-		requestURI.startsWith("/api/v1/commands/apiKey") ||
-		activeApiKeyService.equals("false")
-		) {
-		log.info("Skipping API Key validation for request: {}", requestURI);
-		chain.doFilter(request, response);
-		return;
-		}
+if (
+requestURI.startsWith("/api/v1/queries/apiKey") ||
+requestURI.startsWith("/api/v1/commands/apiKey") ||
+activeApiKeyService.equals("false")
+) {
+log.info("Skipping API Key validation for request: {}", requestURI);
+chain.doFilter(request, response);
+return;
+}
 
-		if (apiKey == null) {
-		log.warn("Missing API Key");
-		((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing API Key");
-		return;
-		}
+if (apiKey == null) {
+log.warn("Missing API Key");
+((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing API Key");
+return;
+}
 
-		try {
-		ApiKeyResponse apiKeyResponse =	queryGateway.query(new FindByApiKeyKeyQuery(ApiKeyKey.create(apiKey)), ApiKeyResponse.class).join();
-		log.info("Valid API Key: '{}' for '{}'", apiKey, apiKeyResponse.getUsername());
-		chain.doFilter(request, response);
-		} catch (Exception e) {
-		log.warn("Invalid API Key: '{}' ", apiKey);
-		//e.printStackTrace();
-		((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
-		}
-		}
+try {
+ApiKeyResponse apiKeyResponse =	queryGateway.query(new FindByApiKeyAppKeyQuery(ApiKeyAppKey.create(apiKey)), ApiKeyResponse.class).join();
+log.info("Valid API Key: '{}' for '{}'", apiKey, apiKeyResponse.getUsername());
+chain.doFilter(request, response);
+} catch (Exception e) {
+log.warn("Invalid API Key: '{}' ", apiKey);
+e.printStackTrace();
+((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid API Key");
+}
+}
 }
 
 

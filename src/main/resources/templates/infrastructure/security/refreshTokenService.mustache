@@ -33,14 +33,17 @@ Instant expiration = jwt.getExpiresAt();
 
 try {
 CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
-	new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username)),
-	RefreshTokenResponse.class
+		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username)),
+		RefreshTokenResponse.class
 	);
 
 	RefreshTokenResponse existing = future.join();
-	commandGateway.sendAndWait(new DeleteRefreshTokenCommand(RefreshTokenId.create(existing.getId())));
-	} catch (Exception e) {
-	log.info("No existing refresh token found for {}. Proceeding to save new.", username);
+		if(existing!= null) {
+			commandGateway.sendAndWait(new DeleteRefreshTokenCommand(RefreshTokenId.create(existing.getId())));
+		}
+ 	} catch (Exception e) {
+		e.printStackTrace();
+		log.info("No existing refresh token found for {}. Proceeding to save new.", username);
 	}
 
 	commandGateway.sendAndWait(CreateRefreshTokenCommand.builder()
@@ -50,7 +53,8 @@ CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
 	.build());
 
 	} catch (Exception e) {
-	log.error("Error while saving refresh token: {}", e.getMessage(), e);
+		e.printStackTrace();
+		log.error("Error while saving refresh token: {}", e.getMessage(), e);
 	}
 	}
 
@@ -70,6 +74,7 @@ CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
 
 		return response.getToken().equals(token);
 		} catch (Exception e) {
+		e.printStackTrace();
 		log.warn("Refresh token validation failed for {}: {}", username, e.getMessage());
 		return false;
 		}

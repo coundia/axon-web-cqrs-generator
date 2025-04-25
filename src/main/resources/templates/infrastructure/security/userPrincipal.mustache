@@ -79,7 +79,7 @@ public Set<String> getRoles() {
 	return user.getId();
 	}
 
-	{{#isMultitenant}}
+	{{#isMultiTenant}}
 	@Override
 	public String getTenantId() {
 
@@ -89,11 +89,8 @@ public Set<String> getRoles() {
 		if(user.getTenant() == null)
 			return null;
 
-		if(user.getTenant().getTenantId() == null)
-			return null;
-
-	return user.getTenant().getTenantId();
+	return user.getTenant().getId();
 	}
-	{{/isMultitenant}}
+	{{/isMultiTenant}}
 }
 

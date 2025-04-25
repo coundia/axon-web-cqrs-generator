@@ -41,6 +41,11 @@ String userId = userPrincipal.getId();
 
 {{#isMultiTenant}}
 String tenantId = userPrincipal.getTenantId();
+
+if (tenantId == null) {
+	tenantId = "NA";
+}
+
 {{/isMultiTenant}}
 
 if(userId == null) {

@@ -4,8 +4,8 @@ public interface IdentifiableUser {
 
 	String getUsername();
 	public String getId() ;
-{{#isMultitenant}}
+{{#isMultiTenant}}
 	public String getTenantId() ;
-{{/isMultitenant}}
+{{/isMultiTenant}}
 
 }

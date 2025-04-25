@@ -40,10 +40,12 @@ public ResponseEntity<AuthResponseDto> refresh(@AuthenticationPrincipal Jwt jwt)
 
 	String username =  jwt.getSubject();
 
+	UserPrincipal principal = (UserPrincipal) userDetailsService.loadUserByUsername(username);
+
 	Authentication authentication = new UsernamePasswordAuthenticationToken(
-	username,
+	principal,
 	null,
-	List.of(new SimpleGrantedAuthority("ROLE_USER"))
+	principal.getAuthorities()
 	);
 	String accessToken = jwtService.generateToken(authentication);
 

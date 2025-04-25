@@ -38,7 +38,7 @@ public class ProjectionGeneratorService {
 
         imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
 
-        if(definition.isInStack("isMultiTenant")){
+        if(definition.getMultiTenant()){
             imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
         }
 

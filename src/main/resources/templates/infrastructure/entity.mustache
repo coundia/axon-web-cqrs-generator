@@ -37,7 +37,7 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 {{^isId}}
 {{#relation}}
 {{#isOneToMany}}
-	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private {{{realType}}} {{nameLowerCase}} = new HashSet<>();
 {{/isOneToMany}}
 {{#isManyToOne}}

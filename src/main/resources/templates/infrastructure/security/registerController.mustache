@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+
 @Tag(name = "Auth", description = "Endpoints registration")
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class RegisterController {
 
 private final RegisterUser registerUser;
+private final CurrentTenantIdentifierResolver currentTenantIdentifierResolver;
 
 @PostMapping("/register")
 @Operation(
@@ -45,8 +48,12 @@ content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
 })
 public ResponseEntity<AuthResponseDto> register(@RequestBody AuthRequestDto request) {
 	try {
-	return ResponseEntity.ok(registerUser.handle(request));
+ 	return ResponseEntity.ok(registerUser.handle(
+	request,
+	currentTenantIdentifierResolver.resolveCurrentTenantIdentifier()
+	));
 	} catch (Exception e) {
+	e.printStackTrace();
 	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 	.body(AuthResponseDto.builder()
 	.token(null)

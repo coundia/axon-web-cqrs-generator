@@ -65,6 +65,7 @@ public ResponseEntity<{{name}}Response> update{{name}}(
 	return ResponseEntity.ok(response);
 
 	} catch (Exception ex) {
+	//e.printStackTrace();
 	log.error("Failed to Update {{nameLowercase}}: {}", ex.getMessage(), ex);
 	return ResponseEntity.internalServerError().build();
 	}

@@ -32,187 +32,188 @@ import java.util.List;
 @Service
 public class GroupMainGenerator {
 
-    private final GeneratorProperties properties;
-    private final CommandGeneratorService commandGenerator;
-    private final AggregateGeneratorService aggregateGenerator;
-    private final VoGeneratorService voGenerator;
-    private final EventGeneratorService eventGenerator;
-    private final ProjectionGeneratorService projectionGenerator;
-    private final DtoRequestGeneratorService dtoRequestGeneratorService;
-    private final DtoResponseGeneratorService dtoResponseGeneratorService;
-    private final MapperGeneratorService mapperGenerator;
-    private final ExceptionGeneratorService exceptionGeneratorService;
-    private final RepositoryGeneratorService repositoryGeneratorService;
-    private final EntityGeneratorService entityGeneratorService;
-    private final FindAllQueryGeneratorService listQueryGeneratorService;
-    private final FindAllQueryHandlerGeneratorService listQueryHandlerGeneratorService;
-    private final ListControllerGeneratorService listControllerGeneratorService;
-    private final PagedResponseGeneratorService pagedResponseGeneratorService;
-    private final CreateControllerGeneratorService createControllerGeneratorService;
-    private final DeleteControllerGeneratorService deleteControllerGeneratorService;
-    private final FindByFieldControllerGeneratorService findByFieldControllerGeneratorService;
-    private final UpdateControllerGeneratorService updateControllerGeneratorService;
-    private final FindByFieldQueryGeneratorService findByFieldQueryGeneratorService;
-    private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
-    private final AllTestGeneratorService controllerAllIntegrationTestGeneratorService;
-    private final SharedGeneratorService sharedGeneratorService;
-    private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
-    private final UsecaseGeneratorService usecaseGeneratorService;
-    private final RabbitMqGeneratorService rabbitMqGeneratorService;
-    private final SyncGeneratorService syncGeneratorService;
-    private final MailGeneratorService mailGeneratorService;
+	private final GeneratorProperties properties;
+	private final CommandGeneratorService commandGenerator;
+	private final AggregateGeneratorService aggregateGenerator;
+	private final VoGeneratorService voGenerator;
+	private final EventGeneratorService eventGenerator;
+	private final ProjectionGeneratorService projectionGenerator;
+	private final DtoRequestGeneratorService dtoRequestGeneratorService;
+	private final DtoResponseGeneratorService dtoResponseGeneratorService;
+	private final MapperGeneratorService mapperGenerator;
+	private final ExceptionGeneratorService exceptionGeneratorService;
+	private final RepositoryGeneratorService repositoryGeneratorService;
+	private final EntityGeneratorService entityGeneratorService;
+	private final FindAllQueryGeneratorService listQueryGeneratorService;
+	private final FindAllQueryHandlerGeneratorService listQueryHandlerGeneratorService;
+	private final ListControllerGeneratorService listControllerGeneratorService;
+	private final PagedResponseGeneratorService pagedResponseGeneratorService;
+	private final CreateControllerGeneratorService createControllerGeneratorService;
+	private final DeleteControllerGeneratorService deleteControllerGeneratorService;
+	private final FindByFieldControllerGeneratorService findByFieldControllerGeneratorService;
+	private final UpdateControllerGeneratorService updateControllerGeneratorService;
+	private final FindByFieldQueryGeneratorService findByFieldQueryGeneratorService;
+	private final FindByFieldQueryHandlerGeneratorService findByFieldQueryHandlerGeneratorService;
+	private final AllTestGeneratorService controllerAllIntegrationTestGeneratorService;
+	private final SharedGeneratorService sharedGeneratorService;
+	private final SharedTestGeneratorService testControllerIntegrationTestGeneratorService;
+	private final UsecaseGeneratorService usecaseGeneratorService;
+	private final RabbitMqGeneratorService rabbitMqGeneratorService;
+	private final SyncGeneratorService syncGeneratorService;
+	private final MailGeneratorService mailGeneratorService;
 
 
+	private EntityDefinition loadFromFileDefinition() {
+		return EntityDefinition.fromSource(
+				properties.getEntityName(),
+				properties.getSourceRoot()
+		);
+	}
 
-    private EntityDefinition loadFromFileDefinition() {
-        return EntityDefinition.fromSource(
-                properties.getEntityName(),
-                properties.getSourceRoot()
-        );
-    }
+	private void log(String message) {
+		System.out.println(message);
+	}
 
-    private void log(String message) {
-        System.out.println(message);
-    }
+	public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
+		Sinks.Many<ApiResponseDto> sink = Sinks.many().unicast().onBackpressureBuffer();
 
-    public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
-        Sinks.Many<ApiResponseDto> sink = Sinks.many().unicast().onBackpressureBuffer();
+		EntityDefinition definition = definitionDto.getDefinition();
+		String outputDir = definitionDto.getOutputDir();
 
-        EntityDefinition definition = definitionDto.getDefinition();
-        String outputDir = definitionDto.getOutputDir();
+		List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
 
-        List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
+		if (!definition.hasField("createdBy")) {
+			FieldDefinition createdBy = FieldDefinition
+					.builder()
+					.name("createdBy")
+					.type("User")
+					.relation("ManyToOne")
+					.unique(false)
+					.nullable(true)
+					.build();
+			fields.add(createdBy);
+			log.info("Adding field createdBy in {} ", definition.getName());
+		}
 
-        if(!definition.hasField("createdBy")) {
-            FieldDefinition createdBy = FieldDefinition
-                    .builder()
-                    .name("createdBy")
-                    .type("User")
-                    .relation("ManyToOne")
-                    .unique(false)
-                    .nullable(true)
-                    .build();
-            fields.add(createdBy);
-            log.info("Adding field createdBy in {} ", definition.getName());
-        }else{
-            log.info("Not added field createdBy in {} ", definition.getName());
-        }
+		if (!definition.hasField("tenant") &&
+                definition.getMultiTenant() &&
+                !definition.getName().equalsIgnoreCase("Tenant")) {
+			FieldDefinition tenant = FieldDefinition
+					.builder()
+					.name("tenant")
+					.type("Tenant")
+					.relation("ManyToOne")
+					.unique(false)
+					.nullable(true)
+					.build();
+			fields.add(tenant);
+		}
 
-        if(!definition.hasField("tenant") && definition.getMultiTenant()) {
-            FieldDefinition tenant = FieldDefinition
-                    .builder()
-                    .name("tenant")
-                    .type("Tenant")
-                    .relation("ManyToOne")
-                    .unique(false)
-                    .nullable(true)
-                    .build();
-            fields.add(tenant);
-        }
+		definition.setFields(fields);
 
-        definition.setFields(fields);
+		Mono.fromRunnable(() -> {
+			try {
 
-        Mono.fromRunnable(() -> {
-            try {
+				if (!definition.getIsGenerated()) {
+					emit(sink, "Generating commun ...");
+					sharedGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "Generating commun ...");
-                sharedGeneratorService.generate(definition, outputDir);
+					if (definition.hasRabbitMq()) {
+						emit(sink, "Generating RabbitMQ Config...");
+						rabbitMqGeneratorService.generate(definition, outputDir);
+					}
 
-                emit(sink, "Generating Value Objects...");
-                voGenerator.generate(definition, outputDir);
+					if (definition.isInStack("mail")) {
+						emit(sink, "Generating Mail Modules...");
+						mailGeneratorService.generate(definition, outputDir);
+					}
 
-                emit(sink, "Generating Events...");
-                eventGenerator.generate(definition, outputDir);
+					if (definition.isInStack("sync")) {
+						emit(sink, "Generating Sync Modules...");
+						syncGeneratorService.generate(definition, outputDir);
+					}
+				}
 
-                emit(sink, "Generating Aggregate...");
-                aggregateGenerator.generate(definition, outputDir);
+				if (!definition.hasRabbitMq()) {
+					emit(sink, "Generating Projections...");
+					projectionGenerator.generate(definition, outputDir);
+				}
 
-                emit(sink, "Generating Application...");
-                exceptionGeneratorService.generate(definition, outputDir);
-                usecaseGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating Value Objects...");
+				voGenerator.generate(definition, outputDir);
 
-                emit(sink, "Generating Commands...");
-                commandGenerator.generate(definition, outputDir);
+				emit(sink, "Generating Events...");
+				eventGenerator.generate(definition, outputDir);
 
-                emit(sink, "Generating Queries...");
-                listQueryGeneratorService.generate(definition, outputDir);
-                listQueryHandlerGeneratorService.generate(definition, outputDir);
-                findByFieldQueryGeneratorService.generate(definition, outputDir);
-                findByFieldQueryHandlerGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating Aggregate...");
+				aggregateGenerator.generate(definition, outputDir);
 
-                emit(sink, "Generating DTO Requests...");
-                dtoRequestGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating Application...");
+				exceptionGeneratorService.generate(definition, outputDir);
+				usecaseGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "Generating DTO Responses...");
-                dtoResponseGeneratorService.generate(definition, outputDir);
-                pagedResponseGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating Commands...");
+				commandGenerator.generate(definition, outputDir);
 
-                emit(sink, "Generating entity...");
-                entityGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating Queries...");
+				listQueryGeneratorService.generate(definition, outputDir);
+				listQueryHandlerGeneratorService.generate(definition, outputDir);
+				findByFieldQueryGeneratorService.generate(definition, outputDir);
+				findByFieldQueryHandlerGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "Generating Mappers...");
-                mapperGenerator.generate(definition, outputDir);
+				emit(sink, "Generating DTO Requests...");
+				dtoRequestGeneratorService.generate(definition, outputDir);
 
-                emit(sink, "Generating Repositories...");
-                repositoryGeneratorService.generate(definition, outputDir);
+				emit(sink, "Generating DTO Responses...");
+				dtoResponseGeneratorService.generate(definition, outputDir);
+				pagedResponseGeneratorService.generate(definition, outputDir);
 
-                if (!definition.hasRabbitMq()) {
-                    emit(sink, "Generating Projections...");
-                    projectionGenerator.generate(definition, outputDir);
-                }
+				emit(sink, "Generating entity...");
+				entityGeneratorService.generate(definition, outputDir);
 
-                if (definition.hasRabbitMq()) {
-                    emit(sink, "Generating RabbitMQ Config...");
-                    rabbitMqGeneratorService.generate(definition, outputDir);
-                }
+				emit(sink, "Generating Mappers...");
+				mapperGenerator.generate(definition, outputDir);
 
-                if(!definition.isSkipped("presentation")) {
+				emit(sink, "Generating Repositories...");
+				repositoryGeneratorService.generate(definition, outputDir);
 
-                    emit(sink, "Generating Controllers...");
-                    listControllerGeneratorService.generate(definition, outputDir);
-                    createControllerGeneratorService.generate(definition, outputDir);
-                    deleteControllerGeneratorService.generate(definition, outputDir);
-                    findByFieldControllerGeneratorService.generate(definition, outputDir);
-                    updateControllerGeneratorService.generate(definition, outputDir);
+				if (!definition.isSkipped("presentation")) {
 
-                    emit(sink, "Generating tests...");
-                    testControllerIntegrationTestGeneratorService.generate(outputDir, definition);
-                    controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
-                }
+					emit(sink, "Generating Controllers...");
+					listControllerGeneratorService.generate(definition, outputDir);
+					createControllerGeneratorService.generate(definition, outputDir);
+					deleteControllerGeneratorService.generate(definition, outputDir);
+					findByFieldControllerGeneratorService.generate(definition, outputDir);
+					updateControllerGeneratorService.generate(definition, outputDir);
 
-                if (definition.isInStack("sync")) {
-                    emit(sink, "Generating Sync Modules...");
-                    syncGeneratorService.generate(definition, outputDir);
-                }
+					emit(sink, "Generating tests...");
+					testControllerIntegrationTestGeneratorService.generate(outputDir, definition);
+					controllerAllIntegrationTestGeneratorService.generate(definition, outputDir);
+				}
 
-                if (definition.isInStack("mail")) {
-                    emit(sink, "Generating Mail Modules...");
-                    mailGeneratorService.generate(definition, outputDir);
-                }
+				emit(sink, "Completed!");
 
-                emit(sink, "Completed!");
+				sink.tryEmitComplete();
 
-                sink.tryEmitComplete();
+			} catch (Exception e) {
+				sink.tryEmitNext(ApiResponseDto.builder()
+						.code(500)
+						.message("❌ Error during generation: " + e.getMessage())
+						.build());
+				sink.tryEmitComplete();
+			}
+		}).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).subscribe();
 
-            } catch (Exception e) {
-                sink.tryEmitNext(ApiResponseDto.builder()
-                        .code(500)
-                        .message("❌ Error during generation: " + e.getMessage())
-                        .build());
-                sink.tryEmitComplete();
-            }
-        }).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).subscribe();
-
-        return sink.asFlux();
-    }
+		return sink.asFlux();
+	}
 
 
-    private void emit(Sinks.Many<ApiResponseDto> sink, String msg) {
-        sink.tryEmitNext(ApiResponseDto.builder()
-                .code(200)
-                .message(msg)
-                .build());
-    }
+	private void emit(Sinks.Many<ApiResponseDto> sink, String msg) {
+		sink.tryEmitNext(ApiResponseDto.builder()
+				.code(200)
+				.message(msg)
+				.build());
+	}
 
 
 }

@@ -30,7 +30,14 @@ public class RepositoryGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "."+definition.getName());
+
+        if(definition.getMultiTenant()) {
+            imports.add(Utils.getPackage(Utils.getParent(baseDir) +
+                    "/tenant/" +
+                    generatorProperties.getEntityPackage()) + ".Tenant");
+        }
+        imports.add(Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".User");
 
         context.put("imports", imports);
 

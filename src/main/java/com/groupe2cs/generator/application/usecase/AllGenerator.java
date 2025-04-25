@@ -5,6 +5,7 @@ import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.domain.model.FieldDefinition;
 import com.groupe2cs.generator.domain.model.Generator;
+import com.groupe2cs.generator.shared.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class AllGenerator implements Generator {
 
 	private final GroupMainGenerator groupMainGenerator;
 	private final SecurityGeneratorService securityGeneratorService;
+	private final MultiTenantGeneratorService multiTenantGeneratorService;
 
 	public Flux<ApiResponseDto> generate(@RequestBody EntityDefinitionDTO request) {
 
@@ -42,12 +44,20 @@ public class AllGenerator implements Generator {
 		log.info("📂 Dossier de sortie: {}", outputDir);
 		log.info("📂table: {}", definition.getTable());
 
+		//Module security
 		log.info("📦 Generation de la sécurité");
-
 		securityGeneratorService
 				.generate(definition, outputDir)
 				.doOnNext(msg -> sink.tryEmitComplete())
 				.subscribe();
+
+		//Module tenant
+		if (definition.getMultiTenant()) {
+			log.info("📦 Generation du module multi-tenant");
+			multiTenantGeneratorService
+					.generate(definition, outputDir)
+					.subscribe();
+		}
 
 		log.info("📦 Generation de la sécurité terminée");
 

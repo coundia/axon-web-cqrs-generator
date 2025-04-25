@@ -32,7 +32,25 @@ public class EntityDefinition implements Serializable {
 	private String module;
 	private Boolean auditable = false;
 	private Boolean multiTenant = false;
+	private Boolean isGenerated = false;
 
+	public Boolean getMultiTenant() {
+
+		if (multiTenant == null) {
+			return false;
+		}
+
+		return multiTenant;
+	}
+
+	public Boolean getIsGenerated() {
+
+		if (isGenerated == null) {
+			return false;
+		}
+
+		return isGenerated;
+	}
 
 	public String getName() {
 		return name;
@@ -211,11 +229,20 @@ public class EntityDefinition implements Serializable {
 	}
 
 	public boolean hasField(String fieldName) {
+
+		if (this.fields == null || this.fields.isEmpty()) {
+			return false;
+		}
 		return fields.stream()
 				.anyMatch(f -> f.getName().equalsIgnoreCase(fieldName));
 	}
 
 	public boolean isSkipped(String module) {
+
+		if (this.skip == null || this.skip.isEmpty()) {
+			return false;
+		}
+
 		return this.skip.stream()
 				.anyMatch(s -> s.equalsIgnoreCase(module));
 	}
@@ -231,6 +258,7 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
 				.toList();
 	}
+
 	public List<FieldDefinition> getEditableFields() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))

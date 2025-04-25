@@ -9,16 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 
 public class {{name}}FindByIdControllerIntegrationTest extends BaseIntegrationTests {
 
 @Autowired
-private {{name}}Repository {{nameLower}}Repository;
+private CommandGateway commandGateway;
+
+@Autowired
+private {{name}}Repository repository;
 
 @Test
 void it_should_be_able_to_get_{{nameLower}}_by_id() {
-	{{name}} entity = {{name}}Fixtures.randomOne({{nameLower}}Repository);
-	String existingId = entity.getId();
+
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+
+	 {{name}}Fixtures.byIdWaitExist(repository, existingId);
 
 	String uri = "/v1/queries/{{entityUnCapitalized}}/id?id=" + existingId;
 	ResponseEntity<{{name}}Response> response = this.getForEntity(uri, {{name}}Response.class);

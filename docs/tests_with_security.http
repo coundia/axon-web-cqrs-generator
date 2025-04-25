@@ -9,7 +9,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
-    "multiTenant": false,
+    "multiTenant": true,
     "auditable": true,
 	"fields": [
 	  {

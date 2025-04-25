@@ -36,5 +36,6 @@ public class GeneratorProperties {
     private String domainUseCasePackage;
     private String securityPackage;
     private String configPackage;
+    private String tenantPackage;
 
 }

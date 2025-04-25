@@ -42,7 +42,7 @@ public class EntityGeneratorService {
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
 
-        if(definition.isInStack("isMultiTenant")){
+        if(definition.getMultiTenant()){
             imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
         }
 

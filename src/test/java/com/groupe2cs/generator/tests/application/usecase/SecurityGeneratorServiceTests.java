@@ -45,6 +45,11 @@ public class SecurityGeneratorServiceTests {
         Path configPath = fullDir.resolve("infrastructure/config");
         File config = configPath.resolve("SecurityConfig.java").toFile();
 
+        File RefreshTokenCreateControllerIntegrationTest = fullDir
+                .resolve("presentation/controller")
+                .resolve("RefreshTokenCreateControllerIntegrationTest.java").toFile();
+        assertThat(RefreshTokenCreateControllerIntegrationTest).doesNotExist();
+
         assertThat(user).exists();
         assertThat(role).exists();
         assertThat(permission).exists();

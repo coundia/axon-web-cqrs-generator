@@ -1,19 +1,18 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.*;
 
 @Component
 @RequiredArgsConstructor
-public class SecurityInitializer {
+public class {{className}} {
 
 private static final String ROLE_ADMIN = "ROLE_ADMIN";
 private static final String ROLE_USER = "ROLE_USER";
@@ -29,6 +28,9 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	private final UserRepository userRepository;
 	private final UserRoleRepository userRoleRepository;
 	private final PasswordEncoder passwordEncoder;
+	{{#isMultiTenant}}
+		private final TenantRepository tenantRepository;
+	{{/isMultiTenant}}
 
 	@PostConstruct
 	public void init() {
@@ -37,6 +39,10 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	assignPermissionsToRole(roles.get(ROLE_ADMIN));
 	createUserIfNotExist(ADMIN_USERNAME, PASSWORD_ADMIN, roles.get(ROLE_ADMIN));
 	createUserIfNotExist(USER_USERNAME, PASSWORD_USER, roles.get(ROLE_USER));
+	{{#isMultiTenant}}
+		addTenantAndAssignToUser("default", ADMIN_USERNAME);
+		addTenantAndAssignToUser("default", USER_USERNAME);
+	{{/isMultiTenant}}
 	}
 
 	private void createPermissions() {
@@ -52,7 +58,7 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	}
 
 	private Map<String, Role> createRoles() {
-	Map<String, Role> result = new HashMap<>();
+	var result = new HashMap<String, Role>();
 	result.put(ROLE_ADMIN, findOrCreateRole(ROLE_ADMIN));
 	result.put(ROLE_USER, findOrCreateRole(ROLE_USER));
 	return result;
@@ -70,20 +76,18 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 
 	private void assignPermissionsToRole(Role role) {
 	permissionRepository.findAll().forEach(permission ->
-	//rolePermissionRepository.findByRoleAndPermission(role, permission).orElseGet(() ->
 	rolePermissionRepository.save(RolePermission.builder()
 	.id(UUID.randomUUID().toString())
 	.role(role)
 	.permission(permission)
 	.build()
-	//)
 	)
 	);
 	}
 
 	private void createUserIfNotExist(String username, String rawPassword, Role role) {
 	userRepository.findByUsername(username).orElseGet(() -> {
-	User user = userRepository.save(User.builder()
+	var user = userRepository.save(User.builder()
 	.id(UUID.randomUUID().toString())
 	.username(username)
 	.password(passwordEncoder.encode(rawPassword))
@@ -93,9 +97,24 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	.id(UUID.randomUUID().toString())
 	.user(user)
 	.role(role)
-	.build());
-
+	.build()
+	);
 	return user;
 	});
 	}
+
+	{{#isMultiTenant}}
+		private void addTenantAndAssignToUser(String tenantName, String username) {
+		var tenant = tenantRepository.findByName(tenantName).orElseGet(() ->
+		tenantRepository.save(Tenant.builder()
+		.id(UUID.randomUUID().toString())
+		.name(tenantName)
+		.build()
+		));
+		userRepository.findByUsername(username).ifPresent(user -> {
+		user.setTenant(tenant);
+		userRepository.save(user);
+		});
+		}
+	{{/isMultiTenant}}
 	}

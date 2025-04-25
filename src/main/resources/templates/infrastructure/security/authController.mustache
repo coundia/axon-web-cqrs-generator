@@ -62,6 +62,7 @@ public ResponseEntity<AuthResponseDto> authenticate(@org.springframework.web.bin
 	.build()
 	);
 	} catch (Exception e) {
+	e.printStackTrace();
 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	.body(AuthResponseDto.builder()
 	.token(null)

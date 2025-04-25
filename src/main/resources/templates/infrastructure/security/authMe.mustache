@@ -50,11 +50,12 @@ public ResponseEntity<ApiResponseDto> me(@AuthenticationPrincipal Jwt jwt) {
 	UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserByUsername(username);
 
 	return ResponseEntity.ok(ApiResponseDto.ok(
-	Map.of(
-	"username", username,
-	"roles", userPrincipal.getRoles(),
-	"authorities", userPrincipal.getAuthorities()
-	)
+		Map.of(
+			"username", username,
+			"roles", userPrincipal.getRoles(),
+			"tenantId", userPrincipal.getTenantId(),
+			"authorities", userPrincipal.getAuthorities()
+		)
 	));
 	}
 	}
