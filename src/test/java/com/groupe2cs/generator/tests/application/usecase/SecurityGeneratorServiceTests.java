@@ -38,7 +38,7 @@ public class SecurityGeneratorServiceTests {
         service.generate(definition, fullDir.toString()).blockLast();
 
         Path entityPath = fullDir.resolve("infrastructure/entity");
-        File user = entityPath.resolve("User.java").toFile();
+        File CustomUser = entityPath.resolve("CustomUser.java").toFile();
         File role = entityPath.resolve("Role.java").toFile();
         File permission = entityPath.resolve("Permission.java").toFile();
 
@@ -50,7 +50,7 @@ public class SecurityGeneratorServiceTests {
                 .resolve("RefreshTokenCreateControllerIntegrationTest.java").toFile();
         assertThat(RefreshTokenCreateControllerIntegrationTest).doesNotExist();
 
-        assertThat(user).exists();
+        assertThat(CustomUser).exists();
         assertThat(role).exists();
         assertThat(permission).exists();
         assertThat(config).exists();

@@ -10,13 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
-
+import lombok.extern.slf4j.Slf4j;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -81,5 +81,42 @@ public Instant extractExpiration(String token) {
 Jwt jwt = jwtDecoder.decode(token);
 return jwt.getExpiresAt();
 }
+
+public String extractTenantId(String token) {
+Jwt jwt = jwtDecoder.decode(token);
+return jwt.getClaim("tenantId");
+}
+
+public String extractUserId(String token) {
+Jwt jwt = jwtDecoder.decode(token);
+return jwt.getClaim("userId");
+}
+
+public static   String extractClaim(Authentication auth, String claim) {
+if (auth == null || !auth.isAuthenticated()) {
+log.error("Authentication is null or not authenticated");
+return "";
+}
+
+Object principal = auth.getPrincipal();
+if (principal instanceof Jwt jwt) {
+return  jwt.getClaimAsString(claim);
+}
+
+if (principal instanceof UserPrincipal userPrincipal) {
+	if(claim.equals("userId")) {
+		return userPrincipal.getId();
+	}
+	if (claim.equals("tenantId")) {
+		return userPrincipal.getTenantId();
+	}
+	return userPrincipal.getUsername();
+}
+
+log.warn("Principal is not on good instance  ");
+
+return "";
+}
+
 }
 

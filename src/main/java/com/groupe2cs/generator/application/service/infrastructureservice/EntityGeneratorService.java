@@ -32,7 +32,8 @@ public class EntityGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
         context.put("base", Utils.getPackage(rootDir));
         context.put("tableName", definition.getTable());
-        context.put("entity", definition.getName());
+        context.put("entity", definition.getEntity());
+        context.put("name", definition.getName());
         context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 
 
@@ -40,7 +41,7 @@ public class EntityGeneratorService {
         context.put("isAuditable", definition.getAuditable());
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
 
         if(definition.getMultiTenant()){
             imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
@@ -60,6 +61,6 @@ public class EntityGeneratorService {
         context.put("imports", imports);
 
         String content = templateEngine.render("infrastructure/entity.mustache", context);
-        fileWriterService.write(outputDir, definition.getName() + ".java", content);
+        fileWriterService.write(outputDir, definition.getEntity() + ".java", content);
     }
 }

@@ -25,7 +25,7 @@ this.repository = repository;
 @EventHandler
 public void on({{name}}CreatedEvent event) {
 try {
-{{name}} entity = {{name}}.builder()
+{{entity}} entity = {{entity}}.builder()
 {{#editableFields}}
 	{{^isOneToMany}} {{^isManyToOne}}
 		.{{nameLowerCase}}(event.get{{nameCapitalized}}().value())
@@ -37,7 +37,7 @@ try {
 .build();
 
 if(event.getCreatedBy() !=null){
-	entity.setCreatedBy( new User(event.getCreatedBy().value()));
+	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
 }
 
 repository.save(entity);
@@ -51,7 +51,7 @@ throw e;
 @EventHandler
 public void on({{name}}UpdatedEvent event) {
 try {
-{{name}} entity = repository.findById(event.getId().value())
+{{entity}} entity = repository.findById(event.getId().value())
 .orElseThrow(() -> new RuntimeException("{{name}} not found"));
 
 {{#editableFields}}
@@ -64,7 +64,7 @@ try {
 {{/editableFields}}
 
 if(event.getCreatedBy() !=null){
-	entity.setCreatedBy( new User(event.getCreatedBy().value()));
+	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
 }
 
 

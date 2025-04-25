@@ -30,19 +30,23 @@ public class RepositoryGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "."+definition.getName());
+        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "."+definition.getEntity());
 
         if(definition.getMultiTenant()) {
             imports.add(Utils.getPackage(Utils.getParent(baseDir) +
                     "/tenant/" +
                     generatorProperties.getEntityPackage()) + ".Tenant");
         }
-        imports.add(Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+        imports.add(Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
 
         context.put("imports", imports);
 
+        String className = Utils.capitalize(definition.getName()) + "Repository";
+
         context.put("tableName", definition.getTable());
-        context.put("entityName", definition.getName());
+        context.put("entityName", definition.getEntity());
+        context.put("name", definition.getName());
+        context.put("className", className);
         var fields = definition.getFieldsWithoutRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 

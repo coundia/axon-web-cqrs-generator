@@ -38,6 +38,10 @@ public class HandlerGeneratorService {
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
+        context.put("nameAggregate", definition.getName());
+        context.put("entity", definition.getEntity());
+        context.put("name", definition.getName());
+
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");

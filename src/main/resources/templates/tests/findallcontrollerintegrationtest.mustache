@@ -8,26 +8,72 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
-public class {{name}}FindAllControllerIntegrationTest extends BaseIntegrationTests {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class {{name}}FindAllControllerIntegrationTest extends BaseIntegrationTests {
 
 @Autowired
 private CommandGateway commandGateway;
 
+@Autowired
+private {{name}}Repository {{entityUnCapitalized}}Repository;
+
+private void waitFor{{name}}(String {{name}}Id) {
+long timeout = Duration.ofSeconds(5).toMillis();
+long start = System.currentTimeMillis();
+while (System.currentTimeMillis() - start < timeout) {
+if ({{entityUnCapitalized}}Repository.findById({{name}}Id).isPresent()) {
+return;
+}
+try {
+Thread.sleep(100);
+} catch (InterruptedException ignored) {
+}
+}
+throw new RuntimeException("{{name}} not found after timeout: " + {{name}}Id);
+}
 
 @Test
-void it_should_be_able_to_get_all_{{nameLower}}s() {
-	List<?> list = {{name}}Fixtures.randomManyViaCommand(commandGateway, 5, getUserId());
+void it_should_be_able_to_get_all_{{name}}s_as_admin() {
+var userId = login("admin", "admin");
+
+//{{name}}Fixtures.deleteAll({{entityUnCapitalized}}Repository);
+
+List<Create{{name}}Command> commands = {{name}}Fixtures
+	.randomManyViaCommand(commandGateway, 5, userId);
+
+	commands.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
 
 	String uri = "/v1/queries/{{entityUnCapitalized}}s";
 	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
 
-	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	assertThat(response.getBody()).isNotNull();
-	assertThat(response.getBody().getContent()).isNotEmpty();
-	}
-}
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getBody()).isNotNull();
+		assertThat(response.getBody().getContent()).hasSizeGreaterThanOrEqualTo(5);
+		}
+
+		@Test
+		void it_should_only_return_user_{{name}}s_as_normal_user() {
+		var userId = login("user", "user");
+
+		List<Create{{name}}Command> list1 = {{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
+			List<Create{{name}}Command> list2 = {{name}}Fixtures.randomManyViaCommand(commandGateway, 2, userId);
+
+				list1.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
+				list2.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
+
+				String uri = "/v1/queries/{{entityUnCapitalized}}s";
+				ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
+
+					assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+					assertThat(response.getBody()).isNotNull();
+					assertThat(response.getBody().getContent())
+					.allSatisfy({{name}} -> assertThat({{name}}.getCreatedBy()).isEqualTo(userId));
+					}
+					}

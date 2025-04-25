@@ -30,6 +30,7 @@ public class PagedResponseGeneratorService {
         String outputDir = baseDir + "/" + properties.getDtoPackage();
         context.put("package", Utils.getPackage(outputDir));
         context.put("name", definition.getName());
+        context.put("entity", definition.getEntity());
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + properties.getEntityPackage()) + ".*");

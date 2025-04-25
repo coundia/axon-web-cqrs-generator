@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class EntityDefinition implements Serializable {
 
 	private String name;
+	private String entity;
 	private String table;
 	private List<FieldDefinition> fields;
 	private List<String> stack = new ArrayList<>();
@@ -43,6 +44,22 @@ public class EntityDefinition implements Serializable {
 		return multiTenant;
 	}
 
+	public String getName(){
+		if (name == null) {
+			return "";
+		}
+
+		return name;
+	}
+
+	public String getEntity() {
+		if (entity == null) {
+			return getName();
+		}
+
+		return entity;
+	}
+
 	public Boolean getIsGenerated() {
 
 		if (isGenerated == null) {
@@ -52,9 +69,6 @@ public class EntityDefinition implements Serializable {
 		return isGenerated;
 	}
 
-	public String getName() {
-		return name;
-	}
 
 	public String getTable() {
 		return table;

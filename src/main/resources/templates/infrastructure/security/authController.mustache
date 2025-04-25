@@ -52,9 +52,12 @@ public ResponseEntity<AuthResponseDto> authenticate(@org.springframework.web.bin
 
 	String token = jwtService.generateToken(authentication);
 
+	String tenantId = jwtService.extractTenantId(token);
+
 	return ResponseEntity.ok(
 	AuthResponseDto.builder()
 	.token(token)
+	.tenant(tenantId)
 	.username(authentication.getName())
 	.expirationAt(jwtService.extractExpiration(token))
 	.code(1)
@@ -65,7 +68,6 @@ public ResponseEntity<AuthResponseDto> authenticate(@org.springframework.web.bin
 	e.printStackTrace();
 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	.body(AuthResponseDto.builder()
-	.token(null)
 	.code(0)
 	.message("Unauthorized")
 	.build());

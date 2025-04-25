@@ -28,6 +28,10 @@ public class QueryHandlerGeneratorService {
         String outputDir = baseDir + "/" + generatorProperties.getQueryHandlerPackage();
         context.put("package", Utils.getPackage(outputDir));
 
+        context.put("nameAggregate", definition.getName());
+        context.put("entity", definition.getEntity());
+        context.put("name", definition.getName());
+
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + "." + definition.getName() + "Response");

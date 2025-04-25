@@ -4,26 +4,27 @@ import {{.}};
 {{/imports}}
 
 
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthControllerTests {
+@Transactional
+class AuthControllerTests {
 
 @Autowired
 private MockMvc mockMvc;
@@ -35,26 +36,32 @@ private ObjectMapper objectMapper;
 private UserRepository userRepository;
 
 @Autowired
-PasswordEncoder passwordEncoder;
+private PasswordEncoder passwordEncoder;
 
-@BeforeEach
-void setUp() {
-userRepository.deleteAll();
+private String existingUsername = "admin";
+private String existingPassword = "admin";
 
-User user = User.builder()
+private void createUserIfNotExist() {
+if (userRepository.findByUsername(existingUsername).isEmpty()) {
+CustomUser user = CustomUser.builder()
 .id(UUID.randomUUID().toString())
-.username("admin")
-.password(passwordEncoder.encode("admin"))
+.username(existingUsername)
+.password(passwordEncoder.encode(existingPassword))
 .build();
-
 userRepository.save(user);
+TestTransaction.flagForCommit();
+TestTransaction.end();
+TestTransaction.start();
+}
 }
 
 @Test
 void it_should_return_jwt_token_when_credentials_are_valid() throws Exception {
+createUserIfNotExist();
+
 AuthRequestDto request = new AuthRequestDto();
-request.setUsername("admin");
-request.setPassword("admin");
+request.setUsername(existingUsername);
+request.setPassword(existingPassword);
 
 String response = mockMvc.perform(post("/api/auth/login")
 .contentType(MediaType.APPLICATION_JSON)
@@ -64,11 +71,10 @@ String response = mockMvc.perform(post("/api/auth/login")
 
 AuthResponseDto dto = objectMapper.readValue(response, AuthResponseDto.class);
 assertThat(dto.getToken()).isNotNull();
-assertThat(dto.getUsername()).isEqualTo("admin");
+assertThat(dto.getUsername()).isEqualTo(existingUsername);
 assertThat(dto.getCode()).isEqualTo(1);
 assertThat(dto.getMessage()).isEqualTo("Login successful");
 assertThat(dto.getExpirationAt()).isNotNull();
-
 }
 
 @Test
@@ -85,8 +91,10 @@ mockMvc.perform(post("/api/auth/login")
 
 @Test
 void it_should_return_unauthorized_when_password_invalid() throws Exception {
+createUserIfNotExist();
+
 AuthRequestDto request = new AuthRequestDto();
-request.setUsername("admin");
+request.setUsername(existingUsername);
 request.setPassword("wrong");
 
 mockMvc.perform(post("/api/auth/login")

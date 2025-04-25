@@ -17,7 +17,7 @@ private final {{name}}Repository repository;
 {{^isUnique}}
 public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
 {{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
-	List<{{name}}> entities = repository.findBy{{field.nameCapitalized}}(value);
+	List<{{entity}}> entities = repository.findBy{{field.nameCapitalized}}(value);
 	return entities.stream()
 	.map({{name}}Mapper::toResponse)
 	.toList();
@@ -27,7 +27,7 @@ public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Quer
 {{#isUnique}}
  public {{name}}Response handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
 	{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
-	{{name}} entity = repository.findBy{{field.nameCapitalized}}(value)
+	{{entity}} entity = repository.findBy{{field.nameCapitalized}}(value)
 		.orElse(null);
 
 		if (entity == null) {

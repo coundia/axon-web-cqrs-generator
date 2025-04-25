@@ -22,12 +22,15 @@ private CommandGateway commandGateway;
 @Test
 void it_should_be_able_to_delete_{{nameLower}}() {
 	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+
+	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
+
 	String uri = "/v1/commands/{{entityUnCapitalized}}/" + existingId;
 
 	ResponseEntity<String> rep = this.delete(uri);
 	assertThat(rep.getStatusCode().value()).isEqualTo(200);
 
-	{{name}} found = {{name}}Fixtures.byIdWaitNotExist({{nameLower}}Repository, existingId);
+	{{entity}} found = {{name}}Fixtures.byIdWaitNotExist({{nameLower}}Repository, existingId);
 	assertThat(found).isNull();
 	}
 }

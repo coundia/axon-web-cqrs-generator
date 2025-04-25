@@ -38,9 +38,12 @@ public class FindByFieldQueryHandlerGeneratorService {
             Map<String, Object> context = new HashMap<>();
             context.put("package", packageName);
             context.put("field", field);
-            context.put("name", definition.getName());
             context.put("isId", field.isId());
             context.put("isUnique", field.isUnique());
+
+            context.put("nameAggregate", definition.getName());
+            context.put("entity", definition.getEntity());
+            context.put("name", definition.getName());
 
             String className = "FindBy" +definition.getName() + field.getNameCapitalized() +  "Handler";
             context.put("className", className);

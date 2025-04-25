@@ -87,7 +87,7 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 
 	private void createUserIfNotExist(String username, String rawPassword, Role role) {
 	userRepository.findByUsername(username).orElseGet(() -> {
-	var user = userRepository.save(User.builder()
+	var user = userRepository.save(CustomUser.builder()
 	.id(UUID.randomUUID().toString())
 	.username(username)
 	.password(passwordEncoder.encode(rawPassword))

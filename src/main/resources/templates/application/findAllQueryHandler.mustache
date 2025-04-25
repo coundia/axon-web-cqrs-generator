@@ -11,16 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 @Component
-public class FindAll{{entity}}QueryHandler {
+public class FindAll{{nameAggregate}}QueryHandler {
 
-private final {{entity}}Repository repository;
+private final {{nameAggregate}}Repository repository;
 
-public FindAll{{entity}}QueryHandler({{entity}}Repository repository) {
+public FindAll{{nameAggregate}}QueryHandler({{nameAggregate}}Repository repository) {
 	this.repository = repository;
 }
 
 @QueryHandler
-public {{entity}}PagedResponse handle(FindAll{{entity}}Query query) {
+public {{nameAggregate}}PagedResponse handle(FindAll{{nameAggregate}}Query query) {
 int limit = query.getLimit();
 int offset = query.getPage() * limit;
 
@@ -30,11 +30,11 @@ PageRequest pageable = PageRequest.of(offset / limit, limit);
 
 Page<{{entity}}> pages = repository.findAll(pageable);
 
-List<{{entity}}Response> responses = pages.stream()
-	.map({{entity}}Mapper::toResponse)
+List<{{nameAggregate}}Response> responses = pages.stream()
+	.map({{nameAggregate}}Mapper::toResponse)
 	.toList();
 
-	return {{entity}}PagedResponse.from(
+	return {{nameAggregate}}PagedResponse.from(
 	pages,
 	responses
 	);

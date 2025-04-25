@@ -30,8 +30,12 @@ public class FindByFieldRepositoryGeneratorService {
         var fields = definition.getFields().stream().filter(p -> p.isFilable()).toList();
 
         Map<String, Object> context = new HashMap<>();
-        context.put("package", packageName);
+
+        context.put("nameAggregate", definition.getName());
+        context.put("entity", definition.getEntity());
         context.put("name", definition.getName());
+
+        context.put("package", packageName);
         context.put("className", definition.getName() + "Repository");
         context.put("fields", fields);
         context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));

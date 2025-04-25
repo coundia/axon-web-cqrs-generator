@@ -70,10 +70,6 @@ public class GroupMainGenerator {
 		);
 	}
 
-	private void log(String message) {
-		System.out.println(message);
-	}
-
 	public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
 		Sinks.Many<ApiResponseDto> sink = Sinks.many().unicast().onBackpressureBuffer();
 
@@ -86,7 +82,7 @@ public class GroupMainGenerator {
 			FieldDefinition createdBy = FieldDefinition
 					.builder()
 					.name("createdBy")
-					.type("User")
+					.type("CustomUser")
 					.relation("ManyToOne")
 					.unique(false)
 					.nullable(true)
@@ -202,7 +198,18 @@ public class GroupMainGenerator {
 						.build());
 				sink.tryEmitComplete();
 			}
-		}).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic()).subscribe();
+		})
+				.subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+				.doOnError(
+						error -> {
+							sink.tryEmitNext(ApiResponseDto.builder()
+									.code(500)
+									.message("❌ Error during generation: " + error.getMessage())
+									.build());
+							sink.tryEmitComplete();
+						}
+				)
+				.subscribe();
 
 		return sink.asFlux();
 	}

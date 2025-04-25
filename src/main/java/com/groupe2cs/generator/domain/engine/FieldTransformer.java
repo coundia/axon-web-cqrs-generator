@@ -85,7 +85,14 @@ public class FieldTransformer {
         }
 
         if (field.getRelation()!= null && field.getRelation().equalsIgnoreCase("manyToOne")) {
-            return field.getType()+"Fixtures.randomOneViaCommand(commandGateway, userId).getId().value()";
+
+            String typeField = field.getType();
+
+            if(typeField.equalsIgnoreCase("CustomUser")) {
+                return "UserFixtures.randomOneViaCommand(commandGateway, userId).getId().value()";
+            }
+
+            return typeField+"Fixtures.randomOneViaCommand(commandGateway, userId).getId().value()";
         }
 
         if(field.getRelation()!= null && field.getRelation().equalsIgnoreCase("oneToMany")) {

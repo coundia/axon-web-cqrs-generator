@@ -4,10 +4,10 @@ package {{package}};
 	import {{.}};
 {{/imports}}
 
-public class {{name}}Mapper {
+public class {{nameAggregate}}Mapper {
 
-public static {{name}}Response toResponse({{name}} entity) {
-return {{name}}Response.builder()
+public static {{nameAggregate}}Response toResponse({{entity}} entity) {
+return {{nameAggregate}}Response.builder()
 {{#editableFields}}
 	{{#isManyToOne}}
 		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}().getId())
@@ -19,28 +19,28 @@ return {{name}}Response.builder()
 .build();
 }
 
-public static {{name}}Response toResponse(Create{{name}}Command command) {
-return {{name}}Response.builder()
+public static {{nameAggregate}}Response toResponse(Create{{nameAggregate}}Command command) {
+return {{nameAggregate}}Response.builder()
 {{#editableFields}}
 	.{{nameUnCapitalized}}(command.get{{nameCapitalized}}().value())
 {{/editableFields}}
 .build();
 }
 
-public static {{name}}Response toResponse(Update{{name}}Command command) {
-return {{name}}Response.builder()
+public static {{nameAggregate}}Response toResponse(Update{{nameAggregate}}Command command) {
+return {{nameAggregate}}Response.builder()
 {{#editableFields}}
 	.{{nameUnCapitalized}}(command.get{{nameCapitalized}}().value())
 {{/editableFields}}
 .build();
 }
 
-public static Create{{name}}Command toCommand(
-{{name}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
+public static Create{{nameAggregate}}Command toCommand(
+{{nameAggregate}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
 ) {
-return Create{{name}}Command.builder()
+return Create{{nameAggregate}}Command.builder()
 {{#editableFields}}{{^isId}}
-	.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+	.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
 {{/isId}}{{/editableFields}}{{#hasFiles}}
 	{{#fieldFiles}}
 		.{{nameUnCapitalized}}({{nameUnCapitalized}})
@@ -49,26 +49,26 @@ return Create{{name}}Command.builder()
 }
 
 {{^hasFiles}}
-	public static Update{{name}}Command toUpdateCommand({{name}}Id id, {{name}}Request request) {
-	return Update{{name}}Command.builder()
+	public static Update{{nameAggregate}}Command toUpdateCommand({{nameAggregate}}Id id, {{nameAggregate}}Request request) {
+	return Update{{nameAggregate}}Command.builder()
 	.id(id)
 	{{#editableFields}}{{^isId}}
-		.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+		.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
 	{{/isId}}{{/editableFields}}
 	.build();
 	}
 {{/hasFiles}}
 
 {{#hasFiles}}
-	public static Update{{name}}Command toUpdateCommand(
-	{{name}}Id id,
-	{{name}}Request request,
-	{{#editableFields}}{{entity}}{{nameCapitalized}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/editableFields}}
+	public static Update{{nameAggregate}}Command toUpdateCommand(
+	{{nameAggregate}}Id id,
+	{{nameAggregate}}Request request,
+	{{#editableFields}}{{nameAggregate}}{{nameCapitalized}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/editableFields}}
 	) {
-	return Update{{name}}Command.builder()
+	return Update{{nameAggregate}}Command.builder()
 	.id(id)
 	{{#editableFields}}{{^isId}}
-		.{{nameUnCapitalized}}({{entity}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
+		.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
 	{{/isId}}{{/editableFields}}
 	{{#editableFields}}
 		.{{nameUnCapitalized}}({{nameUnCapitalized}})
@@ -77,8 +77,8 @@ return Create{{name}}Command.builder()
 	}
 {{/hasFiles}}
 
-public static Delete{{name}}Command toDeleteCommand({{name}}Id id) {
-return Delete{{name}}Command.builder()
+public static Delete{{nameAggregate}}Command toDeleteCommand({{nameAggregate}}Id id) {
+return Delete{{nameAggregate}}Command.builder()
 .id(id)
 .build();
 }

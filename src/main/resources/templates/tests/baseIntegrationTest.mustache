@@ -45,55 +45,35 @@ public HttpHeaders headers;
 
 @BeforeEach
 void authenticate() {
-headers = new HttpHeaders();
-headers.setContentType(MediaType.APPLICATION_JSON);
+login("admin", "admin");
+}
 
-{{#security}}
-	AuthRequestDto authRequest = AuthRequestDto.builder()
-	.username("admin")
-	.password("admin")
-	.build();
+public String getBaseUrl() {
+String uri = "http://" + host + ":" + port + "/api";
+log.info(uri);
+return uri;
+}
 
-	ResponseEntity<AuthResponseDto> response = testRestTemplate.postForEntity(
-		getBaseUrl() + "/auth/login",
-		new HttpEntity<>(authRequest),
-		AuthResponseDto.class
-		);
+public Map<String, Object> getTokenClaims() {
+String token = headers.getFirst(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
+Jwt jwt = jwtDecoder.decode(token);
+log.info("Claims: {}", jwt.getClaims());
+return jwt.getClaims();
+}
 
-		if (response.getStatusCode().isError()) {
-		throw new RuntimeException("Failed to authenticate test user: " + response.getBody());
-		}
+public String getUserId() {
+return (String) getTokenClaims().get("userId");
+}
 
-		String token = response.getBody().getToken();
-		headers.setBearerAuth(token);
-
-		userId = getUserId();
-{{/security}}
-	}
-
-	public String getBaseUrl() {
-	String uri = "http://" + host + ":" + port + "/api";
-	log.info(uri);
-	return uri;
-	}
-
-	public Map<String, Object> getTokenClaims() {
-	String token = headers.getFirst(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
-	Jwt jwt = jwtDecoder.decode(token);
-	log.info("Claims: {}", jwt.getClaims());
-	return jwt.getClaims();
-	}
-
-	public String getUserId() {
-	return (String) getTokenClaims().get("userId");
-	}
-
-	public ResponseEntity<String> get(String uri) {
+public ResponseEntity<String> get(String uri) {
 	return testRestTemplate.exchange(getBaseUrl() + uri, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 	}
 
 	public ResponseEntity<String> delete(String uri) {
-		return testRestTemplate.exchange(getBaseUrl() + uri, HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
+		return testRestTemplate.exchange(getBaseUrl() + uri,
+		HttpMethod.DELETE,
+		new HttpEntity<>(headers),
+		String.class);
 		}
 
 		public <T> ResponseEntity<T> postForEntity(String uri, Object request, Class<T> responseType) {
@@ -109,7 +89,10 @@ headers.setContentType(MediaType.APPLICATION_JSON);
 					}
 
 					public ResponseEntity<String> put(String uri, Object request) {
-						return testRestTemplate.exchange(getBaseUrl() + uri, HttpMethod.PUT, new HttpEntity<>(request, headers), String.class);
+						return testRestTemplate.exchange(getBaseUrl() + uri,
+						HttpMethod.PUT,
+						new HttpEntity<>(request, headers),
+						String.class);
 						}
 
 						public HttpEntity<ByteArrayResource> createFile() {
@@ -125,4 +108,30 @@ headers.setContentType(MediaType.APPLICATION_JSON);
 							partHeaders.setBearerAuth(headers.getFirst(HttpHeaders.AUTHORIZATION));
 							return new HttpEntity<>(resource, partHeaders);
 							}
-							}
+
+							public  String login(String login,String password) {
+							headers = new HttpHeaders();
+							headers.setContentType(MediaType.APPLICATION_JSON);
+
+							AuthRequestDto authRequest = AuthRequestDto.builder()
+							.username(login)
+							.password(password)
+							.build();
+
+							ResponseEntity<AuthResponseDto> response = testRestTemplate.postForEntity(
+								getBaseUrl() + "/auth/login",
+								new HttpEntity<>(authRequest),
+								AuthResponseDto.class
+								);
+
+								if (response.getStatusCode().isError()) {
+								throw new RuntimeException("Failed to authenticate test user: " + response.getBody());
+								}
+
+								String token = response.getBody().getToken();
+								headers.setBearerAuth(token);
+
+								userId = getUserId();
+								return getUserId();
+								}
+								}

@@ -132,7 +132,16 @@ public class SharedGeneratorService {
                         "shared/audit/auditListener.mustache",
                         null,
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
+                ),
+
+                new SharedTemplate(
+                        "MetaRequest",
+                        "shared/dto/metaRequest.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getDtoPackage()
                 )
+
+
         );
 
         sharedTemplates.forEach(template -> generateSharedFile(template, definition));
@@ -148,7 +157,9 @@ public class SharedGeneratorService {
         context.put("imports", template.getImports());
         context.put("name", Utils.capitalize(definition.getName()));
         context.put("className", template.getClassName());
-        context.put("entity", Utils.capitalize(definition.getName()));
+        context.put("entity", Utils.capitalize(definition.getEntity()));
+
+        context.put("nameAggregate", definition.getName());
 
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
 

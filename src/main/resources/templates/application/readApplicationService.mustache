@@ -37,11 +37,11 @@ public {{name}}Response findBy{{name}}Id({{name}}Id value) {
 
 {{#searchFields}}
 {{^isId}}
-public List<{{entity}}Response> findBy{{entity}}{{nameCapitalized}}({{entity}}{{nameCapitalized}} value) {
+public List<{{nameAggregate}}Response> findBy{{nameAggregate}}{{nameCapitalized}}({{nameAggregate}}{{nameCapitalized}} value) {
 
-	FindBy{{entity}}{{nameCapitalized}}Query query = new FindBy{{entity}}{{nameCapitalized}}Query(value);
-	CompletableFuture<List<{{entity}}Response>> future = queryGateway.query(query,
-	org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf({{entity}}Response.class));
+	FindBy{{nameAggregate}}{{nameCapitalized}}Query query = new FindBy{{nameAggregate}}{{nameCapitalized}}Query(value);
+	CompletableFuture<List<{{nameAggregate}}Response>> future = queryGateway.query(query,
+	org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf({{nameAggregate}}Response.class));
 	return future.join();
 }
 {{/isId}}

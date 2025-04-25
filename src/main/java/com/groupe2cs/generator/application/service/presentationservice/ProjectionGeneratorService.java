@@ -36,7 +36,7 @@ public class ProjectionGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
 
-        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
 
         if(definition.getMultiTenant()){
             imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
@@ -45,6 +45,9 @@ public class ProjectionGeneratorService {
         imports.add("org.axonframework.eventhandling.EventHandler");
         context.put("security", definition.isInStack("security"));
 
+        context.put("nameAggregate", definition.getName());
+        context.put("entity", definition.getEntity());
+        context.put("name", definition.getName());
 
         context.put("imports", imports);
         var fields = definition.getFieldsWithRelations();

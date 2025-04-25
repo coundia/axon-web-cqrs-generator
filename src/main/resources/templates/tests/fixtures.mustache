@@ -15,8 +15,8 @@ import static org.awaitility.Awaitility.await;
 
 public class {{name}}Fixtures {
 
-public static {{name}} randomOne({{name}}Repository repository) {
-{{name}} entity = {{name}}.builder()
+public static {{entity}} randomOne({{name}}Repository repository) {
+{{entity}} entity = {{entity}}.builder()
 .id(UUID.randomUUID().toString())
 {{#editableFields}}
 	{{^isId}}
@@ -29,26 +29,26 @@ public static {{name}} randomOne({{name}}Repository repository) {
 return repository.save(entity);
 }
 
-public static {{name}} existingOrRandom({{name}}Repository repository) {
+public static {{entity}} existingOrRandom({{name}}Repository repository) {
 return repository.findAll().stream().findFirst().orElseGet(() -> randomOne(repository));
 }
 
-public static {{name}} byId({{name}}Repository repository, String id) {
+public static {{entity}} byId({{name}}Repository repository, String id) {
 return repository.findById(id).orElse(null);
 }
 
-public static {{name}} byIdWaitExist({{name}}Repository repository, String id) {
+public static {{entity}} byIdWaitExist({{name}}Repository repository, String id) {
 await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) != null);
 return repository.findById(id).orElse(null);
 }
 
-public static {{name}} byIdWaitNotExist({{name}}Repository repository, String id) {
+public static {{entity}} byIdWaitNotExist({{name}}Repository repository, String id) {
 await().atMost(5, TimeUnit.SECONDS).until(() -> byId(repository, id) == null);
 return repository.findById(id).orElse(null);
 }
 
-public static List<{{name}}> randomMany({{name}}Repository repository, int count) {
-List<{{name}}> items = new ArrayList<>();
+public static List<{{entity}}> randomMany({{name}}Repository repository, int count) {
+List<{{entity}}> items = new ArrayList<>();
 for (int i = 0; i < count; i++) {
 items.add(randomOne(repository));
 }
@@ -75,11 +75,11 @@ public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway co
 
 		Create{{name}}Command command = Create{{name}}Command.builder()
 		{{#editableFields}}{{^isId}}
-			.{{nameLowerCase}}({{entity}}{{nameCapitalized}}.create({{{testValue}}}))
+			.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create({{{testValue}}}))
 		{{/isId}}{{/editableFields}}
 		{{#hasFiles}}
 			{{#fieldFiles}}
-				.{{nameLowerCase}}({{entity}}{{nameCapitalized}}.create(fileName))
+				.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create(fileName))
 			{{/fieldFiles}}
 		{{/hasFiles}}
 		.build();

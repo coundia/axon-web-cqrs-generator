@@ -37,7 +37,7 @@ private List<{{name}}Response> content;
 	@Schema(description = "Total number of pages", example = "10")
 	private long totalPages;
 
-	public static {{name}}PagedResponse from(Page<{{name}}> page, List<{{name}}Response> content) {
+	public static {{name}}PagedResponse from(Page<{{entity}}> page, List<{{name}}Response> content) {
 		return {{name}}PagedResponse.builder()
 		.content(content)
 		.page(page.getNumber())

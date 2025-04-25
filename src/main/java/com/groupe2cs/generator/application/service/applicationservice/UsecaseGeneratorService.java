@@ -27,6 +27,7 @@ public class UsecaseGeneratorService {
     public void generate(EntityDefinition definition, String baseDir) {
 
         String outputShared = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+        String outputSecurity = Utils.getParent(baseDir) + "/" + generatorProperties.getSecurityPackage();
         String outputApplicationUseCase = baseDir + "/" + generatorProperties.getApplicationUseCasePackage();
 
         List<SharedTemplate> sharedTemplates = new ArrayList<>();
@@ -82,21 +83,49 @@ public class UsecaseGeneratorService {
                         outputApplicationUseCase
                 )
         ));
+        List <SharedTemplate> sharedTestsTemplates = new ArrayList<>();
+
+        Set<String> importsGate = new HashSet<>( Set.of(
+                Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
+                Utils.getPackage(outputSecurity + "/" + generatorProperties.getServicePackage()) + ".UserPrincipal",
+                Utils.getPackage(outputSecurity + "/" + generatorProperties.getEntityPackage()) + ".CustomUser",
+                Utils.getPackage(Utils.getParent(baseDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
+                Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getServicePackage()) + ".JwtService"
+
+        ));
+
+        if(
+                !definition.getEntity().equalsIgnoreCase("User") &&
+                !definition.getEntity().equalsIgnoreCase("Tenant") &&
+                !definition.getEntity().equalsIgnoreCase("CustomUser")
+
+        ){
+            importsGate.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "."+definition.getEntity());
+        }
 
         if (definition.isInStack("security")) {
             sharedTemplates.add(
                     new SharedTemplate(
                             definition.getName() + "Gate",
                             "infrastructure/security/gate.mustache",
-                            Set.of(
-                                    Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
-                            ),
+                            importsGate,
                             outputApplicationUseCase
                     )
             );
+
+            sharedTestsTemplates.add(
+                    new SharedTemplate(
+                            definition.getName() + "GateTests",
+                            "infrastructure/security/gateTests.mustache",
+                            importsGate,
+                            outputApplicationUseCase
+                    )
+            );
+
         }
 
         sharedTemplates.forEach(template -> generateSharedFile(template, definition));
+        sharedTestsTemplates.forEach(template -> generateSharedTestsFile(template, definition));
     }
 
     private void generateSharedFile(SharedTemplate template, EntityDefinition definition) {
@@ -107,8 +136,33 @@ public class UsecaseGeneratorService {
         context.put("package", Utils.getPackage(outputDir));
 
         context.put("imports", template.getImports());
+        context.put("nameAggregate", Utils.capitalize(definition.getName()));
         context.put("name", Utils.capitalize(definition.getName()));
-        context.put("entity", Utils.capitalize(definition.getName()));
+        context.put("entity", Utils.capitalize(definition.getEntity()));
+        context.put("className", template.getClassName());
+
+        context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
+        context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
+        context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
+        context.put("hasFiles", !definition.getFieldFiles().isEmpty());
+        context.put("searchFields", FieldTransformer.transform(definition.searchFields(), definition.getName()));
+
+        String content = templateEngine.render(template.getTemplatePath(), context);
+        fileWriterService.write(outputDir, template.getClassName() + ".java", content);
+    }
+
+    private void generateSharedTestsFile(SharedTemplate template, EntityDefinition definition) {
+        Map<String, Object> context = new HashMap<>();
+
+        String outputDir = Utils.getTestDir(template.getOutput());
+
+        context.put("package", Utils.getPackage(template.getOutput()));
+
+        context.put("imports", template.getImports());
+        context.put("name", Utils.capitalize(definition.getName()));
+        context.put("nameAggregate", Utils.capitalize(definition.getName()));
+        context.put("entity", Utils.capitalize(definition.getEntity()));
+
         context.put("className", template.getClassName());
 
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));

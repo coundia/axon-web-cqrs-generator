@@ -33,9 +33,13 @@ public class FindByFieldProjectionGeneratorService {
             field.setNameCapitalized(capitalize(field.getName()));
 
             Map<String, Object> context = new HashMap<>();
+
+            context.put("nameAggregate", definition.getName());
+            context.put("entity", definition.getEntity());
+            context.put("name", definition.getName());
+
             context.put("package", packageName);
             context.put("field", field);
-            context.put("name", definition.getName());
             context.put("repositoryPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()));
             context.put("queryPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()));
             context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));

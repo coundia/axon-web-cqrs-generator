@@ -33,7 +33,9 @@ public class MapperGeneratorService {
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
         context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
-        context.put("entity", definition.getName());
+        context.put("entity", definition.getEntity());
+        context.put("nameAggregate", definition.getName());
+        context.put("name", definition.getName());
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");

@@ -30,7 +30,7 @@ if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 	throw new IllegalArgumentException("Username already exists");
 }
 
-User user = User.builder()
+CustomUser user = CustomUser.builder()
 .id(UUID.randomUUID().toString())
 .username(request.getUsername())
 .password(passwordEncoder.encode(request.getPassword()))
@@ -50,15 +50,13 @@ Authentication authentication = new UsernamePasswordAuthenticationToken(
 
 String token = jwtService.generateToken(authentication);
 
-String tenant = user.getTenant() != null ? user.getTenant().getName() : null;
-
 return AuthResponseDto.builder()
 .token(token)
 .username(user.getUsername())
 .code(1)
 .expirationAt(jwtService.extractExpiration(token))
-.message("Login successful")
-.tenant(tenant)
+.message("Registration successful")
+.tenant(tenantId)
 .build();
 }
 }

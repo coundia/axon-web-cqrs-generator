@@ -1,0 +1,19 @@
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/security
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/",
+  "definition": {
+	"name": "security",
+    "multiTenant": true,
+    "auditable": true,
+    "stack": [
+      "Security"
+    ]
+  }
+}
+
+###

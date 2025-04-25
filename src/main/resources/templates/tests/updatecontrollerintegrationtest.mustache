@@ -26,8 +26,10 @@ private CommandGateway commandGatewayUpdate;
 void it_should_be_able_to_update_{{nameLower}}() {
 
 	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
-
 	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate, getUserId());
+
+	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
+	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, updated.getId().value());
 
 	{{name}}Request requestDTO = new {{name}}Request();
 	{{#editableFields}}

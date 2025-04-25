@@ -50,7 +50,10 @@ public class AllTestGeneratorService {
         String entity = definition.getName();
         context.put("className", className);
         context.put("name", entity);
-        context.put("entity", entity);
+
+        context.put("entity", definition.getEntity());
+        context.put("nameAggregate", definition.getName());
+
         context.put("nameLower", entity.toLowerCase());
         context.put("entityUnCapitalized", Utils.unCapitalize(entity));
 

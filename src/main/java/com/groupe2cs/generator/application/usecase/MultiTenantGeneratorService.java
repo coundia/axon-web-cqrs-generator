@@ -35,7 +35,7 @@ public class MultiTenantGeneratorService {
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").unique(true).type("String").build(),
 
-						FieldDefinition.builder().name("description").type("String").size(2048).nullable(true).build(),
+						FieldDefinition.builder().name("description").type("String").size(768).nullable(true).build(),
 						FieldDefinition.builder().name("domain").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("language").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("active").type("Boolean").nullable(true).build()
