@@ -38,10 +38,11 @@ public class FindByFieldQueryHandlerTests {
         EntityDefinition definition = EntityDefinition.fromClass(MockEntity.class);
         service.generate(definition, tempDir.toString());
 
-        File file = tempDir.resolve(generatorProperties.getQueryHandlerPackage() + "/FindByNameMockEntityHandler.java").toFile();
-        assertThat(file).exists();
+
+
+        File file = tempDir.resolve(generatorProperties.getQueryHandlerPackage() + "/FindByMockEntityNameHandler.java").toFile();
 
         String content = Files.readString(file.toPath());
-        assertThat(content).contains("public class FindByNameMockEntityHandler");
+        assertThat(content).contains("public class FindByMockEntityNameHandler");
     }
 }

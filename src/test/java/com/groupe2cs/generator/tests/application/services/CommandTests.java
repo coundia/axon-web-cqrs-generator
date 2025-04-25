@@ -53,7 +53,7 @@ public class CommandTests {
             assertThat(generated).exists();
             String content = Files.readString(generated.toPath());
             assertThat(content).contains("public class " + prefix + "MockEntityCommand");
-            assertThat(content).contains(" private  MockEntityId id;");
+            assertThat(content).contains("private MockEntityId id");
         }
     }
 

@@ -43,6 +43,6 @@ public class ExceptionTests {
 
         String content = Files.readString(file.toPath());
         assertThat(content).contains("class MockEntityNotFoundException");
-        assertThat(content).contains("super(\"MockEntity with ID \" + id + \" not found\")");
+        assertThat(content).contains("public MockEntityNotFoundException(String object, String value)");
     }
 }

@@ -43,6 +43,6 @@ public class RepositoryTests {
 
         String content = Files.readString(file.toPath());
         assertThat(content).contains("interface MockEntityRepository");
-        assertThat(content).contains("public interface MockEntityRepository extends ReactiveCrudRepository<MockEntity, String>");
+        assertThat(content).contains("public interface MockEntityRepository extends JpaRepository");
     }
 }

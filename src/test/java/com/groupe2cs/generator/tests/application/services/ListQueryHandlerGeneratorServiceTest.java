@@ -39,12 +39,12 @@ public class ListQueryHandlerGeneratorServiceTest {
         service.generate(definition, tempDir.toString());
 
         File generated = tempDir
-                .resolve(generatorProperties.getQueryHandlerPackage() + "/ListMockEntityQueryHandler.java")
+                .resolve(generatorProperties.getQueryHandlerPackage() + "/FindAllMockEntityQueryHandler.java")
                 .toFile();
 
         assertThat(generated).exists();
         String content = Files.readString(generated.toPath());
-        assertThat(content).contains("public class ListMockEntityQueryHandler");
+        assertThat(content).contains("public class FindAllMockEntityQueryHandler");
     }
 
     static class MockEntity {

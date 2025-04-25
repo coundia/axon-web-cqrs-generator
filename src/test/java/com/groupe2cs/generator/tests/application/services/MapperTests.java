@@ -44,6 +44,8 @@ public class MapperTests {
         String content = Files.readString(file.toPath());
         assertThat(content).contains("public class MockEntityMapper");
         assertThat(content).contains("toResponse");
-        assertThat(content).contains("toEntity");
+        assertThat(content).contains("toCommand");
+        assertThat(content).contains("toUpdateCommand");
+        assertThat(content).contains("toDeleteCommand");
     }
 }

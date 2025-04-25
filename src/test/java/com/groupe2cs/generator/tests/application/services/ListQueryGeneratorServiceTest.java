@@ -40,15 +40,14 @@ public class ListQueryGeneratorServiceTest {
         service.generate(definition, tempDir.toString());
 
         File generated = tempDir
-                .resolve(generatorProperties.getQueryPackage() + "/ListMockEntityQuery.java")
+                .resolve(generatorProperties.getQueryPackage() + "/FindAllMockEntityQuery.java")
                 .toFile();
 
-        assertThat(generated).exists();
 
         String content = Files.readString(generated.toPath());
-        assertThat(content).contains("public class ListMockEntityQuery");
-        assertThat(content).contains("private int page");
-        assertThat(content).contains("private int limit");
+        assertThat(content).contains("public class FindAllMockEntityQuery");
+        assertThat(content).contains("private final int page");
+        assertThat(content).contains("private final int limit");
     }
 
     static class MockEntity {
