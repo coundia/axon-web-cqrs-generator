@@ -1,9 +1,10 @@
-package com.groupe2cs.generator.tests.infrastrucutre.config;
+package com.groupe2cs.generator.tests.application.usecase;
 
 import com.groupe2cs.generator.application.usecase.SecurityGeneratorService;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.infrastructure.entity.MockEntity;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
+import com.groupe2cs.generator.tests.infrastrucutre.config.GeneratorPropertiesTestConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
