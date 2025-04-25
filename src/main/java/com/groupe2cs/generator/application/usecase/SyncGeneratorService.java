@@ -1,4 +1,4 @@
-package com.groupe2cs.generator.application.service.presentationservice;
+package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.SharedTemplate;
 import com.groupe2cs.generator.domain.engine.FieldTransformer;

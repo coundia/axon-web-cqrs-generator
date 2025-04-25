@@ -2,7 +2,6 @@ package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.ApiResponseDto;
 import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
-import com.groupe2cs.generator.application.service.infrastructureservice.SecurityGeneratorService;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.domain.model.FieldDefinition;
 import com.groupe2cs.generator.domain.model.Generator;
@@ -44,7 +43,6 @@ public class AllGenerator implements Generator {
 		log.info("📂table: {}", definition.getTable());
 
 		log.info("📦 Generation de la sécurité");
-
 
 		securityGeneratorService
 				.generate(definition, outputDir)

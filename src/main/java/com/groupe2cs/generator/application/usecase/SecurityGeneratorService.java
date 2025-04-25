@@ -1,8 +1,7 @@
-package com.groupe2cs.generator.application.service.infrastructureservice;
+package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
 import com.groupe2cs.generator.application.dto.SharedTemplate;
-import com.groupe2cs.generator.application.usecase.GroupMainGenerator;
 import com.groupe2cs.generator.domain.engine.FieldTransformer;
 import com.groupe2cs.generator.domain.engine.FileWriterService;
 import com.groupe2cs.generator.domain.engine.TemplateEngine;

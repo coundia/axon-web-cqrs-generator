@@ -1,6 +1,6 @@
 package com.groupe2cs.generator.tests.infrastrucutre.config;
 
-import com.groupe2cs.generator.application.service.infrastructureservice.SecurityGeneratorService;
+import com.groupe2cs.generator.application.usecase.SecurityGeneratorService;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.infrastructure.entity.MockEntity;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
