@@ -23,12 +23,19 @@ public FindAll{{nameAggregate}}QueryHandler({{nameAggregate}}Repository reposito
 public {{nameAggregate}}PagedResponse handle(FindAll{{nameAggregate}}Query query) {
 int limit = query.getLimit();
 int offset = query.getPage() * limit;
+MetaRequest metaRequest = query.getMetaRequest();
 
 long totalElements = repository.count();
 
 PageRequest pageable = PageRequest.of(offset / limit, limit);
+Page<{{entity}}> pages = null;
 
-Page<{{entity}}> pages = repository.findAll(pageable);
+if(metaRequest.isAdmin()) {
+	pages = repository.findAll(pageable);
+	//pages = repository.findAllByTenantId(pageable, metaRequest.getTenantId());
+}else{
+	pages = repository.findByCreatedById(pageable, metaRequest.getUserId());
+}
 
 List<{{nameAggregate}}Response> responses = pages.stream()
 	.map({{nameAggregate}}Mapper::toResponse)

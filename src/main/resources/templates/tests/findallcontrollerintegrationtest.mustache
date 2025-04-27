@@ -1,20 +1,25 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 class {{name}}FindAllControllerIntegrationTest extends BaseIntegrationTests {
 
@@ -24,56 +29,58 @@ private CommandGateway commandGateway;
 @Autowired
 private {{name}}Repository {{entityUnCapitalized}}Repository;
 
-private void waitFor{{name}}(String {{name}}Id) {
-long timeout = Duration.ofSeconds(5).toMillis();
-long start = System.currentTimeMillis();
-while (System.currentTimeMillis() - start < timeout) {
-if ({{entityUnCapitalized}}Repository.findById({{name}}Id).isPresent()) {
-return;
-}
-try {
-Thread.sleep(100);
-} catch (InterruptedException ignored) {
-}
-}
-throw new RuntimeException("{{name}} not found after timeout: " + {{name}}Id);
-}
-
 @Test
-void it_should_be_able_to_get_all_{{name}}s_as_admin() {
-var userId = login("admin", "admin");
+void it_should_return_only_user_{{entityUnCapitalized}}s_for_normal_user() throws Exception {
+String userId = login("user", "user");
+List<Create{{name}}Command> userCommands =
+	{{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
+	userCommands.forEach(cmd ->
+	{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+	);
 
-//{{name}}Fixtures.deleteAll({{entityUnCapitalized}}Repository);
-
-List<Create{{name}}Command> commands = {{name}}Fixtures
-	.randomManyViaCommand(commandGateway, 5, userId);
-
-	commands.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
-
-	String uri = "/v1/queries/{{entityUnCapitalized}}s";
-	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
+	login("user", "user");
+	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
+		"/v1/queries/{{entityUnCapitalized}}s",
+		{{name}}PagedResponse.class
+		);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(response.getBody()).isNotNull();
-		assertThat(response.getBody().getContent()).hasSizeGreaterThanOrEqualTo(5);
+		List<{{name}}Response> content = response.getBody().getContent();
+			assertThat(content).hasSizeGreaterThanOrEqualTo(3);
+
+			List<String> expectedIds = userCommands.stream()
+				.map(cmd -> cmd.getId().value())
+				.collect(Collectors.toList());
+				assertThat(content)
+				.extracting({{entityUnCapitalized}} -> {{entityUnCapitalized}}.getId())
+				.containsExactlyInAnyOrderElementsOf(expectedIds);
+				}
+
+				@Test
+				void it_should_return_all_{{entityUnCapitalized}}s_for_admin() throws Exception {
+				String userId = login("user", "user");
+				List<Create{{name}}Command> userCommands =
+					{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, userId);
+					userCommands.forEach(cmd ->
+					{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+					);
+
+			String adminId = login("admin", "admin");
+			List<Create{{name}}Command> adminCommands =
+				{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, adminId);
+				adminCommands.forEach(cmd ->
+				{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+				);
+
+				login("admin", "admin");
+				ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
+					"/v1/queries/{{entityUnCapitalized}}s",
+					{{name}}PagedResponse.class
+					);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		List<{{name}}Response> content = response.getBody().getContent();
+		assertThat(content).hasSizeGreaterThanOrEqualTo(10);
+
 		}
-
-		@Test
-		void it_should_only_return_user_{{name}}s_as_normal_user() {
-		var userId = login("user", "user");
-
-		List<Create{{name}}Command> list1 = {{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
-			List<Create{{name}}Command> list2 = {{name}}Fixtures.randomManyViaCommand(commandGateway, 2, userId);
-
-				list1.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
-				list2.forEach(cmd -> waitFor{{name}}(cmd.getId().value()));
-
-				String uri = "/v1/queries/{{entityUnCapitalized}}s";
-				ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(uri, {{name}}PagedResponse.class);
-
-					assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-					assertThat(response.getBody()).isNotNull();
-					assertThat(response.getBody().getContent())
-					.allSatisfy({{name}} -> assertThat({{name}}.getCreatedBy()).isEqualTo(userId));
-					}
-					}
+}

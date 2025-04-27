@@ -43,7 +43,7 @@ public class DtoRequestGeneratorService {
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
         }
-
+        context.put("isMultiTenant", definition.getMultiTenant());
         String content = templateEngine.render("application/dtoRequest.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Request.java", content);
     }

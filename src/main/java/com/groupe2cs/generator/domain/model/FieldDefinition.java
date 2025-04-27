@@ -19,6 +19,7 @@ public class FieldDefinition implements Serializable {
     private Integer size = 250;
     private Boolean unique;
     private Boolean nullable;
+    private String nameJpa;
 
     public FieldDefinition(String type, String name) {
         this.type = type;

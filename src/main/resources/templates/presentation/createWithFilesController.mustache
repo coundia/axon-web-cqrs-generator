@@ -61,9 +61,16 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 	{{/fields}}
 	) {
 	try {
+
+	MetaRequest metaRequest = MetaRequest.builder()
+	.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+	.build();
+
 	{{name}}Response response = applicationService.create{{name}}(
 	{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{#fields}}{{^isId}},
-		{{nameCamelCase}}{{/isId}}{{/fields}}
+		{{nameCamelCase}}{{/isId}}{{/fields}},
+	metaRequest
 	);
 
 	return ResponseEntity.ok(response);

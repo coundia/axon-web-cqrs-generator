@@ -25,17 +25,27 @@ private final UserRepository userRepository;
 private final PasswordEncoder passwordEncoder;
 private final JwtService jwtService;
 
-public AuthResponseDto handle(AuthRequestDto request,String tenantId) {
+public AuthResponseDto handle(AuthRequestDto request, MetaRequest metaRequest) {
+
 if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 	throw new IllegalArgumentException("Username already exists");
 }
 
+{{#isMultiTenant}}
+String tenantId = metaRequest.getTenantId();
+if (tenantId == null) {
+	throw new IllegalArgumentException("Tenant ID is required - when multi-tenant");
+}
+{{/isMultiTenant}}
+
 CustomUser user = CustomUser.builder()
-.id(UUID.randomUUID().toString())
-.username(request.getUsername())
-.password(passwordEncoder.encode(request.getPassword()))
-.tenant(new Tenant(tenantId))
-.build();
+	.id(UUID.randomUUID().toString())
+	.username(request.getUsername())
+	.password(passwordEncoder.encode(request.getPassword()))
+{{#isMultiTenant}}
+	.tenant(new Tenant(tenantId))
+{{/isMultiTenant}}
+	.build();
 
 log.info("Registering user: {}", user.getUsername());
 userRepository.save(user);
@@ -56,7 +66,9 @@ return AuthResponseDto.builder()
 .code(1)
 .expirationAt(jwtService.extractExpiration(token))
 .message("Registration successful")
+{{#isMultiTenant}}
 .tenant(tenantId)
+{{/isMultiTenant}}
 .build();
 }
 }

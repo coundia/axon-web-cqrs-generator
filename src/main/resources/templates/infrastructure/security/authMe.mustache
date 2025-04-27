@@ -47,6 +47,8 @@ public ResponseEntity<ApiResponseDto> me(@AuthenticationPrincipal Jwt jwt) {
 	log.info("Auth/me User claims: {}", jwt.getClaims());
 	String username = jwt.getSubject();
 
+	 MetaRequest metaRequest = new MetaRequest();
+
 	UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserByUsername(username);
 
 	return ResponseEntity.ok(ApiResponseDto.ok(

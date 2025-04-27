@@ -35,6 +35,9 @@ var authorities = authentication.getAuthorities().stream()
 .map(Object::toString)
 .collect(Collectors.joining(" "));
 
+Boolean isAdmin = authentication.getAuthorities().stream()
+.anyMatch(a -> a.getAuthority().equals("IS_ADMIN"));
+
 UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
 String userId = userPrincipal.getId();
@@ -57,6 +60,7 @@ var claims = JwtClaimsSet.builder()
 .expiresAt(now.plus(tokenValidityInSeconds, ChronoUnit.SECONDS))
 .subject(authentication.getName())
 .claim("userId", userId)
+.claim("isAdmin", isAdmin)
 {{#isMultiTenant}}
 .claim("tenantId", tenantId)
 {{/isMultiTenant}}

@@ -25,6 +25,8 @@ public class ListControllerGeneratorService {
     public void generate(EntityDefinition definition, String baseDir) {
         Map<String, Object> context = new HashMap<>(definition.toMap());
 
+        String sharedDir = Utils.getParent(baseDir) + "/" + properties.getSharedPackage();
+
         String outputDir = baseDir + "/" + properties.getControllerPackage();
         context.put("package", Utils.getPackage(outputDir));
         context.put("nameLower", Utils.unCapitalize(definition.getName()));
@@ -33,8 +35,13 @@ public class ListControllerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + properties.getDtoPackage()+".*"));
         imports.add(Utils.getPackage(baseDir + "/" + properties.getApplicationUseCasePackage()) + ".*");
 
+        imports.add(Utils.getPackage(sharedDir + "/" + properties.getDtoPackage()) + ".MetaRequest");
+        imports.add(Utils.getPackage(sharedDir + "/" + properties.getInfrastructurePackage()) + ".audit.RequestContext");
+
         context.put("imports", imports);
         context.put("security", definition.isInStack("security"));
+
+        context.put("isMultiTenant", definition.getMultiTenant());
 
         String content = templateEngine.render("presentation/listController.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "ListController.java", content);

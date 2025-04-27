@@ -142,6 +142,7 @@ public class SecurityGeneratorService {
 
 		Set<String> importsRegisterUser = new HashSet<>(
 				Set.of(
+						Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 						Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 						Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
 						Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
@@ -176,6 +177,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("ApiKeyFilter",
 						"infrastructure/security/apiKeyFilter.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) +
 										".ApiKeyResponse",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".ApiKeyAppKey",
@@ -229,20 +231,34 @@ public class SecurityGeneratorService {
 						baseDir + "/" + generatorProperties.getServicePackage()),
 				new SharedTemplate("RegisterController",
 						"infrastructure/security/registerController.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
 						baseDir + "/" + generatorProperties.getControllerPackage()),
 
 
 				new SharedTemplate("AuthController",
 						"infrastructure/security/authController.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"),
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
+						),
 						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+				new SharedTemplate("AuthService",
+						"infrastructure/security/authService.mustache",
+						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest"
+						),
+						baseDir + "/" + generatorProperties.getServicePackage()),
 
 				new SharedTemplate("AuthMe",
 						"infrastructure/security/authMe.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) +
@@ -271,6 +287,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("PasswordResetService",
 						"infrastructure/security/passwordResetService.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDomainPackage()) +
 										".MailSender",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) +
@@ -289,6 +306,8 @@ public class SecurityGeneratorService {
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*"
 						),
 						baseDir + "/" + generatorProperties.getServicePackage()),
@@ -296,6 +315,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("ForgotPasswordController",
 						"infrastructure/security/forgotPasswordController.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
 						),
@@ -305,6 +325,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenController",
 						"infrastructure/security/refreshTokenController.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
@@ -324,7 +345,9 @@ public class SecurityGeneratorService {
 		List<SharedTemplate> tests = List.of(
 				new SharedTemplate("AuthControllerTests",
 						"infrastructure/security/authControllerTests.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
@@ -333,7 +356,9 @@ public class SecurityGeneratorService {
 
 				new SharedTemplate("RegisterControllerTests",
 						"infrastructure/security/registerControllerTests.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
@@ -342,7 +367,10 @@ public class SecurityGeneratorService {
 
 				new SharedTemplate("RefreshTokenControllerTest",
 						"infrastructure/security/refreshTokenControllerTest.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Set.of(
+
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(shareDir) + ".BaseIntegrationTests"
 						),
 						fullDir),
@@ -350,14 +378,16 @@ public class SecurityGeneratorService {
 				new SharedTemplate("AuthMeControllerIntegrationTest",
 						"infrastructure/security/authMeControllerIntegrationTest.mustache",
 						Set.of(
-
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir) + ".BaseIntegrationTests"
 						),
 						fullDir),
 
 				new SharedTemplate("ForgotPasswordControllerTest",
 						"infrastructure/security/forgotPasswordControllerTest.mustache",
-						Set.of(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
@@ -399,6 +429,7 @@ public class SecurityGeneratorService {
 		context.put("package", packageName);
 		context.put("imports", template.getImports());
 		context.put("className", template.getClassName());
+		context.put("isMultiTenant", definition.getMultiTenant());
 		String outputDir = Utils.getTestDir(fullPath);
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(outputDir, template.getClassName() + ".java", content);

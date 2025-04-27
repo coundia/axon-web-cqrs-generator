@@ -3,16 +3,15 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
+import lombok.*;
 
+@RequiredArgsConstructor
+@Getter
+@Setter
+@Builder
 public class {{className}} {
 
-private final {{name}}{{field.nameCapitalized}}  {{field.name}};
+	private final {{name}}{{field.nameCapitalized}}  {{field.name}};
+	private final MetaRequest metaRequest;
 
-public {{className}}( {{name}}{{field.nameCapitalized}} {{field.name}}) {
-	this.{{field.name}} = {{field.name}};
-}
-
-public {{name}}{{field.nameCapitalized}}  get{{field.nameCapitalized}}() {
-return {{field.name}};
-}
 }

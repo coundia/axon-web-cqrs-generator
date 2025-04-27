@@ -16,8 +16,11 @@ private final {{name}}Repository repository;
 @QueryHandler
 {{^isUnique}}
 public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
+
+	 MetaRequest metaRequest = query.getMetaRequest();
+
 {{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
-	List<{{entity}}> entities = repository.findBy{{field.nameCapitalized}}(value);
+	List<{{entity}}> entities = repository.findBy{{field.nameJpa}}AndCreatedById(value, metaRequest.getUserId());
 	return entities.stream()
 	.map({{name}}Mapper::toResponse)
 	.toList();
@@ -26,8 +29,11 @@ public List<{{name}}Response> handle(FindBy{{name}}{{field.nameCapitalized}}Quer
 
 {{#isUnique}}
  public {{name}}Response handle(FindBy{{name}}{{field.nameCapitalized}}Query query) {
+
+		MetaRequest metaRequest = query.getMetaRequest();
+
 	{{field.primitiveType}} value = query.get{{field.nameCapitalized}}().value();
-	{{entity}} entity = repository.findBy{{field.nameCapitalized}}(value)
+	{{entity}} entity = repository.findBy{{field.nameJpa}}AndCreatedById(value, metaRequest.getUserId())
 		.orElse(null);
 
 		if (entity == null) {

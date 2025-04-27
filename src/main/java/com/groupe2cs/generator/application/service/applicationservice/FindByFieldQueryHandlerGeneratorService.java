@@ -48,6 +48,8 @@ public class FindByFieldQueryHandlerGeneratorService {
             String className = "FindBy" +definition.getName() + field.getNameCapitalized() +  "Handler";
             context.put("className", className);
 
+            String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+
             Set<String> imports = new LinkedHashSet<>();
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
@@ -57,7 +59,12 @@ public class FindByFieldQueryHandlerGeneratorService {
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getExceptionPackage()) + ".*");
 
+            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+
+
             context.put("imports", imports);
+
+            context.put("isMultiTenant", definition.getMultiTenant());
 
             String content = templateEngine.render("application/findByFieldQueryHandler.mustache", context);
             fileWriterService.write(outputDir, className + ".java", content);

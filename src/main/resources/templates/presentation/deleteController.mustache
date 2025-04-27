@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +51,8 @@ description = "Deletes a {{nameLowercase}} based on the provided identifier"
 })
 public ResponseEntity<String> delete{{name}}(
 	@Parameter(description = "ID of the {{nameLowercase}} to delete", required = true)
-	@PathVariable String id
+	@PathVariable String id,
+	@AuthenticationPrincipal Jwt jwt
 	) {
 	if (id == null || id.isEmpty()) {
 	return ResponseEntity.badRequest().body("Invalid ID");
@@ -57,7 +60,14 @@ public ResponseEntity<String> delete{{name}}(
 
 	try {
 	{{name}}Id idVo = {{name}}Id.create(id);
-	applicationService.delete{{name}}(idVo);
+
+	MetaRequest metaRequest = MetaRequest.builder()
+	.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+	.build();
+
+	applicationService.delete{{name}}(idVo, metaRequest);
+
 	return ResponseEntity.ok("{{name}} deleted successfully");
 	} catch (Exception e) {
 	log.error("Error deleting {{nameLowercase}} with id {}: {}", id, e.getMessage());

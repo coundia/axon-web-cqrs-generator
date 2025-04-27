@@ -15,25 +15,37 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	@Query("SELECT t FROM {{entityName}} t ")
 	Page<{{entityName}}> findAll(Pageable pageable);
 
-	@Query("SELECT t FROM {{entityName}} t WHERE t.id = :id")
-	Optional<{{entityName}}> findById({{entityName}}{{identifier.nameCapitalized}} id);
+	Optional<{{entityName}}> findById(String id);
+
+	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
+
+	Page<{{entityName}}> findByCreatedById(Pageable pageable, String createdById);
+
+{{#isMultiTenant}}
+	Page<{{entityName}}> findAllByTenantId(Pageable pageable, String tenantId);
+{{/isMultiTenant}}
+
 {{#fields}}
 	{{^isId}}
 	{{^isUnique}}
-	@Query("SELECT t FROM {{entityName}} t WHERE t.{{nameLowerCase}} = :{{nameLowerCase}}")
-	List<{{entityName}}> findBy{{nameCapitalized}}({{primitiveType}} {{nameLowerCase}});
+
+	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 	{{/isUnique}}
 	{{#isUnique}}
-	@Query("SELECT t FROM {{entityName}} t WHERE t.{{nameLowerCase}} = :{{nameLowerCase}}")
-	Optional<{{entityName}}> findBy{{nameCapitalized}}({{primitiveType}} {{nameLowerCase}});
+
+	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
+	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
 	{{/isUnique}}
 	{{/isId}}
 {{/fields}}
 
 {{#compositeKeys}}
-	Optional<{{entityName}}> findBy{{left.nameCapitalized}}And{{right.nameCapitalized}}({{left.type}} {{left.name}}, {{right.type}} {{right.name}});
+	Optional<{{entityName}}> findBy{{left.nameCapitalized}}IdAnd{{right.nameCapitalized}}Id(
+	String {{left.name}},
+	String {{right.name}}
+	);
 {{/compositeKeys}}
+
 }

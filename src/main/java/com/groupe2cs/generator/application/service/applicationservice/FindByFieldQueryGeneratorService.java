@@ -36,6 +36,14 @@ public class FindByFieldQueryGeneratorService {
         for (var field : fields) {
             field.setNameCapitalized(capitalize(field.getName()));
 
+            String nameJpa  = Utils.capitalize(field.getName());
+
+            if("manyToOne".equalsIgnoreCase(field.getRelation())) {
+                nameJpa = nameJpa+ "Id";
+            }
+
+            field.setNameJpa(nameJpa);
+
             Map<String, Object> context = new HashMap<>();
             context.put("package", packageName);
             context.put("field", field);
@@ -44,8 +52,11 @@ public class FindByFieldQueryGeneratorService {
             String className = "FindBy" + definition.getName() + field.getNameCapitalized()  + "Query";
             context.put("className", className);
 
+            String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+
             Set<String> imports = new LinkedHashSet<>();
             imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
 
             context.put("imports",imports);
 

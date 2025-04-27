@@ -40,6 +40,7 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
+                                Utils.getPackage(outputShared + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
                                 Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
                         ),
                         outputApplicationUseCase
@@ -53,6 +54,7 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*",
+                                Utils.getPackage(outputShared + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
                                 Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
                         ),
                         outputApplicationUseCase
@@ -65,7 +67,9 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*",
-                                Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
+                                Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*",
+                                Utils.getPackage(outputShared + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest"
+
                         ),
                         outputApplicationUseCase
                 ),
@@ -78,6 +82,7 @@ public class UsecaseGeneratorService {
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*",
+                                Utils.getPackage(outputShared + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
                                 Utils.getPackage(outputShared + "/" + generatorProperties.getInfrastructurePackage()) + ".*"
                         ),
                         outputApplicationUseCase
@@ -147,6 +152,8 @@ public class UsecaseGeneratorService {
         context.put("hasFiles", !definition.getFieldFiles().isEmpty());
         context.put("searchFields", FieldTransformer.transform(definition.searchFields(), definition.getName()));
 
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);
     }
@@ -170,6 +177,9 @@ public class UsecaseGeneratorService {
         context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
         context.put("hasFiles", !definition.getFieldFiles().isEmpty());
         context.put("searchFields", FieldTransformer.transform(definition.searchFields(), definition.getName()));
+
+
+        context.put("isMultiTenant", definition.getMultiTenant() );
 
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);

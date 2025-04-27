@@ -54,6 +54,7 @@ public class RepositoryGeneratorService {
                 .filter(f -> f.getRelation()!= null)
                 .toList();
 
+
         if (compositeKeys.size() == 2) {
             Map<String, Object> left = new HashMap<>();
             left.put("name", compositeKeys.get(0).getName());
@@ -71,6 +72,8 @@ public class RepositoryGeneratorService {
 
             context.put("compositeKeys", List.of(composite));
         }
+
+        context.put("isMultiTenant", definition.getMultiTenant());
 
         String content = templateEngine.render("infrastructure/repository.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);

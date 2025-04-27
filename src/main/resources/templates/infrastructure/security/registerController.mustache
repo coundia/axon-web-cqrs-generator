@@ -48,10 +48,18 @@ content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
 })
 public ResponseEntity<AuthResponseDto> register(@RequestBody AuthRequestDto request) {
 	try {
- 	return ResponseEntity.ok(registerUser.handle(
-	request,
-	currentTenantIdentifierResolver.resolveCurrentTenantIdentifier()
-	));
+
+	MetaRequest metaRequest = new MetaRequest();
+
+	{{#isMultiTenant}}
+	metaRequest.setTenantId(currentTenantIdentifierResolver.resolveCurrentTenantIdentifier());
+	{{/isMultiTenant}}
+ 	return ResponseEntity.ok(
+		registerUser.handle(
+				request,
+				metaRequest
+			)
+	);
 	} catch (Exception e) {
 	e.printStackTrace();
 	return ResponseEntity.status(HttpStatus.BAD_REQUEST)

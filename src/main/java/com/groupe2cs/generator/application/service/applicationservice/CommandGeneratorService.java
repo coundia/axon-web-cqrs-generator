@@ -59,6 +59,8 @@ public class CommandGeneratorService {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
         }
 
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         context.put("name", prefix + definition.getName());
         String content = templateEngine.render("application/command.mustache", context);
         fileWriterService.write(outputDir, prefix + definition.getName() + "Command.java", content);

@@ -8,7 +8,9 @@ import com.groupe2cs.generator.shared.Utils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class FindAllQueryGeneratorService {
@@ -29,10 +31,16 @@ public class FindAllQueryGeneratorService {
 
     public void generate(EntityDefinition definition, String baseDir) {
         String outputDir = baseDir + "/" + generatorProperties.getQueryPackage();
+        String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
 
         Map<String, Object> context = new HashMap<>();
         context.put("package", Utils.getPackage(outputDir));
         context.put("name", definition.getName());
+
+        Set<String> imports = new LinkedHashSet<>();
+
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+        context.put("imports", imports);
 
         String content = templateEngine.render("application/findAllQuery.mustache", context);
         fileWriterService.write(outputDir, "FindAll" + definition.getName() + "Query.java", content);

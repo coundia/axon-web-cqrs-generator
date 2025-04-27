@@ -56,10 +56,15 @@ public ResponseEntity<{{name}}Response> update{{name}}(
 	) { {
 	try {
 
+	MetaRequest metaRequest = MetaRequest.builder()
+	.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+	.build();
+
+
 	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id),
 	request,
-	RequestContext.getUserId(jwt) {{#isMultiTenant}},
-		RequestContext.getTenantId(jwt) {{/isMultiTenant}}
+	metaRequest
 	);
 
 	return ResponseEntity.ok(response);

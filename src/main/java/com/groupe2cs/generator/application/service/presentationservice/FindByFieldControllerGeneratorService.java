@@ -54,9 +54,11 @@ public class FindByFieldControllerGeneratorService {
 
             String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
             imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
-
+            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
             fieldContext.put("imports", imports);
+
+            context.put("isMultiTenant", definition.getMultiTenant());
 
             String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);
             fileWriterService.write(outputDir, className+".java", content);

@@ -14,9 +14,10 @@ public class {{className}} {
 
 	private final CommandGateway commandGateway;
 
-	public void sync{{name}}({{name}}SyncRequest request, String userId {{#isMultiTenant}},
-	String tenantId
-	{{/isMultiTenant}}) {
+	public void sync{{name}}({{name}}SyncRequest request,
+MetaRequest metaRequest
+
+) {
 		for (var d : request.getDeltas()) {
 			switch (d.getType()) {
 				case "CREATE" -> {
@@ -28,9 +29,13 @@ Create{{name}}Command command = Create{{name}}Command.builder()
 	{{/isId}}
 {{/editableFields}}
 .build();
-
-		if(userId != null) {
-			command.setCreatedBy({{name}}CreatedBy.create(userId));
+		{{#isMultiTenant}}
+		if(metaRequest.getTenantId() != null) {
+			command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+		}
+		{{/isMultiTenant}}
+		if(metaRequest.getUserId() != null) {
+			command.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
 		}
 
 		commandGateway.sendAndWait(
@@ -45,8 +50,11 @@ Create{{name}}Command command = Create{{name}}Command.builder()
 		{{/editableFields}}
 		.build();
 
-		if(userId != null) {
-			//update.setUpdatedBy({{name}}UpdatedBy.create(userId));
+		if(metaRequest.getTenantId() != null) {
+			//command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+		}
+		if(metaRequest.getUserId() != null) {
+			//command.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
 		}
 
 		commandGateway.sendAndWait(
@@ -59,8 +67,12 @@ Create{{name}}Command command = Create{{name}}Command.builder()
 					.id({{entity}}Id.create(d.getId()) )
 					.build();
 
-				if(userId != null) {
-					//delete.setDeletedBy({{name}}DeletedBy.create(userId));
+				if(metaRequest.getTenantId() != null) {
+					//delete.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+				}
+
+				if(metaRequest.getUserId() != null) {
+					//delete.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
 				}
 				commandGateway.sendAndWait(
 				delete

@@ -46,12 +46,14 @@ public class {{className}} {
 	@AuthenticationPrincipal Jwt jwt,
 	@Valid @RequestBody {{name}}SyncRequest request) {
 			try {
+
+			MetaRequest metaRequest = MetaRequest.builder()
+				.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+				.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+			.build();
 			applicationService.sync{{name}}(
 					request,
-					RequestContext.getUserId(jwt)
-					{{#isMultiTenant}},
-					  RequestContext.getTenantId(jwt)
-					{{/isMultiTenant}}
+					metaRequest
 				);
 			return ResponseEntity.ok(ApiResponseDto.builder()
 				.code(1)

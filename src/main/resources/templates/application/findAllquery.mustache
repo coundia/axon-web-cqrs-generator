@@ -2,14 +2,16 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
+@RequiredArgsConstructor
 @Getter
-@AllArgsConstructor
+@Setter
+@Builder
 public class FindAll{{name}}Query {
 
 private final int page;
 private final int limit;
+private final MetaRequest metaRequest;
 
 }

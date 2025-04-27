@@ -47,6 +47,7 @@ public class SyncGeneratorService {
 						Set.of(
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
+								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*"
 						),
 						useCaseDir
@@ -58,6 +59,7 @@ public class SyncGeneratorService {
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
+								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"
 						),
 						outputController
@@ -68,6 +70,7 @@ public class SyncGeneratorService {
 						Set.of(
 								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getControllerPackage()) + ".UserFixtures",
 								//Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getControllerPackage()) + ".TenantFixtures",
+								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
 								Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"
@@ -100,6 +103,7 @@ public class SyncGeneratorService {
 		context.put("hasFiles", !definition.getFieldFiles().isEmpty());
 		context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
 		context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("isMultiTenant", definition.getMultiTenant());
 
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + ".java", content);

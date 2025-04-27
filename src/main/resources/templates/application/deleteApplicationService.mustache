@@ -14,7 +14,7 @@ public class {{className}} {
 
 private final CommandGateway commandGateway;
 
-public void delete{{name}}({{name}}Id idVo) {
+public void delete{{name}}({{name}}Id idVo, MetaRequest metaRequest) {
 
 Delete{{name}}Command command = new Delete{{name}}Command(idVo);
 commandGateway.sendAndWait(command);

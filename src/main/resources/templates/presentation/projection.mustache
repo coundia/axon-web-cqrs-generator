@@ -39,6 +39,12 @@ try {
 if(event.getCreatedBy() !=null){
 	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
 }
+{{#isMultiTenant}}
+	if(event.getTenant() != null) {
+	entity.setTenant(new Tenant(event.getTenant().value()));
+	}
+{{/isMultiTenant}}
+
 
 repository.save(entity);
 log.info("{{name}} inserted: {}", entity);
@@ -67,6 +73,11 @@ if(event.getCreatedBy() !=null){
 	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
 }
 
+{{#isMultiTenant}}
+if(event.getTenant() != null) {
+	entity.setTenant(new Tenant(event.getTenant().value()));
+}
+{{/isMultiTenant}}
 
 repository.save(entity);
 log.info("{{name}} updated successfully: {}", event.getId().value());

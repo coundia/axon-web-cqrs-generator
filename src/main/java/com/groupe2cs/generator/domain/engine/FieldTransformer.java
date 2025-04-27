@@ -15,8 +15,15 @@ public class FieldTransformer {
             FieldDefinition field = fields.get(i);
             Map<String, Object> f = new HashMap<>();
 
+            String nameJpa  = Utils.capitalize(field.getName());
+
+            if("manyToOne".equalsIgnoreCase(field.getRelation())) {
+                nameJpa = nameJpa+ "Id";
+            }
+
             f.put("name", field.getName());
             f.put("nameCapitalized", Utils.capitalize(field.getName()));
+            f.put("nameJpa", nameJpa);
             f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
             f.put("nameLowerCase", Utils.unCapitalize(field.getName()));
             f.put("nameCamelCase", Utils.camelCase(field.getName()));
@@ -41,7 +48,7 @@ public class FieldTransformer {
 
             f.put("relation", field.getRelation());
 
-            f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()));
+            f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()) );
             f.put("isManyToOne", "manyToOne".equalsIgnoreCase(field.getRelation()));
 
             f.put("unique", field.getUnique());

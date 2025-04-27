@@ -41,6 +41,7 @@ public class UpdateControllerGeneratorService {
 
         String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
         imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
 
         context.put("imports", imports);
@@ -52,7 +53,7 @@ public class UpdateControllerGeneratorService {
         Boolean hasFiles = !definition.getFieldFiles().isEmpty();
         context.put("hasFiles",hasFiles);
         context.put("security", definition.isInStack("security"));
-
+        context.put("isMultiTenant", definition.getMultiTenant());
 
         if(!hasFiles){
             String content = templateEngine.render("presentation/updateController.mustache", context);

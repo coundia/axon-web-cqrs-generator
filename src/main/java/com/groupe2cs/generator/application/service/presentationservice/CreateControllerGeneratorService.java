@@ -41,10 +41,12 @@ public class CreateControllerGeneratorService {
 
         String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
         imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
 
         context.put("imports", imports);
         context.put("security", definition.isInStack("security"));
+        context.put("isMultiTenant", definition.getMultiTenant());
 
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         String content = templateEngine.render("presentation/createController.mustache", context);

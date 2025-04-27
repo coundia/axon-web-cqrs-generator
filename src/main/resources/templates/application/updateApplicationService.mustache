@@ -24,7 +24,8 @@ public {{name}}Response update{{name}}(
 	{{^isId}}
 		{{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
 	{{/isId}}
-{{/fields}}
+{{/fields}},
+MetaRequest metaRequest
 ) {
 {{#fieldFiles}}
 	{{entity}}{{nameCapitalized}} {{nameCamelCase}}Reference = {{entity}}{{nameCapitalized}}.create(fileStorageService.storeFile({{nameCamelCase}}));
@@ -50,8 +51,7 @@ return {{name}}Mapper.toResponse(command);
 
 {{^hasFiles}}
 public {{name}}Response update{{name}}({{name}}Id id,{{name}}Request request,
-String createdBy {{#isMultiTenant}},
-String tenantId {{/isMultiTenant}}
+MetaRequest metaRequest
 ){
 
 Update{{name}}Command command = {{name}}Mapper.toUpdateCommand(
@@ -59,8 +59,8 @@ id,
 request
 );
 
-if(createdBy != null) {
-command.setCreatedBy( {{name}}CreatedBy.create(createdBy));
+if(metaRequest.getTenantId() != null) {
+	//command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
 }
 
 commandGateway.sendAndWait(command);

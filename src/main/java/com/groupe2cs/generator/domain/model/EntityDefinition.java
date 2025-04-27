@@ -37,6 +37,10 @@ public class EntityDefinition implements Serializable {
 
 	public Boolean getMultiTenant() {
 
+		if(name.equalsIgnoreCase("tenant")) {
+			return false;
+		}
+
 		if (multiTenant == null) {
 			return false;
 		}

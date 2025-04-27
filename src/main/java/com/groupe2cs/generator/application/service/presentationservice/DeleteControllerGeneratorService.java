@@ -34,6 +34,8 @@ public class DeleteControllerGeneratorService {
         context.put("nameUpperCase", definition.getName().toUpperCase());
         context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         context.put("security", definition.isInStack("security"));
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
@@ -44,6 +46,7 @@ public class DeleteControllerGeneratorService {
 
         String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
         imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
         context.put("imports", imports);
 

@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.queryhandling.QueryGateway;
@@ -55,12 +57,20 @@ content = @Content(mediaType = "application/json", schema = @Schema(implementati
 })
 
 public ResponseEntity<{{#isId}}{{name}}Response{{/isId}}{{^isId}}List<{{name}}Response>{{/isId}}> findBy{{field.nameCapitalized}}(
+	@AuthenticationPrincipal Jwt jwt,
 	@Parameter(description = "Value of the {{field.name}} to filter by", required = true)
 	@RequestParam {{field.primitiveType}} {{field.name}}
 	) {
 	try {
 
-	var future = applicationService.findBy{{name}}{{field.nameCapitalized}}({{name}}{{field.nameCapitalized}}.create({{field.name}}));
+	MetaRequest metaRequest = MetaRequest.builder()
+		.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+	.build();
+
+	var future = applicationService.findBy{{name}}{{field.nameCapitalized}}({{name}}{{field.nameCapitalized}}
+	.create({{field.name}}) , metaRequest);
+
 	return ResponseEntity.ok(future);
 	} catch (Exception e) {
 	log.error("Failed to find {{nameLowercase}} by {{field.name}}: {}", e.getMessage(), e);

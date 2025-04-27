@@ -39,6 +39,8 @@ public class QueryHandlerGeneratorService {
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
         context.put("imports", imports);
 
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         String content = templateEngine.render("application/queryHandler.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "QueryHandler.java", content);
     }

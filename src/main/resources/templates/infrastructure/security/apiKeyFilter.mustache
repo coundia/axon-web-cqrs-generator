@@ -51,7 +51,9 @@ return;
 }
 
 try {
-ApiKeyResponse apiKeyResponse =	queryGateway.query(new FindByApiKeyAppKeyQuery(ApiKeyAppKey.create(apiKey)), ApiKeyResponse.class).join();
+MetaRequest metaRequest = new MetaRequest();
+
+ApiKeyResponse apiKeyResponse =	queryGateway.query(new FindByApiKeyAppKeyQuery(ApiKeyAppKey.create(apiKey),metaRequest), ApiKeyResponse.class).join();
 log.info("Valid API Key: '{}' for '{}'", apiKey, apiKeyResponse.getUsername());
 chain.doFilter(request, response);
 } catch (Exception e) {

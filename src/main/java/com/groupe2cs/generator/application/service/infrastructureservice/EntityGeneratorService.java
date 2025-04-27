@@ -60,6 +60,8 @@ public class EntityGeneratorService {
 
         context.put("imports", imports);
 
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         String content = templateEngine.render("infrastructure/entity.mustache", context);
         fileWriterService.write(outputDir, definition.getEntity() + ".java", content);
     }

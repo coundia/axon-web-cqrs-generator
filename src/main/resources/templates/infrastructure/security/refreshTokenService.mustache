@@ -32,8 +32,14 @@ String username = jwt.getSubject();
 Instant expiration = jwt.getExpiresAt();
 
 try {
+
+MetaRequest metaRequest = new MetaRequest();
+
+metaRequest.setUserId(RequestContext.getUserId(jwt));
+metaRequest.setTenantId(RequestContext.getTenantId(jwt));
+
 CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
-		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username)),
+		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username), metaRequest),
 		RefreshTokenResponse.class
 	);
 
@@ -58,40 +64,4 @@ CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
 	}
 	}
 
-	public boolean isValid(String username, String token) {
-	try {
-	CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
-		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username)),
-		RefreshTokenResponse.class
-		);
-
-		RefreshTokenResponse response = future.join();
-
-		if (Instant.now().isAfter(response.getExpiration())) {
-		commandGateway.sendAndWait(new DeleteRefreshTokenCommand(RefreshTokenId.create(response.getId())));
-		return false;
-		}
-
-		return response.getToken().equals(token);
-		} catch (Exception e) {
-		e.printStackTrace();
-		log.warn("Refresh token validation failed for {}: {}", username, e.getMessage());
-		return false;
-		}
-		}
-
-		public void invalidate(String username) {
-		queryGateway.query(
-		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username)),
-		RefreshTokenResponse.class
-		).handle((response, ex) -> {
-		if (ex != null || response == null) {
-		log.info("No refresh token to invalidate for {}", username);
-		return null;
-		}
-		commandGateway.sendAndWait(new DeleteRefreshTokenCommand(RefreshTokenId.create(response.getId())));
-		log.info("Refresh token invalidated for {}", username);
-		return null;
-		});
-		}
-		}
+ }

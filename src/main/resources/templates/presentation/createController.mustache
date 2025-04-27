@@ -60,10 +60,14 @@ public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}
 	@AuthenticationPrincipal Jwt jwt) {
 	try {
 
+	MetaRequest metaRequest = MetaRequest.builder()
+		.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
+		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
+		.build();
+
 	{{name}}Response response =  applicationService.create{{name}}(
-	request,
-	RequestContext.getUserId(jwt) {{#isMultiTenant}},
-	RequestContext.getTenantId(jwt) {{/isMultiTenant}}
+			request,
+			metaRequest
 	);
 
 	return ResponseEntity.ok(response);
