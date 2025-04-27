@@ -35,6 +35,7 @@ public class DeleteControllerGeneratorService {
         context.put("commandPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()));
 
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("apiPrefix", definition.getApiPrefix());
 
         context.put("security", definition.isInStack("security"));
         Set<String> imports = new LinkedHashSet<>();

@@ -164,6 +164,7 @@ public class SharedGeneratorService {
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
 
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("apiPrefix", definition.getApiPrefix());
 
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);

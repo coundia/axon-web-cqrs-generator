@@ -32,7 +32,7 @@ public class {{className}} extends BaseIntegrationTests {
 		))
 		.build();
 
-	String uri = "/api/v1/commands/{{nameLowercase}}/sync";
+	String uri = "/api/v1{{apiPrefix}}/commands/{{nameLowercase}}/sync";
 	HttpEntity<{{name}}SyncRequest> request = new HttpEntity<>(requestDTO, headers);
 		ResponseEntity<ApiResponseDto> response = testRestTemplate.postForEntity(uri, request, ApiResponseDto.class);
 
@@ -60,7 +60,7 @@ public class {{className}} extends BaseIntegrationTests {
 			))
 			.build();
 
-			String uri = "/api/v1/commands/{{nameLowercase}}/sync";
+			String uri = "/api/v1{{apiPrefix}}/commands/{{nameLowercase}}/sync";
 			HttpEntity<{{name}}SyncRequest> request = new HttpEntity<>(requestDTO, headers);
 				ResponseEntity<ApiResponseDto> response = testRestTemplate.postForEntity(uri, request, ApiResponseDto.class);
 
@@ -81,7 +81,7 @@ public class {{className}} extends BaseIntegrationTests {
 					))
 					.build();
 
-					String uri = "/api/v1/commands/{{nameLowercase}}/sync";
+					String uri = "/api/v1{{apiPrefix}}/commands/{{nameLowercase}}/sync";
 					HttpEntity<{{name}}SyncRequest> request = new HttpEntity<>(requestDTO, headers);
 						ResponseEntity<ApiResponseDto> response = testRestTemplate.postForEntity(uri, request, ApiResponseDto.class);
 
@@ -97,7 +97,7 @@ public class {{className}} extends BaseIntegrationTests {
 							.deltas(List.of())
 							.build();
 
-							String uri = "/api/v1/commands/{{nameLowercase}}/sync";
+							String uri = "/api/v1{{apiPrefix}}/commands/{{nameLowercase}}/sync";
 							HttpEntity<{{name}}SyncRequest> request = new HttpEntity<>(requestDTO, headers);
 								ResponseEntity<ApiResponseDto> response = testRestTemplate.postForEntity(uri, request, ApiResponseDto.class);
 

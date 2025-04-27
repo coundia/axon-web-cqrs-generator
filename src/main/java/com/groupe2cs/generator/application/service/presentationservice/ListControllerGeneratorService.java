@@ -42,6 +42,12 @@ public class ListControllerGeneratorService {
         context.put("security", definition.isInStack("security"));
 
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("apiPrefix", definition.getApiPrefix());
+
+
+        if( "/admin".equals(definition.getApiPrefix())){
+            context.put("isAdmin", true);
+        }
 
         String content = templateEngine.render("presentation/listController.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "ListController.java", content);

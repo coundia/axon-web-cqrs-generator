@@ -25,7 +25,7 @@ void it_should_be_able_to_delete_{{nameLower}}() {
 
 	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
 
-	String uri = "/v1/commands/{{entityUnCapitalized}}/" + existingId;
+	String uri = "/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}/" + existingId;
 
 	ResponseEntity<String> rep = this.delete(uri);
 	assertThat(rep.getStatusCode().value()).isEqualTo(200);

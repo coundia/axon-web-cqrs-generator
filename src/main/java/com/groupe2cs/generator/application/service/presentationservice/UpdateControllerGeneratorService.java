@@ -54,13 +54,14 @@ public class UpdateControllerGeneratorService {
         context.put("hasFiles",hasFiles);
         context.put("security", definition.isInStack("security"));
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("nameUpperCase", definition.getName().toUpperCase());
+        context.put("apiPrefix", definition.getApiPrefix());
 
         if(!hasFiles){
             String content = templateEngine.render("presentation/updateController.mustache", context);
             fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
             return;
         }
-        context.put("nameUpperCase", definition.getName().toUpperCase());
         String content = templateEngine.render("presentation/updateWithFilesController.mustache", context);
         fileWriterService.write(outputDir, "Update" + definition.getName() + "Controller.java", content);
 

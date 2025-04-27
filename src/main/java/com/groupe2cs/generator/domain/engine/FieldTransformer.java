@@ -57,6 +57,7 @@ public class FieldTransformer {
             f.put("isUnique", field.getUnique() || field.isId());
 
             f.put("size", field.getSize());
+            f.put("columnDefinition", field.getColumnDefinition());
 
             result.add(f);
         }

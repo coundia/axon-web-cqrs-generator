@@ -34,6 +34,15 @@ public class EntityDefinition implements Serializable {
 	private Boolean auditable = false;
 	private Boolean multiTenant = false;
 	private Boolean isGenerated = false;
+	private String apiPrefix = "";
+
+	public String getApiPrefix() {
+		if (apiPrefix == null) {
+			return "";
+		}
+
+		return apiPrefix;
+	}
 
 	public Boolean getMultiTenant() {
 

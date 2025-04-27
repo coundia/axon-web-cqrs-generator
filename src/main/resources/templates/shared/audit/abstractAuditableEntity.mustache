@@ -21,7 +21,7 @@ public abstract class AbstractAuditableEntity implements Auditable {
 		@Column(nullable = true)
 		private String deletedByAudit;
 
-		@Column(nullable = false, updatable = false)
+		@Column(nullable = true)
 		private Instant createdAtAudit;
 
 		@Column(nullable = true)

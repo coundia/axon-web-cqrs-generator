@@ -43,7 +43,7 @@ void it_should_be_able_to_update_{{nameLower}}() {
 		{{/isId}}
 	{{/editableFields}}
 
-	String uri = "/v1/commands/{{entityUnCapitalized}}/" + existingId;
+	String uri = "/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}/" + existingId;
 	ResponseEntity<String> response = this.put(uri,requestDTO);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

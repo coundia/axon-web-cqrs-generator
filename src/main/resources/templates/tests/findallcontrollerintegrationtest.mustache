@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-	import {{.}};
+import {{.}};
 {{/imports}}
 
 import org.junit.jupiter.api.Test;
@@ -33,54 +33,59 @@ private {{name}}Repository {{entityUnCapitalized}}Repository;
 void it_should_return_only_user_{{entityUnCapitalized}}s_for_normal_user() throws Exception {
 String userId = login("user", "user");
 List<Create{{name}}Command> userCommands =
-	{{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
-	userCommands.forEach(cmd ->
-	{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
-	);
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
+userCommands.forEach(cmd ->
+{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+);
 
-	login("user", "user");
-	ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
-		"/v1/queries/{{entityUnCapitalized}}s",
-		{{name}}PagedResponse.class
-		);
+login("user", "user");
+ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
+"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s",
+{{name}}PagedResponse.class
+);
+{{#isAdmin}}
+assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+{{/isAdmin}}
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		List<{{name}}Response> content = response.getBody().getContent();
-			assertThat(content).hasSizeGreaterThanOrEqualTo(3);
+{{^isAdmin}}
+assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+List<{{name}}Response> content = response.getBody().getContent();
+assertThat(content).hasSizeGreaterThanOrEqualTo(3);
 
-			List<String> expectedIds = userCommands.stream()
-				.map(cmd -> cmd.getId().value())
-				.collect(Collectors.toList());
-				assertThat(content)
-				.extracting({{entityUnCapitalized}} -> {{entityUnCapitalized}}.getId())
-				.containsExactlyInAnyOrderElementsOf(expectedIds);
-				}
+List<String> expectedIds = userCommands.stream()
+.map(cmd -> cmd.getId().value())
+.collect(Collectors.toList());
+assertThat(content)
+.extracting({{entityUnCapitalized}} -> {{entityUnCapitalized}}.getId())
+.containsExactlyInAnyOrderElementsOf(expectedIds);
+{{/isAdmin}}
+}
 
-				@Test
-				void it_should_return_all_{{entityUnCapitalized}}s_for_admin() throws Exception {
-				String userId = login("user", "user");
-				List<Create{{name}}Command> userCommands =
-					{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, userId);
-					userCommands.forEach(cmd ->
-					{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
-					);
+@Test
+void it_should_return_all_{{entityUnCapitalized}}s_for_admin() throws Exception {
+String userId = login("user", "user");
+List<Create{{name}}Command> userCommands =
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, userId);
+userCommands.forEach(cmd ->
+{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+);
 
-			String adminId = login("admin", "admin");
-			List<Create{{name}}Command> adminCommands =
-				{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, adminId);
-				adminCommands.forEach(cmd ->
-				{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
-				);
+String adminId = login("admin", "admin");
+List<Create{{name}}Command> adminCommands =
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, adminId);
+adminCommands.forEach(cmd ->
+{{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
+);
 
-				login("admin", "admin");
-				ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
-					"/v1/queries/{{entityUnCapitalized}}s",
-					{{name}}PagedResponse.class
-					);
+login("admin", "admin");
+ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
+"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s",
+{{name}}PagedResponse.class
+);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-		List<{{name}}Response> content = response.getBody().getContent();
-		assertThat(content).hasSizeGreaterThanOrEqualTo(10);
+assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+List<{{name}}Response> content = response.getBody().getContent();
+assertThat(content).hasSizeGreaterThanOrEqualTo(10);
 
-		}
+}
 }

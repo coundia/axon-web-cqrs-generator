@@ -31,6 +31,7 @@ public class DtoResponseGeneratorService {
 
         var fields = definition.getAllFieldsWithoutOneToMany();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");

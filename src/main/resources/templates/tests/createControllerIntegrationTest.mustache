@@ -27,9 +27,9 @@ void it_should_be_able_to_add_{{nameLower}}() {
 			{{/isId}}
 		{{/editableFields}}
 
- 		String uri = "/v1/commands/{{entityUnCapitalized}}";
+ 		String uri = "/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}";
 		ResponseEntity<{{name}}Response> response = this.postForEntity(uri, requestDTO, {{name}}Response.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isNotNull();
 		assertThat(response.getBody().getId()).isNotNull();
 		{{#editableFields}}

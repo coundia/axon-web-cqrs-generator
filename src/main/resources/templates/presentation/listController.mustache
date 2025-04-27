@@ -28,7 +28,7 @@ import org.springframework.security.core.Authentication;
 @PreAuthorize("@{{nameLower}}Gate.canList(authentication)")
 {{/security}}
 @RestController
-@RequestMapping("/api/v1/queries/{{nameLower}}s")
+@RequestMapping("/api/v1{{apiPrefix}}/queries/{{nameLower}}s")
 @Tag(name = "{{name}} Queries", description = "Endpoints for listing paginated {{nameLower}}s")
 public class {{name}}ListController {
 

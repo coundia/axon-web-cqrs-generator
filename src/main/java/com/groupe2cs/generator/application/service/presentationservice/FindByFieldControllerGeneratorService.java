@@ -58,7 +58,8 @@ public class FindByFieldControllerGeneratorService {
 
             fieldContext.put("imports", imports);
 
-            context.put("isMultiTenant", definition.getMultiTenant());
+            fieldContext.put("isMultiTenant", definition.getMultiTenant());
+            fieldContext.put("apiPrefix", definition.getApiPrefix());
 
             String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);
             fileWriterService.write(outputDir, className+".java", content);

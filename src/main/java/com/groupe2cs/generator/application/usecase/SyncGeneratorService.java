@@ -92,6 +92,8 @@ public class SyncGeneratorService {
 		 }
 
 		Map<String, Object> context = new HashMap<>();
+
+		context.put("apiPrefix", definition.getApiPrefix());
 		context.put("package", packageName);
 		context.put("imports", template.getImports());
 		context.put("name", Utils.capitalize(definition.getName()));

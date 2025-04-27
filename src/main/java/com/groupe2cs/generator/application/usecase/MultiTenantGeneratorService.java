@@ -31,11 +31,12 @@ public class MultiTenantGeneratorService {
 		EntityDefinition tenant = EntityDefinition.builder()
 				.name("Tenant")
 				.table("tenants")
+				.apiPrefix("/admin")
 				.fields(List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").unique(true).type("String").build(),
 
-						FieldDefinition.builder().name("description").type("String").size(768).nullable(true).build(),
+						FieldDefinition.builder().name("description").type("String").columnDefinition("TEXT").nullable(true).build(),
 						FieldDefinition.builder().name("domain").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("language").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("active").type("Boolean").nullable(true).build()
@@ -107,10 +108,12 @@ public class MultiTenantGeneratorService {
 				.map(t -> {
 
 					Map<String, Object> context = new HashMap<>();
+
 					String rootDirTest = t.getOutput();
 					context.put("package", Utils.getTestPackage(rootDirTest));
 					context.put("imports", t.getImports());
 					context.put("className", t.getClassName());
+
 					String content = templateEngine.render(t.getTemplatePath(), context);
 					fileWriterService.write(Utils.getTestDir(rootDirTest), t.getClassName() + ".java", content);
 					return "✔️ Generated: " + t.getClassName();

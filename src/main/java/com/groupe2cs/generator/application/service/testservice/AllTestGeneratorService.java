@@ -57,6 +57,14 @@ public class AllTestGeneratorService {
         context.put("nameLower", entity.toLowerCase());
         context.put("entityUnCapitalized", Utils.unCapitalize(entity));
 
+        context.put("apiPrefix", definition.getApiPrefix());
+
+        if( "/admin".equals(definition.getApiPrefix())){
+            context.put("isAdmin", true);
+        }
+
+        context.put("isMultiTenant", definition.getMultiTenant());
+
         var fields = definition.getFields();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 

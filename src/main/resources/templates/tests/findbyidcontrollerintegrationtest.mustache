@@ -26,7 +26,7 @@ void it_should_be_able_to_get_{{nameLower}}_by_id() {
 
 	 {{name}}Fixtures.byIdWaitExist(repository, existingId);
 
-	String uri = "/v1/queries/{{entityUnCapitalized}}/id?id=" + existingId;
+	String uri = "/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}/id?id=" + existingId;
 	ResponseEntity<{{name}}Response> response = this.getForEntity(uri, {{name}}Response.class);
 
 	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

@@ -20,6 +20,7 @@ public class FieldDefinition implements Serializable {
     private Boolean unique;
     private Boolean nullable;
     private String nameJpa;
+    private String columnDefinition;
 
     public FieldDefinition(String type, String name) {
         this.type = type;
@@ -27,6 +28,7 @@ public class FieldDefinition implements Serializable {
         this.nameCapitalized = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
         this.isId = this.isId();
     }
+
 
     public Boolean getUnique() {
 

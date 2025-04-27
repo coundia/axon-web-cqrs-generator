@@ -47,6 +47,7 @@ public class CreateControllerGeneratorService {
         context.put("imports", imports);
         context.put("security", definition.isInStack("security"));
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("apiPrefix", definition.getApiPrefix());
 
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));
         String content = templateEngine.render("presentation/createController.mustache", context);

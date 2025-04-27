@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
+import org.springframework.http.HttpStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -28,7 +29,7 @@ import org.springframework.security.core.Authentication;
 {{/security}}
 
 @RestController
-@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@RequestMapping("/api/v1{{apiPrefix}}/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
 @Slf4j
 
@@ -51,7 +52,7 @@ content = @Content(schema = @Schema(implementation = {{name}}Request.class))
 )
 )
 @ApiResponses(value = {
-@ApiResponse(responseCode = "200", description = "Successfully created",
+@ApiResponse(responseCode = "201", description = "Successfully created",
 content = @Content(schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
 content = @Content(schema = @Schema()))
@@ -70,7 +71,7 @@ public ResponseEntity<{{name}}Response> add{{name}}(@Valid @RequestBody {{name}}
 			metaRequest
 	);
 
-	return ResponseEntity.ok(response);
+	return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	} catch (Exception ex) {
 	//e.printStackTrace();
 	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage());

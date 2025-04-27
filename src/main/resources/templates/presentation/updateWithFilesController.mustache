@@ -30,7 +30,7 @@ import org.springframework.security.core.Authentication;
 @PreAuthorize("@{{nameLowercase}}Gate.canEdit(authentication, #id)")
 {{/security}}
 @RestController
-@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@RequestMapping("/api/v1{{apiPrefix}}/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
 @Slf4j
 public class Update{{name}}Controller {

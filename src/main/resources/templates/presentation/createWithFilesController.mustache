@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +29,7 @@ import org.springframework.security.core.Authentication;
 @PreAuthorize("@{{nameLowercase}}Gate.canCreate(authentication)")
 {{/security}}
 @RestController
-@RequestMapping("/api/v1/commands/{{nameLowercase}}")
+@RequestMapping("/api/v1{{apiPrefix}}/commands/{{nameLowercase}}")
 @Tag(name = "{{name}} commands", description = "Endpoints for managing {{nameLowercase}}s")
 @Slf4j
 public class Add{{name}}Controller {
@@ -41,7 +42,7 @@ public Add{{name}}Controller({{name}}CreateApplicationService  applicationServic
 
 @Operation(summary = "Create a new {{nameLowercase}}")
 @ApiResponses(value = {
-@ApiResponse(responseCode = "200", description = "{{name}} created",
+@ApiResponse(responseCode = "201", description = "{{name}} created",
 content = @Content(mediaType = "application/json",
 schema = @Schema(implementation = {{name}}Response.class))),
 @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -73,7 +74,7 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 	metaRequest
 	);
 
-	return ResponseEntity.ok(response);
+	return  ResponseEntity.status(HttpStatus.CREATED).body(response);
 
 	} catch (Exception ex) {
 	log.error("Failed to create {{nameLowercase}}: {}", ex.getMessage(), ex);

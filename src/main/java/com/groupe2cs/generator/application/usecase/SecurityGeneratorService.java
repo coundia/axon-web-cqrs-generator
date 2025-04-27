@@ -32,74 +32,107 @@ public class SecurityGeneratorService {
 
 		EntityDefinition refreshToken = new EntityDefinition("RefreshToken", List.of(
 				FieldDefinition.builder().name("id").type("String").build(),
-				FieldDefinition.builder().name("token").type("String").size(768).unique(true).build(),
-				FieldDefinition.builder().name("username").type("String").unique(true).build(),
+				FieldDefinition.builder().name("token").columnDefinition("TEXT").
+						type("String").build(),
+				FieldDefinition.builder().name("username").type("String").build(),
 				FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
 		), "refresh_tokens");
 
 		refreshToken.getSkip().add("presentation");
+		refreshToken.setAuditable(true);
 
 		List<EntityDefinition> entities = List.of(
 				EntityDefinition.builder()
 						.name("User")
-						.fields(
-								List.of(
-										FieldDefinition.builder().name("id").type("String").build(),
-										FieldDefinition.builder().name("username").type("String").unique(true).build(),
-										FieldDefinition.builder().name("password").type("String").build(),
-										FieldDefinition.builder()
-												.name("userRoles")
-												.type("Set<UserRole>")
-												.relation("OneToMany")
-												.build()
-								)
-						)
+						.apiPrefix("/admin")
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("username").type("String").unique(true).build(),
+								FieldDefinition.builder().name("password").type("String").build(),
+								FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
+						))
+						.auditable(true)
 						.entity("CustomUser")
-						.table("users")
+						.table("custom_users")
 						.build(),
 
-		new EntityDefinition("PasswordReset", List.of(
-				FieldDefinition.builder().name("id").type("String").build(),
-				FieldDefinition.builder().name("token").size(768).type("String").unique(true).build(),
-				FieldDefinition.builder().name("username").type("String").build(),
-				FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
-		), "password_resets"),
+				EntityDefinition.builder()
+						.name("PasswordReset")
+						.auditable(true)
+						.skip(
+								List.of("presentation")
+						)
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("token").columnDefinition("TEXT").type("String").build(),
+								FieldDefinition.builder().name("username").type("String").build(),
+								FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
+						))
+						.table("password_resets")
+						.build(),
 
-				new EntityDefinition("ApiKey", List.of(
-						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("appKey").size(768).type("String").unique(true).build(),
-						FieldDefinition.builder().name("username").type("String").unique(true).build(),
-						FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
-						FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
-				), "api_keys"),
+				EntityDefinition.builder()
+						.name("ApiKey")
+						.auditable(true)
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("appKey").columnDefinition("TEXT").type("String").build(),
+								FieldDefinition.builder().name("username").type("String").build(),
+								FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
+								FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
+						))
+						.table("api_keys")
+						.build(),
 
 				refreshToken,
 
+				EntityDefinition.builder()
+						.name("Role")
+						.auditable(true)
+						.apiPrefix("/admin")
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("name").type("String").unique(true).build(),
+								FieldDefinition.builder().name("rolePermissions").type("Set<RolePermission>").relation("OneToMany").build()
+						))
+						.build(),
 
-				new EntityDefinition("Role", List.of(
-						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("name").type("String").unique(true).build(),
-						FieldDefinition.builder().name("rolePermissions").type("Set<RolePermission>")
-								.relation("OneToMany").build()
-				), "roles"),
+				EntityDefinition.builder()
+						.name("Permission")
+						.auditable(true)
+						.apiPrefix("/admin")
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("name").type("String").unique(true).build()
+						))
+						.table("permissions")
+						.build(),
 
-				new EntityDefinition("Permission", List.of(
-						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("name").type("String").unique(true).build()
-				), "permissions"),
+				EntityDefinition.builder()
+						.name("UserRole")
+						.auditable(true)
+						.apiPrefix("/admin")
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("user").type("CustomUser").relation("ManyToOne").build(),
+								FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build()
+						))
+						.table("user_roles")
+						.build(),
 
-				new EntityDefinition("UserRole", List.of(
-						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("user").type("CustomUser").relation("ManyToOne").build(),
-						FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build()
-				), "user_roles"),
-
-				new EntityDefinition("RolePermission", List.of(
-						FieldDefinition.builder().name("id").type("String").build(),
-						FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build(),
-						FieldDefinition.builder().name("permission").type("Permission").relation("ManyToOne").build()
-				), "role_permissions")
+				EntityDefinition.builder()
+						.auditable(true)
+						.name("RolePermission")
+						.apiPrefix("/admin")
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build(),
+								FieldDefinition.builder().name("permission").type("Permission").relation("ManyToOne").build()
+						))
+						.table("role_permissions")
+						.build()
 		);
+
 
 		return Flux.fromIterable(entities)
 				.flatMap(entity -> {
@@ -303,12 +336,13 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenService",
 						"infrastructure/security/refreshTokenService.mustache",
 						Set.of(
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".RefreshTokenRepository",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".RefreshToken",
+								Utils.getPackage(Utils.getParent(shareDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".CustomUser",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
-								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*"
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext"
 						),
 						baseDir + "/" + generatorProperties.getServicePackage()),
 
@@ -407,6 +441,8 @@ public class SecurityGeneratorService {
 	private void generateFile(SharedTemplate template, EntityDefinition definition) {
 		Map<String, Object> context = new HashMap<>();
 		String outputDir = template.getOutput();
+
+		context.put("apiPrefix", definition.getApiPrefix());
 
 		context.put("package", Utils.getPackage(outputDir));
 		context.put("packageTest", Utils.getTestPackage(Utils.getPackage(outputDir)));

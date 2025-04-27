@@ -20,9 +20,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "{{name}}Response", description = "Response payload for {{name}}")
 public class {{name}}Response implements Serializable {
 
-{{#fields}}
+{{#editableFields}}
 	@Schema(description = "{{description}}", example = "{{example}}")
 	private {{primitiveType}} {{name}};
-{{/fields}}
+{{/editableFields}}
 
 }

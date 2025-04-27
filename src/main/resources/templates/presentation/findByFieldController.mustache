@@ -33,7 +33,7 @@ import org.springframework.security.core.Authentication;
 @PreAuthorize("@{{nameLowercase}}Gate.canRead(authentication, #id)")
 {{/security}}
 @RestController
-@RequestMapping("/api/v1/queries/{{nameLowercase}}")
+@RequestMapping("/api/v1{{apiPrefix}}/queries/{{nameLowercase}}")
 @Tag(name = "{{name}} Queries", description = "Endpoints for querying {{nameLowercase}}s by {{field.name}}")
 @Slf4j
 public class {{className}} {

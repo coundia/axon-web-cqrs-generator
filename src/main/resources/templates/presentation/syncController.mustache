@@ -23,7 +23,7 @@ import org.springframework.security.core.Authentication;
 @PreAuthorize("@{{nameLowercase}}Gate.canSync(authentication)")
 {{/security}}
 @RestController
-@RequestMapping("/api/v1/commands/{{nameLowercase}}/sync")
+@RequestMapping("/api/v1{{apiPrefix}}/commands/{{nameLowercase}}/sync")
 @Tag(name = "{{name}} commands", description = "Endpoint to synchronize {{nameLowercase}}s")
 @Slf4j
 @RequiredArgsConstructor

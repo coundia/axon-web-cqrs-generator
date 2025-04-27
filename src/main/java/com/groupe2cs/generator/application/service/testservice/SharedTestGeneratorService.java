@@ -47,6 +47,8 @@ public class SharedTestGeneratorService {
         context.put("package", packageName);
         String outputDir = Utils.getTestDir(fullPath);
 
+        context.put("apiPrefix", definition.getApiPrefix());
+
         Set<String> imports = new LinkedHashSet<>();
         if(definition.isInStack("security")) {
             imports.add(Utils.getTestPackage(baseDir+ "/" +

@@ -4,17 +4,15 @@ package {{package}};
 import {{.}};
 {{/imports}}
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,46 +20,33 @@ import java.util.concurrent.CompletableFuture;
 public class RefreshTokenService {
 
 private final JwtDecoder jwtDecoder;
-private final CommandGateway commandGateway;
-private final QueryGateway queryGateway;
+private final RefreshTokenRepository refreshTokenRepository;
 
+@Transactional
 public void save(String token) {
 try {
 Jwt jwt = jwtDecoder.decode(token);
 String username = jwt.getSubject();
 Instant expiration = jwt.getExpiresAt();
 
-try {
+//refreshTokenRepository.deleteByUsername(username);
 
-MetaRequest metaRequest = new MetaRequest();
+RefreshToken refreshToken = RefreshToken.builder()
+.id(UUID.randomUUID().toString())
+.token(token)
+.username(username)
+.expiration(expiration)
+.createdBy(new CustomUser(RequestContext.getUserId(jwt)))
+.tenant(new Tenant(RequestContext.getTenantId(jwt)))
+.build();
 
-metaRequest.setUserId(RequestContext.getUserId(jwt));
-metaRequest.setTenantId(RequestContext.getTenantId(jwt));
+refreshTokenRepository.save(refreshToken);
 
-CompletableFuture<RefreshTokenResponse> future = queryGateway.query(
-		new FindByRefreshTokenUsernameQuery(RefreshTokenUsername.create(username), metaRequest),
-		RefreshTokenResponse.class
-	);
+log.info("Refresh token saved for {}", username);
 
-	RefreshTokenResponse existing = future.join();
-		if(existing!= null) {
-			commandGateway.sendAndWait(new DeleteRefreshTokenCommand(RefreshTokenId.create(existing.getId())));
-		}
- 	} catch (Exception e) {
-		e.printStackTrace();
-		log.info("No existing refresh token found for {}. Proceeding to save new.", username);
-	}
+} catch (Exception e) {
+log.error("Error while saving refresh token: {}", e.getMessage(), e);
+}
+}
+}
 
-	commandGateway.sendAndWait(CreateRefreshTokenCommand.builder()
-	.token(RefreshTokenToken.create(token))
-	.username(RefreshTokenUsername.create(username))
-	.expiration(RefreshTokenExpiration.create(expiration))
-	.build());
-
-	} catch (Exception e) {
-		e.printStackTrace();
-		log.error("Error while saving refresh token: {}", e.getMessage(), e);
-	}
-	}
-
- }
