@@ -9,13 +9,15 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
+	"multiTenant": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "reference", "type": "String" },
 	  { "name": "amount", "type": "Double" }
 	],
     "stack": [
-	  "RabbitMq"
+	  "RabbitMq",
+	  "Security"
     ]
   }
 }

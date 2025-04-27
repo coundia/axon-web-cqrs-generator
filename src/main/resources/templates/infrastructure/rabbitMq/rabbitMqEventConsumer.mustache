@@ -19,10 +19,9 @@ public class {{className}} {
 	@RabbitListener(queues = "{{entityLowerCase}}.created.queue")
 	public void handleCreated({{entity}}CreatedEvent e) {
 	try {
-	{{entity}} entity = {{entity}}.builder()
-	{{#fields}}
-		.{{nameLowerCase}}(e.get{{nameCapitalized}}().value())
-	{{/fields}}
+	{{entity}} entity = {{entity}}.builder(){{#fields}}
+		{{#isManyToOne}}.{{nameLowerCase}}(new {{realType}}(e.get{{nameCapitalized}}().value())){{/isManyToOne}}
+		{{^isManyToOne}}.{{nameLowerCase}}(e.get{{nameCapitalized}}().value()){{/isManyToOne}}{{/fields}}
 	.build();
 	repository.save(entity);
 	log.info("Persisted from RabbitMQ: {}", entity);
@@ -35,8 +34,9 @@ public class {{className}} {
 	public void handleUpdated({{entity}}UpdatedEvent e) {
 	try {
 	repository.findById(e.getId().value()).ifPresentOrElse(existing -> {
-	{{#fields}}
-		{{^isId}}existing.set{{nameCapitalized}}(e.get{{nameCapitalized}}().value());{{/isId}}
+	{{#fields}}{{^isId}}{{#isManyToOne}}
+		existing.set{{nameCapitalized}}(new {{realType}}( e.get{{nameCapitalized}}().value()));  {{/isManyToOne}}{{^isManyToOne}}
+		existing.set{{nameCapitalized}}(e.get{{nameCapitalized}}().value());  {{/isManyToOne}}{{/isId}}
 	{{/fields}}
 	repository.save(existing);
 	log.info("Updated from RabbitMQ: {}", existing);
@@ -45,7 +45,6 @@ public class {{className}} {
 	log.error("Failed to process updated event: {}", ex.getMessage(), ex);
 	}
 	}
-
 	@RabbitListener(queues = "{{entityLowerCase}}.deleted.queue")
 	public void handleDeleted({{entity}}DeletedEvent e) {
 	try {

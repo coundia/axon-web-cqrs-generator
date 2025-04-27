@@ -34,6 +34,8 @@ public class RabbitMqGeneratorService {
                         Utils.capitalize(definition.getName()) + "EventConsumer",
                         "infrastructure/rabbitMq/rabbitMqEventConsumer.mustache",
                         Set.of(
+                                Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser",
+                                Utils.getPackage(Utils.getParent(baseDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "." + definition.getName(),
                                 Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*"
