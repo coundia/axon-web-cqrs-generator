@@ -23,21 +23,23 @@ private final JwtDecoder jwtDecoder;
 private final RefreshTokenRepository refreshTokenRepository;
 
 @Transactional
-public void save(String token) {
+public void save(String token, MetaRequest metaRequest) {
 try {
 Jwt jwt = jwtDecoder.decode(token);
 String username = jwt.getSubject();
 Instant expiration = jwt.getExpiresAt();
 
-//refreshTokenRepository.deleteByUsername(username);
+String tenantId = metaRequest.getTenantId();
+
+//refreshTokenRepository.deleteByUsernameAndTenantId(username,tenantId);
 
 RefreshToken refreshToken = RefreshToken.builder()
 .id(UUID.randomUUID().toString())
 .token(token)
 .username(username)
+.tenant(new Tenant(tenantId))
 .expiration(expiration)
 .createdBy(new CustomUser(RequestContext.getUserId(jwt)))
-.tenant(new Tenant(RequestContext.getTenantId(jwt)))
 .build();
 
 refreshTokenRepository.save(refreshToken);

@@ -118,14 +118,6 @@ public class SharedGeneratorService {
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
                 ),
 
-                new SharedTemplate(
-                        "RequestContextFilter",
-                        "shared/audit/requestContextFilter.mustache",
-                        Set.of(
-                            Utils.getPackage(rootDir + "/security/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
-                        ),
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
 
                 new SharedTemplate(
                         "AuditListener",

@@ -15,9 +15,9 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	Page<{{entityName}}> findAll(Pageable pageable);
+	//Page<{{entityName}}> findAll(Pageable pageable);
 
-	Optional<{{entityName}}> findById(String id);
+	//Optional<{{entityName}}> findById(String id);
 
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
 
@@ -35,17 +35,14 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 	{{/isUnique}}
 	{{#isUnique}}
 
-	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
+	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
+
 	{{/isUnique}}
+	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
+	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
 	{{/isId}}
 {{/fields}}
 
-{{#compositeKeys}}
-	Optional<{{entityName}}> findBy{{left.nameCapitalized}}IdAnd{{right.nameCapitalized}}Id(
-	String {{left.name}},
-	String {{right.name}}
-	);
-{{/compositeKeys}}
 
 }

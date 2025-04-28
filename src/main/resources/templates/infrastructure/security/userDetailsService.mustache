@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+
+
 
 @Slf4j
 @Service
@@ -16,11 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
 private final UserRepository userRepository;
+private final CurrentTenantIdentifierResolver tenantIdentifierResolver;
 
 @Override
 @Transactional
 public UserDetails loadUserByUsername(String username) {
-CustomUser user = userRepository.findByUsername(username)
+
+String tenantId = tenantIdentifierResolver.resolveCurrentTenantIdentifier();
+log.debug("Loading user '{}' for tenant '{}'", username, tenantId);
+
+CustomUser user = userRepository.findByUsernameAndTenantId(username,tenantId)
 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
 //load for lazy

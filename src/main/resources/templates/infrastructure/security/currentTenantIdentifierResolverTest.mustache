@@ -4,9 +4,6 @@ package {{package}};
 	import {{.}};
 {{/imports}}
 
-import com.groupe2cs.bizyhub.tenant.infrastructure.CurrentTenantIdentifierResolverImpl;
-import com.groupe2cs.bizyhub.tenant.infrastructure.entity.Tenant;
-import com.groupe2cs.bizyhub.tenant.infrastructure.repository.TenantRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +36,7 @@ RequestContextHolder.resetRequestAttributes();
 @Test
 void whenNoRequestAttributes_thenReturnDefaultTenant() {
 RequestContextHolder.resetRequestAttributes();
-assertEquals("default", resolver.resolveCurrentTenantIdentifier());
+assertEquals(DEFAULT_TENANT, resolver.resolveCurrentTenantIdentifier());
 }
 
 @Test
@@ -56,13 +53,13 @@ assertEquals("tenant123", resolver.resolveCurrentTenantIdentifier());
 
 @Test
 void whenHeaderBlank_thenReturnDefaultTenant() {
-when(tenantRepository.findByName("default"))
-.thenReturn(Optional.of(Tenant.builder().id("default").build()));
+when(tenantRepository.findByName(DEFAULT_TENANT))
+.thenReturn(Optional.of(Tenant.builder().id(DEFAULT_TENANT).build()));
 
 MockHttpServletRequest request = new MockHttpServletRequest();
 request.addHeader("X-Tenant-ID", "");
 RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-assertEquals("default", resolver.resolveCurrentTenantIdentifier());
+assertEquals(DEFAULT_TENANT, resolver.resolveCurrentTenantIdentifier());
 }
 }

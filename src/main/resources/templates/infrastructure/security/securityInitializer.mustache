@@ -14,14 +14,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class {{className}} {
 
-private static final String ROLE_ADMIN = "ROLE_ADMIN";
-private static final String ROLE_USER = "ROLE_USER";
-private static final String ADMIN_USERNAME = "admin";
-private static final String USER_USERNAME = "user";
-private static final String PASSWORD_ADMIN = "admin";
-private static final String PASSWORD_USER = "user";
-private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "DELETE", "IS_ADMIN");
-
 	private final RoleRepository roleRepository;
 	private final PermissionRepository permissionRepository;
 	private final RolePermissionRepository rolePermissionRepository;
@@ -40,14 +32,14 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	createUserIfNotExist(ADMIN_USERNAME, PASSWORD_ADMIN, roles.get(ROLE_ADMIN));
 	createUserIfNotExist(USER_USERNAME, PASSWORD_USER, roles.get(ROLE_USER));
 	{{#isMultiTenant}}
-		addTenantAndAssignToUser("default", ADMIN_USERNAME);
-		addTenantAndAssignToUser("default", USER_USERNAME);
+		addTenantAndAssignToUser(DEFAULT_TENANT, ADMIN_USERNAME);
+		addTenantAndAssignToUser(DEFAULT_TENANT, USER_USERNAME);
 	{{/isMultiTenant}}
 	}
 
 	private void createPermissions() {
 	DEFAULT_PERMISSIONS.forEach(name ->
-	permissionRepository.findByName(name).orElseGet(() ->
+	permissionRepository.findByNameAndTenantName(name,DEFAULT_TENANT).orElseGet(() ->
 	permissionRepository.save(Permission.builder()
 	.id(UUID.randomUUID().toString())
 	.name(name)
@@ -65,7 +57,7 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	}
 
 	private Role findOrCreateRole(String name) {
-	return roleRepository.findByName(name).orElseGet(() ->
+	return roleRepository.findByNameAndTenantName(name,DEFAULT_TENANT).orElseGet(() ->
 	roleRepository.save(Role.builder()
 	.id(UUID.randomUUID().toString())
 	.name(name)
@@ -86,7 +78,7 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 	}
 
 	private void createUserIfNotExist(String username, String rawPassword, Role role) {
-	userRepository.findByUsername(username).orElseGet(() -> {
+	userRepository.findByUsernameAndTenantName(username,DEFAULT_TENANT).orElseGet(() -> {
 	var user = userRepository.save(CustomUser.builder()
 	.id(UUID.randomUUID().toString())
 	.username(username)
@@ -111,7 +103,7 @@ private static final Set<String> DEFAULT_PERMISSIONS = Set.of("READ", "WRITE", "
 		.name(tenantName)
 		.build()
 		));
-		userRepository.findByUsername(username).ifPresent(user -> {
+		userRepository.findByUsernameAndTenantName(username,null).ifPresent(user -> {
 		user.setTenant(tenant);
 		userRepository.save(user);
 		});

@@ -35,7 +35,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -111,16 +110,22 @@ return new OpenAPI()
 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
 .addSecurityItem(new SecurityRequirement().addList("ApiKeyAuth"))
 .components(new io.swagger.v3.oas.models.Components()
+.addSecuritySchemes("tenantName",
+new SecurityScheme()
+.type(SecurityScheme.Type.APIKEY)
+.in(SecurityScheme.In.HEADER)
+.name(TENANT_HEADER))
+.addSecuritySchemes("ApiKeyAuth",
+new SecurityScheme()
+.type(SecurityScheme.Type.APIKEY)
+.in(SecurityScheme.In.HEADER)
+.name(API_KEY_HEADER))
 .addSecuritySchemes("bearerAuth",
 new SecurityScheme()
 .type(SecurityScheme.Type.HTTP)
 .scheme("bearer")
 .bearerFormat("JWT"))
-.addSecuritySchemes("ApiKeyAuth",
-new SecurityScheme()
-.type(SecurityScheme.Type.APIKEY)
-.in(SecurityScheme.In.HEADER)
-.name("X-API-KEY"))
+
 );
 }
 
@@ -144,4 +149,4 @@ public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter(ApiKeyFilter filter) {
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
 		return jwtAuthenticationConverter;
 		}
-		}
+}

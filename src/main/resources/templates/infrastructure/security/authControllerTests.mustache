@@ -42,7 +42,7 @@ private String existingUsername = "admin";
 private String existingPassword = "admin";
 
 private void createUserIfNotExist() {
-if (userRepository.findByUsername(existingUsername).isEmpty()) {
+if (userRepository.findByUsernameAndTenantName(existingUsername,DEFAULT_TENANT).isEmpty()) {
 CustomUser user = CustomUser.builder()
 .id(UUID.randomUUID().toString())
 .username(existingUsername)

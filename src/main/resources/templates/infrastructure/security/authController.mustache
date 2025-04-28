@@ -51,9 +51,7 @@ public ResponseEntity<AuthResponseDto> authenticate(
 try {
 
 		MetaRequest metaRequest = new MetaRequest();
-	{{#isMultiTenant}}
 		metaRequest.setTenantId(currentTenantIdentifierResolver.resolveCurrentTenantIdentifier());
-	{{/isMultiTenant}}
 
 		AuthResponseDto response = authService.handle(request,metaRequest);
 		return ResponseEntity.ok(response);

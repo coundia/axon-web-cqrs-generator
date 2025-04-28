@@ -38,6 +38,9 @@ public ResponseEntity<AuthResponseDto> refresh(@AuthenticationPrincipal Jwt jwt)
 	.build());
 	}
 
+	MetaRequest metaRequest = new MetaRequest();
+	metaRequest.setTenantId(RequestContext.getTenantId(jwt));
+
 	String username =  jwt.getSubject();
 
 	UserPrincipal principal = (UserPrincipal) userDetailsService.loadUserByUsername(username);
@@ -47,7 +50,7 @@ public ResponseEntity<AuthResponseDto> refresh(@AuthenticationPrincipal Jwt jwt)
 	null,
 	principal.getAuthorities()
 	);
-	String accessToken = jwtService.generateToken(authentication);
+	String accessToken = jwtService.generateToken(authentication, metaRequest);
 
 	return ResponseEntity.ok(
 	AuthResponseDto.builder()
