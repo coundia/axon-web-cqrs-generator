@@ -44,7 +44,7 @@ public class MailGeneratorService {
 				),
 				new SharedTemplate(
 						"MailSenderImpl",
-						"infrastructure/mailSender.mustache",
+						"infrastructure/mailSenderImpl.mustache",
 						Set.of(
 								domainPkg + ".MailSender"
 						),

@@ -10,9 +10,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @Profile("test")
-public class {{className}} implements MailSender {
-	@Override
-	public void send(String from, String to, String subject, String content) {
-		log.info("FAKE MAIL → from: {}, To: {}, Subject: {}, Content: {}",from, to, subject, content);
-	}
+public class FakeMailSender implements MailSender {
+@Override
+public void send(String from, String to, String subject, String content) {
+log.info("FAKE MAIL → from: {}, To: {}, Subject: {}, Content: {}", from, to, subject, content);
+}
+
+@Override
+public boolean isValidEmail(String email) {
+return true;
+}
 }
