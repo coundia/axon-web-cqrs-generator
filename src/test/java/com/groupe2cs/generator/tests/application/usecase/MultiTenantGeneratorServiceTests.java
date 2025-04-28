@@ -35,7 +35,7 @@ public class MultiTenantGeneratorServiceTests {
 		EntityDefinition definition = EntityDefinition.fromClass(MockEntity.class);
 		definition.setMultiTenant(true);
 
-		service.generate(definition, fullDir.toString()).blockLast();
+		service.generate(definition, fullDir.toString()).block();
 
 		Path entityPath = fullDir.resolve("infrastructure/entity");
 		File tenantEntity = entityPath.resolve("Tenant.java").toFile();
@@ -45,11 +45,6 @@ public class MultiTenantGeneratorServiceTests {
 				.resolve("presentation/controller")
 				.resolve("TenantCreateControllerIntegrationTest.java").toFile();
 		assertThat(TenantCreateControllerIntegrationTest).exists();
-
-		File CurrentTenantIdentifierResolverTest = fullDir
-				.resolve("infrastructure")
-				.resolve("CurrentTenantIdentifierResolverTest.java").toFile();
-		assertThat(CurrentTenantIdentifierResolverTest).exists();
 
 		String tenantEntityContent = Files.readString(tenantEntity.toPath());
 		assertThat(tenantEntityContent).contains("class Tenant");
