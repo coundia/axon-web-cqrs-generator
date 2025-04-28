@@ -74,10 +74,12 @@ public class SecurityGeneratorService {
 				EntityDefinition.builder()
 						.name("ApiKey")
 						.auditable(true)
+						.apiPrefix("/admin")
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("appKey").columnDefinition("TEXT").type("String").build(),
 								FieldDefinition.builder().name("username").type("String").build(),
+								FieldDefinition.builder().name("active").type("Boolean").build(),
 								FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
 								FieldDefinition.builder().name("expiration").type("java.time.Instant").build()
 						))
