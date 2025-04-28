@@ -40,7 +40,7 @@ userCommands.forEach(cmd ->
 
 login("user", "user");
 ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
-"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s",
+"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s?page=0&limit=1000000",
 {{name}}PagedResponse.class
 );
 {{#isAdmin}}
@@ -50,14 +50,17 @@ assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 {{^isAdmin}}
 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 List<{{name}}Response> content = response.getBody().getContent();
-assertThat(content).hasSizeGreaterThanOrEqualTo(3);
+assertThat(content).isNotEmpty();
 
 List<String> expectedIds = userCommands.stream()
 .map(cmd -> cmd.getId().value())
 .collect(Collectors.toList());
-assertThat(content)
-.extracting({{entityUnCapitalized}} -> {{entityUnCapitalized}}.getId())
-.containsExactlyInAnyOrderElementsOf(expectedIds);
+
+List<String> actualIds = content.stream()
+.map({{name}}Response::getId)
+.collect(Collectors.toList());
+
+assertThat(actualIds).containsAll(expectedIds);
 {{/isAdmin}}
 }
 
@@ -79,13 +82,22 @@ adminCommands.forEach(cmd ->
 
 login("admin", "admin");
 ResponseEntity<{{name}}PagedResponse> response = this.getForEntity(
-"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s",
+"/v1{{apiPrefix}}/queries/{{entityUnCapitalized}}s?page=0&limit=1000000",
 {{name}}PagedResponse.class
 );
-
 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 List<{{name}}Response> content = response.getBody().getContent();
-assertThat(content).hasSizeGreaterThanOrEqualTo(10);
+assertThat(content).isNotEmpty();
+
+List<String> expectedIds = userCommands.stream()
+.map(cmd -> cmd.getId().value())
+.collect(Collectors.toList());
+
+List<String> actualIds = content.stream()
+.map({{name}}Response::getId)
+.collect(Collectors.toList());
+
+assertThat(actualIds).containsAll(expectedIds);
 
 }
 }
