@@ -9,7 +9,7 @@ class FileWriterSkipListTest {
 
 	@Test
 	void it_should_return_true_if_file_in_skip_list() {
-		boolean result = FileWriterSkipList.shouldSkip("src/main/java/FindByApiKeyAppKeyHandler.java");
+		boolean result = FileWriterSkipList.shouldSkip("FindByPasswordResetTokenHandler.java");
 		assertThat(result).isTrue();
 	}
 
