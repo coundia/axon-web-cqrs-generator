@@ -32,6 +32,7 @@ public class MultiTenantGeneratorService {
 				.name("Tenant")
 				.table("tenants")
 				.apiPrefix("/admin")
+				.auditable(true)
 				.fields(List.of(
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").unique(true).type("String").build(),
@@ -52,7 +53,6 @@ public class MultiTenantGeneratorService {
 
 			tenant.setMultiTenant(parentEntityDefinition.getMultiTenant());
 			tenant.setIsGenerated(parentEntityDefinition.getIsGenerated());
-			tenant.setMultiTenant(parentEntityDefinition.getMultiTenant());
 
 		return groupMainGenerator.generateStreaming(
 				EntityDefinitionDTO.builder()

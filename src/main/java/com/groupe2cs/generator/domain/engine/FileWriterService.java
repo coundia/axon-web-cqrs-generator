@@ -12,7 +12,11 @@ import java.nio.file.Paths;
 public class FileWriterService {
 
     @Value("${rewrite:true}")
-    private String rewrite;
+    private boolean rewrite;
+
+
+    @Value("${force:false}")
+    private boolean force;
 
     public void write(String baseDir, String fileName, String content) {
         try {
@@ -21,7 +25,14 @@ public class FileWriterService {
 
             Files.createDirectories(path.getParent());
 
-            if (Files.exists(path) && rewrite.equalsIgnoreCase("false")) {
+            boolean fileExists = Files.exists(path);
+
+            if (fileExists && FileWriterSkipList.shouldSkip(fileName) && !force) {
+                System.out.println("❤️⏭️ Skipped (in skip list): " + path);
+                return;
+            }
+
+            if (fileExists && !rewrite && !force) {
                 System.out.println("⏭️ Skipped (already exists): " + path);
                 return;
             }

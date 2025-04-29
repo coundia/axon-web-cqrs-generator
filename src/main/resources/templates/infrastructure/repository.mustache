@@ -1,7 +1,7 @@
 package {{package}};
 
 {{#imports}}
-import {{.}};
+	import {{.}};
 {{/imports}}
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,34 +15,41 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	//Page<{{entityName}}> findAll(Pageable pageable);
-
-	//Optional<{{entityName}}> findById(String id);
-
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
 
-	Page<{{entityName}}> findByCreatedById(Pageable pageable, String createdById);
+	@Query("SELECT e FROM ApiKey e WHERE e.createdBy.id = ?1 ORDER BY e.createdAtAudit DESC")
+	Page<{{entityName}}> findByCreatedById(String createdById, Pageable pageable);
 
-{{#isMultiTenant}}
-	Page<{{entityName}}> findAllByTenantId(Pageable pageable, String tenantId);
-{{/isMultiTenant}}
+	{{#isMultiTenant}}
+	@Query("SELECT e FROM ApiKey e WHERE e.tenant.id = ?1 ORDER BY e.createdAtAudit DESC")
+	Page<{{entityName}}> findAllByTenantId(String tenantId, Pageable pageable);
+	{{/isMultiTenant}}
 
-{{#fields}}
+	{{#fields}}
 	{{^isId}}
 	{{^isUnique}}
 
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
 	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 	{{/isUnique}}
 	{{#isUnique}}
 
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
+
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 
 	{{/isUnique}}
+
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.name = ?2 ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
+
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.id = ?2 ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
 	{{/isId}}
-{{/fields}}
+	{{/fields}}
 
 
 }

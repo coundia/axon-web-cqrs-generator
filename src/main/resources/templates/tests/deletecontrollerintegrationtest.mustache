@@ -21,7 +21,7 @@ private CommandGateway commandGateway;
 
 @Test
 void it_should_be_able_to_delete_{{nameLower}}() {
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser()).getId().value();
 
 	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
 

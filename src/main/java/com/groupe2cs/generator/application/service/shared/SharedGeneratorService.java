@@ -38,6 +38,14 @@ public class SharedGeneratorService {
 
         List<SharedTemplate> sharedTemplates = List.of(
                 new SharedTemplate(
+                        "StatusController",
+                        "shared/status/statusController.mustache",
+                        Set.of(
+                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto"
+                        ),
+                        outputShared + "/" + generatorProperties.getPresentationPackage()+"/status"
+                ),
+                new SharedTemplate(
                         "ApiResponseDto",
                         "shared/apiResponseDto.mustache",
                         Set.of("lombok.Builder"),
@@ -137,6 +145,21 @@ public class SharedGeneratorService {
         );
 
         sharedTemplates.forEach(template -> generateSharedFile(template, definition));
+
+        //tests
+        List<SharedTemplate> testTemplates = List.of(
+                new SharedTemplate(
+                          "StatusControllerTest",
+                        "shared/status/statusControllerTest.mustache",
+                        Set.of(
+                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto",
+                                Utils.getPackage(outputShared) + ".BaseUnitTests"
+                        ),
+                        outputShared + "/" + generatorProperties.getPresentationPackage()+"/status"
+                )
+        );
+
+        testTemplates.forEach(template -> generateSharedTestFile(template, definition));
     }
 
     private void generateSharedFile(SharedTemplate template, EntityDefinition definition) {
@@ -160,6 +183,33 @@ public class SharedGeneratorService {
 
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);
+    }
+
+
+    private void generateSharedTestFile(SharedTemplate template, EntityDefinition definition) {
+        Map<String, Object> context = new HashMap<>();
+
+
+        String fullPath = template.getOutput();
+        String packageName = Utils.getTestPackage(fullPath);
+        String outputDir = Utils.getTestDir(fullPath);
+
+        String className = template.getClassName();
+        String aggregateName = definition.getName() + "Aggregate";
+        String lowerName = Character.toLowerCase(definition.getName().charAt(0)) + definition.getName().substring(1);
+
+        context.put("package", packageName);
+        context.put("className", className);
+        context.put("aggregateName", aggregateName);
+        context.put("lowerName", lowerName);
+
+        var fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
+        context.put("fields", fields);
+
+        context.put("imports", template.getImports());
+
+        String content = templateEngine.render(template.getTemplatePath(), context);
+        fileWriterService.write(outputDir, className + ".java", content);
     }
 
 }

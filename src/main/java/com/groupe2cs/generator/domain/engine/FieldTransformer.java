@@ -16,14 +16,17 @@ public class FieldTransformer {
             Map<String, Object> f = new HashMap<>();
 
             String nameJpa  = Utils.capitalize(field.getName());
+            String nameJpaUnCapitalized  = Utils.unCapitalize(field.getName());
 
             if("manyToOne".equalsIgnoreCase(field.getRelation())) {
                 nameJpa = nameJpa+ "Id";
+                nameJpaUnCapitalized = Utils.unCapitalize(nameJpaUnCapitalized)+ ".id";
             }
 
             f.put("name", field.getName());
             f.put("nameCapitalized", Utils.capitalize(field.getName()));
             f.put("nameJpa", nameJpa);
+            f.put("nameJpaUnCapitalized", nameJpaUnCapitalized);
             f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
             f.put("nameLowerCase", Utils.unCapitalize(field.getName()));
             f.put("nameCamelCase", Utils.camelCase(field.getName()));
@@ -97,10 +100,10 @@ public class FieldTransformer {
             String typeField = field.getType();
 
             if(typeField.equalsIgnoreCase("CustomUser")) {
-                return "UserFixtures.randomOneViaCommand(commandGateway, userId).getId().value()";
+                return "UserFixtures.randomOneViaCommand(commandGateway, user).getId().value()";
             }
 
-            return typeField+"Fixtures.randomOneViaCommand(commandGateway, userId).getId().value()";
+            return typeField+"Fixtures.randomOneViaCommand(commandGateway, user).getId().value()";
         }
 
         if(field.getRelation()!= null && field.getRelation().equalsIgnoreCase("oneToMany")) {

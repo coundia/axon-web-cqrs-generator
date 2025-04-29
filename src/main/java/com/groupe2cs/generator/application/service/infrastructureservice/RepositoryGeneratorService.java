@@ -45,6 +45,7 @@ public class RepositoryGeneratorService {
 
         context.put("tableName", definition.getTable());
         context.put("entityName", definition.getEntity());
+        context.put("aggregateName", definition.getName());
         context.put("name", definition.getName());
         context.put("className", className);
         var fields = definition.getFieldsWithoutRelations();

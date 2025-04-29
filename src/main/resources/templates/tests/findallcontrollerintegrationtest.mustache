@@ -31,9 +31,9 @@ private {{name}}Repository {{entityUnCapitalized}}Repository;
 
 @Test
 void it_should_return_only_user_{{entityUnCapitalized}}s_for_normal_user() throws Exception {
-String userId = login("user", "user");
+
 List<Create{{name}}Command> userCommands =
-{{name}}Fixtures.randomManyViaCommand(commandGateway, 3, userId);
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 3, login("user", "user"));
 userCommands.forEach(cmd ->
 {{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
 );
@@ -66,16 +66,16 @@ assertThat(actualIds).containsAll(expectedIds);
 
 @Test
 void it_should_return_all_{{entityUnCapitalized}}s_for_admin() throws Exception {
-String userId = login("user", "user");
+
 List<Create{{name}}Command> userCommands =
-{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, userId);
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, login("user", "user"));
 userCommands.forEach(cmd ->
 {{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
 );
 
-String adminId = login("admin", "admin");
+
 List<Create{{name}}Command> adminCommands =
-{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, adminId);
+{{name}}Fixtures.randomManyViaCommand(commandGateway, 5, login("admin", "admin"));
 adminCommands.forEach(cmd ->
 {{name}}Fixtures.byIdWaitExist({{entityUnCapitalized}}Repository, cmd.getId().value())
 );

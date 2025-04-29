@@ -45,7 +45,7 @@ public class {{className}} extends BaseIntegrationTests {
 			@Test
 			void it_should_initiate_update_of_{{nameLowercase}}s() {
 
-			String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+			String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser()).getId().value();
 
 			{{name}}SyncRequest requestDTO = {{name}}SyncRequest.builder()
 			.deltas(List.of(
@@ -71,7 +71,7 @@ public class {{className}} extends BaseIntegrationTests {
 
 					@Test
 					void it_should_initiate_delete_of_{{nameLowercase}}s() {
-					String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+					String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser()).getId().value();
 					{{name}}SyncRequest requestDTO = {{name}}SyncRequest.builder()
 					.deltas(List.of(
 					{{name}}DeltaDto.builder()

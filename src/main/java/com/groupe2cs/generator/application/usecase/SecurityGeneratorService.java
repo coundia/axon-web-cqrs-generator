@@ -287,6 +287,7 @@ public class SecurityGeneratorService {
 						"infrastructure/security/securityExceptionHandler.mustache",
 						null,
 						baseDir + "/" + generatorProperties.getControllerPackage()),
+
 				new SharedTemplate("RegisterUser",
 						"infrastructure/security/registerUser.mustache",
 						importsRegisterUser
@@ -384,6 +385,19 @@ public class SecurityGeneratorService {
 						),
 						baseDir + "/" + generatorProperties.getControllerPackage()),
 
+				new SharedTemplate("CustomFindByApiKeyAppKeyHandler",
+						"infrastructure/security/customFindByApiKeyAppKeyHandler.mustache",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +".ApiResponseDto",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".ApiKeyResponse",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".ApiKeyMapper",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".FindByApiKeyAppKeyQuery",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".ApiKey",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".ApiKeyRepository"
+						),
+						baseDir + "/" + generatorProperties.getQueryHandlerPackage()),
 
 				new SharedTemplate("RefreshTokenController",
 						"infrastructure/security/refreshTokenController.mustache",

@@ -22,7 +22,7 @@ private {{name}}Repository repository;
 @Test
 void it_should_be_able_to_get_{{nameLower}}_by_id() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getUserId()).getId().value();
+	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser()).getId().value();
 
 	 {{name}}Fixtures.byIdWaitExist(repository, existingId);
 

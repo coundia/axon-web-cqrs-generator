@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Component
 public class FindAll{{nameAggregate}}QueryHandler {
 
@@ -25,16 +28,16 @@ int limit = query.getLimit();
 int offset = query.getPage() * limit;
 MetaRequest metaRequest = query.getMetaRequest();
 
-long totalElements = repository.count();
-
 PageRequest pageable = PageRequest.of(offset / limit, limit);
 Page<{{entity}}> pages = null;
 
 if(metaRequest.isAdmin()) {
-	pages = repository.findAll(pageable);
-	//pages = repository.findAllByTenantId(pageable, metaRequest.getTenantId());
+
+ log.info("Admin user, fetching all {{nameAggregate}}s");
+	pages = repository.findAllByTenantId( metaRequest.getTenantId(),pageable);
 }else{
-	pages = repository.findByCreatedById(pageable, metaRequest.getUserId());
+ log.info("Non-admin user, fetching {{nameAggregate}}s by userId");
+	pages = repository.findByCreatedById(metaRequest.getUserId(),pageable);
 }
 
 List<{{nameAggregate}}Response> responses = pages.stream()

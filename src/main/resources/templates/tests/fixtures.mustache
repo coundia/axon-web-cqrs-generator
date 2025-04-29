@@ -55,10 +55,10 @@ items.add(randomOne(repository));
 return items;
 }
 
-public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count,String userId) {
+public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count,CustomUser user) {
 	List<Create{{name}}Command> items = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
-		items.add(randomOneViaCommand(commandGateway,userId));
+		items.add(randomOneViaCommand(commandGateway,user));
 		}
 		return items;
 		}
@@ -67,26 +67,29 @@ public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway co
 		repository.deleteAll();
 		}
 
-		public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway,String userId) {
-		{{#hasFiles}}
-			MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
-			String fileName = files.getName();
-		{{/hasFiles}}
+		public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway, CustomUser user) {
 
-		Create{{name}}Command command = Create{{name}}Command.builder()
-		{{#editableFields}}{{^isId}}
-			.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create({{{testValue}}}))
-		{{/isId}}{{/editableFields}}
-		{{#hasFiles}}
-			{{#fieldFiles}}
-				.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create(fileName))
-			{{/fieldFiles}}
-		{{/hasFiles}}
-		.build();
 
-		command.setCreatedBy({{name}}CreatedBy.create(userId));
+			{{#hasFiles}}
+				MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
+				String fileName = files.getName();
+			{{/hasFiles}}
 
-		commandGateway.sendAndWait(command);
+			Create{{name}}Command command = Create{{name}}Command.builder()
+			{{#editableFields}}{{^isId}}
+				.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create({{{testValue}}}))
+			{{/isId}}{{/editableFields}}
+			{{#hasFiles}}
+				{{#fieldFiles}}
+					.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create(fileName))
+				{{/fieldFiles}}
+			{{/hasFiles}}
+			.build();
+
+			command.setCreatedBy({{name}}CreatedBy.create(user.getId()));
+			command.setTenant({{name}}Tenant.create(user.getTenant().getId()));
+
+			commandGateway.sendAndWait(command);
 		return command;
-		}
-		}
+	}
+}

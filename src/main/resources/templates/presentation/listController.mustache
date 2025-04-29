@@ -70,9 +70,7 @@ public {{name}}PagedResponse list(
 		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 	.build();
 
-	Boolean isAdmin = RequestContext.isAdmin(jwt) ;
-
-	metaRequest.setIsAdmin( RequestContext.isAdmin(jwt) );
+	metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
 
 	return applicationService.findAll(page,limit, metaRequest);
  }
