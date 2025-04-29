@@ -17,19 +17,14 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 
 	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
-
-	@Query("SELECT e FROM ApiKey e WHERE e.createdBy.id = ?1 ORDER BY e.createdAtAudit DESC")
 	Page<{{entityName}}> findByCreatedById(String createdById, Pageable pageable);
-
 	{{#isMultiTenant}}
-	@Query("SELECT e FROM ApiKey e WHERE e.tenant.id = ?1 ORDER BY e.createdAtAudit DESC")
 	Page<{{entityName}}> findAllByTenantId(String tenantId, Pageable pageable);
 	{{/isMultiTenant}}
 
 	{{#fields}}
 	{{^isId}}
 	{{^isUnique}}
-
 	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
 	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 	{{/isUnique}}
