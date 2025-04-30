@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
 	Page<{{entityName}}> findByCreatedById(String createdById, Pageable pageable);
 	{{#isMultiTenant}}
@@ -30,18 +30,18 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 	{{/isUnique}}
 	{{#isUnique}}
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.createdAtAudit DESC")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.createdAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
 
 	{{/isUnique}}
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.name = ?2 ORDER BY e.createdAtAudit DESC")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.name = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.id = ?2 ORDER BY e.createdAtAudit DESC")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
 	{{/isId}}
 	{{/fields}}

@@ -1,0 +1,57 @@
+name: spring-boot-ci-cd
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      - name: Run Tests
+        run: mvn test
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/spring-app:${{ github.sha }} .
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Docker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/spring-app:${{ github.sha }}
+
+      - name: Deploy to Remote Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/spring-app:${{ github.sha }}
+            docker stop spring-app || true
+            docker rm spring-app || true
+            docker run -d --name spring-app -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/spring-app:${{ github.sha }}
