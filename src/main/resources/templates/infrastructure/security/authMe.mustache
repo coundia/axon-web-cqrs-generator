@@ -56,6 +56,7 @@ public ResponseEntity<ApiResponseDto> me(@AuthenticationPrincipal Jwt jwt) {
 			"username", username,
 			"roles", userPrincipal.getRoles(),
 			"tenantId", userPrincipal.getTenantId(),
+			"id", userPrincipal.getId(),
 			"authorities", userPrincipal.getAuthorities()
 		)
 	));

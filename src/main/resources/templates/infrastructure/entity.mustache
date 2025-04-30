@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 
+import java.time.*;
 import java.util.*;
 
 {{#isAuditable}}
@@ -49,10 +50,14 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 {{^relation}}
 
 	@Column(nullable = {{nullable}}, {{#columnDefinition}}
-		columnDefinition = "{{columnDefinition}}",
-	{{/columnDefinition}}
-	unique = {{unique}}  {{#size}}, length = {{size}}{{/size}}  )
-	private {{primitiveType}} {{nameLowerCase}};
+		columnDefinition = "{{columnDefinition}}",{{/columnDefinition}}
+		unique = {{unique}}  {{#size}},
+		length = {{size}}{{/size}}
+	)
+	{{#defaultValue}}
+	@Builder.Default{{/defaultValue}}
+
+	private {{primitiveType}} {{nameLowerCase}} {{#defaultValue}} = {{{defaultValue}}} {{/defaultValue}};
 {{/relation}}
 {{/isId}}
 {{/fields}}

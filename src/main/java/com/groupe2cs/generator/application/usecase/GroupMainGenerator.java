@@ -77,6 +77,10 @@ public class GroupMainGenerator {
 
 		List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
 
+		if (!definition.hasField("id")) {
+			throw new IllegalArgumentException("Id field is required, at first position");
+		}
+
 		if (!definition.hasField("createdBy")) {
 			FieldDefinition createdBy = FieldDefinition
 					.builder()

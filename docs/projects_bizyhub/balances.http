@@ -1,0 +1,33 @@
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/balances",
+  "definition": {
+    "name": "Balance",
+    "table": "balances",
+    "multiTenant": true,
+    "auditable": true,
+    "fields": [
+      { "name": "id", "type": "String" },
+      { "name": "name", "type": "String" },
+      { "name": "currency", "type": "String", "defaultValue": "\"XOF\"" },
+      { "name": "currentBalance", "type": "Double", "defaultValue": 0.0 },
+      { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
+      { "name": "lastUpdated", "type": "java.time.Instant", "defaultValue": "Instant.now()" },
+      { "name": "isDefault", "type": "Boolean", "defaultValue": false },
+      { "name": "ordre", "type": "Integer", "defaultValue": 0 },
+      { "name": "isArchived", "type": "Boolean", "defaultValue": false },
+      { "name": "isAllowDebit", "type": "Boolean", "defaultValue": true },
+      { "name": "isAllowCredit", "type": "Boolean", "defaultValue": true },
+      { "name": "isExcluTotal", "type": "Boolean", "defaultValue": false },
+      { "name": "activateNotification", "type": "Boolean", "defaultValue": false },
+      { "name": "syncedAt", "type": "java.time.Instant", "defaultValue": "Instant.now()", "nullable": true }
+    ],
+	"stack": [
+	  "Security"
+	]
+}
+}

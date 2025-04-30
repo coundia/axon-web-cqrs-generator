@@ -1,0 +1,40 @@
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
+  "definition": {
+    "name": "Transaction",
+    "table": "transactions",
+    "multiTenant": true,
+    "auditable": true,
+
+    "fields": [
+	  { "name": "id", "type": "String" },
+      { "name": "amount", "type": "Double", "defaultValue": 0.0},
+	  { "name": "dateOperation", "type": "java.time.Instant",  "nullable": true },
+	  { "name": "description", "type": "Text", "nullable": true },
+      { "name": "reference", "type": "String", "nullable": true },
+      { "name": "isRecurring", "type": "Boolean", "defaultValue": false, "nullable": true },
+      { "name": "isExcluToRapport", "type": "Boolean", "defaultValue": false, "nullable": true },
+
+      { "name": "status", "type": "String", "nullable": true },
+
+      {
+        "name": "balance",
+        "type": "com.groupe2cs.bizyhub.balances.infrastructure.entity.Balance",
+        "relation": "ManyToOne", "nullable": true },
+      { "name": "category", "type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category", "relation": "ManyToOne", "nullable": true },
+
+	  { "name": "updatedAt", "type": "java.time.Instant",  "nullable": true },
+	  { "name": "createdAt", "type": "java.time.Instant",  "nullable": true }
+    ],
+    "stack": [
+      "Security"
+    ]
+  }
+}
+

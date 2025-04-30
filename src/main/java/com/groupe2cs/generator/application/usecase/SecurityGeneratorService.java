@@ -410,6 +410,19 @@ public class SecurityGeneratorService {
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
 						),
+						baseDir + "/" + generatorProperties.getControllerPackage()),
+
+				new SharedTemplate("LogoutController",
+						"infrastructure/security/logoutController.mustache",
+						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
+										".ApiResponseDto",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".RefreshTokenRepository",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
+						),
 						baseDir + "/" + generatorProperties.getControllerPackage())
 
 

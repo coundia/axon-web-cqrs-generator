@@ -43,9 +43,13 @@ public class AllTestGeneratorService {
     private void generateControllerTest(String baseDir, String className,EntityDefinition definition) {
         Map<String, Object> context = new HashMap<>();
         String fullPath = baseDir + "/" + generatorProperties.getControllerPackage();
+        String entityPath = baseDir + "/" + generatorProperties.getEntityPackage();
 
         String packageName = Utils.getTestPackage(fullPath);
+        entityPath = Utils.getTestPackage(entityPath);
+
         context.put("package", packageName);
+        context.put("packageEntity", entityPath);
         String outputDir = Utils.getTestDir(fullPath);
         String entity = definition.getName();
         context.put("className", className);
@@ -76,11 +80,11 @@ public class AllTestGeneratorService {
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
-        imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getControllerPackage()) + ".UserFixtures");
+        imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".UserFixtures");
         imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
         imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
         if(definition.getMultiTenant()){
-            imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getControllerPackage()) + ".TenantFixtures");
+            imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures");
         }
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
         imports.add("java.util.UUID");
@@ -97,6 +101,17 @@ public class AllTestGeneratorService {
         if (!fieldFiles.isEmpty() && className.equalsIgnoreCase("CreateControllerIntegrationTest")) {
 
             String content = templateEngine.render("tests/createWithFilesControllerIntegrationTest.mustache", context);
+            fileWriterService.write(outputDir, entity+className + ".java", content);
+            return;
+        }
+
+        if (className.equalsIgnoreCase("Fixtures")) {
+
+            outputDir = Utils.getParent(outputDir);
+            outputDir = Utils.getParent(outputDir);
+            outputDir = outputDir+"/" + generatorProperties.getEntityPackage();
+
+            String content = templateEngine.render("tests/" + className.toLowerCase() + ".mustache", context);
             fileWriterService.write(outputDir, entity+className + ".java", content);
             return;
         }

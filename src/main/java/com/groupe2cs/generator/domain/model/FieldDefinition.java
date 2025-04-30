@@ -21,6 +21,7 @@ public class FieldDefinition implements Serializable {
     private Boolean nullable;
     private String nameJpa;
     private String columnDefinition;
+    private String defaultValue;
 
     public FieldDefinition(String type, String name) {
         this.type = type;
@@ -158,6 +159,7 @@ public class FieldDefinition implements Serializable {
                  "int", "integer", "long", "double",
                  "float", "boolean", "short", "char",
                     "byte", "bigdecimal", "bigint",
+                 "instant","localdatetime", "localdate",
                     "java.time.instant","java.util.date","java.time.localdate","java.time.localdatetime"
                     -> true;
             default -> false;

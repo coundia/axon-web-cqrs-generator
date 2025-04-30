@@ -1,0 +1,25 @@
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/settings",
+  "definition": {
+	"name": "Setting",
+	"table": "settings",
+	"multiTenant": true,
+	"auditable": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String", "unique": true },
+	  { "name": "stringValue", "type": "String" },
+	  { "name": "description", "type": "String",
+		"nullable": true
+	  },
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	],
+	"stack": [
+	  "Security"
+	]
+  }
+}

@@ -61,6 +61,7 @@ public class FieldTransformer {
 
             f.put("size", field.getSize());
             f.put("columnDefinition", field.getColumnDefinition());
+            f.put("defaultValue", field.getDefaultValue());
 
             result.add(f);
         }

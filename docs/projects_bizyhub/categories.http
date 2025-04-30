@@ -1,0 +1,27 @@
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/categories",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"multiTenant": true,
+	"auditable": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "typeCategory", "type": "String" ,"nullable": true },
+	  { "name": "parentId", "type": "Category", "nullable": true },
+	  { "name": "isDefault", "type": "Boolean", "defaultValue": false },
+	  { "name": "icon", "type": "String", "defaultValue": "\"questionmark\"" ,"nullable": true },
+	  { "name": "colorHex", "type": "String", "defaultValue": "\"#FFFFFF\"" ,"nullable": true }
+	],
+	"stack": [
+	  "Security"
+	]
+  }
+}

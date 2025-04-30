@@ -68,12 +68,13 @@ public class SyncGeneratorService {
 						definition.getName() + "SyncControllerTests",
 						"tests/syncControllerTests.mustache",
 						Set.of(
-								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getControllerPackage()) + ".UserFixtures",
-								//Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getControllerPackage()) + ".TenantFixtures",
+								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getEntityPackage()) + ".UserFixtures",
+								Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
 								Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*"
 						),
 						testDir,
 						Utils.getTestPackage(outputController)

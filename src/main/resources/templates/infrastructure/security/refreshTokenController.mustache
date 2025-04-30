@@ -54,12 +54,12 @@ public ResponseEntity<AuthResponseDto> refresh(@AuthenticationPrincipal Jwt jwt)
 
 	return ResponseEntity.ok(
 	AuthResponseDto.builder()
-	.token(accessToken)
-	.username(username)
-	.expirationAt(jwtService.extractExpiration(accessToken))
-	.code(1)
-	.message("Token refreshed successfully")
-	.build()
+		.token(accessToken)
+		.username(username)
+		.expirationAt(jwtService.extractExpiration(accessToken))
+		.code(1)
+		.message("Token refreshed successfully")
+		.build()
 	);
-	}
-	}
+}
+}
