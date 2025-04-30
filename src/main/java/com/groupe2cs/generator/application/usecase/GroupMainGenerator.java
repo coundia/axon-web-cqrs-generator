@@ -9,7 +9,6 @@ import com.groupe2cs.generator.application.service.infrastructureservice.EntityG
 import com.groupe2cs.generator.application.service.infrastructureservice.RabbitMqGeneratorService;
 import com.groupe2cs.generator.application.service.infrastructureservice.RepositoryGeneratorService;
 import com.groupe2cs.generator.application.service.presentationservice.*;
-import com.groupe2cs.generator.application.service.shared.SharedGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.AllTestGeneratorService;
 import com.groupe2cs.generator.application.service.testservice.SharedTestGeneratorService;
 import com.groupe2cs.generator.domain.model.FieldDefinition;

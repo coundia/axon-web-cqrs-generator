@@ -85,5 +85,15 @@ public class Utils {
     }
 
 
+    public static String getSrcDir(String baseDir) {
+        Path basePath = Paths.get(baseDir);
+        while (basePath != null && !basePath.endsWith("src")) {
+            basePath = basePath.getParent();
+        }
+        if (basePath != null) {
+            return basePath.toString();
+        }
+        throw new IllegalArgumentException("src folder not found in path: " + baseDir);
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.groupe2cs.generator.application.service.shared;
+package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.SharedTemplate;
 import com.groupe2cs.generator.domain.engine.FieldTransformer;
@@ -140,6 +140,22 @@ public class SharedGeneratorService {
                         null,
                         outputShared + "/" + generatorProperties.getDtoPackage()
                 )
+                ,
+                new SharedTemplate(
+                        "FlywayConfig",
+                        "shared/flyway/flywayConfig.mustache",
+                        null,
+                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/flyway"
+                )
+                ,
+                new SharedTemplate(
+                        "V1__insert_security_defaults",
+                        "shared/flyway/V1__insert_security_defaults.mustache",
+                        null,
+                        Utils.getSrcDir(baseDir) +"/main/resources/db/migration",
+                        null,
+                        ".sql"
+                )
 
 
         );
@@ -182,7 +198,7 @@ public class SharedGeneratorService {
         context.put("apiPrefix", definition.getApiPrefix());
 
         String content = templateEngine.render(template.getTemplatePath(), context);
-        fileWriterService.write(outputDir, template.getClassName() + ".java", content);
+        fileWriterService.write(outputDir, template.getClassName() + template.getExt(), content);
     }
 
 

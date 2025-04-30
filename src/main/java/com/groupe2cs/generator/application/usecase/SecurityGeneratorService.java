@@ -90,6 +90,7 @@ public class SecurityGeneratorService {
 
 				EntityDefinition.builder()
 						.name("Role")
+						.table("roles")
 						.auditable(true)
 						.apiPrefix("/admin")
 						.fields(List.of(
