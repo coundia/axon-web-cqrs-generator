@@ -15,8 +15,10 @@ struct {{entity}}FormView: View {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
-    {{> SwiftFieldInput }}
-{{/fields}}
+                        {{^isId}}
+                        {{> SwiftFieldInput }}
+                        {{/isId}}
+                    {{/fields}}
                 }
 
                 Section {

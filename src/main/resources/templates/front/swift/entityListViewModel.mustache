@@ -67,7 +67,8 @@ let item = {{entity}}(
 {{/isId}}
 {{/fields}}
 )
-
+item.user = user
+print("createEntity \(item.name)")
 modelContext.insert(item)
 saveContext()
 }
@@ -89,8 +90,11 @@ print("[updateEntity] local ok \(item.name)")
 item.status = .update
 }
 
+item.user = user
+print("updated \(item.name)")
 item.updatedAt = Date()
 item.syncAt = nil
+print("updateEntity \(item.name)")
 saveContext()
 }
 
@@ -108,6 +112,8 @@ modelContext.delete(item)
 item.status = .delete
 }
 
+item.user = user
+print("deleteEntity \(item.name)")
 saveContext()
 }
 

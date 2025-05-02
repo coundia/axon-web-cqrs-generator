@@ -13,9 +13,8 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String", "unique": true },
 	  { "name": "reference", "type": "String", "unique": true },
-	  { "name": "price", "type": "Double", "unique": true },
+	  { "name": "price", "type": "Double" },
 	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-
 	  { "name": "details", "type": "String", "unique": true, "nullable": true
 	  },
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }

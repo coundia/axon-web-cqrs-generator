@@ -1,0 +1,27 @@
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Account",
+	"table": "accounts",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String", "unique": true },
+	  { "name": "reference", "type": "String", "unique": true },
+	  { "name": "currentBalance", "type": "Double", "nullable": true, "defaultValue": 0.0 },
+	  { "name": "previousBalance", "type": "Double", "nullable": true, "defaultValue": 0.0 },
+	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+
+	  { "name": "details", "type": "String", "unique": true, "nullable": true
+	  },
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+
+###

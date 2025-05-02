@@ -20,7 +20,8 @@ final class {{entity}}SyncManager {
             throw URLError(.userAuthenticationRequired)
         }
 
-        let url = API{{entity}}.syncEndpoint
+        let url = API{{entity}}.queryEndpoint
+
         print("[{{entity}}SyncManager] 🌐 Fetching from: \(url.absoluteString)")
 
         var request = URLRequest(url: url)
