@@ -27,10 +27,16 @@ this.{{name}} = {{name}};
 }
 
 public static {{voName}} create({{type}} {{name}}) {
+
+{{#nullable}}
+	return new {{voName}}({{name}});
+{{/nullable}}
+{{^nullable}}
 if ({{{invalidCondition}}}) {
 throw new {{exceptionName}}("{{exceptionMessage}}");
 }
 return new {{voName}}({{name}});
+{{/nullable}}
 }
 
 public {{type}} value() {

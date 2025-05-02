@@ -10,7 +10,7 @@ public static {{nameAggregate}}Response toResponse({{entity}} entity) {
 return {{nameAggregate}}Response.builder()
 {{#editableFields}}
 	{{#isManyToOne}}
-		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}().getId())
+		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}() != null ? entity.get{{nameCapitalized}}().getId() : null)
 	{{/isManyToOne}}
 	{{^isManyToOne}}
 		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}())

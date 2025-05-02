@@ -24,14 +24,17 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.axonframework.messaging.responsetypes.ResponseTypes.instanceOf;
 import static org.axonframework.messaging.responsetypes.ResponseTypes.multipleInstancesOf;
-{{#security}}
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-{{/security}}
 
-{{#security}}
+
+{{#isId}}
 @PreAuthorize("@{{nameLowercase}}Gate.canRead(authentication, #id)")
-{{/security}}
+{{/isId}}
+{{^isId}}
+@PreAuthorize("@{{nameLowercase}}Gate.canList(authentication)")
+{{/isId}}
 @RestController
 @RequestMapping("/api/v1{{apiPrefix}}/queries/{{nameLowercase}}")
 @Tag(name = "{{name}} Queries", description = "Endpoints for querying {{nameLowercase}}s by {{field.name}}")

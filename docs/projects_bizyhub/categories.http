@@ -13,10 +13,12 @@ Content-Type: application/json
 	"auditable": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
+	  { "name": "reference", "type": "String", "unique": true, "nullable": true},
 	  { "name": "name", "type": "String" },
+	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "typeCategory", "type": "String" ,"nullable": true },
 	  { "name": "parentId", "type": "Category", "nullable": true },
-	  { "name": "isDefault", "type": "Boolean", "defaultValue": false },
+	  { "name": "isDefault", "type": "Boolean", "defaultValue": false, "nullable": true },
 	  { "name": "icon", "type": "String", "defaultValue": "\"questionmark\"" ,"nullable": true },
 	  { "name": "colorHex", "type": "String", "defaultValue": "\"#FFFFFF\"" ,"nullable": true }
 	],

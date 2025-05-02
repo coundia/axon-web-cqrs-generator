@@ -41,6 +41,7 @@ public class VoGeneratorService {
             context.put("voName", voName);
             context.put("type", field.getPrimitiveType());
             context.put("name", field.getName());
+            context.put("nullable", field.getNullable());
             context.put("equalsExpression", "this." + field.getName() + ".equals(that." + field.getName() + ")");
             context.put("hashCodeExpression", "java.util.Objects.hash(" + field.getName() + ")");
             context.put("exceptionName", exceptionName);
