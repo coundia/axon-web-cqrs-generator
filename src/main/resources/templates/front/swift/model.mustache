@@ -11,7 +11,7 @@ enum {{entity}}Type: String, Codable, CaseIterable {
 final class {{entity}} {
     @Attribute(.unique) var id: String
     {{#fields}}
-	{{^isId}}var {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{/isId}}
+    {{^isId}}var {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{/isId}}
 {{/fields}}
 
     var user: User?
@@ -30,17 +30,18 @@ final class {{entity}} {
 
     init(
         {{#fields}}
-	{{^isId}}{{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+    {{^isId}}{{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
         {{/isId}}{{/fields}}
         type{{entity}}: {{entity}}Type = .type1,
         order: Int = 0
     ) {
         self.id = UUID().uuidString
-        {{#fields}}{{^isId}}self.{{name}} = {{name}}{{#last}}{{else}},{{/last}}
-{{/isId}}{{/fields}}
-
-        self.statusRaw = type{{entity}}.create.rawValue
-
-
+        {{#fields}}
+    {{^isId}}self.{{name}} = {{name}}
+    {{/isId}}
+{{/fields}}
+        self.type{{entity}} = type{{entity}}
+        self.order = order
+        self.statusRaw = {{entity}}Status.create.rawValue
     }
 }

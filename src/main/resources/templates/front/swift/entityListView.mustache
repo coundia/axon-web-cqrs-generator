@@ -35,7 +35,7 @@ struct {{entity}}ListView: View {
                 } else {
                     List {
                         ForEach(viewModel.entities.filter { $0.deletedAt == nil }, id: \.id) { item in
-                            {{entity}}RowView({{entity | lower}}: item)
+                            {{entity}}RowView(entity: item)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     selected = item

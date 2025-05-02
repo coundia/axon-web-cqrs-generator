@@ -107,13 +107,15 @@ public class SwiftUiGeneratorService {
 						null,
 						outputDir + "/Views",
 						null,
-						".swift"),
+						".swift")
+				,
 				new SharedTemplate("Api"+entity ,
 						"front/swift/apiEntity.mustache",
 						null,
 						outputDir + "/Models",
 						null,
 						".swift")
+
 		);
 
 		return Flux.fromIterable(templates)

@@ -1,6 +1,7 @@
 package com.groupe2cs.generator.domain.engine;
 
 import com.groupe2cs.generator.domain.model.FieldDefinition;
+
 import java.util.*;
 
 public class SwiftFieldTransformer {
@@ -11,27 +12,30 @@ public class SwiftFieldTransformer {
 		for (FieldDefinition field : fields) {
 			Map<String, Object> f = new HashMap<>();
 
+			String name = field.getName();
 			String swiftType = toSwiftType(field.getType());
+			boolean isNullable = Boolean.TRUE.equals(field.getNullable());
 
-			f.put("name", field.getName());
+			f.put("name", name);
 			f.put("realType", swiftType);
-			f.put("nullable", field.getNullable());
-
-			f.put("defaultValue", getDefaultValue(swiftType, field.getNullable()));
-			f.put("isDisplayName", field.getName().equalsIgnoreCase("name"));
-			f.put("isIcon", field.getName().equalsIgnoreCase("icon"));
-			f.put("isUpdatedAt", field.getName().equalsIgnoreCase("updatedAt"));
-			f.put("isParentRelation", field.getName().toLowerCase().contains("parent"));
-			f.put("isTypeIndicator", field.getName().equalsIgnoreCase("typeCategory"));
-			f.put("isDefaultIndicator", field.getName().equalsIgnoreCase("isDefault"));
+			f.put("nullable", isNullable);
+			f.put("defaultValue", getDefaultValue(swiftType, isNullable));
 			f.put("isId", field.isId());
 
-			// Type UI helpers
+			// UI helpers
+			f.put("isDisplayName", name.equalsIgnoreCase("name"));
+			f.put("isIcon", name.equalsIgnoreCase("icon"));
+			f.put("isUpdatedAt", name.equalsIgnoreCase("updatedAt"));
+			f.put("isParentRelation", name.toLowerCase().contains("parent"));
+			f.put("isTypeIndicator", name.toLowerCase().contains("type"));
+			f.put("isDefaultIndicator", name.equalsIgnoreCase("isDefault"));
+
 			f.put("isText", swiftType.equals("String"));
 			f.put("isDouble", swiftType.equals("Double"));
 			f.put("isInt", swiftType.equals("Int") || swiftType.equals("Int64"));
 			f.put("isBool", swiftType.equals("Bool"));
 			f.put("isDate", swiftType.equals("Date"));
+			f.put("isEnum", isEnum(field.getType()));
 
 			result.add(f);
 		}
@@ -47,12 +51,19 @@ public class SwiftFieldTransformer {
 			case "double" -> "Double";
 			case "boolean" -> "Bool";
 			case "java.time.instant", "java.time.localdatetime", "date" -> "Date";
-			default -> type;
+			default -> capitalize(type); // assume it's a Swift enum or model
 		};
 	}
 
-	private static String getDefaultValue(String swiftType, Boolean nullable) {
-		if (Boolean.TRUE.equals(nullable)) return "nil";
+	private static boolean isEnum(String type) {
+		String base = type.toLowerCase();
+		return !(base.equals("string") || base.equals("int") || base.equals("integer") || base.equals("double")
+				|| base.equals("long") || base.equals("boolean") || base.equals("uuid")
+				|| base.startsWith("java.time") || base.equals("date"));
+	}
+
+	private static String getDefaultValue(String swiftType, boolean isNullable) {
+		if (isNullable) return "nil";
 
 		return switch (swiftType) {
 			case "String" -> "\"\"";
@@ -60,7 +71,12 @@ public class SwiftFieldTransformer {
 			case "Double" -> "0.0";
 			case "Bool" -> "false";
 			case "Date" -> "Date()";
-			default -> "nil";
+			default -> swiftType + ".allCases.first!"; // default for enums
 		};
+	}
+
+	private static String capitalize(String input) {
+		if (input == null || input.isEmpty()) return input;
+		return input.substring(0, 1).toUpperCase() + input.substring(1);
 	}
 }
