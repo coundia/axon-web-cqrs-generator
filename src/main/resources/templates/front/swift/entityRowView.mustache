@@ -1,0 +1,109 @@
+import SwiftUI
+import SwiftData
+
+struct {{entity}}RowView: View {
+var entity: {{entity}}
+
+var body: some View {
+HStack(alignment: .top, spacing: 12) {
+iconView
+.frame(width: 32, height: 32)
+.padding(.top, 4)
+
+VStack(alignment: .leading, spacing: 6) {
+HStack {
+{{#fields}}
+	{{#isDisplayName}}
+		Text(entity.{{name}})
+		.font(.headline)
+		.lineLimit(1)
+	{{/isDisplayName}}
+{{/fields}}
+
+{{#fields}}
+	{{#isDefaultIndicator}}
+		if entity.{{name}} {
+		Text("Default")
+		.font(.caption2)
+		.padding(.horizontal, 6)
+		.padding(.vertical, 2)
+		.background(Color.blue.opacity(0.15))
+		.foregroundColor(.blue)
+		.cornerRadius(4)
+		}
+	{{/isDefaultIndicator}}
+{{/fields}}
+
+Spacer()
+
+Image(systemName: entity.status == .sync ? "checkmark.seal.fill" : "icloud.slash")
+.foregroundColor(entity.status == .sync ? .green : .orange)
+.font(.caption)
+}
+
+{{#fields}}
+	{{#isTypeIndicator}}
+		Text(entity.{{name}}.rawValue.capitalized)
+		.font(.subheadline)
+		.foregroundColor(.secondary)
+	{{/isTypeIndicator}}
+{{/fields}}
+
+{{#fields}}
+	{{#isUpdatedAt}}
+		if let updatedAt = entity.{{name}} {
+		Text("Updated: \(formattedDate(updatedAt))")
+		.font(.caption)
+		.foregroundColor(.gray)
+		}
+	{{/isUpdatedAt}}
+{{/fields}}
+
+{{#fields}}
+	{{#isParentRelation}}
+		if let parent = entity.{{name}} {
+		Text("Parent: \(parent.name)")
+		.font(.caption2)
+		.foregroundColor(.gray)
+		.italic()
+		}
+	{{/isParentRelation}}
+{{/fields}}
+}
+
+Spacer()
+}
+.padding(.vertical, 8)
+}
+
+private var iconView: some View {
+Group {
+{{#fields}}
+	{{#isIcon}}
+		if let systemIcon = UIImage(systemName: entity.{{name}}), !entity.{{name}}.isEmpty {
+		Image(systemName: entity.{{name}})
+		.resizable()
+		.scaledToFit()
+		.foregroundColor(.accentColor)
+		} else if !entity.{{name}}.isEmpty {
+		Image(entity.{{name}})
+		.resizable()
+		.scaledToFit()
+		} else {
+		Image(systemName: "questionmark.circle")
+		.resizable()
+		.scaledToFit()
+		.foregroundColor(.gray.opacity(0.5))
+		}
+	{{/isIcon}}
+{{/fields}}
+}
+}
+
+private func formattedDate(_ date: Date) -> String {
+let formatter = DateFormatter()
+formatter.dateStyle = .short
+formatter.timeStyle = .short
+return formatter.string(from: date)
+}
+}

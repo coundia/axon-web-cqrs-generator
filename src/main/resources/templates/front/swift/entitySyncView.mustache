@@ -1,0 +1,47 @@
+import SwiftUI
+
+struct {{entity}}SyncView: View {
+@State private var isSyncing = false
+@State private var showMessage = false
+@State private var message = ""
+
+var body: some View {
+VStack(spacing: 20) {
+Button("Synchronize {{entity}}") {
+Task {
+await syncEntities()
+}
+}
+.disabled(isSyncing)
+
+if showMessage {
+Text(message)
+.foregroundColor(.blue)
+.font(.subheadline)
+}
+}
+.padding()
+}
+
+private func syncEntities() async {
+isSyncing = true
+showMessage = false
+defer { isSyncing = false }
+
+let delta = {{entity}}DeltaDto(
+{{#fields}}
+	{{name}}: {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+{{/fields}}
+)
+
+let useCase = Sync{{entity}}UseCase()
+do {
+try await useCase.execute(with: [delta])
+message = "✅ Sync succeeded"
+} catch {
+message = "❌ Sync failed: \(error.localizedDescription)"
+}
+
+showMessage = true
+}
+}

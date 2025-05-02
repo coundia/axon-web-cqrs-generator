@@ -1,0 +1,12 @@
+import SwiftData
+import Foundation
+
+struct {{entity}}PagedResponse: Decodable {
+let content: [Remote{{entity}}]
+}
+
+struct Remote{{entity}}: Decodable {
+{{#fields}}
+	let {{name}}: {{realType}}{{#nullable}}?{{/nullable}}
+{{/fields}}
+}

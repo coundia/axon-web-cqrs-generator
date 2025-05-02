@@ -1,0 +1,164 @@
+import SwiftUI
+import SwiftData
+
+final class {{entity}}ListViewModel: ObservableObject {
+var modelContext: ModelContext
+var user: User
+let username: String
+
+@Published var entities: [{{entity}}] = []
+@Published var errorMessage: String?
+@Published var isLoading: Bool = false
+@Published var showSuccessToast = false
+@Published var showErrorToast = false
+
+init(modelContext: ModelContext, user: User) {
+self.modelContext = modelContext
+self.user = user
+self.username = user.username!
+}
+
+func fetchEntities() {
+print("[fetchEntities]")
+isLoading = true
+let cond = "{{entity}}Status.delete".uppercased()
+let descriptor = FetchDescriptor<{{entity}}>(
+predicate: #Predicate { item in
+item.user?.username == username && item.statusRaw != cond
+},
+sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+)
+do {
+entities = try modelContext.fetch(descriptor)
+} catch {
+errorMessage = error.localizedDescription
+}
+isLoading = false
+}
+
+func fetchEntitiesUnSynced() -> [{{entity}}] {
+print("[fetchEntitiesUnSynced]")
+let descriptor = FetchDescriptor<{{entity}}>(
+predicate: #Predicate {
+$0.user?.username == username &&
+$0.syncAt == nil && $0.statusRaw != "SYNC"
+},
+sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+)
+do {
+return try modelContext.fetch(descriptor)
+} catch {
+errorMessage = error.localizedDescription
+return []
+}
+}
+
+func createEntity(
+{{#fields}}
+{{^isId}}
+{{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+{{/isId}}
+{{/fields}}
+) {
+let item = {{entity}}(
+{{#fields}}
+{{^isId}}
+{{name}}: {{name}},
+{{/isId}}
+{{/fields}}
+)
+
+modelContext.insert(item)
+saveContext()
+}
+
+func updateEntity(_ item: {{entity}},
+{{#fields}}
+	{{name}}: {{realType}},
+{{/fields}}
+) {
+{{#fields}}
+	item.{{name}} = {{name}}
+{{/fields}}
+
+if item.remoteId == nil {
+print("[updateEntity] remoteId is nil  \(item.name)")
+item.status = .create
+} else {
+print("[updateEntity] local ok \(item.name)")
+item.status = .update
+}
+
+item.updatedAt = Date()
+item.syncAt = nil
+saveContext()
+}
+
+func deleteEntity(_ item: {{entity}}) {
+item.status = .delete
+item.deletedAt = Date()
+item.updatedAt = Date()
+item.syncAt = nil
+
+if item.remoteId == nil {
+item.remoteId = "NOT_EXIST_YET"
+print("Deleted \(item.name)")
+modelContext.delete(item)
+} else {
+item.status = .delete
+}
+
+saveContext()
+}
+
+private func saveContext() {
+do {
+try modelContext.save()
+} catch {
+errorMessage = error.localizedDescription
+}
+}
+
+func syncAllEntities() async {
+let unsynced = fetchEntitiesUnSynced()
+
+let deltas: [{{entity}}DeltaDto] = unsynced.map {
+{{entity}}DeltaDto(
+{{#fields}}
+	{{name}}: $0.{{name}},
+{{/fields}}
+)
+}
+
+let useCase = Sync{{entity}}UseCase()
+do {
+try await useCase.execute(with: deltas)
+for item in unsynced {
+item.syncAt = Date()
+item.status = .sync
+}
+saveContext()
+await MainActor.run { self.showSuccessToast = true }
+} catch {
+await MainActor.run {
+self.errorMessage = error.localizedDescription
+self.showErrorToast = true
+}
+}
+}
+
+func pullThenSyncEntities() async {
+print("[pullThenSyncEntities]")
+let manager = {{entity}}SyncManager(modelContext: modelContext, user: user)
+do {
+try await manager.pullAndMerge{{entity}}s()
+await MainActor.run { _ = fetchEntitiesUnSynced() }
+await syncAllEntities()
+} catch {
+await MainActor.run {
+errorMessage = error.localizedDescription
+showErrorToast = true
+}
+}
+}
+}

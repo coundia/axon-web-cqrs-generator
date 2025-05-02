@@ -1,0 +1,123 @@
+import SwiftUI
+import SwiftData
+
+struct {{entity}}FormView: View {
+@Binding var isPresented: Bool
+@Binding var entity: {{entity}}?
+var viewModel: {{entity}}ListViewModel
+
+{{#fields}}
+	@State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+{{/fields}}
+
+var body: some View {
+NavigationView {
+Form {
+Section(header: Text("{{entity}} Information")) {
+{{#fields}}
+	{{#isText}}
+		{{#nullable}}
+			TextField("{{name}}", text: Binding(
+			get: { {{name}} ?? "" },
+			set: { {{name}} = $0 }
+			))
+		{{/nullable}}
+		{{^nullable}}
+			TextField("{{name}}", text: ${{name}})
+		{{/nullable}}
+	{{/isText}}
+	{{#isDouble}}
+		{{#nullable}}
+			TextField("{{name}}", value: Binding(
+			get: { {{name}} ?? 0.0 },
+			set: { {{name}} = $0 }
+			), format: .number)
+		{{/nullable}}
+		{{^nullable}}
+			TextField("{{name}}", value: ${{name}}, format: .number)
+		{{/nullable}}
+	{{/isDouble}}
+	{{#isInt}}
+		{{#nullable}}
+			TextField("{{name}}", value: Binding(
+			get: { {{name}} ?? 0 },
+			set: { {{name}} = $0 }
+			), format: .number)
+		{{/nullable}}
+		{{^nullable}}
+			TextField("{{name}}", value: ${{name}}, format: .number)
+		{{/nullable}}
+	{{/isInt}}
+	{{#isBool}}
+		{{#nullable}}
+			Toggle("{{name}}", isOn: Binding(
+			get: { {{name}} ?? false },
+			set: { {{name}} = $0 }
+			))
+		{{/nullable}}
+		{{^nullable}}
+			Toggle("{{name}}", isOn: ${{name}})
+		{{/nullable}}
+	{{/isBool}}
+	{{#isDate}}
+		{{#nullable}}
+			DatePicker("{{name}}", selection: Binding(
+			get: { {{name}} ?? Date() },
+			set: { {{name}} = $0 }
+			), displayedComponents: .date)
+		{{/nullable}}
+		{{^nullable}}
+			DatePicker("{{name}}", selection: ${{name}}, displayedComponents: .date)
+		{{/nullable}}
+	{{/isDate}}
+{{/fields}}
+}
+
+Section {
+Button("Save") {
+if var existing = entity {
+{{#fields}}
+	existing.{{name}} = {{name}}
+{{/fields}}
+viewModel.updateEntity(existing)
+} else {
+viewModel.createEntity(
+{{#fields}}
+	{{name}}: {{name}},
+{{/fields}}
+)
+}
+withAnimation { isPresented = false }
+}
+.frame(maxWidth: .infinity)
+.padding()
+.background(Color.blue)
+.foregroundColor(.white)
+.cornerRadius(8)
+}
+}
+.navigationTitle(entity == nil ? "New {{entity}}" : "Edit {{entity}}")
+.toolbar {
+ToolbarItem(placement: .cancellationAction) {
+Button("Cancel") {
+withAnimation { isPresented = false }
+}
+}
+}
+.onAppear(perform: populateForm)
+.onChange(of: entity) { _ in populateForm() }
+}
+}
+
+private func populateForm() {
+if let e = entity {
+{{#fields}}
+	{{name}} = e.{{name}}
+{{/fields}}
+} else {
+{{#fields}}
+	{{name}} = {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+{{/fields}}
+}
+}
+}

@@ -1,0 +1,53 @@
+import Foundation
+
+final class {{entity}}SyncService {
+func sync(request: Sync{{entity}}Request) async throws {
+print("[{{entity}}SyncService.sync]")
+
+guard let token = TokenProvider.shared.getToken() else {
+print("[{{entity}}SyncService] ❌ No token found")
+throw URLError(.userAuthenticationRequired)
+}
+
+let url = API{{entity}}.syncEndpoint
+
+print("[{{entity}}SyncService] 🌍 Sync URL: \(url.absoluteString)")
+print("[{{entity}}SyncService] 🔐 Token: \(token)")
+
+var requestData = URLRequest(url: url)
+requestData.httpMethod = "POST"
+requestData.setValue("application/json", forHTTPHeaderField: "Content-Type")
+requestData.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+do {
+let encoder = JSONEncoder()
+encoder.outputFormatting = .prettyPrinted
+encoder.dateEncodingStrategy = .iso8601
+
+let payloadData = try encoder.encode(request)
+requestData.httpBody = payloadData
+
+if let jsonObject = try? JSONSerialization.jsonObject(with: payloadData, options: []),
+let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+let jsonString = String(data: prettyData, encoding: .utf8) {
+print("[{{entity}}SyncService] 📦 Payload:\n\(jsonString)")
+}
+
+let (data, response) = try await URLSession.shared.data(for: requestData)
+
+if let httpResponse = response as? HTTPURLResponse {
+print("[{{entity}}SyncService] 📡 HTTP Status: \(httpResponse.statusCode)")
+if !(200..<300).contains(httpResponse.statusCode) {
+let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+print("[{{entity}}SyncService] ❌ Server Error: \(errorMessage)")
+throw URLError(.badServerResponse)
+} else {
+print("[{{entity}}SyncService] ✅ Sync successful")
+}
+}
+} catch {
+print("[{{entity}}SyncService] ❌ Sync failed: \(error.localizedDescription)")
+throw error
+}
+}
+}

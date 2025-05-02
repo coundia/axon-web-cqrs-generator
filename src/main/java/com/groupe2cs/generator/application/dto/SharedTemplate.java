@@ -6,6 +6,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.Set;
 
+@Builder
 @Getter
 @Setter
 public class SharedTemplate implements Serializable {

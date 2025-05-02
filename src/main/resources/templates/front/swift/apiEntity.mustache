@@ -1,0 +1,23 @@
+
+
+import Foundation
+
+struct API{{entity}} {
+
+    static var syncEndpoint: URL {
+        return APIConfiguration.baseURL.appendingPathComponent("/v1/commands/{{entityLoweCase}}/sync")
+    }
+
+    static var queryEndpoint: URL {
+        var components = URLComponents()
+        components.scheme = APIConfiguration.baseURL.scheme
+        components.host = APIConfiguration.baseURL.host
+        components.port = APIConfiguration.baseURL.port
+        components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLoweCase}}s").path
+        components.queryItems = [
+            URLQueryItem(name: "page", value: "0"),
+            URLQueryItem(name: "limit", value: "10000")
+        ]
+        return components.url!
+    }
+}

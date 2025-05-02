@@ -1,0 +1,135 @@
+import SwiftUI
+import SwiftData
+
+struct {{entity}}ListView: View {
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var viewModel: {{entity}}ListViewModel
+    @State private var showForm: Bool = false
+    @State private var selected: {{entity}}? = nil
+    @State private var isSyncing = false
+    @State private var syncError: String?
+
+    init(modelContext: ModelContext, user: User) {
+        _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
+    }
+
+    var body: some View {
+        NavigationView {
+            ZStack {
+                if viewModel.entities.filter({ $0.deletedAt == nil }).isEmpty {
+                    VStack(spacing: 20) {
+                        Image(systemName: "tray")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 80, height: 80)
+                            .foregroundColor(.gray.opacity(0.6))
+                        Text("No {{entity}}s yet")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        Button("Add {{entity}}") {
+                            selected = nil
+                            showForm = true
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    List {
+                        ForEach(viewModel.entities.filter { $0.deletedAt == nil }, id: \.id) { item in
+                            {{entity}}RowView({{entity | lower}}: item)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    selected = item
+                                    showForm = true
+                                }
+                                .onAppear {
+                                    viewModel.loadMore{{entity}}sIfNeeded(current: item)
+                                }
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        withAnimation {
+                                            viewModel.deleteEntity(item)
+                                        }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+                        }
+                    }
+                    .listStyle(.insetGrouped)
+                    .refreshable {
+                        await viewModel.pullThenSyncEntities()
+                    }
+                }
+
+                if isSyncing {
+                    ProgressView("Syncing...")
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(12)
+                        .shadow(radius: 8)
+                }
+
+                if viewModel.showSuccessToast {
+                    ToastView(message: "✅ Sync successful", color: .green)
+                        .transition(.opacity)
+                } else if viewModel.showErrorToast {
+                    ToastView(message: "❌ Sync failed", color: .red)
+                        .transition(.opacity)
+                }
+            }
+            .navigationTitle("{{entity}}s")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        Task {
+                            isSyncing = true
+                            do {
+                                try await viewModel.pullThenSyncEntities()
+                                syncError = nil
+                            } catch {
+                                syncError = error.localizedDescription
+                            }
+                            isSyncing = false
+                        }
+                    } label: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                    }
+
+                    Button {
+                        selected = nil
+                        showForm = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .alert("Sync Error", isPresented: .constant(syncError != nil), actions: {
+                Button("OK", role: .cancel) { syncError = nil }
+            }, message: {
+                Text(syncError ?? "")
+            })
+            .sheet(isPresented: $showForm, onDismiss: {
+                viewModel.fetchEntities()
+            }) {
+                {{entity}}FormView(
+                    isPresented: $showForm,
+                    entity: $selected,
+                    viewModel: viewModel
+                )
+            }
+            .onAppear {
+                viewModel.loadMore{{entity}}s()
+            }
+            .onChange(of: viewModel.showSuccessToast) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    viewModel.showSuccessToast = false
+                }
+            }
+            .onChange(of: viewModel.showErrorToast) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    viewModel.showErrorToast = false
+                }
+            }
+        }
+    }
+}

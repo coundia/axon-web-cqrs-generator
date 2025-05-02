@@ -1,0 +1,68 @@
+import SwiftUI
+import SwiftData
+
+struct {{entity}}PickerView: View {
+    @Binding var selected{{entity}}: {{entity}}?
+    @ObservedObject var viewModel: {{entity}}ListViewModel
+    @Environment(\.dismiss) var dismiss
+    @State private var selectedFilter: {{entity}}Type = .type1
+    @State private var showForm: Bool = false
+
+    private var filteredEntities: [{{entity}}] {
+        viewModel.entities.filter { $0.type{{entity}} == selectedFilter }
+    }
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                Picker("Type", selection: $selectedFilter) {
+                    ForEach({{entity}}Type.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized).tag(type)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+
+                List {
+                    Section {
+                        ForEach(filteredEntities, id: \.id) { item in
+                            Button {
+                                selected{{entity}} = item
+                                dismiss()
+                            } label: {
+                                {{#fields}}
+	{{#isDisplayName}}
+                                Text(item.{{name}})
+                                {{/isDisplayName}}
+{{/fields}}
+                            }
+                        }
+                    }
+
+                    Section {
+                        Button("Add New {{entity}}") {
+                            showForm = true
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select {{entity}}")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+            .sheet(isPresented: $showForm, onDismiss: {
+                viewModel.fetchEntities()
+            }) {
+                {{entity}}FormView(
+                    isPresented: $showForm,
+                    entity: .constant(nil),
+                    viewModel: viewModel
+                )
+            }
+        }
+    }
+}

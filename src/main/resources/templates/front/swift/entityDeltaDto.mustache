@@ -1,0 +1,11 @@
+import Foundation
+
+struct {{entity}}DeltaDto: Codable {
+{{#fields}}
+	let {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{^nullable}}{{/nullable}}
+{{/fields}}
+}
+
+struct Sync{{entity}}Request: Codable {
+let deltas: [{{entity}}DeltaDto]
+}
