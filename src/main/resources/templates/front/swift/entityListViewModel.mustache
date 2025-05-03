@@ -31,7 +31,7 @@ sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
 do {
 entities = try modelContext.fetch(descriptor)
 } catch {
-errorMessage = error.localizedDescription
+errorMessage = mapError(error)
 }
 isLoading = false
 }
@@ -48,7 +48,7 @@ sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
 do {
 return try modelContext.fetch(descriptor)
 } catch {
-errorMessage = error.localizedDescription
+errorMessage = mapError(error)
 return []
 }
 }
@@ -124,7 +124,7 @@ private func saveContext() {
 do {
 try modelContext.save()
 } catch {
-errorMessage = error.localizedDescription
+errorMessage = mapError(error)
 }
 }
 
@@ -150,7 +150,7 @@ saveContext()
 await MainActor.run { self.showSuccessToast = true }
 } catch {
 await MainActor.run {
-self.errorMessage = error.localizedDescription
+self.errorMessage = mapError(error)
 self.showErrorToast = true
 }
 }
@@ -165,7 +165,7 @@ await MainActor.run { _ = fetchEntitiesUnSynced() }
 await syncAllEntities()
 } catch {
 await MainActor.run {
-errorMessage = error.localizedDescription
+errorMessage = mapError(error)
 showErrorToast = true
 }
 }

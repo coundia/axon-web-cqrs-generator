@@ -5,7 +5,7 @@ import Foundation
 struct API{{entity}} {
 
     static var syncEndpoint: URL {
-        return APIConfiguration.baseURL.appendingPathComponent("/v1/commands/{{entityLoweCase}}/sync")
+        return APIConfiguration.baseURL.appendingPathComponent("/v1/commands/{{entityLowerCase}}/sync")
     }
 
     static var queryEndpoint: URL {
@@ -13,7 +13,7 @@ struct API{{entity}} {
         components.scheme = APIConfiguration.baseURL.scheme
         components.host = APIConfiguration.baseURL.host
         components.port = APIConfiguration.baseURL.port
-        components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLoweCase}}s").path
+        components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLowerCase}}s").path
         components.queryItems = [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: "10000")

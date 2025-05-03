@@ -126,7 +126,7 @@ public class SwiftUiGeneratorService {
 	private void generateFile(SharedTemplate template, EntityDefinition definition) {
 		Map<String, Object> context = new HashMap<>();
 		context.put("entity", definition.getName());
-		context.put("entityLoweCase", Utils.unCapitalize(definition.getName()));
+		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);
