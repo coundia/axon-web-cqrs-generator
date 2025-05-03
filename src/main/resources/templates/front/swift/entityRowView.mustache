@@ -13,7 +13,7 @@ struct {{entity}}RowView: View {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
                     {{#fields}}
-	{{#isDisplayName}}
+    {{#isDisplayName}}
                             Text(entity.{{name}})
                                 .font(.headline)
                                 .lineLimit(1)
@@ -28,20 +28,20 @@ struct {{entity}}RowView: View {
                 }
 
                 {{#fields}}
-	{{#isUpdatedAt}}
-		{{#nullable}}
+    {{#isUpdatedAt}}
+        {{#nullable}}
                             if let updatedAt = entity.{{name}} {
                                 Text("Updated: \(formattedDate(updatedAt))")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
                         {{/nullable}}
-		{{^nullable}}
+        {{^nullable}}
                             Text("Updated: \(formattedDate(entity.{{name}}))")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         {{/nullable}}
-	{{/isUpdatedAt}}
+    {{/isUpdatedAt}}
 {{/fields}}
             }
 
@@ -52,7 +52,7 @@ struct {{entity}}RowView: View {
 
     private var iconView: some View {
         {{#fields}}
-	{{#isIcon}}
+    {{#isIcon}}
                 if let systemIcon = UIImage(systemName: entity.{{name}}), !entity.{{name}}.isEmpty {
                     Image(systemName: entity.{{name}})
                         .resizable()

@@ -1,8 +1,10 @@
 import Foundation
 
 enum {{entity}}Status: String, Codable {
-case create = "CREATE"
-case update = "UPDATE"
-case delete = "DELETE"
-case sync = "SYNC"
+    case create = "CREATE"
+    case update = "UPDATE"
+    case delete = "DELETE"
+    case sync = "SYNC"
+    case syncing = "SYNCING"
+    case failed = "FAILED"
 }

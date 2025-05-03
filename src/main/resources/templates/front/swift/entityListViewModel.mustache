@@ -41,7 +41,7 @@ print("[fetchEntitiesUnSynced]")
 let descriptor = FetchDescriptor<{{entity}}>(
 predicate: #Predicate {
 $0.user?.username == username &&
-$0.syncAt == nil && $0.statusRaw != "SYNC"
+$0.syncAt == nil && $0.statusRaw != "SYNC" && $0.remoteId == nil
 },
 sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
 )
