@@ -15,9 +15,9 @@ struct {{entity}}FormView: View {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
-                        {{^isId}}
+                        {{^readOnly}}
                         {{> SwiftFieldInput }}
-                        {{/isId}}
+                        {{/readOnly}}
                     {{/fields}}
                 }
 

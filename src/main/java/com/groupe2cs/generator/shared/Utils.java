@@ -1,5 +1,6 @@
 package com.groupe2cs.generator.shared;
 
+import com.groupe2cs.generator.domain.model.FieldDefinition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;

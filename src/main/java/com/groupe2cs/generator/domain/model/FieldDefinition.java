@@ -22,6 +22,7 @@ public class FieldDefinition implements Serializable {
     private String nameJpa;
     private String columnDefinition;
     private String defaultValue;
+    private Boolean readOnly = false;
 
     public FieldDefinition(String type, String name) {
         this.type = type;
@@ -30,6 +31,25 @@ public class FieldDefinition implements Serializable {
         this.isId = this.isId();
     }
 
+    public Boolean getReadOnly() {
+
+        if(name.equalsIgnoreCase("createdAt") ||
+                name.equalsIgnoreCase("id") ||
+                name.equalsIgnoreCase("updatedAt") ||
+                name.equalsIgnoreCase("createdBy") ||
+                name.equalsIgnoreCase("updatedBy") ||
+                name.equalsIgnoreCase("deletedBy") ||
+                name.equalsIgnoreCase("reference") ||
+                name.equalsIgnoreCase("deletedAt")) {
+            return true;
+        }
+
+        if (readOnly == null) {
+            return false;
+        }
+
+        return readOnly;
+    }
 
     public Boolean getUnique() {
 

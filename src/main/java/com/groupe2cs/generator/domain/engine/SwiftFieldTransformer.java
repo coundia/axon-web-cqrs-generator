@@ -1,6 +1,7 @@
 package com.groupe2cs.generator.domain.engine;
 
 import com.groupe2cs.generator.domain.model.FieldDefinition;
+import com.groupe2cs.generator.shared.Utils;
 
 import java.util.*;
 
@@ -37,11 +38,14 @@ public class SwiftFieldTransformer {
 			f.put("isDate", swiftType.equals("Date"));
 			f.put("isEnum", isEnum(field.getType()));
 
+			f.put("readOnly", field.getReadOnly());
+
 			result.add(f);
 		}
 
 		return result;
 	}
+
 
 	private static String toSwiftType(String type) {
 		return switch (type.toLowerCase()) {

@@ -5,16 +5,13 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
-	"name": "Settings",
+	"name": "Setting",
 	"table": "settings",
 	"multiTenant": true,
 	"auditable": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String", "unique": true },
-
-	  { "name": "reference", "type": "String", "unique": true },
-	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 
 	  { "name": "stringValue", "type": "String" },
 	  { "name": "descriptions", "type": "String",

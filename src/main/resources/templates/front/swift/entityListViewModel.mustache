@@ -68,6 +68,8 @@ let item = {{entity}}(
 {{/fields}}
 )
 item.user = user
+item.reference = item.id
+
 print("createEntity \(item.name)")
 modelContext.insert(item)
 saveContext()
@@ -90,6 +92,7 @@ print("[updateEntity] local ok \(item.name)")
 item.status = .update
 }
 
+item.reference = item.id
 item.user = user
 print("updated \(item.name)")
 item.updatedAt = Date()
