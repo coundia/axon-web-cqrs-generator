@@ -7,6 +7,7 @@ struct {{entity}}ListView: View {
     @State private var showForm: Bool = false
     @State private var selected: {{entity}}? = nil
     @State private var isSyncing = false
+    @State private var showingTrash = false
 
     init(modelContext: ModelContext, user: User) {
         _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
@@ -15,8 +16,8 @@ struct {{entity}}ListView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if viewModel.entities.filter({ $0.deletedAt == nil }).isEmpty {
-                    emptyState
+                if showingTrash {
+                    trashList
                 } else {
                     {{entityLowerCase}}List
                 }
@@ -39,29 +40,44 @@ struct {{entity}}ListView: View {
                         .transition(.opacity)
                 }
             }
-            .navigationTitle("{{entity}}s")
+            .navigationTitle(showingTrash ? "Corbeille" : "{{entity}}s")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {
-                        Task {
-                            isSyncing = true
-                            do {
-                                try await viewModel.pullThenSyncEntities()
-                            } catch {
-                                viewModel.errorMessage = error.localizedDescription
-                                viewModel.showErrorToast = true
+                        withAnimation {
+                            showingTrash.toggle()
+                            if showingTrash {
+                                viewModel.fetchTrashed()
+                            } else {
+                                viewModel.fetchEntities()
                             }
-                            isSyncing = false
                         }
                     } label: {
-                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Image(systemName: showingTrash ? "tray.fill" : "trash")
                     }
 
-                    Button {
-                        selected = nil
-                        showForm = true
-                    } label: {
-                        Image(systemName: "plus")
+                    if !showingTrash {
+                        Button {
+                            Task {
+                                isSyncing = true
+                                do {
+                                    try await viewModel.pullThenSyncEntities()
+                                } catch {
+                                    viewModel.errorMessage = error.localizedDescription
+                                    viewModel.showErrorToast = true
+                                }
+                                isSyncing = false
+                            }
+                        } label: {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                        }
+
+                        Button {
+                            selected = nil
+                            showForm = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -75,9 +91,8 @@ struct {{entity}}ListView: View {
                 )
             }
             .onAppear {
-                viewModel.loadMore{{entity}}s()
-            }
-            .onChange(of: viewModel.showSuccessToast) { _ in
+                viewModel.fetchEntities()
+            }.onChange(of: viewModel.showSuccessToast) { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     viewModel.showSuccessToast = false
                 }
@@ -87,24 +102,7 @@ struct {{entity}}ListView: View {
                     viewModel.showErrorToast = false
                 }
             }
-        }
-    }
 
-    private var emptyState: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "tray")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundColor(.gray.opacity(0.6))
-            Text("No {{entity}}s yet")
-                .font(.headline)
-                .foregroundColor(.secondary)
-            Button("Add {{entity}}") {
-                selected = nil
-                showForm = true
-            }
-            .buttonStyle(.borderedProminent)
         }
     }
 
@@ -114,12 +112,12 @@ struct {{entity}}ListView: View {
                 title: "Indicators",
                 indicators: [
                     {{#fields}}
-            {{#indicators}}
-                {{#hasSum}}
+    {{#indicators}}
+        {{#hasSum}}
                     "Total {{nameLowerCase}}": "\(viewModel.entities.reduce(0) { $0 + $1.{{name}} })",
                     {{/hasSum}}
-                {{/indicators}}
-            {{/fields}}
+    {{/indicators}}
+{{/fields}}
                 ]
             )
 
@@ -130,17 +128,15 @@ struct {{entity}}ListView: View {
                         selected = item
                         showForm = true
                     }
-                    .onAppear {
-                        viewModel.loadMore{{entity}}sIfNeeded(current: item)
-                    }
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             withAnimation {
-                                viewModel.deleteEntity(item)
+                                viewModel.markDeleted(item)
                             }
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
             }
         }
@@ -148,5 +144,33 @@ struct {{entity}}ListView: View {
         .refreshable {
             await viewModel.pullThenSyncEntities()
         }
+    }
+
+    private var trashList: some View {
+        List {
+            ForEach(viewModel.entities.filter { $0.deletedAt != nil }, id: \.id) { item in
+                {{entity}}RowView(entity: item)
+                    .opacity(0.6)
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            withAnimation {
+                                viewModel.restore(item)
+                            }
+                        } label: {
+                            Label("Restore", systemImage: "arrow.uturn.left")
+                        }
+                        .tint(.green)
+
+                        Button(role: .destructive) {
+                            withAnimation {
+                                viewModel.purge(item)
+                            }
+                        } label: {
+                            Label("Permanently Delete", systemImage: "trash.slash")
+                        }
+                    }
+            }
+        }
+        .listStyle(.insetGrouped)
     }
 }

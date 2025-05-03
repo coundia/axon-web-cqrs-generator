@@ -4,6 +4,11 @@ final class {{entity}}PushService {
     func sync(request: Sync{{entity}}Request) async throws {
         print("[{{entity}}PushService.sync]")
 
+         if(request.deltas.isEmpty){
+            print("[SalePushService] ✅ All data is Synced")
+            throw AppError.server("All data is already syncing.")
+        }
+
         guard let token = TokenProvider.shared.getToken() else {
             print("[{{entity}}PushService] ❌ No token found")
             throw AppError.missingToken

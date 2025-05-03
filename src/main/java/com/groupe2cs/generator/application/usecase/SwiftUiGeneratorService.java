@@ -122,6 +122,20 @@ public class SwiftUiGeneratorService {
 						outputDir + "/Views",
 						null,
 						".swift")
+				,
+				new SharedTemplate(entity+"SyncModel" ,
+						"front/swift/syncModel.mustache",
+						null,
+						outputDir + "/Models",
+						null,
+						".swift")
+				,
+				new SharedTemplate(entity+"TrashListViewModel" ,
+						"front/swift/entityTrashListViewModel.mustache",
+						null,
+						outputDir + "/Models",
+						null,
+						".swift")
 
 		);
 

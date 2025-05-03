@@ -1,0 +1,58 @@
+import SwiftData
+import SwiftUI
+
+extension {{entity}}ListViewModel {
+
+    func markDeleted(_ item: {{entity}}) {
+        if (
+            item.statusRaw == {{entity}}Status.delete.rawValue ||
+            item.remoteId == nil || item.deletedAt != nil
+        ) {
+            purge(item)
+            return
+        }
+
+        item.status = .delete
+        item.deletedAt = Date()
+        item.updatedAt = Date()
+        item.syncAt = nil
+        saveContext()
+
+        entities.removeAll { $0.id == item.id }
+    }
+
+    func restore(_ item: {{entity}}) {
+        item.deletedAt = nil
+        item.id = UUID().uuidString
+        item.remoteId = item.id
+        item.reference = item.id
+        item.status = .create
+        item.updatedAt = Date()
+        saveContext()
+
+        entities.append(item)
+    }
+
+    func purge(_ item: {{entity}}) {
+        modelContext.delete(item)
+        saveContext()
+
+        entities.removeAll { $0.id == item.id }
+    }
+
+    func fetchTrashed() {
+        isLoading = true
+        let descriptor = FetchDescriptor<{{entity}}>(
+            predicate: #Predicate { item in
+                item.user?.username == username && item.deletedAt != nil
+            },
+            sortBy: [SortDescriptor(\.deletedAt, order: .reverse)]
+        )
+        do {
+            entities = try modelContext.fetch(descriptor)
+        } catch {
+            errorMessage = mapError(error)
+        }
+        isLoading = false
+    }
+}
