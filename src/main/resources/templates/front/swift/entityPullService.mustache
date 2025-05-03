@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-final class {{entity}}SyncManager {
+final class {{entity}}PullService {
     private let modelContext: ModelContext
     private let userId: UUID
     private let user: User
@@ -12,17 +12,17 @@ final class {{entity}}SyncManager {
         self.userId = user.id
     }
 
+    @MainActor
     func pullAndMerge{{entity}}s() async throws {
-        print("[{{entity}}SyncManager] 🚀 Starting pullAndMerge{{entity}}s")
+        print("[{{entity}}PullService] 🚀 Starting pullAndMerge{{entity}}s")
 
         guard let token = TokenProvider.shared.getToken() else {
-            print("[{{entity}}SyncManager] ❌ No token found")
-            throw URLError(.userAuthenticationRequired)
+            print("[{{entity}}PullService] ❌ No token found")
+            throw AppError.missingToken
         }
 
         let url = API{{entity}}.queryEndpoint
-
-        print("[{{entity}}SyncManager] 🌐 Fetching from: \(url.absoluteString)")
+        print("[{{entity}}PullService] 🌐 Fetching from: \(url.absoluteString)")
 
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -30,16 +30,16 @@ final class {{entity}}SyncManager {
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            print("[{{entity}}SyncManager] ❌ Invalid HTTP response")
+            print("[{{entity}}PullService] ❌ Invalid HTTP response")
             throw URLError(.badServerResponse)
         }
 
-        print("[{{entity}}SyncManager] 📡 HTTP Status: \(httpResponse.statusCode)")
+        print("[{{entity}}PullService] 📡 HTTP Status: \(httpResponse.statusCode)")
 
         if !(200..<300).contains(httpResponse.statusCode) {
-            let message = String(data: data, encoding: .utf8) ?? "No response body"
-            print("[{{entity}}SyncManager] ❌ Server error: \(message)")
-            throw URLError(.badServerResponse)
+            let raw = String(data: data, encoding: .utf8) ?? "No response body"
+            print("[{{entity}}PullService] ❌ Server error: \(raw)")
+            throw AppError.server(raw)
         }
 
         let decoder = JSONDecoder()
@@ -60,49 +60,60 @@ final class {{entity}}SyncManager {
                     return date
                 }
             }
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date: \(dateString)")
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Cannot decode date: \(dateString)"
+            )
         }
 
         do {
             let remote = try decoder.decode({{entity}}PagedResponse.self, from: data)
-            print("[{{entity}}SyncManager] ✅ Remote items: \(remote.content.count)")
+
 
             let existing = try modelContext.fetch(
-                FetchDescriptor<{{entity}}>(predicate: #Predicate { $0.user?.id == userId })
+                FetchDescriptor<{{entity}}>(
+                    predicate: #Predicate { $0.user?.id == userId }
+                )
             )
-            print("[{{entity}}SyncManager] 🗂 Local items: \(existing.count)")
+            print("[{{entity}}PullService] ✅ Remote items: \(remote.content.count)")
+            print("[{{entity}}PullService] 🗂 _Local items: \(existing.count)")
 
             for remoteItem in remote.content {
-                if let local = existing.first(where: { $0.reference == remoteItem.reference }) {
+                if let index = existing.firstIndex(where: { $0.reference == remoteItem.reference }) {
+                        let attached = existing[index]
+
                     if let remoteUpdatedAt = remoteItem.updatedAt,
-                       let localUpdatedAt = local.updatedAt,
-                       remoteUpdatedAt <= localUpdatedAt {
-                        local.remoteId = remoteItem.id
-                        print("[{{entity}}SyncManager] ⏩ Skipped: \(local.name)")
-                        try modelContext.save()
+                       let localUpdatedAt = attached.updatedAt,
+                       remoteUpdatedAt <= localUpdatedAt && attached.statusRaw != {{entity}}Status.syncing.rawValue
+                        {
+                            attached.remoteId = remoteItem.id
+                            print("[{{entity}}PullService] ⏩ Skipped: \(attached.name)")
+                            print(" localUpdatedAt \(localUpdatedAt) vs remoteUpdatedAt \(remoteUpdatedAt)")
+
                         continue
                     }
 
-                    print("[{{entity}}SyncManager] 🔄 Updating: \(local.name)")
+
                     {{#fields}}
-	{{^isId}}
-		{{#isParentRelation}}
-                    // skip parent relation
-                    {{/isParentRelation}}
-		{{^isParentRelation}}
-                    local.{{name}} = remoteItem.{{name}}
-		{{/isParentRelation}}
-	{{/isId}}
+    {{^isId}}
+        {{^isParentRelation}}
+                    attached.{{name}} = remoteItem.{{name}}
+        {{/isParentRelation}}
+    {{/isId}}
 {{/fields}}
-                    local.status = {{entity}}Status.sync
-                    local.syncAt = Date()
+                    attached.status = {{entity}}Status.sync
+                    attached.statusRaw = {{entity}}Status.sync.rawValue
+
+                    print("[{{entity}}PullService] 🔄 Updating: \(attached.name) to  \(attached.statusRaw)")
+
+                    attached.syncAt = Date()
                 } else {
-                    print("[{{entity}}SyncManager] ➕ Creating new: \(remoteItem.name)")
+                    print("[{{entity}}PullService] ➕ Creating new: \(remoteItem.name)")
                     let newItem = {{entity}}(
                         {{#fields}}
-	{{#isId}}{{/isId}}{{^isId}}
-		{{name}}: remoteItem.{{name}},
-                        {{/isId}}
+    {{^isId}}
+        {{name}}: remoteItem.{{name}},
+    {{/isId}}
 {{/fields}}
                     )
                     newItem.user = user
@@ -115,11 +126,11 @@ final class {{entity}}SyncManager {
             }
 
             try modelContext.save()
-            print("[{{entity}}SyncManager] 💾 Saved")
+            print("[{{entity}}PullService] 💾 Saved")
         } catch {
             let raw = String(data: data, encoding: .utf8) ?? "<no body>"
-            print("[{{entity}}SyncManager] ❌ Decode error: \(error)")
-            print("[{{entity}}SyncManager] ❌ Raw: \(raw)")
+            print("[{{entity}}PullService] ❌ Decode error: \(error)")
+            print("[{{entity}}PullService] ❌ Raw: \(raw)")
             throw error
         }
     }

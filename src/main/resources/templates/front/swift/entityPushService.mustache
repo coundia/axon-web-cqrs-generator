@@ -1,0 +1,55 @@
+import Foundation
+
+final class {{entity}}PushService {
+    func sync(request: Sync{{entity}}Request) async throws {
+        print("[{{entity}}PushService.sync]")
+
+        guard let token = TokenProvider.shared.getToken() else {
+            print("[{{entity}}PushService] ❌ No token found")
+            throw AppError.missingToken
+        }
+
+        let url = API{{entity}}.syncEndpoint
+
+        print("[{{entity}}PushService] 🌍 Sync URL: \(url.absoluteString)")
+
+        var requestData = URLRequest(url: url)
+        requestData.httpMethod = "POST"
+        requestData.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        requestData.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        encoder.dateEncodingStrategy = .iso8601
+
+        let payloadData = try encoder.encode(request)
+        requestData.httpBody = payloadData
+
+        let (data, response) = try await URLSession.shared.data(for: requestData)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+
+        print("[{{entity}}PushService] 📡 HTTP Status: \(httpResponse.statusCode)")
+
+        if let jsonObject = try? JSONSerialization.jsonObject(with: payloadData, options: []),
+        let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: .prettyPrinted),
+        let jsonString = String(data: prettyData, encoding: .utf8) {
+            print("[{{entity}}PushService] 📦 Payload:\n\(jsonString)")
+        }
+
+        if !(200..<300).contains(httpResponse.statusCode) {
+            if let serverMessage = try? JSONDecoder().decode(ApiResponse.self, from: data) {
+                print("[{{entity}}PushService] ❌ Server Error: \(serverMessage.message)")
+                throw AppError.server(serverMessage.message)
+            } else {
+                let raw = String(data: data, encoding: .utf8) ?? "<no message>"
+                print("[{{entity}}PushService] ❌ Unknown Server Error: \(raw)")
+                throw AppError.server("Unknown error: \(raw)")
+            }
+        }
+
+        print("[{{entity}}PushService] ✅ Sync successful")
+    }
+}

@@ -40,8 +40,7 @@ func fetchEntitiesUnSynced() -> [{{entity}}] {
 print("[fetchEntitiesUnSynced]")
 let descriptor = FetchDescriptor<{{entity}}>(
 predicate: #Predicate {
-$0.user?.username == username &&
-$0.syncAt == nil && $0.statusRaw != "SYNC" && $0.remoteId == nil
+$0.user?.username == username && $0.statusRaw != "SYNC" && $0.statusRaw != "SYNCING"
 },
 sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
 )
@@ -133,9 +132,13 @@ let unsynced = fetchEntitiesUnSynced()
 
 let deltas: [{{entity}}DeltaDto] = unsynced.map {
 {{entity}}DeltaDto(
+id: $0.remoteId ?? "null",
 {{#fields}}
+{{^isId}}
 	{{name}}: $0.{{name}},
+{{/isId}}
 {{/fields}}
+type: $0.statusRaw
 )
 }
 
@@ -144,7 +147,9 @@ do {
 try await useCase.execute(with: deltas)
 for item in unsynced {
 item.syncAt = Date()
-item.status = .sync
+if(item.status != .sync) {
+    item.status = .syncing
+}
 }
 saveContext()
 await MainActor.run { self.showSuccessToast = true }
@@ -158,7 +163,7 @@ self.showErrorToast = true
 
 func pullThenSyncEntities() async {
 print("[pullThenSyncEntities]")
-let manager = {{entity}}SyncManager(modelContext: modelContext, user: user)
+let manager = {{entity}}PullService(modelContext: modelContext, user: user)
 do {
 try await manager.pullAndMerge{{entity}}s()
 await MainActor.run { _ = fetchEntitiesUnSynced() }

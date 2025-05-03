@@ -1,10 +1,10 @@
 import Foundation
 
 final class Sync{{entity}}UseCase {
-private let service = {{entity}}SyncService()
+    private let service = {{entity}}PushService()
 
-func execute(with deltas: [{{entity}}DeltaDto]) async throws {
-let request = Sync{{entity}}Request(deltas: deltas)
-try await service.sync(request: request)
-}
+    func execute(with deltas: [{{entity}}DeltaDto]) async throws {
+        let request = Sync{{entity}}Request(deltas: deltas)
+        try await service.sync(request: request)
+    }
 }

@@ -4,6 +4,7 @@ struct {{entity}}DeltaDto: Codable {
 {{#fields}}
 	let {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{^nullable}}{{/nullable}}
 {{/fields}}
+let type: String
 }
 
 struct Sync{{entity}}Request: Codable {

@@ -63,6 +63,8 @@ public class AllGenerator implements Generator {
 			fields.add(reference);
 		}
 
+		definition.setFields(fields);
+
 		log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
 		log.info("📦 Fields: {}", fields.toString());
 		fields.forEach(

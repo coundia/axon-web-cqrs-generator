@@ -1,8 +1,8 @@
 import SwiftData
 import SwiftUI
 
-struct {{entity}}RowView: View {
-    var entity: {{entity}}
+struct SaleRowView: View {
+    var entity: Sale
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -12,37 +12,26 @@ struct {{entity}}RowView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    {{#fields}}
-    {{#isDisplayName}}
-                            Text(entity.{{name}})
-                                .font(.headline)
-                                .lineLimit(1)
-                        {{/isDisplayName}}
-{{/fields}}
+                    Text(entity.name)
+                        .font(.headline)
+                        .lineLimit(1)
 
                     Spacer()
 
-                    Image(systemName: entity.status == .sync ? "checkmark.seal.fill" : "icloud.slash")
-                        .foregroundColor(entity.status == .sync ? .green : .orange)
-                        .font(.caption)
+                    Label {
+                        Text(statusText)
+                    } icon: {
+                        Image(systemName: statusIcon)
+                    }
+                    .foregroundColor(statusColor)
+                    .font(.caption)
                 }
 
-                {{#fields}}
-    {{#isUpdatedAt}}
-        {{#nullable}}
-                            if let updatedAt = entity.{{name}} {
-                                Text("Updated: \(formattedDate(updatedAt))")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                            }
-                        {{/nullable}}
-        {{^nullable}}
-                            Text("Updated: \(formattedDate(entity.{{name}}))")
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        {{/nullable}}
-    {{/isUpdatedAt}}
-{{/fields}}
+                if let updatedAt = entity.updatedAt {
+                    Text("Updated: \(formattedDate(updatedAt))")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
             }
 
             Spacer()
@@ -51,29 +40,43 @@ struct {{entity}}RowView: View {
     }
 
     private var iconView: some View {
-        {{#fields}}
-    {{#isIcon}}
-                if let systemIcon = UIImage(systemName: entity.{{name}}), !entity.{{name}}.isEmpty {
-                    Image(systemName: entity.{{name}})
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.accentColor)
-                } else if !entity.{{name}}.isEmpty {
-                    Image(entity.{{name}})
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Image(systemName: "questionmark.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .foregroundColor(.gray.opacity(0.5))
-                }
-            {{/isIcon}}
-{{/fields}}
-Image(systemName: "cube.box")
+        Image(systemName: "cube.box")
             .resizable()
             .scaledToFit()
             .foregroundColor(.accentColor)
+    }
+
+    private var statusText: String {
+        switch entity.status {
+        case .sync: "Synced"
+        case .syncing: "Syncing"
+        case .failed: "Failed"
+        case .create: "Created"
+        case .update: "Modified"
+        case .delete: "Deleted"
+        }
+    }
+
+    private var statusIcon: String {
+        switch entity.status {
+        case .sync: "checkmark.seal.fill"
+        case .syncing: "arrow.triangle.2.circlepath"
+        case .failed: "xmark.octagon.fill"
+        case .create: "plus.circle.fill"
+        case .update: "pencil.circle.fill"
+        case .delete: "trash.fill"
+        }
+    }
+
+    private var statusColor: Color {
+        switch entity.status {
+        case .sync: .green
+        case .syncing: .blue
+        case .failed: .red
+        case .create: .gray
+        case .update: .orange
+        case .delete: .black
+        }
     }
 
     private func formattedDate(_ date: Date) -> String {

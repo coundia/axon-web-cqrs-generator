@@ -32,6 +32,7 @@ let delta = {{entity}}DeltaDto(
 {{#fields}}
 	{{name}}: {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}},
 {{/fields}}
+type : {{entity}}Status.sync.rawValue
 )
 
 let useCase = Sync{{entity}}UseCase()
