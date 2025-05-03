@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,10 +32,36 @@ public class AllGenerator implements Generator {
 		EntityDefinition definition = request.getDefinition();
 		String outputDir = request.getOutputDir();
 
-		List<FieldDefinition> fields = definition.getAllFields();
+		List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
 
 		definition.getStack().add("sync");
 		definition.getStack().add("mail");
+		definition.getStack().add("security");
+		definition.setMultiTenant(true);
+		definition.setAuditable(true);
+
+		if(!definition.hasField("updatedAt")){
+			FieldDefinition updatedAt = FieldDefinition
+					.builder()
+					.name("updatedAt")
+					.type("java.time.Instant")
+					.defaultValue("java.time.Instant.now()")
+					.readOnly(true)
+					.nullable(true)
+					.build();
+			fields.add(updatedAt);
+		}
+
+		if(!definition.hasField("reference")){
+			FieldDefinition reference = FieldDefinition
+					.builder()
+					.name("reference")
+					.type("String")
+					.readOnly(true)
+					.nullable(true)
+					.build();
+			fields.add(reference);
+		}
 
 		log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
 		log.info("📦 Fields: {}", fields.toString());
@@ -51,13 +78,11 @@ public class AllGenerator implements Generator {
 				.doOnNext(msg -> sink.tryEmitComplete())
 				.subscribe();
 
-		//Module tenant
-		if (definition.getMultiTenant()) {
-			log.info("📦 Generation du module multi-tenant");
-			multiTenantGeneratorService
-					.generate(definition, outputDir)
-					.subscribe();
-		}
+		// module multi-tenant
+		log.info("📦 Generation du module multi-tenant");
+		multiTenantGeneratorService
+				.generate(definition, outputDir)
+				.subscribe();
 
 		log.info("📦 Generation de la sécurité terminée");
 

@@ -3,6 +3,8 @@ package com.groupe2cs.generator.domain.model;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,6 +25,7 @@ public class FieldDefinition implements Serializable {
     private String columnDefinition;
     private String defaultValue;
     private Boolean readOnly = false;
+    private Set<String> indicators = new HashSet<>();
 
     public FieldDefinition(String type, String name) {
         this.type = type;
@@ -49,6 +52,13 @@ public class FieldDefinition implements Serializable {
         }
 
         return readOnly;
+    }
+
+    public Set<String> getIndicators() {
+        if(indicators == null) {
+            return new HashSet<>();
+        }
+        return indicators;
     }
 
     public Boolean getUnique() {

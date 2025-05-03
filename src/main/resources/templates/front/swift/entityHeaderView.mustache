@@ -1,0 +1,19 @@
+import SwiftUI
+
+struct EntityHeaderView: View {
+    let title: String
+    let indicators: [String: String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.headline)
+            ForEach(indicators.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                Text("🔢 \(key.capitalized): \(value)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(.horizontal)
+    }
+}

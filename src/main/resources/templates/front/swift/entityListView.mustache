@@ -110,6 +110,19 @@ struct {{entity}}ListView: View {
 
     private var {{entityLowerCase}}List: some View {
         List {
+            EntityHeaderView(
+                title: "Indicators",
+                indicators: [
+                    {{#fields}}
+            {{#indicators}}
+                {{#hasSum}}
+                    "Total {{nameLowerCase}}": "\(viewModel.entities.reduce(0) { $0 + $1.{{name}} })",
+                    {{/hasSum}}
+                {{/indicators}}
+            {{/fields}}
+                ]
+            )
+
             ForEach(viewModel.entities.filter { $0.deletedAt == nil }, id: \.id) { item in
                 {{entity}}RowView(entity: item)
                     .contentShape(Rectangle())

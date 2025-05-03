@@ -18,6 +18,7 @@ public class SwiftFieldTransformer {
 			boolean isNullable = Boolean.TRUE.equals(field.getNullable());
 
 			f.put("name", name);
+			f.put("nameLowerCase", Utils.unCapitalize(name));
 			f.put("realType", swiftType);
 			f.put("nullable", isNullable);
 			f.put("defaultValue", getDefaultValue(swiftType, isNullable));
@@ -39,6 +40,9 @@ public class SwiftFieldTransformer {
 			f.put("isEnum", isEnum(field.getType()));
 
 			f.put("readOnly", field.getReadOnly());
+
+			f.put("indicators", field.getIndicators());
+			f.put("hasSum", field.getIndicators() != null && field.getIndicators().contains("sum"));
 
 			result.add(f);
 		}

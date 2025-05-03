@@ -115,6 +115,13 @@ public class SwiftUiGeneratorService {
 						outputDir + "/Models",
 						null,
 						".swift")
+				,
+				new SharedTemplate(entity+"HeaderView" ,
+						"front/swift/entityHeaderView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
 
 		);
 
