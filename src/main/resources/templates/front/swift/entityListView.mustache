@@ -6,6 +6,9 @@ struct {{entity}}ListView: View {
     @StateObject private var viewModel: {{entity}}ListViewModel
     @State private var showForm = false
     @State private var showDuplicate = false
+    @State private var showDetails = false
+    @State private var selectedForDetails: {{entity}}? = nil
+    @State private var selectedForDuplicate: {{entity}}? = nil
     @State private var selected: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
@@ -28,15 +31,13 @@ struct {{entity}}ListView: View {
                     {{entity}}ListContentView(
                         {{entityLowerCase}}s: viewModel.entities,
                         onSelect: { item in
-                            selected = item
-                            showForm = true
+                            selectedForDetails = item
                         },
                         onDelete: viewModel.markDeleted,
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
                         onDuplicate: { item in
-                            selected = item
-                            showDuplicate = true
+                            selectedForDuplicate = item
                         }
                     )
                 }
@@ -80,10 +81,15 @@ struct {{entity}}ListView: View {
             .sheet(isPresented: $showDuplicate, onDismiss: {
                 viewModel.fetchEntities()
             }) {
-                if let item = selected {
+                if let item = selectedForDuplicate {
                     Duplicate{{entity}}View(original: item, onSave: { newItem in
                         viewModel.insertDuplicated(newItem)
                     })
+                }
+            }
+            .sheet(isPresented: $showDetails) {
+                if let item = selectedForDetails {
+                    {{entity}}DetailsView(entity: item)
                 }
             }
             .onAppear { viewModel.fetchEntities() }
@@ -99,6 +105,16 @@ struct {{entity}}ListView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         viewModel.showErrorToast = false
                     }
+                }
+            }
+            .onChange(of: selectedForDetails) { value in
+                if value != nil {
+                    showDetails = true
+                }
+            }
+            .onChange(of: selectedForDuplicate) { value in
+                if value != nil {
+                    showDuplicate = true
                 }
             }
         }
