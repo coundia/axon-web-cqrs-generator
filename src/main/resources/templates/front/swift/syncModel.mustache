@@ -42,6 +42,7 @@ extension {{entity}}ListViewModel {
             if(item.status != .sync && item.status != .delete) {
                 item.status = .syncing
             }
+
         }
          saveContext()
           await MainActor.run { self.showSuccessToast = true }
