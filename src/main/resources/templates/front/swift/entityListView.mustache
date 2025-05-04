@@ -6,12 +6,11 @@ struct {{entity}}ListView: View {
     @StateObject private var viewModel: {{entity}}ListViewModel
     @State private var showForm = false
     @State private var showDuplicate = false
-    @State private var showDetails = false
     @State private var selected: {{entity}}? = nil
     @State private var selectedForEdit: {{entity}}? = nil
-    @State private var selectedForDetails: {{entity}}? = nil
-    @State private var selectedForDuplicate: {{entity}}? = nil
-    @State private var selectedForDelete: {{entity}}? = nil
+    @State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>?
+    @State private var selectedForDetails: IdentifiableWrapper<{{entity}}>?
+    @State private var selectedForDelete: {{entity}}?
     @State private var isSyncing = false
     @State private var showingTrash = false
 
@@ -32,11 +31,11 @@ struct {{entity}}ListView: View {
                 } else {
                     {{entity}}ListContentView(
                         {{entityLowerCase}}s: viewModel.entities,
-                        onSelect: { item in selectedForDetails = item },
+                        onSelect: { item in selectedForDetails = .init(item) },
                         onDelete: { item in selectedForDelete = item },
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
-                        onDuplicate: { item in selectedForDuplicate = item }
+                        onDuplicate: { item in selectedForDuplicate = .init(item) }
                     )
                 }
 
@@ -76,31 +75,27 @@ struct {{entity}}ListView: View {
                     viewModel: viewModel
                 )
             }
-            .sheet(isPresented: $showDuplicate, onDismiss: {
+            .sheet(item: $selectedForDuplicate, onDismiss: {
                 viewModel.fetchEntities()
-            }) {
-                if let item = selectedForDuplicate {
-                    Duplicate{{entity}}View(original: item) { newItem in
-                        viewModel.insertDuplicated(newItem)
-                    }
+            }) { wrapper in
+                Duplicate{{entity}}View(original: wrapper.value) { newItem in
+                    viewModel.insertDuplicated(newItem)
                 }
             }
-            .sheet(isPresented: $showDetails) {
-                if let item = selectedForDetails {
-                    {{entity}}DetailsView(
-                        entity: item,
-                        onEdit: {
-                            selected = item
-                            showForm = true
-                        },
-                        onDelete: {
-                            selectedForDelete = item
-                        },
-                        onDuplicate: {
-                            selectedForDuplicate = item
-                        }
-                    )
-                }
+            .sheet(item: $selectedForDetails) { wrapper in
+                {{entity}}DetailsView(
+                    entity: wrapper.value,
+                    onEdit: {
+                        selected = wrapper.value
+                        showForm = true
+                    },
+                    onDelete: {
+                        selectedForDelete = wrapper.value
+                    },
+                    onDuplicate: {
+                        selectedForDuplicate = .init(wrapper.value)
+                    }
+                )
             }
             .confirmationDialog("Are you sure you want to delete this item?", isPresented: Binding(get: {
                 selectedForDelete != nil
@@ -122,16 +117,12 @@ struct {{entity}}ListView: View {
             .onAppear {
                 viewModel.fetchEntities()
             }
-            .onChange(of: selectedForDetails) { value in
-                if value != nil {
-                    showDetails = true
-                }
-            }
-            .onChange(of: selectedForDuplicate) { value in
-                if value != nil {
-                    showDuplicate = true
-                }
-            }
         }
     }
+}
+
+private struct IdentifiableWrapper<T>: Identifiable {
+    let id = UUID()
+    let value: T
+    init(_ value: T) { self.value = value }
 }
