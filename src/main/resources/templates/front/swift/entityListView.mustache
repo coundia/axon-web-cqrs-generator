@@ -5,6 +5,7 @@ struct {{entity}}ListView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: {{entity}}ListViewModel
     @State private var showForm = false
+    @State private var showDuplicate = false
     @State private var selected: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
@@ -33,7 +34,10 @@ struct {{entity}}ListView: View {
                         onDelete: viewModel.markDeleted,
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
-                        onDuplicate: viewModel.duplicate
+                        onDuplicate: { item in
+                            selected = item
+                            showDuplicate = true
+                        }
                     )
                 }
 
@@ -72,6 +76,15 @@ struct {{entity}}ListView: View {
                     entity: $selected,
                     viewModel: viewModel
                 )
+            }
+            .sheet(isPresented: $showDuplicate, onDismiss: {
+                viewModel.fetchEntities()
+            }) {
+                if let item = selected {
+                    Duplicate{{entity}}View(original: item, onSave: { newItem in
+                        viewModel.insertDuplicated(newItem)
+                    })
+                }
             }
             .onAppear { viewModel.fetchEntities() }
             .onChange(of: viewModel.showSuccessToast) { value in

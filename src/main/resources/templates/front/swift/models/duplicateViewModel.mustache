@@ -3,20 +3,23 @@ import SwiftData
 
 extension {{entity}}ListViewModel {
     func duplicate(_ item: {{entity}}) {
+
+    print("[duplicate]  ")
+
         let copy = {{entity}}(
             {{#fields}}
-    {{#isId}}{{! ignore id field }}{{/isId}}
-    {{^isId}}{{name}}: item.{{name}},{{/isId}}
-{{/fields}}
-        )
+       {{#isId}}{{! ignore id field }}{{/isId}}
+      {{^isId}}{{name}}: item.{{name}},{{/isId}}
+        {{/fields}}
+                )
+
+                {{#fields}}
+            {{#isId}}copy.{{name}} = UUID().uuidString{{/isId}}
+        {{/fields}}
 
         {{#fields}}
-    {{#isId}}copy.{{name}} = UUID().uuidString{{/isId}}
-{{/fields}}
-
-{{#fields}}
-    {{#nameEqualsReference}}copy.reference = copy.id{{/nameEqualsReference}}
-{{/fields}}
+            {{#nameEqualsReference}}copy.reference = copy.id{{/nameEqualsReference}}
+        {{/fields}}
 
         copy.status = .create
         copy.user = user
@@ -27,5 +30,12 @@ extension {{entity}}ListViewModel {
         DispatchQueue.main.async {
             self.entities.insert(copy, at: 0)
         }
+    }
+
+
+    func insertDuplicated(_ item: {{entity}}) {
+         print("[insertDuplicated] duplicated  ")
+
+        duplicate(item)
     }
 }

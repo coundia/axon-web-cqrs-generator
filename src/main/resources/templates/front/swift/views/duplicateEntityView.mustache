@@ -7,29 +7,43 @@ struct Duplicate{{entity}}View: View {
     @Environment(\.dismiss) var dismiss
 
     {{#fields}}
-    @State private var {{nameLowerCase}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+    @State private var {{nameLowerCase}}: {{realType}}
 {{/fields}}
+
+    init(original: {{entity}}, onSave: @escaping ({{entity}}) -> Void) {
+        self.original = original
+        self.onSave = onSave
+        {{#fields}}
+        _{{nameLowerCase}} = State(initialValue: original.{{name}} {{#nullable}}?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}})
+        {{/fields}}
+    }
 
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Duplicate {{entity}}")) {
                     {{#fields}}
-    {{^readOnly}}
-        {{> SwiftFieldInput }}
-    {{/readOnly}}
-{{/fields}}
+                    {{^readOnly}}
+                        {{> SwiftFieldInput }}
+                    {{/readOnly}}
+                {{/fields}}
                 }
 
                 Section {
                     Button("Save") {
+                    print("[Save]  ")
                         let duplicate = {{entity}}(
                             {{#fields}}
-    {{^isId}}
-        {{name}}: {{#nullable}}{{nameLowerCase}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{nameLowerCase}}{{/nullable}},
-                            {{/isId}}
-{{/fields}}
+                                {{^isId}}
+                                    {{name}}: {{nameLowerCase}},
+                                                        {{/isId}}
+                            {{/fields}}
                         )
+                        duplicate.status = .create
+                        duplicate.id = UUID().uuidString
+                        duplicate.reference = UUID().uuidString
+                        duplicate.updatedAt = Date()
+
                         onSave(duplicate)
                         dismiss()
                     }
@@ -47,11 +61,6 @@ struct Duplicate{{entity}}View: View {
                         dismiss()
                     }
                 }
-            }
-            .onAppear {
-                {{#fields}}
-    {{nameLowerCase}} = original.{{name}}
-{{/fields}}
             }
         }
     }
