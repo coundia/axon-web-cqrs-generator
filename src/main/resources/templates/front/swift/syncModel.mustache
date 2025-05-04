@@ -39,7 +39,7 @@ extension {{entity}}ListViewModel {
              try await useCase.execute(with: deltas)
         for item in unsynced {
          item.syncAt = Date()
-            if(item.status != .sync) {
+            if(item.status != .sync && item.status != .delete) {
                 item.status = .syncing
             }
         }

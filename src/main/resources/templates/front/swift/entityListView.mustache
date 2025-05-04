@@ -116,7 +116,24 @@ struct {{entity}}ListView: View {
             }
             .onAppear {
                 viewModel.fetchEntities()
+            }.onAppear {
+                viewModel.fetchEntities()
             }
+            .onChange(of: viewModel.showSuccessToast) { value in
+                if value {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        viewModel.showSuccessToast = false
+                    }
+                }
+            }
+            .onChange(of: viewModel.showErrorToast) { value in
+                if value {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        viewModel.showErrorToast = false
+                    }
+                }
+            }
+
         }
     }
 }
