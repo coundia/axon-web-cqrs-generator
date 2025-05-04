@@ -54,6 +54,7 @@ struct SaleRowView: View {
         case .create: "Created"
         case .update: "Modified"
         case .delete: "Deleted"
+        case .trash: "Deleted"
         }
     }
 
@@ -65,6 +66,7 @@ struct SaleRowView: View {
         case .create: "plus.circle.fill"
         case .update: "pencil.circle.fill"
         case .delete: "trash.fill"
+        case .trash: "trash.fill"
         }
     }
 
@@ -76,6 +78,7 @@ struct SaleRowView: View {
         case .create: .gray
         case .update: .orange
         case .delete: .black
+        case .trash: .black
         }
     }
 

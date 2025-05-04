@@ -9,7 +9,9 @@ extension {{entity}}ListViewModel {
     print("[markDeleted]  \(item.id) ")
 
         if item.statusRaw == {{entity}}Status.delete.rawValue || item.remoteId == nil {
-            purge(item)
+            item.deletedAt  = Date()
+            item.status     = .trash
+            item.syncAt     = nil
             saveContext()
             fetchEntities()
             return

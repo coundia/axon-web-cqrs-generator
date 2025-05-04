@@ -35,7 +35,11 @@ struct {{entity}}ListView: View {
                         onDelete: { item in selectedForDelete = item },
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
-                        onDuplicate: { item in selectedForDuplicate = .init(item) }
+                        onDuplicate: { item in selectedForDuplicate = .init(item) },
+                        onEdit: { item in
+                            selected = item
+                            showForm = true
+                        }
                     )
                 }
 
@@ -49,12 +53,23 @@ struct {{entity}}ListView: View {
 
                 if viewModel.showSuccessToast {
                     ToastView(message: "✅ Sync successful", color: .green)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                viewModel.showSuccessToast = false
+                            }
+                        }
                 }
+
                 if viewModel.showErrorToast {
                     ToastView(
                         message: "\(viewModel.errorMessage ?? "Unknown error")",
                         color: .yellow
                     )
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            viewModel.showErrorToast = false
+                        }
+                    }
                 }
             }
             .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
@@ -116,24 +131,7 @@ struct {{entity}}ListView: View {
             }
             .onAppear {
                 viewModel.fetchEntities()
-            }.onAppear {
-                viewModel.fetchEntities()
             }
-            .onChange(of: viewModel.showSuccessToast) { value in
-                if value {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        viewModel.showSuccessToast = false
-                    }
-                }
-            }
-            .onChange(of: viewModel.showErrorToast) { value in
-                if value {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        viewModel.showErrorToast = false
-                    }
-                }
-            }
-
         }
     }
 }

@@ -39,8 +39,12 @@ extension {{entity}}ListViewModel {
              try await useCase.execute(with: deltas)
         for item in unsynced {
          item.syncAt = Date()
-            if(item.status != .sync && item.status != .delete) {
+            if(item.status != .sync && item.status != .delete && item.status != .trash   ) {
                 item.status = .syncing
+            }
+
+            if item.status == .delete || item.status == .trash {
+                 item.status = .trash
             }
 
         }
@@ -59,7 +63,10 @@ extension {{entity}}ListViewModel {
             print("[fetchEntitiesUnSynced]")
              let descriptor = FetchDescriptor<{{entity}}>(
               predicate: #Predicate {
-                      $0.user?.username == username && $0.statusRaw != "SYNC" && $0.statusRaw != "SYNCING"
+                      $0.user?.username == username
+                      && $0.statusRaw != "SYNC"
+                      && $0.statusRaw != "SYNCING"
+                      && $0.statusRaw != "TRASH"
             },
                 sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
             )

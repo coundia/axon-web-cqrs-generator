@@ -7,51 +7,52 @@ struct {{entity}}ListContentView: View {
     let onAdd: () -> Void
     let onLoadMore: ({{entity}}) -> Void
     let onDuplicate: ({{entity}}) -> Void
+    let onEdit: ({{entity}}) -> Void
 
     var body: some View {
-        let active{{entity}}s = {{entityLowerCase}}s.filter { $0.deletedAt == nil }
+        let active = {{entityLowerCase}}s.filter { $0.deletedAt == nil }
 
-        if active{{entity}}s.isEmpty {
+        if active.isEmpty {
             {{entity}}EmptyStateView(onAdd: onAdd)
         } else {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    {{entity}}IndicatorView(
-                        title: "",
+                    EntityHeaderView(
+                        title: "Indicators",
                         indicators: [
-                          {{#fields}}
-                                {{#indicators}}
-                                    {{#hasSum}}
-                                         "Total {{nameLowerCase}}": "\(activeSales.reduce(0) { $0 + $1.{{name}} })",
-                                    {{/hasSum}}
-                                {{/indicators}}
-                            {{/fields}}
+                            "Total count": "\(active.count)"
                         ]
                     )
                     .padding(.bottom)
 
-                    ForEach(active{{entity}}s, id: \.id) { {{entityLowerCase}} in
-                        {{entity}}RowView(entity: {{entityLowerCase}})
+                    ForEach(active, id: \.id) { item in
+                        {{entity}}RowView(entity: item)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                onSelect({{entityLowerCase}})
+                                onSelect(item)
                             }
                             .contextMenu {
                                 Button {
-                                    onDuplicate({{entityLowerCase}})
+                                    onEdit(item)
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+
+                                Button {
+                                    onDuplicate(item)
                                 } label: {
                                     Label("Duplicate", systemImage: "doc.on.doc")
                                 }
 
                                 Button(role: .destructive) {
-                                    onDelete({{entityLowerCase}})
+                                    onDelete(item)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
                             }
                             .onAppear {
-                                if {{entityLowerCase}} == active{{entity}}s.last {
-                                    onLoadMore({{entityLowerCase}})
+                                if item == active.last {
+                                    onLoadMore(item)
                                 }
                             }
 
