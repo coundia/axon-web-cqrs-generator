@@ -3,26 +3,55 @@ import SwiftData
 
 struct {{entity}}DetailsView: View {
     let entity: {{entity}}
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        Form {
-            Section(header: Text("{{entity}} Details")) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Spacer()
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Text("{{title}}")
+                    .font(.largeTitle.bold())
+                    .padding(.bottom)
+
                 {{#fields}}
-                detailRow(title: "{{name}}", value: {{> SwiftFieldDisplayValue }})
+                {{#displayName}}
+                    detailRow(
+                        title: "{{displayName}}",
+                        value: {{> SwiftFieldDisplayValue }}
+                    )
+                    Divider()
+                {{/displayName}}
                 {{/fields}}
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(UIColor.secondarySystemBackground))
+                    .shadow(radius: 4)
+            )
+            .padding()
         }
         .navigationTitle("{{entity}} Info")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
     private func detailRow(title: String, value: String) -> some View {
-        HStack {
+        VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .fontWeight(.semibold)
-            Spacer()
+                .font(.caption)
+                .foregroundColor(.gray)
             Text(value)
-                .foregroundColor(.secondary)
+                .font(.body)
+                .foregroundColor(.primary)
         }
     }
 }

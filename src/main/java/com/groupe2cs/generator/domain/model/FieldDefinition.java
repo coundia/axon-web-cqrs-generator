@@ -1,5 +1,6 @@
 package com.groupe2cs.generator.domain.model;
 
+import com.groupe2cs.generator.shared.Utils;
 import lombok.*;
 
 import java.io.Serializable;
@@ -26,6 +27,25 @@ public class FieldDefinition implements Serializable {
     private String defaultValue;
     private Boolean readOnly = false;
     private Set<String> indicators = new HashSet<>();
+    private String displayName;
+    private String confidentiel;
+
+
+    public String getDisplayName() {
+        if (displayName == null) {
+            return null;
+        }
+
+        return Utils.capitalize(displayName);
+    }
+
+    public String getLabel() {
+        if (displayName == null) {
+            return Utils.capitalize(name);
+        }
+
+        return Utils.capitalize(displayName);
+    }
 
     public FieldDefinition(String type, String name) {
         this.type = type;

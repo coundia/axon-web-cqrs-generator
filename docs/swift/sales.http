@@ -9,6 +9,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Sale",
 	"table": "sales",
+    "title": "Sales Management",
 	"fields": [
 	  {
 		"name": "id",
@@ -16,21 +17,25 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "name",
-		"type": "String"
+		"type": "String",
+        "displayName": "Name"
 	  },
 	  {
 		"name": "amount",
 		"type": "Double",
+		"displayName": "Amount",
 		"indicators": ["sum"]
 	  },
 	  {
 		"name": "details",
 		"type": "String",
+		"displayName": "Description",
 		"unique": true,
 		"nullable": true
 	  },
 	  {
 		"name": "isActive",
+		"displayName": "Activé",
 		"type": "Boolean",
 		"defaultValue": true
 	  }

@@ -3,6 +3,7 @@ package com.groupe2cs.generator.domain.model;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.groupe2cs.generator.shared.Utils;
 import lombok.*;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class EntityDefinition implements Serializable {
 	private Boolean multiTenant = false;
 	private Boolean isGenerated = false;
 	private String apiPrefix = "";
+	private String title = "";
 
 	public String getApiPrefix() {
 		if (apiPrefix == null) {
@@ -42,6 +44,14 @@ public class EntityDefinition implements Serializable {
 		}
 
 		return apiPrefix;
+	}
+
+	public String getTitle() {
+		if (title == null) {
+			return Utils.capitalize(name);
+		}
+
+		return  Utils.capitalize(title);
 	}
 
 	public Boolean getMultiTenant() {

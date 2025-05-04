@@ -46,6 +46,9 @@ public class SwiftFieldTransformer {
 
 			f.put("nameEqualsReference", name.equals("reference"));
 
+			f.put("displayName", field.getDisplayName());
+			f.put("label", field.getLabel());
+
 			result.add(f);
 		}
 

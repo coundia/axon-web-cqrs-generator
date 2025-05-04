@@ -10,6 +10,7 @@ struct {{entity}}ListView: View {
     @State private var selectedForDetails: {{entity}}? = nil
     @State private var selectedForDuplicate: {{entity}}? = nil
     @State private var selected: {{entity}}? = nil
+    @State private var confirmDelete: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
 
@@ -30,15 +31,11 @@ struct {{entity}}ListView: View {
                 } else {
                     {{entity}}ListContentView(
                         {{entityLowerCase}}s: viewModel.entities,
-                        onSelect: { item in
-                            selectedForDetails = item
-                        },
-                        onDelete: viewModel.markDeleted,
+                        onSelect: { item in selectedForDetails = item },
+                        onDelete: { item in confirmDelete = item },
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
-                        onDuplicate: { item in
-                            selectedForDuplicate = item
-                        }
+                        onDuplicate: { item in selectedForDuplicate = item }
                     )
                 }
 
@@ -60,7 +57,7 @@ struct {{entity}}ListView: View {
                     )
                 }
             }
-            .navigationTitle(showingTrash ? "Corbeille" : "{{entity}}s")
+            .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
             .toolbar {
                 {{entity}}MenuView(
                     showingTrash: $showingTrash,
@@ -90,6 +87,24 @@ struct {{entity}}ListView: View {
             .sheet(isPresented: $showDetails) {
                 if let item = selectedForDetails {
                     {{entity}}DetailsView(entity: item)
+                }
+            }
+            .confirmationDialog(
+                "Are you sure you want to delete this item?",
+                isPresented: Binding<Bool>(
+                    get: { confirmDelete != nil },
+                    set: { if !$0 { confirmDelete = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let item = confirmDelete {
+                        viewModel.markDeleted(item)
+                    }
+                    confirmDelete = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    confirmDelete = nil
                 }
             }
             .onAppear { viewModel.fetchEntities() }
