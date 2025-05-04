@@ -1,0 +1,58 @@
+import SwiftUI
+import SwiftData
+
+struct Duplicate{{entity}}View: View {
+    var original: {{entity}}
+    var onSave: ({{entity}}) -> Void
+    @Environment(\.dismiss) var dismiss
+
+    {{#fields}}
+    @State private var {{nameLowerCase}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+{{/fields}}
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Duplicate {{entity}}")) {
+                    {{#fields}}
+    {{^readOnly}}
+        {{> SwiftFieldInput }}
+    {{/readOnly}}
+{{/fields}}
+                }
+
+                Section {
+                    Button("Save") {
+                        let duplicate = {{entity}}(
+                            {{#fields}}
+    {{^isId}}
+        {{name}}: {{#nullable}}{{nameLowerCase}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{nameLowerCase}}{{/nullable}},
+                            {{/isId}}
+{{/fields}}
+                        )
+                        onSave(duplicate)
+                        dismiss()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                }
+            }
+            .navigationTitle("Duplicate {{entity}}")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear {
+                {{#fields}}
+    {{nameLowerCase}} = original.{{name}}
+{{/fields}}
+            }
+        }
+    }
+}

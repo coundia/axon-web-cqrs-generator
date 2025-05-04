@@ -1,0 +1,17 @@
+import Foundation
+
+enum {{entity}}SearchCriteria: String, CaseIterable, Identifiable {
+    {{#fields}}
+    case {{nameLowerCase}}
+{{/fields}}
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+            {{#fields}}
+            case .{{nameLowerCase}}: return "{{name}}"
+            {{/fields}}
+        }
+    }
+}

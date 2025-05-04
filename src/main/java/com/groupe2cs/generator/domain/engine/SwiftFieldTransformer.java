@@ -44,6 +44,8 @@ public class SwiftFieldTransformer {
 			f.put("indicators", field.getIndicators());
 			f.put("hasSum", field.getIndicators() != null && field.getIndicators().contains("sum"));
 
+			f.put("nameEqualsReference", name.equals("reference"));
+
 			result.add(f);
 		}
 

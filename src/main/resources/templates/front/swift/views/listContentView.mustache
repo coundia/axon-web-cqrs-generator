@@ -1,0 +1,65 @@
+import SwiftUI
+
+struct {{entity}}ListContentView: View {
+    let {{entityLowerCase}}s: [{{entity}}]
+    let onSelect: ({{entity}}) -> Void
+    let onDelete: ({{entity}}) -> Void
+    let onAdd: () -> Void
+    let onLoadMore: ({{entity}}) -> Void
+    let onDuplicate: ({{entity}}) -> Void
+
+    var body: some View {
+        let active{{entity}}s = {{entityLowerCase}}s.filter { $0.deletedAt == nil }
+
+        if active{{entity}}s.isEmpty {
+            {{entity}}EmptyStateView(onAdd: onAdd)
+        } else {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    {{entity}}IndicatorView(
+                        title: "Indicators",
+                        indicators: [
+                          {{#fields}}
+                                {{#indicators}}
+                                    {{#hasSum}}
+                                         "Total {{nameLowerCase}}": "\(activeSales.reduce(0) { $0 + $1.{{name}} })",
+                                    {{/hasSum}}
+                                {{/indicators}}
+                            {{/fields}}
+                        ]
+                    )
+                    .padding(.bottom)
+
+                    ForEach(active{{entity}}s, id: \.id) { {{entityLowerCase}} in
+                        {{entity}}RowView(entity: {{entityLowerCase}})
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                onSelect({{entityLowerCase}})
+                            }
+                            .contextMenu {
+                                Button {
+                                    onDuplicate({{entityLowerCase}})
+                                } label: {
+                                    Label("Duplicate", systemImage: "doc.on.doc")
+                                }
+
+                                Button(role: .destructive) {
+                                    onDelete({{entityLowerCase}})
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                            .onAppear {
+                                if {{entityLowerCase}} == active{{entity}}s.last {
+                                    onLoadMore({{entityLowerCase}})
+                                }
+                            }
+
+                        Divider()
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+{{#isText}}entity.{{name}} ?? ""{{/isText}}
+{{#isInt}}String(entity.{{name}}){{/isInt}}
+{{#isDouble}}String(format: "%.2f", entity.{{name}}){{/isDouble}}
+{{#isBool}}entity.{{name}} ? "Yes" : "No"{{/isBool}}
+{{#isDate}}entity.{{name}}?.formatted(date: .abbreviated, time: .shortened) ?? ""{{/isDate}}
+{{#isEnum}}entity.{{name}}.rawValue.capitalized{{/isEnum}}

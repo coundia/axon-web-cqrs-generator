@@ -1,0 +1,31 @@
+import Foundation
+import SwiftData
+
+extension {{entity}}ListViewModel {
+    func duplicate(_ item: {{entity}}) {
+        let copy = {{entity}}(
+            {{#fields}}
+    {{#isId}}{{! ignore id field }}{{/isId}}
+    {{^isId}}{{name}}: item.{{name}},{{/isId}}
+{{/fields}}
+        )
+
+        {{#fields}}
+    {{#isId}}copy.{{name}} = UUID().uuidString{{/isId}}
+{{/fields}}
+
+{{#fields}}
+    {{#nameEqualsReference}}copy.reference = copy.id{{/nameEqualsReference}}
+{{/fields}}
+
+        copy.status = .create
+        copy.user = user
+
+        modelContext.insert(copy)
+        saveContext()
+
+        DispatchQueue.main.async {
+            self.entities.insert(copy, at: 0)
+        }
+    }
+}

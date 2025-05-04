@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-struct {{entity}}FormView: View {
+struct {{entity}}EditView: View {
     @Binding var isPresented: Bool
     @Binding var entity: {{entity}}?
     var viewModel: {{entity}}ListViewModel
@@ -15,10 +15,10 @@ struct {{entity}}FormView: View {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
-                        {{^readOnly}}
-                        {{> SwiftFieldInput }}
-                        {{/readOnly}}
-                    {{/fields}}
+    {{^readOnly}}
+        {{> SwiftFieldInput }}
+    {{/readOnly}}
+{{/fields}}
                 }
 
                 Section {
@@ -52,7 +52,7 @@ struct {{entity}}FormView: View {
             viewModel.createEntity(
                 {{#fields}}
     {{^isId}}
-    {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
+        {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
              {{/isId}}   {{/fields}}
             )
         }
@@ -70,6 +70,4 @@ struct {{entity}}FormView: View {
 {{/fields}}
         }
     }
-
-
 }

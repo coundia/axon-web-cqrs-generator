@@ -11,6 +11,14 @@ let username: String
 @Published var isLoading: Bool = false
 @Published var showSuccessToast = false
 @Published var showErrorToast = false
+@Published var searchText: String = ""
+@Published var searchCriteria: {{entity}}SearchCriteria = .name
+@Published var showAdd{{entity}}Sheet = false
+@Published var showExportSheet = false
+@Published var showSyncToCloudSheet = false
+@Published var showAddSearchSheet = false
+@Published var showSettingsSheet = false
+
 
 init(modelContext: ModelContext, user: User) {
 self.modelContext = modelContext

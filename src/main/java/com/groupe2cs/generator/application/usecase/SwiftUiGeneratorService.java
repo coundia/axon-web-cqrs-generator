@@ -25,7 +25,7 @@ public class SwiftUiGeneratorService {
 
 		String entity = definition.getName();
 
-		List<SharedTemplate> templates = List.of(
+		List<SharedTemplate> templates = new ArrayList<>(List.of(
 				new SharedTemplate(entity, "front/swift/model.mustache", null, outputDir + "/Models", null, ".swift"),
 				new SharedTemplate(entity + "DeltaDto",
 						"front/swift/entityDeltaDto.mustache",
@@ -109,35 +109,159 @@ public class SwiftUiGeneratorService {
 						null,
 						".swift")
 				,
-				new SharedTemplate("Api"+entity ,
+				new SharedTemplate("Api" + entity,
 						"front/swift/apiEntity.mustache",
 						null,
 						outputDir + "/Models",
 						null,
 						".swift")
 				,
-				new SharedTemplate(entity+"HeaderView" ,
+				new SharedTemplate(entity + "HeaderView",
 						"front/swift/entityHeaderView.mustache",
 						null,
 						outputDir + "/Views",
 						null,
 						".swift")
 				,
-				new SharedTemplate(entity+"SyncModel" ,
+				new SharedTemplate(entity + "SyncModel",
 						"front/swift/syncModel.mustache",
 						null,
 						outputDir + "/Models",
 						null,
 						".swift")
 				,
-				new SharedTemplate(entity+"TrashListViewModel" ,
+				new SharedTemplate(entity + "TrashListViewModel",
 						"front/swift/entityTrashListViewModel.mustache",
 						null,
 						outputDir + "/Models",
 						null,
 						".swift")
+				,
+				new SharedTemplate(entity + "DuplicateViewModel",
+						"front/swift/models/duplicateViewModel.mustache",
+						null,
+						outputDir + "/Models",
+						null,
+						".swift")
+				,
+				new SharedTemplate(entity + "DetailsView",
+						"front/swift/views/detailsView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
 
-		);
+				,
+				new SharedTemplate(entity + "DuplicateView",
+						"front/swift/views/duplicateEntityView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "EditView",
+						"front/swift/views/editEntityView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "EmptyStateView",
+						"front/swift/views/emptyStateView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "GroupHeaderView",
+						"front/swift/views/groupHeaderView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "IndicatorView",
+						"front/swift/views/indicatorView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "ListContentView",
+						"front/swift/views/listContentView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "MenuView",
+						"front/swift/views/menuView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "SearchView",
+						"front/swift/views/searchEntityView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+				,
+				new SharedTemplate(entity + "SummaryHeaderView",
+						"front/swift/views/summaryHeaderView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+
+				,
+				new SharedTemplate(entity + "TrashContentView",
+						"front/swift/views/trashContentView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+
+				,
+				new SharedTemplate(entity + "TrashView",
+						"front/swift/views/entityTrashView.mustache",
+						null,
+						outputDir + "/Views",
+						null,
+						".swift")
+
+
+				,
+				new SharedTemplate("CommunBuilderView",
+						"front/swift/views/builderView.mustache",
+						null,
+						Utils.getParent(outputDir) + "/Views",
+						null,
+						".swift")
+
+
+				,
+				new SharedTemplate(entity + "SearchCriteria",
+						"front/swift/models/searchCriteria.mustache",
+						null,
+						outputDir + "/Models",
+						null,
+						".swift")
+
+
+		));
+
 
 		return Flux.fromIterable(templates)
 				.doOnNext(t -> generateFile(t, definition))

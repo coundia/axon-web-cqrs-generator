@@ -1,0 +1,97 @@
+import SwiftUI
+
+struct {{entity}}ListHeaderView: View {
+    @EnvironmentObject var appState: AppState
+    var viewModel: {{entity}}ListViewModel
+
+    @State private var showBalancePopup = false
+    @State private var showAddSearchSheet = false
+    @State private var showSettingsSheet = false
+    @State private var showAdd{{entity}}Sheet = false
+    @State private var showExportSheet = false
+    @State private var showChartView = false
+    @State private var showSyncToNotionSheet = false
+    @State private var showAddBalancePopup = false
+    @State private var showSyncToCloudSheet = false
+
+    @State private var searchText = ""
+    @State private var searchCriteria: {{entity}}SearchCriteria = .name
+
+    @State private var balanceList: [Balance] = []
+    @State private var showSaveConfirmationDialog: Bool = false
+
+    @Environment(\.modelContext) private var modelContext
+
+    var body: some View {
+        HStack {
+            Group {
+                if let selectedBalance = appState.selectedBalance {
+                    Button {
+                        showBalancePopup = true
+                    } label: {
+                        VStack(spacing: 4) {
+                            Text(selectedBalance.name)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text("\(selectedBalance.currentBalance, specifier: "%.0f") \(selectedBalance.currency)")
+                                .font(.headline)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                } else {
+                    Button("Select Balance") {
+                        showBalancePopup = true
+                    }
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+
+            Menu {
+                Button {
+                    showAddSearchSheet.toggle()
+                } label: {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
+                Button {
+                    showSettingsSheet.toggle()
+                } label: {
+                    Label("Filters & Sort", systemImage: "slider.horizontal.3")
+                }
+                Button {
+                    showExportSheet.toggle()
+                } label: {
+                    Label("Export", systemImage: "square.and.arrow.down")
+                }
+                Button {
+                    showChartView.toggle()
+                } label: {
+                    Label("Chart", systemImage: "chart.bar.fill")
+                }
+                Button {
+                    showSyncToCloudSheet.toggle()
+                } label: {
+                    Label("Sync to cloud", systemImage: "arrow.triangle.2.circlepath")
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .font(.title2)
+            }
+        }
+        .padding()
+
+        .sheet(isPresented: $showAddSearchSheet) {
+            Search{{entity}}View(
+                isPresented: $showAddSearchSheet,
+                searchText: $searchText,
+                searchCriteria: $searchCriteria,
+                onSearch: {
+                    viewModel.searchText = searchText
+                    viewModel.searchCriteria = searchCriteria
+                    viewModel.fetchEntities()
+                }
+            )
+        }
+    }
+}

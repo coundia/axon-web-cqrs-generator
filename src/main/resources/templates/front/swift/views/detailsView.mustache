@@ -1,0 +1,28 @@
+import SwiftUI
+import SwiftData
+
+struct {{entity}}DetailsView: View {
+    let entity: {{entity}}
+
+    var body: some View {
+        Form {
+            Section(header: Text("{{entity}} Details")) {
+                {{#fields}}
+                detailRow(title: "{{name}}", value: {{> SwiftFieldDisplayValue }})
+                {{/fields}}
+            }
+        }
+        .navigationTitle("{{entity}} Info")
+    }
+
+    @ViewBuilder
+    private func detailRow(title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .fontWeight(.semibold)
+            Spacer()
+            Text(value)
+                .foregroundColor(.secondary)
+        }
+    }
+}

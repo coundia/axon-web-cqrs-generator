@@ -4,26 +4,41 @@ import SwiftData
 struct {{entity}}ListView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: {{entity}}ListViewModel
-    @State private var showForm: Bool = false
+    @State private var showForm = false
     @State private var selected: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
 
     init(modelContext: ModelContext, user: User) {
-        _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
+        _viewModel = StateObject(
+            wrappedValue: {{entity}}ListViewModel(
+                modelContext: modelContext,
+                user: user
+            )
+        )
     }
 
     var body: some View {
         NavigationView {
             ZStack {
                 if showingTrash {
-                    trashList
+                    {{entity}}TrashContentView(viewModel: viewModel)
                 } else {
-                    {{entityLowerCase}}List
+                    {{entity}}ListContentView(
+                        {{entityLowerCase}}s: viewModel.entities,
+                        onSelect: { item in
+                            selected = item
+                            showForm = true
+                        },
+                        onDelete: viewModel.markDeleted,
+                        onAdd: { showForm = true },
+                        onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
+                        onDuplicate: viewModel.duplicate
+                    )
                 }
 
                 if isSyncing {
-                    ProgressView("Syncing...")
+                    ProgressView("Syncing…")
                         .padding()
                         .background(.ultraThinMaterial)
                         .cornerRadius(12)
@@ -32,54 +47,22 @@ struct {{entity}}ListView: View {
 
                 if viewModel.showSuccessToast {
                     ToastView(message: "✅ Sync successful", color: .green)
-                        .transition(.opacity)
                 }
-
                 if viewModel.showErrorToast {
-                    ToastView(message: "❌ \(viewModel.errorMessage ?? "Unknown error")", color: .red)
-                        .transition(.opacity)
+                    ToastView(
+                        message: "❌ \(viewModel.errorMessage ?? "Unknown error")",
+                        color: .red
+                    )
                 }
             }
             .navigationTitle(showingTrash ? "Corbeille" : "{{entity}}s")
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button {
-                        withAnimation {
-                            showingTrash.toggle()
-                            if showingTrash {
-                                viewModel.fetchTrashed()
-                            } else {
-                                viewModel.fetchEntities()
-                            }
-                        }
-                    } label: {
-                        Image(systemName: showingTrash ? "tray.fill" : "trash")
-                    }
-
-                    if !showingTrash {
-                        Button {
-                            Task {
-                                isSyncing = true
-                                do {
-                                    try await viewModel.pullThenSyncEntities()
-                                } catch {
-                                    viewModel.errorMessage = error.localizedDescription
-                                    viewModel.showErrorToast = true
-                                }
-                                isSyncing = false
-                            }
-                        } label: {
-                            Image(systemName: "arrow.triangle.2.circlepath")
-                        }
-
-                        Button {
-                            selected = nil
-                            showForm = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
+                {{entity}}MenuView(
+                    showingTrash: $showingTrash,
+                    isSyncing: $isSyncing,
+                    showForm: $showForm,
+                    syncAction: viewModel.pullThenSyncEntities
+                )
             }
             .sheet(isPresented: $showForm, onDismiss: {
                 viewModel.fetchEntities()
@@ -90,87 +73,21 @@ struct {{entity}}ListView: View {
                     viewModel: viewModel
                 )
             }
-            .onAppear {
-                viewModel.fetchEntities()
-            }.onChange(of: viewModel.showSuccessToast) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    viewModel.showSuccessToast = false
+            .onAppear { viewModel.fetchEntities() }
+            .onChange(of: viewModel.showSuccessToast) { value in
+                if value {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        viewModel.showSuccessToast = false
+                    }
                 }
             }
-            .onChange(of: viewModel.showErrorToast) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    viewModel.showErrorToast = false
+            .onChange(of: viewModel.showErrorToast) { value in
+                if value {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        viewModel.showErrorToast = false
+                    }
                 }
             }
-
         }
-    }
-
-    private var {{entityLowerCase}}List: some View {
-        List {
-            EntityHeaderView(
-                title: "Indicators",
-                indicators: [
-                    {{#fields}}
-    {{#indicators}}
-        {{#hasSum}}
-                    "Total {{nameLowerCase}}": "\(viewModel.entities.reduce(0) { $0 + $1.{{name}} })",
-                    {{/hasSum}}
-    {{/indicators}}
-{{/fields}}
-                ]
-            )
-
-            ForEach(viewModel.entities.filter { $0.deletedAt == nil }, id: \.id) { item in
-                {{entity}}RowView(entity: item)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selected = item
-                        showForm = true
-                    }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            withAnimation {
-                                viewModel.markDeleted(item)
-                            }
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        .tint(.red)
-                    }
-            }
-        }
-        .listStyle(.insetGrouped)
-        .refreshable {
-            await viewModel.pullThenSyncEntities()
-        }
-    }
-
-    private var trashList: some View {
-        List {
-            ForEach(viewModel.entities.filter { $0.deletedAt != nil }, id: \.id) { item in
-                {{entity}}RowView(entity: item)
-                    .opacity(0.6)
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            withAnimation {
-                                viewModel.restore(item)
-                            }
-                        } label: {
-                            Label("Restore", systemImage: "arrow.uturn.left")
-                        }
-                        .tint(.green)
-
-                        Button(role: .destructive) {
-                            withAnimation {
-                                viewModel.purge(item)
-                            }
-                        } label: {
-                            Label("Permanently Delete", systemImage: "trash.slash")
-                        }
-                    }
-            }
-        }
-        .listStyle(.insetGrouped)
     }
 }

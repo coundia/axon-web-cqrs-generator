@@ -1,0 +1,23 @@
+import SwiftUI
+
+struct {{entity}}EmptyStateView: View {
+    let onAdd: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "tray")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.gray.opacity(0.6))
+            Text("No {{entity}}s yet")
+                .font(.headline)
+                .foregroundColor(.secondary)
+            Button("Add {{entity}}") {
+                onAdd()
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}

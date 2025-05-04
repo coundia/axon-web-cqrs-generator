@@ -1,0 +1,88 @@
+import SwiftUI
+import SwiftData
+
+struct MonthSelectorView: View {
+    @Binding var selectedMonth: Date
+    private let calendar = Calendar.current
+
+    private func startOfMonth(for date: Date) -> Date {
+        let components = calendar.dateComponents([.year, .month], from: date)
+        return calendar.date(from: components) ?? date
+    }
+
+    private var previousMonth: Date {
+        calendar.date(byAdding: .month, value: -1, to: startOfMonth(for: selectedMonth)) ?? selectedMonth
+    }
+
+    private var nextMonth: Date {
+        calendar.date(byAdding: .month, value: 1, to: startOfMonth(for: selectedMonth)) ?? selectedMonth
+    }
+
+    private func monthString(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM yyyy"
+        return formatter.string(from: date)
+    }
+
+    var body: some View {
+        HStack(spacing: 20) {
+            Button(action: {
+                withAnimation {
+                    selectedMonth = previousMonth
+                }
+            }) {
+                HStack {
+                    Image(systemName: "chevron.left")
+                    VStack(spacing: 2) {
+                        Text("Previous")
+                            .font(.caption2)
+                        Text(monthString(for: previousMonth))
+                            .font(.caption2)
+                    }
+                }
+                .padding(8)
+                .background(Color.blue.opacity(0.15))
+                .cornerRadius(8)
+            }
+
+            Button(action: {
+                withAnimation {
+                    selectedMonth = startOfMonth(for: Date())
+                }
+            }) {
+                HStack {
+                    Image(systemName: "house.fill")
+                    VStack(spacing: 2) {
+                        Text("Current")
+                            .font(.caption2)
+                        Text(monthString(for: startOfMonth(for: Date())))
+                            .font(.caption2)
+                    }
+                }
+                .padding(8)
+                .background(Color.green.opacity(0.15))
+                .cornerRadius(8)
+            }
+
+            Button(action: {
+                withAnimation {
+                    selectedMonth = nextMonth
+                }
+            }) {
+                HStack {
+                    VStack(spacing: 2) {
+                        Text("Next")
+                            .font(.caption2)
+                        Text(monthString(for: nextMonth))
+                            .font(.caption2)
+                    }
+                    Image(systemName: "chevron.right")
+                }
+                .padding(8)
+                .background(Color.purple.opacity(0.15))
+                .cornerRadius(8)
+            }
+        }
+        .padding(.horizontal)
+    }
+}

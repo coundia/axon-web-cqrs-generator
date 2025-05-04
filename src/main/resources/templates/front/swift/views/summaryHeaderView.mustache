@@ -1,0 +1,49 @@
+import SwiftUI
+
+struct {{entity}}SummaryView: View {
+    let {{entityLowerCase}}s: [{{entity}}]
+    let defaultCurrency: String
+
+    private var totalType1: Double {
+        {{entityLowerCase}}s
+            .filter { $0.type{{entity}} == .type1 }
+            .reduce(0) { $0 + $1.amount }
+    }
+
+    private var totalType2: Double {
+        {{entityLowerCase}}s
+            .filter { $0.type{{entity}} == .type2 }
+            .reduce(0) { $0 + $1.amount }
+    }
+
+    private var difference: Double {
+        totalType2 - totalType1
+    }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text("Total Type1:")
+                Spacer()
+                Text("\(totalType1, format: .currency(code: defaultCurrency))")
+            }
+            HStack {
+                Text("Total Type2:")
+                Spacer()
+                Text("\(totalType2, format: .currency(code: defaultCurrency))")
+            }
+            Divider()
+            HStack {
+                Text("Difference:")
+                    .fontWeight(.bold)
+                Spacer()
+                Text("\(difference, format: .currency(code: defaultCurrency))")
+                    .fontWeight(.bold)
+            }
+        }
+        .padding()
+        .background(Color(UIColor.secondarySystemBackground))
+        .cornerRadius(8)
+        .padding(.horizontal)
+    }
+}

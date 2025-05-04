@@ -1,0 +1,43 @@
+import SwiftUI
+import SwiftData
+
+struct Search{{entity}}View: View {
+    @Binding var isPresented: Bool
+    @Binding var searchText: String
+    @Binding var searchCriteria: {{entity}}SearchCriteria
+    var onSearch: () -> Void
+
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Search {{entity}}s")) {
+                    TextField("Enter search text", text: $searchText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    Picker("Search By", selection: $searchCriteria) {
+                        ForEach({{entity}}SearchCriteria.allCases) { criteria in
+                            Text(criteria.rawValue).tag(criteria)
+                        }
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                }
+            }
+            .navigationTitle("Search")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Search") {
+                        onSearch()
+                        isPresented = false
+                    }
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}

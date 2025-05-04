@@ -1,0 +1,37 @@
+import SwiftUI
+
+struct {{entity}}MenuView: View {
+    @Binding var showingTrash: Bool
+    @Binding var isSyncing: Bool
+    @Binding var showForm: Bool
+    let syncAction: () async -> Void
+
+    var body: some View {
+        Menu {
+            Button {
+                withAnimation { showingTrash.toggle() }
+            } label: {
+                Label(showingTrash ? "Show Active" : "Show Trash", systemImage: "tray")
+            }
+
+            if !showingTrash {
+                Button {
+                    Task {
+                        isSyncing = true
+                        await syncAction()
+                        isSyncing = false
+                    }
+                } label: {
+                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                }
+
+                Button { showForm = true } label: {
+                    Label("Add {{entity}}", systemImage: "plus")
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+                .font(.title2)
+        }
+    }
+}

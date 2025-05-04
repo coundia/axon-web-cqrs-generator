@@ -1,0 +1,18 @@
+import SwiftUI
+import SwiftData
+
+public func textField(_ label: String, text: Binding<String>) -> some View {
+    TextField(label, text: text)
+}
+
+public func doubleField(_ label: String, value: Binding<Double>) -> some View {
+    TextField(label, value: value, format: .number)
+}
+
+public func intField(_ label: String, value: Binding<Int>) -> some View {
+    TextField(label, value: value, format: .number)
+}
+
+public func dateField(_ label: String, date: Binding<Date>) -> some View {
+    DatePicker(label, selection: date, displayedComponents: .date)
+}

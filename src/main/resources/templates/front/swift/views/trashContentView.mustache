@@ -1,0 +1,50 @@
+import SwiftUI
+
+struct {{entity}}TrashContentView: View {
+    @ObservedObject var viewModel: {{entity}}ListViewModel
+
+    private var trashed{{entity}}s: [{{entity}}] {
+        viewModel.entities.filter { $0.deletedAt != nil }
+    }
+
+    var body: some View {
+        Group {
+            if trashed{{entity}}s.isEmpty {
+                VStack(spacing: 20) {
+                    Image(systemName: "tray")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .foregroundColor(.gray.opacity(0.6))
+
+                    Text("Nothing in trash")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                List {
+                    ForEach(trashed{{entity}}s, id: \.id) { {{entityLowerCase}} in
+                        {{entity}}RowView(entity: {{entityLowerCase}})
+                            .opacity(0.6)
+                            .swipeActions {
+                                Button {
+                                    withAnimation { viewModel.restore({{entityLowerCase}}) }
+                                } label: {
+                                    Label("Restore", systemImage: "arrow.uturn.left")
+                                }
+                                .tint(.green)
+
+                                Button(role: .destructive) {
+                                    withAnimation { viewModel.purge({{entityLowerCase}}) }
+                                } label: {
+                                    Label("Permanently Delete", systemImage: "trash.slash")
+                                }
+                            }
+                    }
+                }
+                .listStyle(.insetGrouped)
+            }
+        }
+    }
+}
