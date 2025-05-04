@@ -3,17 +3,43 @@ import SwiftData
 
 struct {{entity}}DetailsView: View {
     let entity: {{entity}}
+    var onEdit: (() -> Void)? = nil
+    var onDelete: (() -> Void)? = nil
+    var onDuplicate: (() -> Void)? = nil
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Spacer()
+                HStack(spacing: 12) {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
                             .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    if let onEdit = onEdit {
+                        Button(action: onEdit) {
+                            Label("Edit", systemImage: "pencil")
+                                .font(.subheadline)
+                        }
+                    }
+
+                    if let onDuplicate = onDuplicate {
+                        Button(action: onDuplicate) {
+                            Label("Duplicate", systemImage: "doc.on.doc")
+                                .font(.subheadline)
+                        }
+                    }
+
+                    if let onDelete = onDelete {
+                        Button(role: .destructive, action: onDelete) {
+                            Label("Delete", systemImage: "trash")
+                                .font(.subheadline)
+                        }
                     }
                 }
 
@@ -23,13 +49,13 @@ struct {{entity}}DetailsView: View {
 
                 {{#fields}}
                 {{#displayName}}
-                    detailRow(
-                        title: "{{displayName}}",
-                        value: {{> SwiftFieldDisplayValue }}
-                    )
-                    Divider()
+                detailRow(
+                    title: "{{displayName}}",
+                    value: {{> SwiftFieldDisplayValue }}
+                )
+                Divider()
                 {{/displayName}}
-                {{/fields}}
+            {{/fields}}
             }
             .padding()
             .background(

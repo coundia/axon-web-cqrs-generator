@@ -7,10 +7,11 @@ struct {{entity}}ListView: View {
     @State private var showForm = false
     @State private var showDuplicate = false
     @State private var showDetails = false
+    @State private var selected: {{entity}}? = nil
+    @State private var selectedForEdit: {{entity}}? = nil
     @State private var selectedForDetails: {{entity}}? = nil
     @State private var selectedForDuplicate: {{entity}}? = nil
-    @State private var selected: {{entity}}? = nil
-    @State private var confirmDelete: {{entity}}? = nil
+    @State private var selectedForDelete: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
 
@@ -32,7 +33,7 @@ struct {{entity}}ListView: View {
                     {{entity}}ListContentView(
                         {{entityLowerCase}}s: viewModel.entities,
                         onSelect: { item in selectedForDetails = item },
-                        onDelete: { item in confirmDelete = item },
+                        onDelete: { item in selectedForDelete = item },
                         onAdd: { showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
                         onDuplicate: { item in selectedForDuplicate = item }
@@ -52,8 +53,8 @@ struct {{entity}}ListView: View {
                 }
                 if viewModel.showErrorToast {
                     ToastView(
-                        message: "❌ \(viewModel.errorMessage ?? "Unknown error")",
-                        color: .red
+                        message: "\(viewModel.errorMessage ?? "Unknown error")",
+                        color: .yellow
                     )
                 }
             }
@@ -79,48 +80,47 @@ struct {{entity}}ListView: View {
                 viewModel.fetchEntities()
             }) {
                 if let item = selectedForDuplicate {
-                    Duplicate{{entity}}View(original: item, onSave: { newItem in
+                    Duplicate{{entity}}View(original: item) { newItem in
                         viewModel.insertDuplicated(newItem)
-                    })
+                    }
                 }
             }
             .sheet(isPresented: $showDetails) {
                 if let item = selectedForDetails {
-                    {{entity}}DetailsView(entity: item)
+                    {{entity}}DetailsView(
+                        entity: item,
+                        onEdit: {
+                            selected = item
+                            showForm = true
+                        },
+                        onDelete: {
+                            selectedForDelete = item
+                        },
+                        onDuplicate: {
+                            selectedForDuplicate = item
+                        }
+                    )
                 }
             }
-            .confirmationDialog(
-                "Are you sure you want to delete this item?",
-                isPresented: Binding<Bool>(
-                    get: { confirmDelete != nil },
-                    set: { if !$0 { confirmDelete = nil } }
-                ),
-                titleVisibility: .visible
-            ) {
+            .confirmationDialog("Are you sure you want to delete this item?", isPresented: Binding(get: {
+                selectedForDelete != nil
+            }, set: { value in
+                if !value {
+                    selectedForDelete = nil
+                }
+            }), titleVisibility: .visible) {
                 Button("Delete", role: .destructive) {
-                    if let item = confirmDelete {
+                    if let item = selectedForDelete {
                         viewModel.markDeleted(item)
+                        selectedForDelete = nil
                     }
-                    confirmDelete = nil
                 }
                 Button("Cancel", role: .cancel) {
-                    confirmDelete = nil
+                    selectedForDelete = nil
                 }
             }
-            .onAppear { viewModel.fetchEntities() }
-            .onChange(of: viewModel.showSuccessToast) { value in
-                if value {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        viewModel.showSuccessToast = false
-                    }
-                }
-            }
-            .onChange(of: viewModel.showErrorToast) { value in
-                if value {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        viewModel.showErrorToast = false
-                    }
-                }
+            .onAppear {
+                viewModel.fetchEntities()
             }
             .onChange(of: selectedForDetails) { value in
                 if value != nil {
