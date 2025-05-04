@@ -33,7 +33,10 @@ struct {{entity}}ListView: View {
                         {{entityLowerCase}}s: viewModel.entities,
                         onSelect: { item in selectedForDetails = .init(item) },
                         onDelete: { item in selectedForDelete = item },
-                        onAdd: { showForm = true },
+                        onAdd: {
+                            selected = nil
+                            showForm = true
+                        },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
                         onDuplicate: { item in selectedForDuplicate = .init(item) },
                         onEdit: { item in
@@ -82,6 +85,7 @@ struct {{entity}}ListView: View {
                 )
             }
             .sheet(isPresented: $showForm, onDismiss: {
+                  selected = nil
                 viewModel.fetchEntities()
             }) {
                 {{entity}}FormView(

@@ -6,7 +6,7 @@ struct EntityHeaderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            Text("")
                 .font(.headline)
             ForEach(indicators.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
                 Text("🔢 \(key.capitalized): \(value)")
