@@ -5,8 +5,13 @@ extension {{entity}}ListViewModel {
 
     @MainActor
     func markDeleted(_ item: {{entity}}) {
+
+    print("[markDeleted]  \(item.id) ")
+
         if item.statusRaw == {{entity}}Status.delete.rawValue || item.remoteId == nil {
             purge(item)
+            saveContext()
+            fetchEntities()
             return
         }
 
@@ -21,6 +26,9 @@ extension {{entity}}ListViewModel {
 
     @MainActor
     func restore(_ item: {{entity}}) {
+
+        print("[restore]  \(item.id) ")
+
         item.deletedAt  = nil
         item.status     = .create
         item.updatedAt  = Date()
@@ -31,6 +39,9 @@ extension {{entity}}ListViewModel {
 
     @MainActor
     func purge(_ item: {{entity}}) {
+
+        print("[purge]  \(item.id) ")
+
         modelContext.delete(item)
         saveContext()
 
@@ -39,6 +50,9 @@ extension {{entity}}ListViewModel {
 
     @MainActor
     func fetchTrashed() {
+
+    print("[fetchTrashed]  ")
+
         isLoading = true
         let descriptor = FetchDescriptor<{{entity}}>(
             predicate: #Predicate { $0.user?.username == username && $0.deletedAt != nil },

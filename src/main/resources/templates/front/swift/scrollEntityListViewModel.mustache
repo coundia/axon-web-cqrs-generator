@@ -2,37 +2,39 @@ import SwiftData
 import Foundation
 
 extension {{entity}}ListViewModel {
-func loadMore{{entity}}sIfNeeded(current item: {{entity}}) {
-print("[loadMore{{entity}}sIfNeeded]")
-guard let last = entities.last, last.id == item.id else { return }
-loadMore{{entity}}s()
-}
 
-func loadMore{{entity}}s() {
-print("[loadMore{{entity}}s]")
-guard !isLoading else { return }
-isLoading = true
+    func loadMore{{entity}}sIfNeeded(current item: {{entity}}) {
 
-let currentCount = entities.count
-let pageSize = 5
+    print("[loadMore{{entity}}sIfNeeded]")
+    guard let last = entities.last, last.id == item.id else { return }
+    loadMore{{entity}}s()
+    }
 
-var descriptor = FetchDescriptor<{{entity}}>(
-predicate: #Predicate {
-$0.user?.username == username && $0.statusRaw != "DELETE"
-},
-sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
-)
+    func loadMore{{entity}}s() {
+        print("[loadMore{{entity}}s]")
+        guard !isLoading else { return }
+        isLoading = true
 
-descriptor.fetchOffset = currentCount
-descriptor.fetchLimit = pageSize
+        let currentCount = entities.count
+        let pageSize = 5
 
-do {
-let newItems = try modelContext.fetch(descriptor)
-entities.append(contentsOf: newItems)
-} catch {
-errorMessage = error.localizedDescription
-}
+        var descriptor = FetchDescriptor<{{entity}}>(
+        predicate: #Predicate {
+         $0.user?.username == username && $0.statusRaw != "DELETE"
+        },
+         sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
 
-isLoading = false
-}
+        descriptor.fetchOffset = currentCount
+        descriptor.fetchLimit = pageSize
+
+        do {
+                let newItems = try modelContext.fetch(descriptor)
+                entities.append(contentsOf: newItems)
+            } catch {
+                 errorMessage = error.localizedDescription
+            }
+
+            isLoading = false
+        }
 }
