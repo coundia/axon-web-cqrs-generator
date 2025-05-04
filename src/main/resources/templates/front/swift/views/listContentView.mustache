@@ -17,7 +17,7 @@ struct {{entity}}ListContentView: View {
         } else {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    EntityHeaderView(
+                    {{entity}}HeaderView(
                         title: "Indicators",
                         indicators: [
                             "Total count": "\(active.count)"

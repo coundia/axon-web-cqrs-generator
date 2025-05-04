@@ -5,15 +5,23 @@ struct {{entity}}SummaryView: View {
     let defaultCurrency: String
 
     private var totalType1: Double {
-        {{entityLowerCase}}s
+      //todo
+      /*  {{entityLowerCase}}s
             .filter { $0.type{{entity}} == .type1 }
             .reduce(0) { $0 + $1.amount }
+
+            */
+             return 0.0
     }
 
     private var totalType2: Double {
+    //todo
+    /*
         {{entityLowerCase}}s
             .filter { $0.type{{entity}} == .type2 }
             .reduce(0) { $0 + $1.amount }
+            */
+            return 0.0
     }
 
     private var difference: Double {

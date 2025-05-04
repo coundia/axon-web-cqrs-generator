@@ -9,13 +9,15 @@ Content-Type: application/json
   "definition": {
 	"name": "Product",
 	"table": "products",
+	"title": "Product Management",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
-	  { "name": "reference", "type": "String", "unique": true },
-	  { "name": "price", "type": "Double" },
-	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-	  { "name": "details", "type": "String", "unique": true, "nullable": true
+	  { "name": "name", "type": "String", "displayName": "Name"},
+	  { "name": "price", "type": "Double",
+		"defaultValue": 0.0, "displayName": "Price"
+	  },
+	  { "name": "details", "type": "String",
+        "nullable": true,"defaultValue": "\"NA\""
 	  },
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]
