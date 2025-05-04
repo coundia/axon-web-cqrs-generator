@@ -38,6 +38,12 @@ Content-Type: application/json
 		"displayName": "Activé",
 		"type": "Boolean",
 		"defaultValue": true
+	  },
+	  {
+		"name": "product",
+		"type": "Product",
+        "relation": "manyToOne",
+		"displayName": "Product"
 	  }
 	]
   }
