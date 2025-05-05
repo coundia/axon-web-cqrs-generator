@@ -5,11 +5,12 @@ struct {{entity}}FormView: View {
     @Binding var isPresented: Bool
     @Binding var entity: {{entity}}?
     var viewModel: {{entity}}ListViewModel
-
     {{#fields}}
-    @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
-{{/fields}}
-
+        @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+        {{#isManyToOne}}
+        @State private var show{{entityType}}Picker = false
+        {{/isManyToOne}}
+    {{/fields}}
     var body: some View {
         NavigationView {
             Form {
@@ -20,7 +21,6 @@ struct {{entity}}FormView: View {
                         {{/readOnly}}
                     {{/fields}}
                 }
-
                 Section {
                     Button("Save", action: handleSave)
                         .frame(maxWidth: .infinity)

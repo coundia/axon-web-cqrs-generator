@@ -2,7 +2,12 @@ import Foundation
 
 struct {{entity}}DeltaDto: Codable {
 {{#fields}}
+{{^isManyToOne}}
 	let {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{^nullable}}{{/nullable}}
+{{/isManyToOne}}
+{{#isManyToOne}}
+    let {{name}}: String?
+{{/isManyToOne}}
 {{/fields}}
 let type: String
 }

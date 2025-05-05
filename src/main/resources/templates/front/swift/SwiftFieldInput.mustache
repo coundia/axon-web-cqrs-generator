@@ -1,44 +1,66 @@
 {{#isText}}
     {{#nullable}}
-textField("{{name}}", text: Binding(get: { {{name}} ?? "" }, set: { {{name}} = $0 }))
-{{/nullable}}
+textField("{{displayName}}", text: Binding(get: { {{name}} ?? "" }, set: { {{name}} = $0 }))
+    {{/nullable}}
     {{^nullable}}
-textField("{{name}}", text: ${{name}})
-{{/nullable}}
+textField("{{displayName}}", text: ${{name}})
+    {{/nullable}}
 {{/isText}}
 
 {{#isDouble}}
     {{#nullable}}
-doubleField("{{name}}", value: Binding(get: { {{name}} ?? 0.0 }, set: { {{name}} = $0 }))
-{{/nullable}}
+doubleField("{{displayName}}", value: Binding(get: { {{name}} ?? 0.0 }, set: { {{name}} = $0 }))
+    {{/nullable}}
     {{^nullable}}
-doubleField("{{name}}", value: ${{name}})
-{{/nullable}}
+doubleField("{{displayName}}", value: ${{name}})
+    {{/nullable}}
 {{/isDouble}}
 
 {{#isInt}}
     {{#nullable}}
-intField("{{name}}", value: Binding(get: { {{name}} ?? 0 }, set: { {{name}} = $0 }))
-{{/nullable}}
+intField("{{displayName}}", value: Binding(get: { {{name}} ?? 0 }, set: { {{name}} = $0 }))
+    {{/nullable}}
     {{^nullable}}
-intField("{{name}}", value: ${{name}})
-{{/nullable}}
+intField("{{displayName}}", value: ${{name}})
+    {{/nullable}}
 {{/isInt}}
 
 {{#isBool}}
     {{#nullable}}
-Toggle("{{name}}", isOn: Binding(get: { {{name}} ?? false }, set: { {{name}} = $0 }))
-{{/nullable}}
+Toggle("{{displayName}}", isOn: Binding(get: { {{name}} ?? false }, set: { {{name}} = $0 }))
+    {{/nullable}}
     {{^nullable}}
-Toggle("{{name}}", isOn: ${{name}})
-{{/nullable}}
+Toggle("{{displayName}}", isOn: ${{name}})
+    {{/nullable}}
 {{/isBool}}
 
 {{#isDate}}
     {{#nullable}}
-dateField("{{name}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
-{{/nullable}}
+dateField("{{displayName}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
+    {{/nullable}}
     {{^nullable}}
-dateField("{{name}}", date: ${{name}})
-{{/nullable}}
+dateField("{{displayName}}", date: ${{name}})
+    {{/nullable}}
 {{/isDate}}
+
+{{#isManyToOne}}
+
+HStack {
+    Text("{{displayName}}")
+    Spacer()
+    if let item = {{name}} {
+        Text(item.name).foregroundColor(.secondary)
+    } else {
+        Text("None").foregroundColor(.gray)
+    }
+}
+.onTapGesture {
+    show{{entityType}}Picker = true
+}
+.sheet(isPresented: $show{{entityType}}Picker) {
+    {{entityType}}PickerView(
+        selected{{entityType}}: ${{name}},
+        viewModel: {{entityType}}ListViewModel(modelContext: modelContext, user: viewModel.user)
+    )
+}
+{{/isManyToOne}}

@@ -29,7 +29,16 @@ public class FieldDefinition implements Serializable {
     private Set<String> indicators = new HashSet<>();
     private String displayName;
     private String confidentiel;
+    private String entityType;
 
+    public String getEntityType() {
+
+        if (entityType == null) {
+            return type;
+        }
+
+        return entityType;
+    }
 
     public String getDisplayName() {
         if (displayName == null) {
@@ -227,4 +236,15 @@ public class FieldDefinition implements Serializable {
                 ", relation='" + relation + '\'' +
                 '}';
     }
+
+
+    public Boolean isManyToOne() {
+        if (relation == null) {
+            return false;
+        }
+        return this.getRelation().toLowerCase().contains("manytoone");
+    }
+
+
+
 }

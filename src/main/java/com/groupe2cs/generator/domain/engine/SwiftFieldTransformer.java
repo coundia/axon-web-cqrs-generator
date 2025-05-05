@@ -48,6 +48,9 @@ public class SwiftFieldTransformer {
 
 			f.put("displayName", field.getDisplayName());
 			f.put("label", field.getLabel());
+			f.put("isManyToOne", field.isManyToOne());
+
+			f.put("entityType", field.getEntityType());
 
 			result.add(f);
 		}
@@ -57,6 +60,7 @@ public class SwiftFieldTransformer {
 
 
 	private static String toSwiftType(String type) {
+
 		return switch (type.toLowerCase()) {
 			case "string", "uuid" -> "String";
 			case "int", "integer" -> "Int";

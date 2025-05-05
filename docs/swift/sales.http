@@ -1,5 +1,3 @@
-###
-
 POST http://127.0.0.1:8071/api/v1/generator/swiftui
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -41,9 +39,11 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "product",
-		"type": "Product",
+		"type": "String",
+		"displayName": "Product",
         "relation": "manyToOne",
-		"displayName": "Product"
+        "entityType": "Product",
+		"nullable": true
 	  }
 	]
   }
