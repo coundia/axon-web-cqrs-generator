@@ -2,6 +2,8 @@ import SwiftUI
 import SwiftData
 
 struct {{entity}}FormView: View {
+
+ @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var entity: {{entity}}?
     var viewModel: {{entity}}ListViewModel
@@ -9,6 +11,7 @@ struct {{entity}}FormView: View {
         @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
         {{#isManyToOne}}
         @State private var show{{entityType}}Picker = false
+         @State private var selected{{entityType}}: {{entityType}}? = nil
         {{/isManyToOne}}
     {{/fields}}
     var body: some View {

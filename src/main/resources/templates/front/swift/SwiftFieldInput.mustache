@@ -46,9 +46,9 @@ dateField("{{displayName}}", date: ${{name}})
 {{#isManyToOne}}
 
 HStack {
-    Text("{{displayName}}")
+    Text("{{entityType}}")
     Spacer()
-    if let item = {{name}} {
+    if let item = selected{{entityType}} {
         Text(item.name).foregroundColor(.secondary)
     } else {
         Text("None").foregroundColor(.gray)
@@ -57,9 +57,11 @@ HStack {
 .onTapGesture {
     show{{entityType}}Picker = true
 }
-.sheet(isPresented: $show{{entityType}}Picker) {
+.sheet(isPresented: $show{{entityType}}Picker, onDismiss: {
+     product = selected{{entityType}}?.id
+}) {
     {{entityType}}PickerView(
-        selected{{entityType}}: ${{name}},
+        selected{{entityType}}: $selected{{entityType}},
         viewModel: {{entityType}}ListViewModel(modelContext: modelContext, user: viewModel.user)
     )
 }
