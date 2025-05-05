@@ -58,7 +58,7 @@ HStack {
     show{{entityType}}Picker = true
 }
 .sheet(isPresented: $show{{entityType}}Picker, onDismiss: {
-     product = selected{{entityType}}?.id
+     product = selected{{entityType}}?.remoteId
 }) {
     {{entityType}}PickerView(
         selected{{entityType}}: $selected{{entityType}},
