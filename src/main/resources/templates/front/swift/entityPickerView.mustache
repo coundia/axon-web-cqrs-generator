@@ -63,6 +63,9 @@ struct {{entity}}PickerView: View {
                     viewModel: viewModel
                 )
             }
+            onAppear {
+                   viewModel.fetchEntities()
+               }
         }
     }
 }
