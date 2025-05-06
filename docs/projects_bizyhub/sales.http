@@ -15,7 +15,9 @@ Content-Type: application/json
 	  { "name": "amount", "type": "Double" },
 	  { "name": "details", "type": "String", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true },
-      { "name": "product", "type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product", "relation": "manyToOne" }
+      { "name": "product", "type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product", "relation": "manyToOne",
+		"nullable": true
+	  }
 	]
   }
 }

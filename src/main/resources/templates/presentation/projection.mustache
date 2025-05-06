@@ -28,10 +28,10 @@ try {
 {{entity}} entity = {{entity}}.builder()
 {{#editableFields}}
 	{{^isOneToMany}} {{^isManyToOne}}
-		.{{nameLowerCase}}(event.get{{nameCapitalized}}().value())
+		.{{nameLowerCase}}(event.get{{nameCapitalized}}() == null ? null : event.get{{nameCapitalized}}().value())
 	{{/isManyToOne}} {{/isOneToMany}}
 	{{#isManyToOne}}
-		.{{nameLowerCase}}(new {{realType}}(event.get{{nameCapitalized}}().value()))
+		.{{nameLowerCase}}( event.get{{nameCapitalized}}() == null ? null : new {{realType}}(event.get{{nameCapitalized}}().value()))
 	{{/isManyToOne}}
 {{/editableFields}}
 .build();

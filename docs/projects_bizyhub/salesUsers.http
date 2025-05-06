@@ -12,8 +12,8 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 
-	  { "name": "sales", "type": "com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale", "relation": "manyToOne" },
-	  { "name": "users", "aggregate":"User", "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne" },
+	  { "name": "sales", "type": "com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale", "relation": "manyToOne", "nullable": true },
+	  { "name": "users", "aggregate":"User", "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne", "nullable": true },
 
 	  { "name": "details", "type": "String", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
