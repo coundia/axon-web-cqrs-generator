@@ -56,6 +56,7 @@ public class FindAllQueryHandlerGeneratorService {
         context.put("imports", imports);
 
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("shared", definition.getShared());
 
         String content = templateEngine.render("application/findAllQueryHandler.mustache", context);
         fileWriterService.write(outputDir, "FindAll" + definition.getName() + "QueryHandler.java", content);
