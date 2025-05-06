@@ -300,4 +300,17 @@ public class EntityDefinition implements Serializable {
 				.toList();
 	}
 
+	public boolean hasManyToOne(){
+
+		return fields.stream()
+				.filter(f -> f.getRelation() != null)
+				.anyMatch(f -> f.getRelation().equalsIgnoreCase("manyToOne")
+				)
+				&& !name.equalsIgnoreCase("tenant")
+				&& !name.equalsIgnoreCase("createdBy")
+
+				;
+
+	}
+
 }

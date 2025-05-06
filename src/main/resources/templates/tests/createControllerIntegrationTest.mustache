@@ -16,6 +16,14 @@ public class {{name}}CreateControllerIntegrationTest extends BaseIntegrationTest
 @Autowired
 private CommandGateway commandGateway;
 
+
+{{#fields}}
+    {{#hasRepository}}
+@Autowired
+private {{repository}} ;
+{{/hasRepository}}
+{{/fields}}
+
 @Test
 void it_should_be_able_to_add_{{nameLower}}() {
 

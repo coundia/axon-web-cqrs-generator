@@ -19,10 +19,24 @@ private CommandGateway commandGateway;
 @Autowired
 private {{name}}Repository repository;
 
+{{#fields}}
+{{#hasRepository}}
+@Autowired
+private {{repository}} ;
+{{/hasRepository}}
+{{/fields}}
+
 @Test
 void it_should_be_able_to_get_{{nameLower}}_by_id() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser()).getId().value();
+	String existingId = {{name}}Fixtures.randomOneViaCommand(
+	commandGateway,repository,
+	  {{#fields}}
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
+{{/hasRepository}}
+{{/fields}}
+	 getCurrentUser()).getId().value();
 
 	 {{name}}Fixtures.byIdWaitExist(repository, existingId);
 

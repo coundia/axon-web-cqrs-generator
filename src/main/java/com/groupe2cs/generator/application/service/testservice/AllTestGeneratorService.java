@@ -82,10 +82,13 @@ public class AllTestGeneratorService {
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".UserFixtures");
         imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
+        imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getRepositoryPackage()) + ".UserRepository");
+
         imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
-        if(definition.getMultiTenant()){
-            imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures");
-        }
+
+        imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures");
+        imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository");
+
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
         imports.add("java.util.UUID");
 
@@ -95,6 +98,9 @@ public class AllTestGeneratorService {
 
         var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
+
+        context.put("hasManyToOne", definition.hasManyToOne());
+
         context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
         context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 

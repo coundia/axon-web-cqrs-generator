@@ -21,12 +21,33 @@ private CommandGateway commandGateway;
 @Autowired
 private CommandGateway commandGatewayUpdate;
 
+{{#fields}}
+{{#hasRepository}}
+@Autowired
+private {{repository}} ;
+{{/hasRepository}}
+{{/fields}}
 
 @Test
 void it_should_be_able_to_update_{{nameLower}}() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(commandGateway, getCurrentUser() ).getId().value();
-	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate, getCurrentUser());
+	String existingId = {{name}}Fixtures.randomOneViaCommand(
+	commandGateway,{{nameLower}}Repository,
+	  {{#fields}}
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
+    {{/hasRepository}}
+    {{/fields}}
+	 getCurrentUser() ).getId().value();
+
+	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate,
+    {{nameLower}}Repository,
+     {{#fields}}
+        {{#hasRepository}}
+            {{nameUnCapitalized}}DataRepository,
+    {{/hasRepository}}
+    {{/fields}}
+     getCurrentUser());
 
 	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
 	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, updated.getId().value());

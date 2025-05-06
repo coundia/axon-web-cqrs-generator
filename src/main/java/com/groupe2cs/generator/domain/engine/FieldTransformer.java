@@ -63,6 +63,9 @@ public class FieldTransformer {
             f.put("columnDefinition", field.getColumnDefinition());
             f.put("defaultValue", field.getDefaultValue());
 
+            f.put("repository",  field.getRepository());
+            f.put("hasRepository",  field.hasRepository());
+
             result.add(f);
         }
 
@@ -99,12 +102,13 @@ public class FieldTransformer {
         if (field.getRelation()!= null && field.getRelation().equalsIgnoreCase("manyToOne")) {
 
             String typeField = field.getType();
+            String typeFieldLower = Utils.unCapitalize(field.getName());
 
             if(typeField.equalsIgnoreCase("User")) {
-                return "UserFixtures.randomOneViaCommand(commandGateway, user).getId().value()";
+                return "UserFixtures.randomOneViaCommand(commandGateway,"+typeFieldLower+"DataRepository,user).getId().value()";
             }
 
-            return typeField+"Fixtures.randomOneViaCommand(commandGateway, user).getId().value()";
+            return typeField+"Fixtures.randomOneViaCommand(commandGateway,"+typeFieldLower+"DataRepository, user).getId().value()";
         }
 
         if(field.getRelation()!= null && field.getRelation().equalsIgnoreCase("oneToMany")) {
