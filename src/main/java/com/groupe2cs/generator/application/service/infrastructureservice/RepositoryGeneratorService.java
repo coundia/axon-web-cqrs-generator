@@ -75,6 +75,7 @@ public class RepositoryGeneratorService {
         }
 
         context.put("isMultiTenant", definition.getMultiTenant());
+        context.put("shared", definition.getShared());
 
         String content = templateEngine.render("infrastructure/repository.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);

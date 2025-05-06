@@ -40,6 +40,9 @@ struct {{entity}}PickerView: View {
                     }
 
                     Section {
+                        Button("Refresh") {
+                            viewModel.fetchEntities()
+                        }
                         Button("Add New {{entity}}") {
                             showForm = true
                         }

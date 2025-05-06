@@ -7,6 +7,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Sale",
 	"table": "sales",
+    "shared": true,
     "title": "Sales Management",
 	"fields": [
 	  {
@@ -36,14 +37,6 @@ Content-Type: application/json
 		"displayName": "Activé",
 		"type": "Boolean",
 		"defaultValue": true
-	  },
-	  {
-		"name": "product",
-		"type": "String",
-		"displayName": "Product",
-        "relation": "manyToOne",
-        "entityType": "Product",
-		"nullable": true
 	  }
 	]
   }

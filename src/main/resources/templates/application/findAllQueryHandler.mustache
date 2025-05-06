@@ -36,8 +36,14 @@ if(metaRequest.isAdmin()) {
  log.info("Admin user, fetching all {{nameAggregate}}s");
 	pages = repository.findAllByTenantId( metaRequest.getTenantId(),pageable);
 }else{
- log.info("Non-admin user, fetching {{nameAggregate}}s by userId");
-	pages = repository.findByCreatedById(metaRequest.getUserId(),pageable);
+{{^shared}}
+ log.info("User, fetching own  ");
+  	pages = repository.findByCreatedById(metaRequest.getUserId(),pageable);
+{{/shared}}
+{{#shared}}
+ log.info("User, fetching own and shared Sales");
+	 pages = repository.findAllOwnedOrShared(metaRequest.getUserId(), metaRequest.getTenantId(), pageable);
+	 {{/shared}}
 }
 
 List<{{nameAggregate}}Response> responses = pages.stream()

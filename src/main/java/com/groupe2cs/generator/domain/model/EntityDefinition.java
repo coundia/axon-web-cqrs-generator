@@ -37,6 +37,8 @@ public class EntityDefinition implements Serializable {
 	private Boolean isGenerated = false;
 	private String apiPrefix = "";
 	private String title = "";
+	private Boolean shared = false;
+	private String bind = "";
 
 	public String getApiPrefix() {
 		if (apiPrefix == null) {
@@ -47,7 +49,7 @@ public class EntityDefinition implements Serializable {
 	}
 
 	public String getTitle() {
-		if (title == null) {
+		if (title == null || title.isEmpty()) {
 			return Utils.capitalize(name);
 		}
 

@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
 
+
 @Service
 @RequiredArgsConstructor
 public class {{className}} {
 
 	private final CommandGateway commandGateway;
-
+	{{#bind}}
+	private final UserRepository userRepository ;
+  {{/bind}}
 	public void sync{{name}}({{name}}SyncRequest request,
 MetaRequest metaRequest
 
@@ -29,6 +32,15 @@ Create{{name}}Command command = Create{{name}}Command.builder()
 	{{/isId}}
 {{/editableFields}}
 .build();
+{{#bind}}
+        String userName = d.getUsername();
+        if(userName != null){
+            userName = userName.toLowerCase();
+            String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId()).orElseThrow().getId();
+            command.setUsers({{name}}Users.create(userId));
+        }
+
+    {{/bind}}
 		{{#isMultiTenant}}
 		if(metaRequest.getTenantId() != null) {
 			command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
@@ -49,12 +61,20 @@ Create{{name}}Command command = Create{{name}}Command.builder()
 			.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
 		{{/editableFields}}
 		.build();
+		{{#bind}}
+	   String userName = d.getUsername();
+        if(userName != null){
+            userName = userName.toLowerCase();
+            String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId()).orElseThrow().getId();
+            update.setUsers({{name}}Users.create(userId));
+        }
+    {{/bind}}
 
 		if(metaRequest.getTenantId() != null) {
-			//command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+			//update.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
 		}
 		if(metaRequest.getUserId() != null) {
-			//command.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
+			//update.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
 		}
 
 		commandGateway.sendAndWait(

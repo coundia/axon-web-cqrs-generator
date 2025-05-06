@@ -45,6 +45,7 @@ public class SyncGeneratorService {
 						definition.getName() + "SyncApplicationService",
 						"application/syncApplicationService.mustache",
 						Set.of(
+								Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getRepositoryPackage()) + ".UserRepository",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
@@ -103,13 +104,15 @@ public class SyncGeneratorService {
 		context.put("name", Utils.capitalize(definition.getName()));
 		context.put("entity", Utils.capitalize(definition.getName()));
 		context.put("className", template.getClassName());
-		context.put("nameLowercase", definition.getName().toLowerCase());
+		context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
 		context.put("hasFiles", !definition.getFieldFiles().isEmpty());
 		context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
 		context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 		context.put("isMultiTenant", definition.getMultiTenant());
+
+		context.put("bind", definition.getBind().equalsIgnoreCase("username"));
 
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + ".java", content);
