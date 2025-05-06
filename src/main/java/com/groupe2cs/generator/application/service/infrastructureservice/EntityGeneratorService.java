@@ -41,7 +41,7 @@ public class EntityGeneratorService {
         context.put("isAuditable", definition.getAuditable());
 
         Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
+        imports.add(Utils.getPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
 
         if(definition.getMultiTenant()){
             imports.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");

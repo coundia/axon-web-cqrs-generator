@@ -50,10 +50,10 @@ void setUp() {
 var tenantA = new Tenant("tenant-A");
 var tenantB = new Tenant("tenant-B");
 
-var user1 = CustomUser.builder().id("user-1").username("user-1").password("pwd").tenant(tenantA).build();
-var user2 = CustomUser.builder().id("user-2").username("user-2").password("pwd").tenant(tenantA).build();
-var user3 = CustomUser.builder().id("user-3").username("user-3").password("pwd").tenant(tenantB).build();
-var adminUser = CustomUser.builder().id("admin-1").username("admin-1").password("pwd")
+var user1 = User.builder().id("user-1").username("user-1").password("pwd").tenant(tenantA).build();
+var user2 = User.builder().id("user-2").username("user-2").password("pwd").tenant(tenantA).build();
+var user3 = User.builder().id("user-3").username("user-3").password("pwd").tenant(tenantB).build();
+var adminUser = User.builder().id("admin-1").username("admin-1").password("pwd")
 .tenant(new Tenant("tenant-X")).build();
 
 sample{{entity}} = {{entity}}.builder()

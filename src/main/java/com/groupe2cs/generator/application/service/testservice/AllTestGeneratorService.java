@@ -81,7 +81,7 @@ public class AllTestGeneratorService {
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
         imports.add(Utils.getTestPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
         imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".UserFixtures");
-        imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
+        imports.add(Utils.getTestPackage(rootDir + "/security/" + generatorProperties.getEntityPackage()) + ".User");
         imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
         if(definition.getMultiTenant()){
             imports.add(Utils.getTestPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures");

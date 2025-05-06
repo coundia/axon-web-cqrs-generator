@@ -100,7 +100,7 @@ public class FieldTransformer {
 
             String typeField = field.getType();
 
-            if(typeField.equalsIgnoreCase("CustomUser")) {
+            if(typeField.equalsIgnoreCase("User")) {
                 return "UserFixtures.randomOneViaCommand(commandGateway, user).getId().value()";
             }
 

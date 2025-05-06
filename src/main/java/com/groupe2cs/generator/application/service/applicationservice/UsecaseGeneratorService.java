@@ -93,7 +93,7 @@ public class UsecaseGeneratorService {
         Set<String> importsGate = new HashSet<>( Set.of(
                 Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
                 Utils.getPackage(outputSecurity + "/" + generatorProperties.getServicePackage()) + ".UserPrincipal",
-                Utils.getPackage(outputSecurity + "/" + generatorProperties.getEntityPackage()) + ".CustomUser",
+                Utils.getPackage(outputSecurity + "/" + generatorProperties.getEntityPackage()) + ".User",
                 Utils.getPackage(Utils.getParent(baseDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
                 Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getServicePackage()) + ".JwtService"
 
@@ -102,7 +102,7 @@ public class UsecaseGeneratorService {
         if(
                 !definition.getEntity().equalsIgnoreCase("User") &&
                 !definition.getEntity().equalsIgnoreCase("Tenant") &&
-                !definition.getEntity().equalsIgnoreCase("CustomUser")
+                !definition.getEntity().equalsIgnoreCase("User")
 
         ){
             importsGate.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + "."+definition.getEntity());

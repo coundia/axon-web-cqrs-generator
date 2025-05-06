@@ -55,7 +55,7 @@ items.add(randomOne(repository));
 return items;
 }
 
-public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count,CustomUser user) {
+public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway commandGateway, int count,User user) {
 	List<Create{{name}}Command> items = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 		items.add(randomOneViaCommand(commandGateway,user));
@@ -67,7 +67,7 @@ public static List<Create{{name}}Command> randomManyViaCommand(CommandGateway co
 		repository.deleteAll();
 		}
 
-		public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway, CustomUser user) {
+		public static Create{{name}}Command randomOneViaCommand(CommandGateway commandGateway, User user) {
 
 
 			{{#hasFiles}}

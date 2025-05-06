@@ -43,7 +43,7 @@ private String existingPassword = "admin";
 
 private void createUserIfNotExist() {
 if (userRepository.findByUsernameAndTenantName(existingUsername,DEFAULT_TENANT).isEmpty()) {
-CustomUser user = CustomUser.builder()
+User user = User.builder()
 .id(UUID.randomUUID().toString())
 .username(existingUsername)
 .password(passwordEncoder.encode(existingPassword))

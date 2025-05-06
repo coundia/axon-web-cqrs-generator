@@ -39,7 +39,7 @@ RefreshToken refreshToken = RefreshToken.builder()
 .username(username)
 .tenant(new Tenant(tenantId))
 .expiration(expiration)
-.createdBy(new CustomUser(RequestContext.getUserId(jwt)))
+.createdBy(new User(RequestContext.getUserId(jwt)))
 .build();
 
 refreshTokenRepository.save(refreshToken);

@@ -28,7 +28,7 @@ properties = "spring.config.name=application-test"
 public class BaseIntegrationTests {
 
 	public String userId;
-	public CustomUser user;
+	public User user;
 
 	@LocalServerPort
 	public int port;
@@ -68,7 +68,7 @@ public class BaseIntegrationTests {
 		return (String) getTokenClaims().get("tenantId");
 	}
 
-	public CustomUser getCurrentUser() {
+	public User getCurrentUser() {
 		return  user;
 	}
 
@@ -122,7 +122,7 @@ public class BaseIntegrationTests {
 		return new HttpEntity<>(resource, partHeaders);
 	}
 
-	public  CustomUser login(String login,String password) {
+	public  User login(String login,String password) {
 
 		headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -146,7 +146,7 @@ public class BaseIntegrationTests {
 		headers.setBearerAuth(token);
 
 		userId = getUserId();
-		user =  CustomUser.builder()
+		user =  User.builder()
 		.id(userId)
 		.tenant(new Tenant(getTenantId()))
 		.username(login)

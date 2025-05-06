@@ -52,8 +52,8 @@ public class SecurityGeneratorService {
 								FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
 						))
 						.auditable(true)
-						.entity("CustomUser")
-						.table("custom_users")
+						//.entity("User")
+						.table("users")
 						.build(),
 
 				EntityDefinition.builder()
@@ -117,7 +117,7 @@ public class SecurityGeneratorService {
 						.apiPrefix("/admin")
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
-								FieldDefinition.builder().name("user").type("CustomUser").relation("ManyToOne").build(),
+								FieldDefinition.builder().name("user").type("User").relation("ManyToOne").build(),
 								FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build()
 						))
 						.table("user_roles")
@@ -268,7 +268,7 @@ public class SecurityGeneratorService {
 						Set.of(
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) +
-										".CustomUser",
+										".User",
 								Utils.getPackage(Utils.getParent(baseDir) +
 										"/" +
 										generatorProperties.getTenantPackage() +
@@ -370,7 +370,7 @@ public class SecurityGeneratorService {
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".RefreshTokenRepository",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".RefreshToken",
 								Utils.getPackage(Utils.getParent(shareDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".CustomUser",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".User",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext"

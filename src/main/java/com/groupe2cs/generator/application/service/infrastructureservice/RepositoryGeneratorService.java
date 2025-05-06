@@ -37,7 +37,7 @@ public class RepositoryGeneratorService {
                     "/tenant/" +
                     generatorProperties.getEntityPackage()) + ".Tenant");
         }
-        imports.add(Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".CustomUser");
+        imports.add(Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getEntityPackage()) + ".User");
 
         context.put("imports", imports);
 

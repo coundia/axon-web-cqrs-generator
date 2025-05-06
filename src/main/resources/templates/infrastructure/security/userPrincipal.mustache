@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails, IdentifiableUser {
 
-private final CustomUser user;
+private final User user;
 
 @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {

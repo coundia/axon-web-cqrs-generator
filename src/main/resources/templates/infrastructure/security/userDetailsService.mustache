@@ -16,7 +16,7 @@ import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class {{className}} implements UserDetailsService {
 
 private final UserRepository userRepository;
 private final CurrentTenantIdentifierResolver tenantIdentifierResolver;
@@ -28,7 +28,7 @@ public UserDetails loadUserByUsername(String username) {
 String tenantId = tenantIdentifierResolver.resolveCurrentTenantIdentifier();
 log.debug("Loading user '{}' for tenant '{}'", username, tenantId);
 
-CustomUser user = userRepository.findByUsernameAndTenantId(username,tenantId)
+User user = userRepository.findByUsernameAndTenantId(username,tenantId)
 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
 //load for lazy

@@ -52,7 +52,7 @@ public class SharedTestGeneratorService {
         Set<String> imports = new LinkedHashSet<>();
         if(definition.isInStack("security")) {
             imports.add(Utils.getTestPackage(baseDir+ "/" +generatorProperties.getSecurityPackage()+"/"+generatorProperties.getDtoPackage()) + ".*");
-            imports.add(Utils.getTestPackage(baseDir+ "/" +generatorProperties.getSecurityPackage()+"/"+generatorProperties.getEntityPackage()) + ".CustomUser");
+            imports.add(Utils.getTestPackage(baseDir+ "/" +generatorProperties.getSecurityPackage()+"/"+generatorProperties.getEntityPackage()) + ".User");
             imports.add(Utils.getTestPackage(baseDir+ "/tenant/"+generatorProperties.getEntityPackage()) + ".Tenant");
         }
 

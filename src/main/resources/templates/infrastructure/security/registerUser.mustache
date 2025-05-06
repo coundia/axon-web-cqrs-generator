@@ -37,7 +37,7 @@ if (userRepository.findByUsernameAndTenantId(request.getUsername(),tenantId).isP
 	throw new IllegalArgumentException("Username “admin” already exists in tenant");
 }
 
-CustomUser user = CustomUser.builder()
+User user = User.builder()
 	.id(UUID.randomUUID().toString())
 	.username(request.getUsername())
 	.password(passwordEncoder.encode(request.getPassword()))

@@ -40,7 +40,7 @@ private PasswordEncoder passwordEncoder;
 
 private void createUser(String username, String password) {
 if (userRepository.findByUsernameAndTenantName(username,DEFAULT_TENANT).isEmpty()) {
-CustomUser user = CustomUser.builder()
+User user = User.builder()
 .id(UUID.randomUUID().toString())
 .username(username)
 .password(passwordEncoder.encode(password))

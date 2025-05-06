@@ -94,7 +94,7 @@ rolePermissionRepository.save(RolePermission.builder()
 
 private void createUserIfNotExist(Tenant tenant, String username, String rawPassword, Role role) {
 userRepository.findByUsernameAndTenantName(username, tenant.getName()).orElseGet(() -> {
-var user = userRepository.save(CustomUser.builder()
+var user = userRepository.save(User.builder()
 .id(UUID.randomUUID().toString())
 .username(username)
 .password(passwordEncoder.encode(rawPassword))

@@ -85,7 +85,7 @@ public class GroupMainGenerator {
 			FieldDefinition createdBy = FieldDefinition
 					.builder()
 					.name("createdBy")
-					.type("CustomUser")
+					.type("User")
 					.relation("ManyToOne")
 					.unique(false)
 					.nullable(true)

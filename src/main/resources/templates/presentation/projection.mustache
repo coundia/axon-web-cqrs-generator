@@ -37,7 +37,7 @@ try {
 .build();
 
 if(event.getCreatedBy() !=null){
-	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
+	entity.setCreatedBy( new User(event.getCreatedBy().value()));
 }
 {{#isMultiTenant}}
 	if(event.getTenant() != null) {
@@ -70,7 +70,7 @@ try {
 {{/editableFields}}
 
 if(event.getCreatedBy() !=null){
-	entity.setCreatedBy( new CustomUser(event.getCreatedBy().value()));
+	entity.setCreatedBy( new User(event.getCreatedBy().value()));
 }
 
 {{#isMultiTenant}}
