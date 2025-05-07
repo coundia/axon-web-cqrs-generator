@@ -52,8 +52,8 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 	{{#shared}}
     @Query("""
     SELECT DISTINCT s FROM Sale s
-    LEFT JOIN SaleUser su ON su.sales = s
-    WHERE s.tenant.id = :tenantId AND (s.createdBy.id = :userId OR su.users.id = :userId)
+    LEFT JOIN SaleUser su ON su.sale = s
+    WHERE s.tenant.id = :tenantId AND (s.createdBy.id = :userId OR su.user.id = :userId)
     """)
 	Page<Sale> findAllOwnedOrShared(@Param("userId") String userId, @Param("tenantId") String tenantId, Pageable pageable);
 	{{/shared}}

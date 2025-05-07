@@ -8,6 +8,8 @@ struct {{entity}}DetailsView: View {
     var onDelete: (() -> Void)? = nil
     var onDuplicate: (() -> Void)? = nil
 
+    @StateObject var viewModel: {{entity}}ListViewModel
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
@@ -36,12 +38,17 @@ struct {{entity}}DetailsView: View {
         .navigationTitle("{{entity}} Info")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .alert("✅ Success", isPresented: $viewModel.showSuccessToast) {
+            Button("OK", role: .cancel) {}
+        }
         {{#shared}}
         .sheet(isPresented: $showCreateUser) {
             {{entity}}UserEditView(
+                 isShared: .constant(true),
                 isPresented: $showCreateUser,
                 entity: $selectedUser,
                 viewModel: {{entity}}UserListViewModel(modelContext: modelContext, user: user)
+
             )
         }
         {{/shared}}
@@ -91,7 +98,8 @@ struct {{entity}}DetailsView: View {
                 }
                 Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
                     Task {
-                        await sync()
+                         await viewModel.sync(entity:{{entityLowerCase}})
+                        await viewModel.pull()
                     }
                 }
             } label: {
@@ -169,40 +177,5 @@ struct {{entity}}DetailsView: View {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
-    }
-
-    private func sync() async {
-        isSyncing = true
-        defer { isSyncing = false }
-
-        let delta = {{entity}}DeltaDto(
-            {{#fields}}
-    {{#isId}}
-            id: {{entityLowerCase}}.remoteId ?? "",
-            {{/isId}}
-    {{^isId}}
-        {{#isText}}
-            {{name}}: {{entityLowerCase}}.{{name}} ?? "",
-            {{/isText}}
-        {{#isDouble}}
-            {{name}}: {{entityLowerCase}}.{{name}},
-            {{/isDouble}}
-        {{#isBool}}
-            {{name}}: {{entityLowerCase}}.{{name}},
-            {{/isBool}}
-        {{#isDate}}
-            {{name}}: {{entityLowerCase}}.{{name}},
-            {{/isDate}}
-    {{/isId}}
-{{/fields}}
-            type: {{entityLowerCase}}.status.rawValue
-        )
-
-        do {
-            try await Sync{{entity}}UseCase().execute(with: [delta])
-            syncMessage = "✅ Sync succeeded"
-        } catch {
-            syncMessage = "❌ Sync failed: \(error.localizedDescription)"
-        }
     }
 }

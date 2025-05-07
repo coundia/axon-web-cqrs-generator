@@ -2,8 +2,16 @@ import SwiftUI
 import SwiftData
 
 struct {{entity}}EditView: View {
+
+    @Binding var isShared: Bool
     @Binding var isPresented: Bool
     @Binding var entity: {{entity}}?
+
+
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
+
     var viewModel: {{entity}}ListViewModel
 
     {{#fields}}
@@ -15,10 +23,10 @@ struct {{entity}}EditView: View {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
-    {{^readOnly}}
-        {{> SwiftFieldInput }}
-    {{/readOnly}}
-{{/fields}}
+                    {{^readOnly}}
+                        {{> SwiftFieldInput }}
+                    {{/readOnly}}
+                {{/fields}}
                 }
 
                 Section {
@@ -30,7 +38,10 @@ struct {{entity}}EditView: View {
                         .cornerRadius(8)
                 }
             }
-            .navigationTitle(entity == nil ? "New {{entity}}" : "Edit {{entity}}")
+            .navigationTitle(getTitle())
+             .alert(isPresented: $showAlert) {
+                Alert(title: Text("Info"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { withAnimation { isPresented = false } }
@@ -48,6 +59,26 @@ struct {{entity}}EditView: View {
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
                 {{/fields}}
             )
+
+              if isShared {
+                Task {
+                        do {
+                            try await viewModel.sync(entity: e)
+                            await MainActor.run {
+                                alertMessage = viewModel.errorMessage ?? "OK"
+                                showAlert = true
+                            }
+                        } catch {
+                            await MainActor.run {
+                                alertMessage = viewModel.errorMessage ?? "KO"
+                                showAlert = true
+                             }
+                        }
+                    }
+            } else {
+                withAnimation { isPresented = false }
+            }
+
         } else {
             viewModel.createEntity(
                 {{#fields}}
@@ -56,7 +87,6 @@ struct {{entity}}EditView: View {
              {{/isId}}   {{/fields}}
             )
         }
-        withAnimation { isPresented = false }
     }
 
     private func populateForm() {
@@ -68,6 +98,18 @@ struct {{entity}}EditView: View {
             {{#fields}}
     {{name}} = {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}}
 {{/fields}}
+        }
+    }
+
+    private func getTitle() -> String {
+        if(isShared){
+            return "Share {{entity}}"
+        }
+
+        if let e = entity {
+            return "Edit \(e.name ?? "")"
+        } else {
+            return "New {{entity}}"
         }
     }
 }
