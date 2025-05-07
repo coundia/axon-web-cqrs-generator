@@ -3,13 +3,11 @@ import SwiftData
 
 extension {{entity}}ListViewModel {
 
-    func pullThenSyncEntities() async {
-        print("[pullThenSyncEntities]")
+    func pull() async {
+        print("[pullEntities]")
             let manager = {{entity}}PullService(modelContext: modelContext, user: user)
             do {
             try await manager.pullAndMerge{{entity}}s()
-                await MainActor.run { _ = fetchEntitiesUnSynced() }
-                await syncAllEntities()
             } catch {
             await MainActor.run {
                 errorMessage = mapError(error)
@@ -18,6 +16,22 @@ extension {{entity}}ListViewModel {
         }
     }
 
+     func sync() async {
+        print("[syncEntities]")
+             do {
+            try
+                await pull()
+                await MainActor.run { _ = fetchEntitiesUnSynced() }
+                await syncAllEntities()
+                await pull()
+
+            } catch {
+            await MainActor.run {
+                errorMessage = mapError(error)
+                showErrorToast = true
+            }
+        }
+    }
 
     func syncAllEntities() async {
         let unsynced = fetchEntitiesUnSynced()
@@ -76,6 +90,69 @@ extension {{entity}}ListViewModel {
             errorMessage = mapError(error)
             return []
         }
+        }
+
+    @MainActor
+    func pullAndSync(entity: {{entity}}) async {
+        print("[checkStatusFromApiAndUpdate] 🚀 Start")
+
+        guard let id = entity.remoteId else {
+            print("[checkStatusFromApiAndUpdate] ⚠️ remoteId is nil")
+            return
+        }
+
+        guard let token = TokenProvider.shared.getToken() else {
+            print("[checkStatusFromApiAndUpdate] ❌ Missing token")
+            return
+        }
+
+        let urlString = "http://127.0.0.1:8095/api/v1/queries/{{entityLowerCase}}/id?id=\(id)"
+        guard let url = URL(string: urlString) else {
+            print("[checkStatusFromApiAndUpdate] ❌ Invalid URL")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("[checkStatusFromApiAndUpdate] ❌ Invalid HTTP response")
+                return
+            }
+
+            print("[checkStatusFromApiAndUpdate] 📡 HTTP Status: \(httpResponse.statusCode)")
+
+            if !(200..<300).contains(httpResponse.statusCode) {
+                let raw = String(data: data, encoding: .utf8) ?? "<no body>"
+                print("[checkStatusFromApiAndUpdate] ❌ Server error: \(raw)")
+                return
+            }
+
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+
+            let remote = try decoder.decode({{entity}}DeltaDto.self, from: data)
+
+            print("[checkStatusFromApiAndUpdate] ✅ Received remote id: \(remote.id)")
+
+            entity.status = .sync
+            entity.statusRaw = {{entity}}Status.sync.rawValue
+            entity.syncAt = Date()
+            try modelContext.save()
+
+            print("[checkStatusFromApiAndUpdate] ✅ Updated local status to SYNC")
+
+        } catch {
+            print("[checkStatusFromApiAndUpdate] ❌ Error: \(error.localizedDescription)")
+            self.errorMessage = mapError(error)
+            self.showErrorToast = true
+        }
     }
+
 
 }

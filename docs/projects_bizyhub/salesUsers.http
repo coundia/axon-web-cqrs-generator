@@ -13,8 +13,8 @@ Content-Type: application/json
 
 	  { "name": "name",   "type": "String"},
 
-	  { "name": "sales", "type": "com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale", "relation": "manyToOne", "nullable": true },
-	  { "name": "users",   "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne", "nullable": true },
+	  { "name": "sale", "type": "com.groupe2cs.bizyhub.sales.infrastructure.entity.Sale", "relation": "manyToOne", "nullable": true },
+	  { "name": "user",   "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne", "nullable": true },
 	  { "name": "username", "type": "String",   "nullable": true },
 
 	  { "name": "details", "type": "String", "nullable": true},

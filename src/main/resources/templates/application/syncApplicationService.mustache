@@ -37,7 +37,7 @@ Create{{name}}Command command = Create{{name}}Command.builder()
         if(userName != null){
             userName = userName.toLowerCase();
             String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId()).orElseThrow().getId();
-            command.setUsers({{name}}Users.create(userId));
+            command.setUser({{name}}User.create(userId));
         }
 
     {{/bind}}
@@ -66,7 +66,7 @@ Create{{name}}Command command = Create{{name}}Command.builder()
         if(userName != null){
             userName = userName.toLowerCase();
             String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId()).orElseThrow().getId();
-            update.setUsers({{name}}Users.create(userId));
+            update.setUser({{name}}User.create(userId));
         }
     {{/bind}}
 

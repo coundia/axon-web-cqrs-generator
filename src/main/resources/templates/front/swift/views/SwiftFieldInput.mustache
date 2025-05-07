@@ -1,4 +1,3 @@
-{{#fields}}
 
     {{#isText}}
         {{#nullable}}
@@ -44,5 +43,3 @@ dateField("{{name}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}}
 dateField("{{name}}", date: ${{name}})
     {{/nullable}}
     {{/isDate}}
-
-{{/fields}}

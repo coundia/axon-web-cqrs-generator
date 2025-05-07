@@ -62,6 +62,12 @@ struct {{entity}}ListView: View {
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                 viewModel.showSuccessToast = false
+
+                                Task {
+                                    await viewModel.pull()
+                                    //todo to improve , fix data not correctly updated
+                                    await viewModel.pull()
+                                }
                             }
                         }
                 }
@@ -84,7 +90,7 @@ struct {{entity}}ListView: View {
                     showingTrash: $showingTrash,
                     isSyncing: $isSyncing,
                     showForm: $showForm,
-                    syncAction: viewModel.pullThenSyncEntities
+                    syncAction: viewModel.sync
                 )
             }
             .sheet(isPresented: $showForm, onDismiss: {
@@ -138,7 +144,10 @@ struct {{entity}}ListView: View {
                 }
             }
             .onAppear {
-                viewModel.fetchEntities()
+             Task {
+                    await viewModel.pull()
+                    viewModel.fetchEntities()
+                }
             }
         }
     }

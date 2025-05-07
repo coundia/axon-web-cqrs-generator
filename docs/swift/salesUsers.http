@@ -11,7 +11,7 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "name",   "type": "String"},
 
-	  { "name": "sales",  "displayName": "sales", "entityType": "Sale", "type": "String", "relation": "manyToOne", "nullable": true },
+	  { "name": "sale",  "displayName": "sale", "entityType": "Sale", "type": "String", "relation": "manyToOne", "nullable": true },
 	  { "name": "username",   "displayName": "username", "type": "String"  },
 
 	  { "name": "details", "type": "String", "nullable": true},
