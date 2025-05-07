@@ -3,18 +3,21 @@ import SwiftData
 
 struct {{entity}}ListView: View {
     @Environment(\.modelContext) private var modelContext
+    private let user: User
+
     @StateObject private var viewModel: {{entity}}ListViewModel
     @State private var showForm = false
     @State private var showDuplicate = false
     @State private var selected: {{entity}}? = nil
     @State private var selectedForEdit: {{entity}}? = nil
-    @State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>?
-    @State private var selectedForDetails: IdentifiableWrapper<{{entity}}>?
-    @State private var selectedForDelete: {{entity}}?
+    @State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>? = nil
+    @State private var selectedForDetails: IdentifiableWrapper<{{entity}}>? = nil
+    @State private var selectedForDelete: {{entity}}? = nil
     @State private var isSyncing = false
     @State private var showingTrash = false
 
     init(modelContext: ModelContext, user: User) {
+        self.user = user
         _viewModel = StateObject(
             wrappedValue: {{entity}}ListViewModel(
                 modelContext: modelContext,
@@ -85,7 +88,7 @@ struct {{entity}}ListView: View {
                 )
             }
             .sheet(isPresented: $showForm, onDismiss: {
-                  selected = nil
+                selected = nil
                 viewModel.fetchEntities()
             }) {
                 {{entity}}FormView(
@@ -103,7 +106,8 @@ struct {{entity}}ListView: View {
             }
             .sheet(item: $selectedForDetails) { wrapper in
                 {{entity}}DetailsView(
-                    entity: wrapper.value,
+                    {{entityLowerCase}}: wrapper.value,
+                    user: user,
                     onEdit: {
                         selected = wrapper.value
                         showForm = true

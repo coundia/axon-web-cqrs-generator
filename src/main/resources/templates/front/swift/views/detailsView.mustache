@@ -12,7 +12,9 @@ struct {{entity}}DetailsView: View {
     @Environment(\.modelContext) private var modelContext
 
     @State private var showCreateUser = false
+    {{#shared}}
     @State private var selectedUser: {{entity}}User? = {{entity}}User()
+    {{/shared}}
     @State private var isSyncing = false
     @State private var syncMessage: String? = nil
 
@@ -34,6 +36,7 @@ struct {{entity}}DetailsView: View {
         .navigationTitle("{{entity}} Info")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        {{#shared}}
         .sheet(isPresented: $showCreateUser) {
             {{entity}}UserEditView(
                 isPresented: $showCreateUser,
@@ -41,6 +44,7 @@ struct {{entity}}DetailsView: View {
                 viewModel: {{entity}}UserListViewModel(modelContext: modelContext, user: user)
             )
         }
+        {{/shared}}
     }
 
     private var header: some View {
@@ -73,6 +77,7 @@ struct {{entity}}DetailsView: View {
                 if let onDelete = onDelete {
                     Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
                 }
+                {{#shared}}
                 Button("Share", systemImage: "square.and.arrow.up") {
                     selectedUser = {{entity}}User()
                     selectedUser?.{{entityLowerCase}} = {{entityLowerCase}}.remoteId
@@ -80,6 +85,7 @@ struct {{entity}}DetailsView: View {
                     selectedUser?.status = .create
                     showCreateUser = true
                 }
+                {{/shared}}
                 Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
                     Task {
                         await sync()
