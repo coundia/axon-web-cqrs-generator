@@ -86,6 +86,9 @@ struct {{entity}}DetailsView: View {
                     showCreateUser = true
                 }
                 {{/shared}}
+                Button("Copy Remote ID", systemImage: "doc.on.doc") {
+                    UIPasteboard.general.string = {{entityLowerCase}}.remoteId
+                }
                 Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
                     Task {
                         await sync()
@@ -132,12 +135,12 @@ struct {{entity}}DetailsView: View {
     private var metaSection: some View {
         VStack(spacing: 12) {
             {{#fields}}
+    {{#isId}}
+            detailItem(icon: "info.circle", title: "Remote id", value: {{entityLowerCase}}.remoteId ?? "-")
+            {{/isId}}
     {{#isUpdatedAt}}
             detailItem(icon: "clock", title: "Updated", value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isUpdatedAt}}
-    {{#nameEqualsReference}}
-            detailItem(icon: "info.circle", title: "Reference", value: {{entityLowerCase}}.{{name}} ?? "-")
-            {{/nameEqualsReference}}
 {{/fields}}
         }
         .padding()
