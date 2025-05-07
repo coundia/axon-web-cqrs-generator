@@ -2,82 +2,198 @@ import SwiftUI
 import SwiftData
 
 struct {{entity}}DetailsView: View {
-    let entity: {{entity}}
+    let {{entityLowerCase}}: {{entity}}
+    var user: User
     var onEdit: (() -> Void)? = nil
     var onDelete: (() -> Void)? = nil
     var onDuplicate: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var showCreateUser = false
+    @State private var selectedUser: {{entity}}User? = {{entity}}User()
+    @State private var isSyncing = false
+    @State private var syncMessage: String? = nil
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack(spacing: 12) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.secondary)
-                    }
+            VStack(spacing: 24) {
+                header
+                section(title: "Overview", content: overviewSection)
+                section(title: "Metadata", content: metaSection)
 
-                    Spacer()
-
-                    if let onEdit = onEdit {
-                        Button(action: onEdit) {
-                            Label("Edit", systemImage: "pencil")
-                                .font(.subheadline)
-                        }
-                    }
-
-                    if let onDuplicate = onDuplicate {
-                        Button(action: onDuplicate) {
-                            Label("Duplicate", systemImage: "doc.on.doc")
-                                .font(.subheadline)
-                        }
-                    }
-
-                    if let onDelete = onDelete {
-                        Button(role: .destructive, action: onDelete) {
-                            Label("Delete", systemImage: "trash")
-                                .font(.subheadline)
-                        }
-                    }
+                if let msg = syncMessage {
+                    Text(msg)
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
                 }
-
-                Text("{{title}}")
-                    .font(.largeTitle.bold())
-                    .padding(.bottom)
-
-                {{#fields}}
-                {{#displayName}}
-                detailRow(
-                    title: "{{displayName}}",
-                    value: {{> SwiftFieldDisplayValue }}
-                )
-                Divider()
-                {{/displayName}}
-            {{/fields}}
             }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(UIColor.secondarySystemBackground))
-                    .shadow(radius: 4)
-            )
             .padding()
         }
         .navigationTitle("{{entity}} Info")
         .navigationBarTitleDisplayMode(.inline)
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .sheet(isPresented: $showCreateUser) {
+            {{entity}}UserEditView(
+                isPresented: $showCreateUser,
+                entity: $selectedUser,
+                viewModel: {{entity}}UserListViewModel(modelContext: modelContext, user: user)
+            )
+        }
     }
 
-    @ViewBuilder
-    private func detailRow(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private var header: some View {
+        HStack(spacing: 16) {
+            Image(systemName: "person.crop.circle")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 52, height: 52)
+                .padding()
+                .background(Circle().fill(Color.blue.opacity(0.1)))
+                .foregroundColor(.blue)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text({{entityLowerCase}}.name ?? "No name")
+                    .font(.title2.bold())
+                Text({{entityLowerCase}}.details ?? "No details")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            Menu {
+                if let onEdit = onEdit {
+                    Button("Edit", systemImage: "pencil", action: onEdit)
+                }
+                if let onDuplicate = onDuplicate {
+                    Button("Duplicate", systemImage: "doc.on.doc", action: onDuplicate)
+                }
+                if let onDelete = onDelete {
+                    Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
+                }
+                Button("Share", systemImage: "square.and.arrow.up") {
+                    selectedUser = {{entity}}User()
+                    selectedUser?.{{entityLowerCase}} = {{entityLowerCase}}.remoteId
+                    selectedUser?.name = {{entityLowerCase}}.name
+                    selectedUser?.status = .create
+                    showCreateUser = true
+                }
+                Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
+                    Task {
+                        await sync()
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.systemBackground)))
+        .shadow(radius: 1)
+    }
+
+    private func section(title: String, content: some View) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
             Text(title)
-                .font(.caption)
+                .font(.headline)
                 .foregroundColor(.gray)
-            Text(value)
-                .font(.body)
-                .foregroundColor(.primary)
+            content
+        }
+    }
+
+    private var overviewSection: some View {
+        VStack(spacing: 12) {
+            {{#fields}}
+    {{#isDisplayName}}
+            detailItem(icon: "person.text.rectangle", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ?? "-")
+            {{/isDisplayName}}
+    {{#isDouble}}
+            detailItem(icon: "dollarsign.circle", title: "{{name}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            {{/isDouble}}
+    {{#isBool}}
+            detailItem(icon: "checkmark.circle", title: "{{name}}", value: {{entityLowerCase}}.{{name}} ? "Yes" : "No")
+            {{/isBool}}
+{{/fields}}
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+    }
+
+    private var metaSection: some View {
+        VStack(spacing: 12) {
+            {{#fields}}
+    {{#isUpdatedAt}}
+            detailItem(icon: "clock", title: "Updated", value: formatDate({{entityLowerCase}}.{{name}}))
+            {{/isUpdatedAt}}
+    {{#nameEqualsReference}}
+            detailItem(icon: "info.circle", title: "Reference", value: {{entityLowerCase}}.{{name}} ?? "-")
+            {{/nameEqualsReference}}
+{{/fields}}
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+    }
+
+    private func detailItem(icon: String, title: String, value: String) -> some View {
+        HStack(spacing: 16) {
+            Image(systemName: icon)
+                .frame(width: 28)
+                .foregroundColor(.blue)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                Text(value)
+                    .font(.body)
+            }
+            Spacer()
+        }
+    }
+
+    private func formatDate(_ date: Date?) -> String {
+        guard let date = date else { return "-" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+
+    private func sync() async {
+        isSyncing = true
+        defer { isSyncing = false }
+
+        let delta = {{entity}}DeltaDto(
+            {{#fields}}
+    {{#isId}}
+            id: {{entityLowerCase}}.remoteId ?? "",
+            {{/isId}}
+    {{^isId}}
+        {{#isText}}
+            {{name}}: {{entityLowerCase}}.{{name}} ?? "",
+            {{/isText}}
+        {{#isDouble}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isDouble}}
+        {{#isBool}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isBool}}
+        {{#isDate}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isDate}}
+    {{/isId}}
+{{/fields}}
+            type: {{entityLowerCase}}.status.rawValue
+        )
+
+        do {
+            try await Sync{{entity}}UseCase().execute(with: [delta])
+            syncMessage = "✅ Sync succeeded"
+        } catch {
+            syncMessage = "❌ Sync failed: \(error.localizedDescription)"
         }
     }
 }

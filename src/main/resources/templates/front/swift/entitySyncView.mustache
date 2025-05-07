@@ -1,48 +1,84 @@
 import SwiftUI
+import SwiftData
 
 struct {{entity}}SyncView: View {
-@State private var isSyncing = false
-@State private var showMessage = false
-@State private var message = ""
+    @Bindable var {{entityLowerCase}}: {{entity}}
+    @Environment(\.modelContext) private var modelContext
 
-var body: some View {
-VStack(spacing: 20) {
-Button("Synchronize {{entity}}") {
-Task {
-await syncEntities()
-}
-}
-.disabled(isSyncing)
+    @State private var isSyncing = false
+    @State private var showMessage = false
+    @State private var message = ""
 
-if showMessage {
-Text(message)
-.foregroundColor(.blue)
-.font(.subheadline)
-}
-}
-.padding()
-}
+    var body: some View {
+        VStack(spacing: 16) {
+            Button("Synchronize {{entity}}") {
+                Task {
+                    await syncEntities()
+                }
+            }
+            .disabled(isSyncing)
 
-private func syncEntities() async {
-isSyncing = true
-showMessage = false
-defer { isSyncing = false }
+            if showMessage {
+                Text(message)
+                    .foregroundColor(.blue)
+                    .font(.subheadline)
+            }
+        }
+        .padding()
+    }
 
-let delta = {{entity}}DeltaDto(
-{{#fields}}
-	{{name}}: {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+    private func syncEntities() async {
+        isSyncing = true
+        showMessage = false
+
+        if {{entityLowerCase}}.status == .sync {
+            message = "Already Sync"
+            showMessage = true
+            isSyncing = false
+            return
+        }
+
+        if {{entityLowerCase}}.remoteId != nil {
+            {{entityLowerCase}}.status = .update
+        } else {
+            {{entityLowerCase}}.status = .create
+        }
+
+        defer { isSyncing = false }
+
+        let delta = {{entity}}DeltaDto(
+             {{#fields}}
+    {{#isId}}
+            id: {{entityLowerCase}}.remoteId ?? "",
+            {{/isId}}
+    {{^isId}}
+        {{#isText}}
+            {{name}}: {{entityLowerCase}}.{{name}} ?? "",
+            {{/isText}}
+        {{#isDouble}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isDouble}}
+        {{#isBool}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isBool}}
+        {{#isDate}}
+            {{name}}: {{entityLowerCase}}.{{name}},
+            {{/isDate}}
+    {{/isId}}
 {{/fields}}
-type : {{entity}}Status.sync.rawValue
-)
+            type: {{entityLowerCase}}.status.rawValue
+        )
 
-let useCase = Sync{{entity}}UseCase()
-do {
-try await useCase.execute(with: [delta])
-message = "✅ Sync succeeded"
-} catch {
-message = "❌ Sync failed: \(error.localizedDescription)"
-}
+        let useCase = Sync{{entity}}UseCase()
+        do {
+            try await useCase.execute(with: [delta])
+            message = "✅ Sync succeeded"
+            {{entityLowerCase}}.status = .sync
+            try? modelContext.save()
+        } catch {
+            message = "❌ Sync failed: \(error.localizedDescription)"
+        }
 
-showMessage = true
-}
+        showMessage = true
+    }
 }

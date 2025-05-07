@@ -1,44 +1,48 @@
-{{#isText}}
-    {{#nullable}}
+{{#fields}}
+
+    {{#isText}}
+        {{#nullable}}
 textField("{{name}}", text: Binding(get: { {{name}} ?? "" }, set: { {{name}} = $0 }))
-{{/nullable}}
-    {{^nullable}}
+    {{/nullable}}
+        {{^nullable}}
 textField("{{name}}", text: ${{name}})
-{{/nullable}}
-{{/isText}}
+    {{/nullable}}
+    {{/isText}}
 
-{{#isDouble}}
-    {{#nullable}}
+    {{#isDouble}}
+        {{#nullable}}
 doubleField("{{name}}", value: Binding(get: { {{name}} ?? 0.0 }, set: { {{name}} = $0 }))
-{{/nullable}}
-    {{^nullable}}
+    {{/nullable}}
+        {{^nullable}}
 doubleField("{{name}}", value: ${{name}})
-{{/nullable}}
-{{/isDouble}}
+    {{/nullable}}
+    {{/isDouble}}
 
-{{#isInt}}
-    {{#nullable}}
+    {{#isInt}}
+        {{#nullable}}
 intField("{{name}}", value: Binding(get: { {{name}} ?? 0 }, set: { {{name}} = $0 }))
-{{/nullable}}
-    {{^nullable}}
+    {{/nullable}}
+        {{^nullable}}
 intField("{{name}}", value: ${{name}})
-{{/nullable}}
-{{/isInt}}
+    {{/nullable}}
+    {{/isInt}}
 
-{{#isBool}}
-    {{#nullable}}
+    {{#isBool}}
+        {{#nullable}}
 Toggle("{{name}}", isOn: Binding(get: { {{name}} ?? false }, set: { {{name}} = $0 }))
-{{/nullable}}
-    {{^nullable}}
+    {{/nullable}}
+        {{^nullable}}
 Toggle("{{name}}", isOn: ${{name}})
-{{/nullable}}
-{{/isBool}}
+    {{/nullable}}
+    {{/isBool}}
 
-{{#isDate}}
-    {{#nullable}}
+    {{#isDate}}
+        {{#nullable}}
 dateField("{{name}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
-{{/nullable}}
-    {{^nullable}}
+    {{/nullable}}
+        {{^nullable}}
 dateField("{{name}}", date: ${{name}})
-{{/nullable}}
-{{/isDate}}
+    {{/nullable}}
+    {{/isDate}}
+
+{{/fields}}
