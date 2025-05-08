@@ -10,6 +10,7 @@ Content-Type: application/json
 	"name": "Account",
 	"table": "accounts",
 	"shared": true,
+	"header": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name",  "type": "String", "displayName": "Name"  },

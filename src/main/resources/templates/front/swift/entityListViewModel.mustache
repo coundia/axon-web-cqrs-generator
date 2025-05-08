@@ -19,6 +19,8 @@ let username: String
 @Published var showAddSearchSheet = false
 @Published var showSettingsSheet = false
 
+@Published var currentAccountId: String?
+
 
 init(modelContext: ModelContext, user: User) {
 self.modelContext = modelContext
@@ -26,24 +28,44 @@ self.user = user
 self.username = user.username!
 }
 
-func fetchEntities() {
-print("[fetchEntities]")
-isLoading = true
-let cond = "{{entity}}Status.delete".uppercased()
-let descriptor = FetchDescriptor<{{entity}}>(
-predicate: #Predicate { item in
-item.user?.username == username && item.statusRaw != cond
-},
-sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
-)
-do {
-entities = try modelContext.fetch(descriptor)
-} catch {
-errorMessage = mapError(error)
-}
-isLoading = false
-}
+ func fetchEntities() {
+        print("[fetchEntities]")
+        
+        isLoading = true
+        let cond = "{{entity}}Status.delete".uppercased()
+        let descriptor = FetchDescriptor<{{entity}}>(
+            predicate: #Predicate { item in
+                item.user?.username == username && item.statusRaw != cond
+            },
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+        do {
+            entities = try modelContext.fetch(descriptor)
+        } catch {
+            errorMessage = mapError(error)
+        }
+        isLoading = false
+    }
 
+    func fetchEntitiesByAccount(accountId: String?) {
+        print("[fetchEntitiesByAccount]")
+        print(accountId)
+        isLoading = true
+        let cond = "{{entity}}Status.delete".uppercased()
+        let descriptor = FetchDescriptor<{{entity}}>(
+            predicate: #Predicate { item in
+                item.user?.username == username && item.statusRaw != cond
+                    && item.account == accountId
+            },
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+        do {
+            entities = try modelContext.fetch(descriptor)
+        } catch {
+            errorMessage = mapError(error)
+        }
+        isLoading = false
+    }
 
 func createEntity(
 {{#fields}}

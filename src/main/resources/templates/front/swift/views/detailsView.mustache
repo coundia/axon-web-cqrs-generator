@@ -155,6 +155,7 @@ struct {{entity}}DetailsView: View {
         VStack(spacing: 12) {
             {{#fields}}
     {{#isId}}
+            detailItem(icon: "info.circle", title: "Id", value: {{entityLowerCase}}.id ?? "-")
             detailItem(icon: "info.circle", title: "Remote id", value: {{entityLowerCase}}.remoteId ?? "-")
             {{/isId}}
     {{#isUpdatedAt}}
@@ -163,8 +164,7 @@ struct {{entity}}DetailsView: View {
 {{/fields}}
 
         detailItem(icon: "person.text.rectangle", title: "User",  value: {{entityLowerCase}}.user?.username ?? "-")
-        detailItem(icon: "calendar", title: "Created", value: formatDate({{entityLowerCase}}.createdAt))
-        }
+         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
     }
