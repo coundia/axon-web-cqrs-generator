@@ -38,6 +38,13 @@ struct {{entity}}DetailsView: View {
         .navigationTitle("{{entity}} Info")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Close") {
+                    dismiss()
+                }
+            }
+        }
         .alert("✅ Success", isPresented: $viewModel.showSuccessToast) {
             Button("OK", role: .cancel) {}
         }
@@ -102,6 +109,10 @@ struct {{entity}}DetailsView: View {
                         await viewModel.pull()
                     }
                 }
+                Button("Close", systemImage: "xmark") {
+                    dismiss()
+                }
+
             } label: {
                 Image(systemName: "ellipsis.circle")
                     .font(.title3)
@@ -150,6 +161,9 @@ struct {{entity}}DetailsView: View {
             detailItem(icon: "clock", title: "Updated", value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isUpdatedAt}}
 {{/fields}}
+
+        detailItem(icon: "person.text.rectangle", title: "User",  value: {{entityLowerCase}}.user?.username ?? "-")
+        detailItem(icon: "calendar", title: "Created", value: formatDate({{entityLowerCase}}.createdAt))
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))

@@ -9,17 +9,15 @@ Content-Type: application/json
   "definition": {
 	"name": "Account",
 	"table": "accounts",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
-	  { "name": "reference", "type": "String", "unique": true },
-	  { "name": "currentBalance", "type": "Double", "nullable": true, "defaultValue": 0.0 },
-	  { "name": "previousBalance", "type": "Double", "nullable": true, "defaultValue": 0.0 },
-	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-
-	  { "name": "details", "type": "String", "unique": true, "nullable": true
-	  },
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  { "name": "name",  "type": "String", "displayName": "Name"  },
+	  { "name": "currency", "type": "String" , "displayName": "Currency", "defaultValue": "\"XOF\"" },
+	  { "name": "currentBalance", "type": "Double", "displayName": "Balance", "defaultValue": 0.0 },
+	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "displayName": "Active", "defaultValue": true }
 	]
   }
 }

@@ -1,0 +1,24 @@
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "AccountUser",
+	"bind": "username",
+	"table": "account_users",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name",   "type": "String"},
+
+	  { "name": "account",  "displayName": "account", "entityType": "Account", "type": "String", "relation": "manyToOne", "nullable": true },
+	  { "name": "username",   "displayName": "username", "type": "String"  },
+
+	  { "name": "details", "type": "String", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+
+###
