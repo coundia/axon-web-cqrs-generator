@@ -38,13 +38,14 @@ private func startOfMonth(_ date: Date) -> Date {
 var body: some View {
     NavigationView {
         VStack(spacing: 8) {
+        {{#header}}
             MonthSelectorCommunView(selectedMonth: $selectedMonth) { newMonth in
                 let start = startOfMonth(newMonth)
                 let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
                 viewModel.selectedStartDate = start
                 viewModel.selectedEndDate = end
             }
-            {{#header}}
+
             .onChange(of: selected{{headerUpperCase}}) { acct in
                 viewModel.current{{headerUpperCase}}Id = acct?.remoteId
             }
@@ -64,6 +65,9 @@ var body: some View {
                 )
             }
         }
+        {{^header}}
+         .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
+        {{/header}}
         .toolbar {
             {{#header}}
              ToolbarItem(placement: .principal) {
@@ -91,9 +95,11 @@ var body: some View {
                     )
                 }
             }
+            {{#header}}
          .sheet(isPresented: $show{{headerUpperCase}}Picker, onDismiss: resetSheets) {
                     {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
                 }
+                {{/header}}
         .sheet(isPresented: $showForm, onDismiss: {
         resetSheets()
         viewModel.fetchEntities()

@@ -40,7 +40,7 @@ var filtered{{entity}}s: [{{entity}}] {
         {{#header}}
         .filter {
             current{{headerUpperCase}}Id == nil || $0.{{headerLowerCase}} == current{{headerUpperCase}}Id
-        }{{/header}}
+        }
         .filter {
             guard let date = $0.updatedAt,
                 let sd = selectedStartDate,
@@ -48,6 +48,7 @@ var filtered{{entity}}s: [{{entity}}] {
             else { return true }
             return date >= sd && date <= ed
         }
+        {{/header}}
 }
 
  func fetchEntities() {

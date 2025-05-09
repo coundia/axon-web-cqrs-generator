@@ -23,6 +23,8 @@ extension {{entity}}ListViewModel {
                 await pull()
                 await MainActor.run { _ = fetchEntitiesUnSynced() }
                 await syncAllEntities()
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                await pull()
                 await pull()
 
             } catch {
