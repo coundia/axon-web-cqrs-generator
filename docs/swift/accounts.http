@@ -1,5 +1,3 @@
-###
-
 POST http://127.0.0.1:8071/api/v1/generator/swiftui
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -10,7 +8,6 @@ Content-Type: application/json
 	"name": "Account",
 	"table": "accounts",
 	"shared": true,
-	"header": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name",  "type": "String", "displayName": "Name"  },

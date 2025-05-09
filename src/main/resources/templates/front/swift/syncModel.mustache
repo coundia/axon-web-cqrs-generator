@@ -92,30 +92,38 @@ extension {{entity}}ListViewModel {
         }
         }
 
-
-
      public func sync(entity: {{entity}} ) async {
+
+        print("[syncEntity] \(entity.name)")
+
+        if(entity.remoteId != nil) {
+            entity.status = .update
+        }
+
+        if(entity.remoteId == nil) {
+            entity.status = .create
+        }
 
         let delta = {{entity}}DeltaDto(
             {{#fields}}
-    {{#isId}}
-            id: entity.remoteId ?? "",
-            {{/isId}}
-    {{^isId}}
-        {{#isText}}
-            {{name}}: entity.{{name}} ?? "",
-            {{/isText}}
-        {{#isDouble}}
-            {{name}}: entity.{{name}},
-            {{/isDouble}}
-        {{#isBool}}
-            {{name}}: entity.{{name}},
-            {{/isBool}}
-        {{#isDate}}
-            {{name}}: entity.{{name}},
-            {{/isDate}}
-    {{/isId}}
-{{/fields}}
+                {{#isId}}
+                        id: entity.remoteId ?? "",
+                        {{/isId}}
+                {{^isId}}
+                    {{#isText}}
+                        {{name}}: entity.{{name}} ?? "",
+                        {{/isText}}
+                    {{#isDouble}}
+                        {{name}}: entity.{{name}},
+                        {{/isDouble}}
+                    {{#isBool}}
+                        {{name}}: entity.{{name}},
+                        {{/isBool}}
+                    {{#isDate}}
+                        {{name}}: entity.{{name}},
+                        {{/isDate}}
+                {{/isId}}
+            {{/fields}}
             type: entity.status.rawValue
         )
 

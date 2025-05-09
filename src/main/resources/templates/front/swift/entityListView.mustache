@@ -6,9 +6,11 @@ struct {{entity}}ListView: View {
     private let user: User
 
     @StateObject private var viewModel: {{entity}}ListViewModel
-    @StateObject private var accountViewModel: AccountListViewModel
-    @State private var selectedAccount: Account?
-    @State private var showAccountPicker = false
+    {{#header}}
+    @StateObject private var {{headerLowerCase}}ViewModel: {{headerUpperCase}}ListViewModel
+    @State private var selected{{headerUpperCase}}: {{headerUpperCase}}?
+    @State private var show{{headerUpperCase}}Picker = false
+    {{/header}}
     @State private var showForm = false
     @State private var selected: {{entity}}?
     @State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>?
@@ -20,42 +22,60 @@ struct {{entity}}ListView: View {
     init(modelContext: ModelContext, user: User) {
         self.user = user
         _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
-        _accountViewModel = StateObject(wrappedValue: AccountListViewModel(modelContext: modelContext, user: user))
+        {{#header}}
+        _{{headerLowerCase}}ViewModel = StateObject(wrappedValue: {{headerUpperCase}}ListViewModel(modelContext: modelContext, user: user))
+        {{/header}}
     }
 
     var body: some View {
         NavigationView {
             ZStack {
                 VStack(spacing: 8) {
+  {{#header}}
+                  Text( String(format: "%.0f", selected{{headerUpperCase}}?.currentBalance ?? 0.0))
 
-                  Text( String(format: "%.0f", selectedAccount?.currentBalance ?? 0.0))
-
-                    Button { showAccountPicker = true } label: {
+                    Button { show{{headerUpperCase}}Picker = true } label: {
                         HStack {
-                            Text(selectedAccount?.name ?? "Select Account")
+                            Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
                                 .font(.headline)
                             Spacer()
                             Image(systemName: "chevron.down")
+
+                             Button("All") {
+                                selected{{headerUpperCase}} = nil
+                            }
+                            .padding(8)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+
                         }
                         .padding(8)
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
                     }
-                    .sheet(isPresented: $showAccountPicker) {
-                        AccountPickerView(
-                            selectedAccount: $selectedAccount,
-                            viewModel: accountViewModel
+                    .sheet(isPresented: $show{{headerUpperCase}}Picker) {
+                        {{headerUpperCase}}PickerView(
+                            selected{{headerUpperCase}}: $selected{{headerUpperCase}},
+                            viewModel: {{headerLowerCase}}ViewModel
                         )
                     }
-
+{{/header}}
                     if showingTrash {
                         {{entity}}TrashContentView(viewModel: viewModel)
                     } else {
                         {{entity}}ListContentView(
-                            {{entityLowerCase}}s: viewModel.entities.filter { {{entityLowerCase}} in
-                                guard let acct = selectedAccount else { return true }
-                                return {{entityLowerCase}}.account == acct.remoteId
+                          {{#header}}
+                             {{entityLowerCase}}s: viewModel.entities.filter { {{entityLowerCase}} in
+                                guard let acct = selected{{headerUpperCase}} else { return true }
+                                return {{entityLowerCase}}.{{headerLowerCase}} == acct.remoteId
                             },
+                            {{/header}}
+                            {{^header}}
+
+                              {{entityLowerCase}}s: viewModel.entities,
+                            {{/header}}
+
                             onSelect: { item in selectedForDetails = .init(item) },
                             onDelete: { item in selectedForDelete = item },
                             onAdd: { selected = nil; showForm = true },
@@ -102,7 +122,9 @@ struct {{entity}}ListView: View {
                     syncAction: viewModel.sync
                 )
             }
-            .sheet(isPresented: $showForm) {
+            .sheet(isPresented: $showForm, onDismiss: {
+                viewModel.fetchEntities()
+            }) {
                 {{entity}}FormView(isPresented: $showForm, entity: $selected, viewModel: viewModel)
             }
             .sheet(item: $selectedForDuplicate) { wrapper in
@@ -128,20 +150,36 @@ struct {{entity}}ListView: View {
                 }
                 Button("Cancel", role: .cancel) { selectedForDelete = nil }
             }
-            .onChange(of: selectedAccount) { account in
-                if let account { viewModel.fetchEntitiesByAccount(accountId: account.remoteId) }
+              {{#header}}
+            .onChange(of: selected{{headerUpperCase}}) { {{headerLowerCase}} in
+                if let {{headerLowerCase}} { viewModel.fetchEntitiesBy{{headerUpperCase}}({{headerLowerCase}}Id: {{headerLowerCase}}.remoteId) }
                 else { viewModel.fetchEntities() }
             }
+            {{/header}}
+            {{^header}}
+            .onChange(of: viewModel.showSuccessToast) { show in
+                viewModel.fetchEntities()
+            }
+            {{/header}}
             .onAppear {
+            {{^header}}
                 Task {
-                    await accountViewModel.pull()
-                      accountViewModel.fetchEntities()
+                    await viewModel.pull()
+                    viewModel.fetchEntities()
+                    await viewModel.pull()
+                }
+            {{/header}}
+{{#header}}
+                Task {
+                    await {{headerLowerCase}}ViewModel.pull()
+                      {{headerLowerCase}}ViewModel.fetchEntities()
                     await viewModel.pull()
                     
-                    if selectedAccount == nil, let first = accountViewModel.entities.first {
-                        selectedAccount = first
+                    if selected{{headerUpperCase}} == nil, let first = {{headerLowerCase}}ViewModel.entities.first {
+                        selected{{headerUpperCase}} = first
                     }
                 }
+            {{/header}}
             }
         }
     }

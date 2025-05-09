@@ -9,7 +9,11 @@ struct {{entity}}PickerView: View {
     @State private var showForm: Bool = false
 
     private var filteredEntities: [{{entity}}] {
-        viewModel.entities.filter { $0.type{{entity}} == selectedFilter }
+        viewModel.entities.filter {
+        $0.type{{entity}} == selectedFilter
+        &&  $0.deletedAt == nil
+        &&  $0.remoteId != nil
+         }
     }
 
     var body: some View {

@@ -19,7 +19,9 @@ let username: String
 @Published var showAddSearchSheet = false
 @Published var showSettingsSheet = false
 
-@Published var currentAccountId: String?
+{{#header}}
+@Published var current{{headerUpperCase}}Id: String?
+{{/header}}
 
 
 init(modelContext: ModelContext, user: User) {
@@ -46,16 +48,18 @@ self.username = user.username!
         }
         isLoading = false
     }
-
-    func fetchEntitiesByAccount(accountId: String?) {
-        print("[fetchEntitiesByAccount]")
+{{#header}}
+    func fetchEntitiesBy{{headerUpperCase}}(accountId: String?) {
+        print("[fetchEntitiesBy{{headerUpperCase}}]")
         print(accountId)
         isLoading = true
         let cond = "{{entity}}Status.delete".uppercased()
         let descriptor = FetchDescriptor<{{entity}}>(
             predicate: #Predicate { item in
                 item.user?.username == username && item.statusRaw != cond
-                    && item.account == accountId
+                     && item.{{headerLowerCase}} != nil
+                    && ( item.{{headerLowerCase}} == {{headerLowerCase}}Id
+                    || item.{{headerLowerCase}}LocalId == {{headerLowerCase}}Id )
             },
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
         )
@@ -66,12 +70,16 @@ self.username = user.username!
         }
         isLoading = false
     }
+{{/header}}
 
 func createEntity(
 {{#fields}}
 {{^isId}}
 {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
 {{/isId}}
+{{#isManyToOne}}
+{{name}}LocalId: String? = nil,
+{{/isManyToOne}}
 {{/fields}}
 ) {
 let item = {{entity}}(
@@ -84,6 +92,12 @@ let item = {{entity}}(
 item.user = user
 item.reference = item.id
 
+{{#fields}}
+{{#isManyToOne}}
+item.{{name}}LocalId = {{name}}LocalId
+{{/isManyToOne}}
+{{/fields}}
+
 print("createEntity \(item.name)")
 modelContext.insert(item)
 saveContext()
@@ -92,10 +106,16 @@ saveContext()
 func updateEntity(_ item: {{entity}},
 {{#fields}}
 	{{name}}: {{realType}},
+    {{#isManyToOne}}
+    {{name}}LocalId: String? = nil,
+    {{/isManyToOne}}
 {{/fields}}
 ) {
 {{#fields}}
 	item.{{name}} = {{name}}
+{{#isManyToOne}}
+    item.{{name}}LocalId = {{name}}LocalId
+{{/isManyToOne}}
 {{/fields}}
 
 if item.remoteId == nil {

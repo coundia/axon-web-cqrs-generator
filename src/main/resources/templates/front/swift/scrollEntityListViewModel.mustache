@@ -17,7 +17,7 @@ extension {{entity}}ListViewModel {
         let cond = "{{entity}}Status.delete".uppercased()
         let predicate: Predicate<{{entity}}> = #Predicate { item in
             item.user?.username == username && item.statusRaw != cond
-                && (currentAccountId == nil || item.account == currentAccountId)
+           {{#header}} && (current{{headerUpperCase}}Id == nil || item.{{headerLowerCase}} == current{{headerUpperCase}}Id) {{/header}}
         }
         var descriptor = FetchDescriptor<{{entity}}>(
             predicate: predicate,

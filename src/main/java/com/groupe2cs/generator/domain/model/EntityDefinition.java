@@ -39,6 +39,7 @@ public class EntityDefinition implements Serializable {
 	private String title = "";
 	private Boolean shared = false;
 	private String bind = "";
+	private String header = "";
 
 	public String getApiPrefix() {
 		if (apiPrefix == null) {

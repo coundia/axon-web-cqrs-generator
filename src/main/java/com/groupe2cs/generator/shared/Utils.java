@@ -10,10 +10,16 @@ import java.nio.file.Paths;
 public class Utils {
 
     public static String capitalize(String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
         return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
     public static String unCapitalize(String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
         return value.substring(0, 1).toLowerCase() + value.substring(1);
     }
 

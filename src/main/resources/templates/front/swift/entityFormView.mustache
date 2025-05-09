@@ -10,8 +10,9 @@ struct {{entity}}FormView: View {
     {{#fields}}
         @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
         {{#isManyToOne}}
-        @State private var show{{entityType}}Picker = false
+         @State private var show{{entityType}}Picker = false
          @State private var selected{{entityType}}: {{entityType}}? = nil
+         @State private var  {{name}}LocalId: String? = nil
         {{/isManyToOne}}
     {{/fields}}
     var body: some View {
@@ -49,6 +50,9 @@ struct {{entity}}FormView: View {
             viewModel.updateEntity(e,
                 {{#fields}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
+               {{#isManyToOne}}
+        {{name}}LocalId: {{name}}LocalId,
+               {{/isManyToOne}}
                 {{/fields}}
             )
         } else {
@@ -56,12 +60,16 @@ struct {{entity}}FormView: View {
                 {{#fields}}
     {{^isId}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
-             {{/isId}}   {{/fields}}
+             {{/isId}}
+            {{#isManyToOne}}
+            {{name}}LocalId: {{name}}LocalId,
+               {{/isManyToOne}}
+
+{{/fields}}
             )
         }
         withAnimation { isPresented = false }
     }
-
     private func populateForm() {
         if let e = entity {
             {{#fields}}
