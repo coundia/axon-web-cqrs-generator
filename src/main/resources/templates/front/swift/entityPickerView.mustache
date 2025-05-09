@@ -67,6 +67,10 @@ struct {{entity}}PickerView: View {
                 {{entity}}FormView(
                     isPresented: $showForm,
                     entity: .constant(nil),
+                    {{#header}}
+                    current{{headerUpperCase}}: .constant(nil),
+                    {{/header}}
+
                     viewModel: viewModel
                 )
             }

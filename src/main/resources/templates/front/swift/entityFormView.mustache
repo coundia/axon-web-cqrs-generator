@@ -6,6 +6,9 @@ struct {{entity}}FormView: View {
  @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var entity: {{entity}}?
+    {{#header}}
+    @Binding  var current{{headerUpperCase}}: {{headerUpperCase}}?
+    {{/header}}
     var viewModel: {{entity}}ListViewModel
     {{#fields}}
         @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
@@ -70,17 +73,18 @@ struct {{entity}}FormView: View {
         }
         withAnimation { isPresented = false }
     }
-    private func populateForm() {
-        if let e = entity {
-            {{#fields}}
-    {{name}} = e.{{name}}
-{{/fields}}
-        } else {
-            {{#fields}}
-    {{name}} = {{#nullable}}nil{{/nullable}}{{^nullable}}{{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{/nullable}}
-{{/fields}}
-        }
-    }
+     private func populateForm() {
+        {{#header}}
+            if entity == nil, let acc = current{{headerUpperCase}} {
+                {{headerLowerCase}} = acc.remoteId
+            }
+        {{/header}}
+                if let e = entity {
+                    {{#fields}}
+            {{name}} = e.{{name}}
+        {{/fields}}
+                }
+            }
 
 
 }

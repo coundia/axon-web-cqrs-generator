@@ -125,7 +125,15 @@ struct {{entity}}ListView: View {
             .sheet(isPresented: $showForm, onDismiss: {
                 viewModel.fetchEntities()
             }) {
-                {{entity}}FormView(isPresented: $showForm, entity: $selected, viewModel: viewModel)
+                {{entity}}FormView(
+                     isPresented: $showForm,
+                        entity: $selected,
+                        {{#header}}
+                        current{{headerUpperCase}}: $selected{{headerUpperCase}},
+                        {{/header}}
+
+                     viewModel: viewModel
+                  )
             }
             .sheet(item: $selectedForDuplicate) { wrapper in
                 Duplicate{{entity}}View(original: wrapper.value) { newItem in viewModel.insertDuplicated(newItem) }
