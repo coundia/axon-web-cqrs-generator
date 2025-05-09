@@ -50,31 +50,7 @@ var body: some View {
             }
             {{/header}}
 
-{{#header}}
-            Button { show{{headerUpperCase}}Picker = true } label: {
-                HStack {
-                    Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
-                        .font(.headline)
-                    Spacer()
-                    Image(systemName: "chevron.down")
-                    Button("All") { selected{{headerUpperCase}} = nil }
-                        .padding(8)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                }
-                .padding(8)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-            }
-            .sheet(isPresented: $show{{headerUpperCase}}Picker) {
-                {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
-            }
-            {{/header}}
-
-            if viewModel.filtered{{entity}}s.isEmpty {
-                {{entity}}EmptyStateView(onAdd: { selected = nil; showForm = true })
-            } else if showingTrash {
+             if showingTrash {
                 {{entity}}TrashContentView(viewModel: viewModel)
             } else {
                 {{entity}}ListContentView(
@@ -89,13 +65,38 @@ var body: some View {
             }
         }
         .toolbar {
-            {{entity}}MenuView(
-                showingTrash: $showingTrash,
-                isSyncing: $isSyncing,
-                showForm: $showForm,
-                syncAction: viewModel.sync
-            )
-        }
+            {{#header}}
+             ToolbarItem(placement: .principal) {
+                    Button { show{{headerUpperCase}}Picker = true } label: {
+                        HStack {
+                            Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
+
+                            Spacer()
+                           // Image(systemName: "chevron.down")
+                           // Button("All") { selected{{headerUpperCase}} = nil }
+                             //   .cornerRadius(8)
+                        }
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $show{{headerUpperCase}}Picker) {
+                        {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
+                    }
+                }
+
+                {{/header}}
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    {{entity}}MenuView(
+                        showingTrash: $showingTrash,
+                        isSyncing: $isSyncing,
+                        showForm: $showForm,
+                        syncAction: viewModel.sync
+                    )
+                }
+            }
+         .sheet(isPresented: $show{{headerUpperCase}}Picker) {
+                    {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
+                }
         .sheet(isPresented: $showForm, onDismiss: { viewModel.fetchEntities() }) {
             {{entity}}FormView(
                 isPresented: $showForm,
@@ -138,6 +139,15 @@ var body: some View {
         }
     }
 }
+
+     private func resetSheets() {
+
+            showingTrash = false
+            showForm = false
+         {{#header}}
+            show{{headerUpperCase}}Picker = false
+        {{/header}}
+    }
 
 }
 
