@@ -79,9 +79,6 @@ var body: some View {
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
                     }
-                    .sheet(isPresented: $show{{headerUpperCase}}Picker) {
-                        {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
-                    }
                 }
 
                 {{/header}}
@@ -94,10 +91,14 @@ var body: some View {
                     )
                 }
             }
-         .sheet(isPresented: $show{{headerUpperCase}}Picker) {
+         .sheet(isPresented: $show{{headerUpperCase}}Picker, onDismiss: resetSheets) {
                     {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
                 }
-        .sheet(isPresented: $showForm, onDismiss: { viewModel.fetchEntities() }) {
+        .sheet(isPresented: $showForm, onDismiss: {
+        resetSheets()
+        viewModel.fetchEntities()
+
+        }) {
             {{entity}}FormView(
                 isPresented: $showForm,
                 entity: $selected,
@@ -105,10 +106,10 @@ var body: some View {
                 viewModel: viewModel
             )
         }
-        .sheet(item: $selectedForDuplicate) { wrapper in
+        .sheet(item: $selectedForDuplicate, onDismiss: resetSheets) { wrapper in
             Duplicate{{entity}}View(original: wrapper.value) { newItem in viewModel.insertDuplicated(newItem) }
         }
-        .sheet(item: $selectedForDetails) { wrapper in
+        .sheet(item: $selectedForDetails, onDismiss: resetSheets) { wrapper in
             {{entity}}DetailsView(
                 {{entityLowerCase}}: wrapper.value,
                 user: user,
@@ -141,13 +142,14 @@ var body: some View {
 }
 
      private func resetSheets() {
-
-            showingTrash = false
             showForm = false
-         {{#header}}
-            show{{headerUpperCase}}Picker = false
-        {{/header}}
-    }
+            selectedForDuplicate = nil
+            selectedForDetails = nil
+            selectedForDelete = nil
+            {{#header}}show{{headerUpperCase}}Picker = false
+            {{/header}}
+        }
+
 
 }
 
