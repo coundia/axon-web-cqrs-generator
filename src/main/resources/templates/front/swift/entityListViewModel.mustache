@@ -23,11 +23,31 @@ let username: String
 @Published var current{{headerUpperCase}}Id: String?
 {{/header}}
 
+    @Published var selectedStartDate: Date?
+    @Published var selectedEndDate: Date?
+
+
 
 init(modelContext: ModelContext, user: User) {
 self.modelContext = modelContext
 self.user = user
 self.username = user.username!
+}
+
+var filtered{{entityLowerCase}}s: [{{entity}}] {
+    entities
+        .filter { $0.deletedAt == nil }
+        {{#header}}
+        .filter {
+            current{{headerUpperCase}}Id == nil || $0.{{headerLowerCase}} == current{{headerUpperCase}}Id
+        }{{/header}}
+        .filter {
+            guard let date = $0.updatedAt,
+                let sd = selectedStartDate,
+                let ed = selectedEndDate
+            else { return true }
+            return date >= sd && date <= ed
+        }
 }
 
  func fetchEntities() {

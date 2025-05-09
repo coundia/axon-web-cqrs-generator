@@ -19,6 +19,9 @@ struct {{entity}}ListView: View {
     @State private var isSyncing = false
     @State private var showingTrash = false
 
+   @State private var selectedMonth: Date = Date()
+   private let calendar = Calendar.current
+
     init(modelContext: ModelContext, user: User) {
         self.user = user
         _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
@@ -27,11 +30,24 @@ struct {{entity}}ListView: View {
         {{/header}}
     }
 
+      private func startOfMonth(_ date: Date) -> Date {
+        let components = calendar.dateComponents([.year, .month], from: date)
+        return calendar.date(from: components) ?? date
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
                 VStack(spacing: 8) {
-  {{#header}}
+                    {{#header}}
+
+               MonthSelectorCommunView(selectedMonth: $selectedMonth) { newMonth in
+                    let start = startOfMonth(newMonth)
+                    let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
+                    viewModel.selectedStartDate = start
+                    viewModel.selectedEndDate = end
+                }
+
                   Text( String(format: "%.0f", selected{{headerUpperCase}}?.currentBalance ?? 0.0))
 
                     Button { show{{headerUpperCase}}Picker = true } label: {
@@ -65,17 +81,7 @@ struct {{entity}}ListView: View {
                         {{entity}}TrashContentView(viewModel: viewModel)
                     } else {
                         {{entity}}ListContentView(
-                          {{#header}}
-                             {{entityLowerCase}}s: viewModel.entities.filter { {{entityLowerCase}} in
-                                guard let acct = selected{{headerUpperCase}} else { return true }
-                                return {{entityLowerCase}}.{{headerLowerCase}} == acct.remoteId
-                            },
-                            {{/header}}
-                            {{^header}}
-
-                              {{entityLowerCase}}s: viewModel.entities,
-                            {{/header}}
-
+                            {{entityLowerCase}}s: viewModel.viewModel.filtered{{entityLowerCase}}s,
                             onSelect: { item in selectedForDetails = .init(item) },
                             onDelete: { item in selectedForDelete = item },
                             onAdd: { selected = nil; showForm = true },
@@ -170,19 +176,24 @@ struct {{entity}}ListView: View {
             }
             {{/header}}
             .onAppear {
+            viewModel.fetchEntities()
+
+             let start = startOfMonth(selectedMonth)
+            let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
+            viewModel.selectedStartDate = start
+            viewModel.selectedEndDate = end
             {{^header}}
                 Task {
-                    await viewModel.pull()
-                    viewModel.fetchEntities()
-                    await viewModel.pull()
+                    //await viewModel.pull()
+                    //await viewModel.pull()
                 }
             {{/header}}
-{{#header}}
+            {{#header}}
                 Task {
-                    await {{headerLowerCase}}ViewModel.pull()
+                   // await {{headerLowerCase}}ViewModel.pull()
                       {{headerLowerCase}}ViewModel.fetchEntities()
-                    await viewModel.pull()
-                    
+                  //  await viewModel.pull()
+
                     if selected{{headerUpperCase}} == nil, let first = {{headerLowerCase}}ViewModel.entities.first {
                         selected{{headerUpperCase}} = first
                     }
