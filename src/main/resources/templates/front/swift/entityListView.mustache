@@ -2,206 +2,143 @@ import SwiftUI
 import SwiftData
 
 struct {{entity}}ListView: View {
-    @Environment(\.modelContext) private var modelContext
-    private let user: User
 
-    @StateObject private var viewModel: {{entity}}ListViewModel
-    {{#header}}
-    @StateObject private var {{headerLowerCase}}ViewModel: {{headerUpperCase}}ListViewModel
-    @State private var selected{{headerUpperCase}}: {{headerUpperCase}}?
-    @State private var show{{headerUpperCase}}Picker = false
-    {{/header}}
-    @State private var showForm = false
-    @State private var selected: {{entity}}?
-    @State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>?
-    @State private var selectedForDetails: IdentifiableWrapper<{{entity}}>?
-    @State private var selectedForDelete: {{entity}}?
-    @State private var isSyncing = false
-    @State private var showingTrash = false
-
-   @State private var selectedMonth: Date = Date()
-   private let calendar = Calendar.current
-
-    init(modelContext: ModelContext, user: User) {
-        self.user = user
-        _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
-        {{#header}}
-        _{{headerLowerCase}}ViewModel = StateObject(wrappedValue: {{headerUpperCase}}ListViewModel(modelContext: modelContext, user: user))
-        {{/header}}
-    }
-
-      private func startOfMonth(_ date: Date) -> Date {
-        let components = calendar.dateComponents([.year, .month], from: date)
-        return calendar.date(from: components) ?? date
-    }
-
-    var body: some View {
-        NavigationView {
-            ZStack {
-                VStack(spacing: 8) {
-                    {{#header}}
-
-               MonthSelectorCommunView(selectedMonth: $selectedMonth) { newMonth in
-                    let start = startOfMonth(newMonth)
-                    let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
-                    viewModel.selectedStartDate = start
-                    viewModel.selectedEndDate = end
-                }
-
-                  Text( String(format: "%.0f", selected{{headerUpperCase}}?.currentBalance ?? 0.0))
-
-                    Button { show{{headerUpperCase}}Picker = true } label: {
-                        HStack {
-                            Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
-                                .font(.headline)
-                            Spacer()
-                            Image(systemName: "chevron.down")
-
-                             Button("All") {
-                                selected{{headerUpperCase}} = nil
-                            }
-                            .padding(8)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-
-                        }
-                        .padding(8)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
-                    }
-                    .sheet(isPresented: $show{{headerUpperCase}}Picker) {
-                        {{headerUpperCase}}PickerView(
-                            selected{{headerUpperCase}}: $selected{{headerUpperCase}},
-                            viewModel: {{headerLowerCase}}ViewModel
-                        )
-                    }
+@Environment(\.modelContext) private var modelContext
+private let user: User
+private let calendar = Calendar.current
+@StateObject private var viewModel: {{entity}}ListViewModel
+{{#header}}
+@StateObject private var {{headerLowerCase}}ViewModel: {{headerUpperCase}}ListViewModel
+@State private var selected{{headerUpperCase}}: {{headerUpperCase}}?
+@State private var show{{headerUpperCase}}Picker = false
 {{/header}}
-                    if showingTrash {
-                        {{entity}}TrashContentView(viewModel: viewModel)
-                    } else {
-                        {{entity}}ListContentView(
-                            {{entityLowerCase}}s: viewModel.viewModel.filtered{{entityLowerCase}}s,
-                            onSelect: { item in selectedForDetails = .init(item) },
-                            onDelete: { item in selectedForDelete = item },
-                            onAdd: { selected = nil; showForm = true },
-                            onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
-                            onDuplicate: { item in selectedForDuplicate = .init(item) },
-                            onEdit: { item in selected = item; showForm = true }
-                        )
-                    }
-                }
+@State private var showForm = false
+@State private var selected: {{entity}}?
+@State private var selectedForDuplicate: IdentifiableWrapper<{{entity}}>?
+@State private var selectedForDetails: IdentifiableWrapper<{{entity}}>?
+@State private var selectedForDelete: {{entity}}?
+@State private var isSyncing = false
+@State private var showingTrash = false
 
-                if isSyncing {
-                    ProgressView("Syncing…")
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(12)
-                        .shadow(radius: 8)
-                }
+@State private var selectedMonth: Date = Date()
 
-                if viewModel.showSuccessToast {
-                    ToastView(message: "✅ Sync successful", color: .green)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                viewModel.showSuccessToast = false
-                                Task { await viewModel.pull(); await viewModel.pull() }
-                            }
-                        }
-                }
+init(modelContext: ModelContext, user: User) {
+    self.user = user
+    _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
+    {{#header}}
+    _{{headerLowerCase}}ViewModel = StateObject(wrappedValue: {{headerUpperCase}}ListViewModel(modelContext: modelContext, user: user))
+    {{/header}}
+}
 
-                if viewModel.showErrorToast {
-                    ToastView(message: viewModel.errorMessage ?? "Unknown error", color: .yellow)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                viewModel.showErrorToast = false
-                            }
-                        }
-                }
-            }
-            .navigationTitle(showingTrash ? "Corbeille" : "{{entity}}s Management")
-            .toolbar {
-                {{entity}}MenuView(
-                    showingTrash: $showingTrash,
-                    isSyncing: $isSyncing,
-                    showForm: $showForm,
-                    syncAction: viewModel.sync
-                )
-            }
-            .sheet(isPresented: $showForm, onDismiss: {
-                viewModel.fetchEntities()
-            }) {
-                {{entity}}FormView(
-                     isPresented: $showForm,
-                        entity: $selected,
-                        {{#header}}
-                        current{{headerUpperCase}}: $selected{{headerUpperCase}},
-                        {{/header}}
+private func startOfMonth(_ date: Date) -> Date {
+    let components = calendar.dateComponents([.year, .month], from: date)
+    return calendar.date(from: components) ?? date
+}
 
-                     viewModel: viewModel
-                  )
+var body: some View {
+    NavigationView {
+        VStack(spacing: 8) {
+            MonthSelectorCommunView(selectedMonth: $selectedMonth) { newMonth in
+                let start = startOfMonth(newMonth)
+                let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
+                viewModel.selectedStartDate = start
+                viewModel.selectedEndDate = end
             }
-            .sheet(item: $selectedForDuplicate) { wrapper in
-                Duplicate{{entity}}View(original: wrapper.value) { newItem in viewModel.insertDuplicated(newItem) }
-            }
-            .sheet(item: $selectedForDetails) { wrapper in
-                {{entity}}DetailsView(
-                    {{entityLowerCase}}: wrapper.value,
-                    user: user,
-                    onEdit: { selected = wrapper.value; showForm = true },
-                    onDelete: { selectedForDelete = wrapper.value },
-                    onDuplicate: { selectedForDuplicate = .init(wrapper.value) },
-                    viewModel: viewModel
-                )
-            }
-            .confirmationDialog(
-                "Are you sure you want to delete this item?",
-                isPresented: Binding(get: { selectedForDelete != nil }, set: { if !$0 { selectedForDelete = nil } }),
-                titleVisibility: .visible
-            ) {
-                Button("Delete", role: .destructive) {
-                    if let item = selectedForDelete { viewModel.markDeleted(item); selectedForDelete = nil }
-                }
-                Button("Cancel", role: .cancel) { selectedForDelete = nil }
-            }
-              {{#header}}
-            .onChange(of: selected{{headerUpperCase}}) { {{headerLowerCase}} in
-                if let {{headerLowerCase}} { viewModel.fetchEntitiesBy{{headerUpperCase}}({{headerLowerCase}}Id: {{headerLowerCase}}.remoteId) }
-                else { viewModel.fetchEntities() }
+            {{#header}}
+            .onChange(of: selected{{headerUpperCase}}) { acct in
+                viewModel.current{{headerUpperCase}}Id = acct?.remoteId
             }
             {{/header}}
-            {{^header}}
-            .onChange(of: viewModel.showSuccessToast) { show in
-                viewModel.fetchEntities()
+
+{{#header}}
+            Button { show{{headerUpperCase}}Picker = true } label: {
+                HStack {
+                    Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
+                        .font(.headline)
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                    Button("All") { selected{{headerUpperCase}} = nil }
+                        .padding(8)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .padding(8)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+            }
+            .sheet(isPresented: $show{{headerUpperCase}}Picker) {
+                {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
             }
             {{/header}}
-            .onAppear {
+
+            if viewModel.filtered{{entity}}s.isEmpty {
+                {{entity}}EmptyStateView(onAdd: { selected = nil; showForm = true })
+            } else if showingTrash {
+                {{entity}}TrashContentView(viewModel: viewModel)
+            } else {
+                {{entity}}ListContentView(
+                    {{entityLowerCase}}s: viewModel.filtered{{entity}}s,
+                    onSelect: { item in selectedForDetails = .init(item) },
+                    onDelete: { item in selectedForDelete = item },
+                    onAdd: { selected = nil; showForm = true },
+                    onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
+                    onDuplicate: { item in selectedForDuplicate = .init(item) },
+                    onEdit: { item in selected = item; showForm = true }
+                )
+            }
+        }
+        .toolbar {
+            {{entity}}MenuView(
+                showingTrash: $showingTrash,
+                isSyncing: $isSyncing,
+                showForm: $showForm,
+                syncAction: viewModel.sync
+            )
+        }
+        .sheet(isPresented: $showForm, onDismiss: { viewModel.fetchEntities() }) {
+            {{entity}}FormView(
+                isPresented: $showForm,
+                entity: $selected,
+                {{#header}}current{{headerUpperCase}}: $selected{{headerUpperCase}},{{/header}}
+                viewModel: viewModel
+            )
+        }
+        .sheet(item: $selectedForDuplicate) { wrapper in
+            Duplicate{{entity}}View(original: wrapper.value) { newItem in viewModel.insertDuplicated(newItem) }
+        }
+        .sheet(item: $selectedForDetails) { wrapper in
+            {{entity}}DetailsView(
+                {{entityLowerCase}}: wrapper.value,
+                user: user,
+                onEdit: { selected = wrapper.value; showForm = true },
+                onDelete: { selectedForDelete = wrapper.value },
+                onDuplicate: { selectedForDuplicate = .init(wrapper.value) },
+                viewModel: viewModel
+            )
+        }
+        .confirmationDialog(
+            "Are you sure you want to delete this item?",
+            isPresented: Binding(get: { selectedForDelete != nil }, set: { if !$0 { selectedForDelete = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) { if let item = selectedForDelete { viewModel.markDeleted(item); selectedForDelete = nil } }
+            Button("Cancel", role: .cancel) { selectedForDelete = nil }
+        }
+        .onAppear {
             viewModel.fetchEntities()
-
-             let start = startOfMonth(selectedMonth)
+            let start = startOfMonth(selectedMonth)
             let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
             viewModel.selectedStartDate = start
             viewModel.selectedEndDate = end
-            {{^header}}
-                Task {
-                    //await viewModel.pull()
-                    //await viewModel.pull()
-                }
-            {{/header}}
             {{#header}}
-                Task {
-                   // await {{headerLowerCase}}ViewModel.pull()
-                      {{headerLowerCase}}ViewModel.fetchEntities()
-                  //  await viewModel.pull()
-
-                    if selected{{headerUpperCase}} == nil, let first = {{headerLowerCase}}ViewModel.entities.first {
-                        selected{{headerUpperCase}} = first
-                    }
-                }
+    {{headerLowerCase}}ViewModel.fetchEntities()
+            if selected{{headerUpperCase}} == nil, let first = {{headerLowerCase}}ViewModel.entities.first { selected{{headerUpperCase}} = first }
             {{/header}}
-            }
         }
     }
+}
+
 }
 
 private struct IdentifiableWrapper<T>: Identifiable {

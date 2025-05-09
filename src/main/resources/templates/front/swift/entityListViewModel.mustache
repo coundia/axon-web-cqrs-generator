@@ -34,7 +34,7 @@ self.user = user
 self.username = user.username!
 }
 
-var filtered{{entityLowerCase}}s: [{{entity}}] {
+var filtered{{entity}}s: [{{entity}}] {
     entities
         .filter { $0.deletedAt == nil }
         {{#header}}
