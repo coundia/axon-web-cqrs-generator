@@ -1,0 +1,22 @@
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Category",
+	"table": "categories", 
+	"title": "Categories list",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "displayName": "Name", "type": "String" },
+	  { "name": "typeCategory", "type": "CategoryType", "nullable": true,
+		"defaultValue": "nil"
+	  },
+	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}

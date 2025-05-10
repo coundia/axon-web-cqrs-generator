@@ -48,6 +48,14 @@ Content-Type: application/json
 		"type": "String",
 		"relation": "manyToOne",
 		"nullable": true
+	  },
+	  {
+		"name": "category",
+		"displayName": "Categories",
+		"entityType": "Category",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
 	  }
 	]
   }
