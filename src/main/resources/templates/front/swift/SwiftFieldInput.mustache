@@ -60,6 +60,9 @@ HStack {
 .sheet(isPresented: $show{{entityType}}Picker, onDismiss: {
      {{name}} = selected{{entityType}}?.remoteId
      {{name}}LocalId = selected{{entityType}}?.id
+     //bind from category
+     print("[bind from category] ")
+     //type{{entity}}Raw = selected{{entityType}}?.type{{entityType}}Raw ?? ""
 }) {
     {{entityType}}PickerView(
         selected{{entityType}}: $selected{{entityType}},

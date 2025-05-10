@@ -5,35 +5,78 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
-    "name": "Transaction",
-    "table": "transactions",
-    "multiTenant": true,
-    "auditable": true,
+	"name": "Transaction",
+	"table": "transactions",
+	"shared": true,
+	"header": "account",
+    "hasSummary": true,
+    "hasType": true,
+    "hasDate": true,
 
-    "fields": [
-	  { "name": "id", "type": "String" },
-      { "name": "amount", "type": "Double", "defaultValue": 0.0},
-	  { "name": "timestamp", "type": "java.time.Instant",  "nullable": true },
-	  { "name": "details", "type": "Text", "nullable": true },
-      { "name": "reference", "type": "String", "nullable": true },
-
-      { "name": "isRecurring", "type": "Boolean", "defaultValue": false, "nullable": true },
-      { "name": "isExcluToRapport", "type": "Boolean", "defaultValue": false, "nullable": true },
-
-      { "name": "status", "type": "String", "nullable": true },
-
-      {
-        "name": "balance",
-        "type": "com.groupe2cs.bizyhub.balances.infrastructure.entity.Balance",
-        "relation": "ManyToOne", "nullable": true },
-      { "name": "category", "type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category", "relation": "ManyToOne", "nullable": true },
-
-	  { "name": "updatedAt", "type": "java.time.Instant",  "nullable": true },
-	  { "name": "createdAt", "type": "java.time.Instant",  "nullable": true }
-    ],
-    "stack": [
-      "Security"
-    ]
+	"title": "Transaction Management",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Name"
+	  },
+	  {
+		"name": "amount",
+		"type": "Double",
+		"displayName": "Amount",
+		"indicators": [
+		  "sum"
+		]
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"unique": true,
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"displayName": "Activé",
+		"type": "Boolean",
+		"defaultValue": true
+	  },
+	  {
+		"name": "account",
+		"displayName": "account",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "category",
+		"displayName": "Categories",
+		"entityType": "Category",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+        "name": "typeTransactionRaw",
+        "type": "String",
+		"displayName": "type",
+		"defaultValue": "nil",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "Date",
+        "displayName": "Date",
+		"defaultValue": "date()",
+		"nullable": true
+	  }
+	]
   }
 }
 
+###

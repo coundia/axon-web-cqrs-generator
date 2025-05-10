@@ -11,15 +11,18 @@ struct {{entity}}FormView: View {
     {{/header}}
     var viewModel: {{entity}}ListViewModel
     {{#fields}}
-        @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
-        {{#isManyToOne}}
-         @State private var show{{entityType}}Picker = false
-         @State private var selected{{entityType}}: {{entityType}}? = nil
-         @State private var  {{name}}LocalId: String? = nil
-        {{/isManyToOne}}
+        {{^isEnum}}
+            @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+            {{#isManyToOne}}
+             @State private var show{{entityType}}Picker = false
+             @State private var selected{{entityType}}: {{entityType}}? = nil
+             @State private var  {{name}}LocalId: String? = nil
+            {{/isManyToOne}}
+        {{/isEnum}}
     {{/fields}}
 
         @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
+        @State private var type{{entity}}Raw: String = {{entity}}Type.allCases.first!.rawValue ?? ""
 
     var body: some View {
         NavigationView {

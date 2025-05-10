@@ -4,53 +4,63 @@ import SwiftData
 struct {{entity}}RowView: View {
     let entity: {{entity}}
 
+        @Environment(\.colorScheme) var colorScheme
+
+           private var rowBackgroundColor: Color {
+        colorScheme == .dark ? .black : Color(UIColor.secondarySystemBackground)
+    }
+
+  private var customTextColor: Color {
+        entity.type{{entity}}Raw == {{entity}}Type.type2.rawValue ? .red : .green
+    }
+
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            iconView
-                .frame(width: 32, height: 32)
-                .padding(.top, 4)
+         VStack(alignment: .leading, spacing: 2) {
 
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    Text(entity.name)
-                        .font(.headline)
-                        .lineLimit(1)
-
-                    Spacer()
-
-                    Label {
+          Label {
                         Text(statusText)
                     } icon: {
                         Image(systemName: statusIcon)
                     }
-                    .foregroundColor(statusColor)
+                    .foregroundColor(customTextColor)
                     .font(.caption)
+
+                iconView
+                    .frame(width: 32, height: 32)
+                    .padding(.top, 4)
+
+
                 }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    {{#fields}}
-
-                     {{#displayName}}
-
-                        Text("{{displayName}} : \(entity.{{name}})")
+             VStack(alignment: .leading, spacing: 2) {
+                    {{#fieldsDisplayed}}
+                        Text(entity.{{name}} ?? "no {{name}}")
                             .font(.caption)
+                            .fontWeight(.bold)
                             .foregroundColor(.secondary)
-
-
-                    {{/displayName}}
-                {{/fields}}
-                }
-
+                    {{/fieldsDisplayed}}
                 if let updatedAt = entity.updatedAt {
-                    Text(" \(formattedDate(updatedAt))")
-                        .font(.caption2)
-                        .foregroundColor(.gray)
+                Text(" \(formattedDate(updatedAt))")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+                 }
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+
+                      {{#fieldsAmount}}
+                       Spacer()
+                            Text("\(entity.{{name}}, specifier: "%.0f")")
+                            .font(.subheadline)
+                            .bold()
+                            .foregroundColor(customTextColor)
+                    {{/fieldsAmount}}
                 }
             }
-
-            Spacer()
         }
         .padding(.vertical, 8)
+        .background(rowBackgroundColor)
     }
 
     private var iconView: some View {
@@ -76,7 +86,7 @@ struct {{entity}}RowView: View {
         case .sync: "checkmark.seal.fill"
         case .syncing: "arrow.triangle.2.circlepath"
         case .failed: "xmark.octagon.fill"
-        case .create: "plus.circle.fill"
+        case .create: "sparkles"
         case .update: "pencil.circle.fill"
         case .delete, .trash: "trash.fill"
         }

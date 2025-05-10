@@ -39,6 +39,8 @@ public class EntityDefinition implements Serializable {
 	private String title = "";
 	private Boolean shared = false;
 	private Boolean hasType = false;
+	private Boolean hasSummary = false;
+	private Boolean hasDate = true;
 	private String bind = "";
 	private String header = "";
 
@@ -316,5 +318,26 @@ public class EntityDefinition implements Serializable {
 				;
 
 	}
+
+	public List<FieldDefinition> getFieldsToDisplay() {
+		return fields.stream()
+				.filter(f -> {
+					String n = f.getName().toLowerCase();
+					return n.equalsIgnoreCase("name") ||
+							  n.equals("details");
+				})
+				.toList();
+	}
+
+
+	public List<FieldDefinition> getFieldsAmount() {
+		return fields.stream()
+				.filter(f -> {
+					String n = f.getName().toLowerCase();
+					return n.equals("amount") || n.equals("price");
+				})
+				.toList();
+	}
+
 
 }

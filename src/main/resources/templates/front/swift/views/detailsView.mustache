@@ -137,15 +137,34 @@ struct {{entity}}DetailsView: View {
         VStack(spacing: 12) {
             {{#fields}}
     {{#isDisplayName}}
+    {{#isText}}
             detailItem(icon: "person.text.rectangle", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ?? "-")
-            {{/isDisplayName}}
+{{/isText}}
+    {{#isInt}}
+            detailItem(icon: "number", title: "{{displayName}}", value: String({{entityLowerCase}}.{{name}}))
+            {{/isInt}}
+    {{#isFloat}}
+            detailItem(icon: "number", title: "{{displayName}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            {{/isFloat}}
+    {{#isString}}
+            detailItem(icon: "textformat", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ?? "-")
+            {{/isString}}
     {{#isDouble}}
-            detailItem(icon: "dollarsign.circle", title: "{{name}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            detailItem(icon: "dollarsign.circle", title: "{{displayName}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
             {{/isDouble}}
     {{#isBool}}
-            detailItem(icon: "checkmark.circle", title: "{{name}}", value: {{entityLowerCase}}.{{name}} ? "Yes" : "No")
+            detailItem(icon: "checkmark.circle", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ? "Yes" : "No")
             {{/isBool}}
+    {{#isDate}}
+        detailItem(icon: "calendar", title: "{{displayName}}", value: formatDate({{entityLowerCase}}.{{name}}))
+            {{/isDate}}
+
+    {{/isDisplayName}}
 {{/fields}}
+
+        {{#hasType}}
+            detailItem(icon: "info.circle", title: "Type",  value: {{entityLowerCase}}.type{{entity}}Raw  ?? "NONE")
+        {{/hasType}}
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
@@ -164,6 +183,7 @@ struct {{entity}}DetailsView: View {
 {{/fields}}
 
         detailItem(icon: "person.text.rectangle", title: "User",  value: {{entityLowerCase}}.user?.username ?? "-")
+
          }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))

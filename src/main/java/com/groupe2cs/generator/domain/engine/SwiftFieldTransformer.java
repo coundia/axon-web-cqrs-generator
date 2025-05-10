@@ -25,7 +25,7 @@ public class SwiftFieldTransformer {
 			f.put("isId", field.isId());
 
 			// UI helpers
-			f.put("isDisplayName", name.equalsIgnoreCase("name"));
+			f.put("isDisplayName", field.getDisplayName() != null && !field.getDisplayName().isEmpty());
 			f.put("isIcon", name.equalsIgnoreCase("icon"));
 			f.put("isUpdatedAt", name.equalsIgnoreCase("updatedAt"));
 			f.put("isParentRelation", name.toLowerCase().contains("parent"));

@@ -45,10 +45,12 @@ var body: some View {
                 viewModel.selectedStartDate = start
                 viewModel.selectedEndDate = end
             }
-
             .onChange(of: selected{{headerUpperCase}}) { acct in
                 viewModel.current{{headerUpperCase}}Id = acct?.remoteId
             }
+            {{#hasSummary}}
+        {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
+        {{/hasSummary}}
             {{/header}}
 
              if showingTrash {
@@ -155,7 +157,6 @@ var body: some View {
             {{#header}}show{{headerUpperCase}}Picker = false
             {{/header}}*/
         }
-
 
 }
 

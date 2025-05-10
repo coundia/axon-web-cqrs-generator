@@ -28,11 +28,19 @@ let username: String
 
 
 
-init(modelContext: ModelContext, user: User) {
-self.modelContext = modelContext
-self.user = user
-self.username = user.username!
-}
+    init(modelContext: ModelContext, user: User) {
+        self.modelContext = modelContext
+        self.user = user
+        self.username = user.username!
+        }
+{{#hasType}}
+  func fixType{{entity}}RawIfMissing() {
+        for {{entityLowerCase}} in entities where {{entityLowerCase}}.type{{entity}}Raw.isEmpty {
+            {{entityLowerCase}}.type{{entity}}Raw = {{entity}}Type.type1.rawValue
+        }
+        try? modelContext.save()
+    }
+{{/hasType}}
 
 var filtered{{entity}}s: [{{entity}}] {
     entities

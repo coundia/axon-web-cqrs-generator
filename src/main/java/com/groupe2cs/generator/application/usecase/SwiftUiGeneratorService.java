@@ -279,9 +279,12 @@ public class SwiftUiGeneratorService {
 		context.put("headerUpperCase", Utils.capitalize(definition.getHeader()));
 
 		context.put("hasType", definition.getHasType());
+		context.put("hasSummary", definition.getHasSummary());
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
+		context.put("fieldsDisplayed", SwiftFieldTransformer.transform(definition.getFieldsToDisplay(), definition.getName()));
+		context.put("fieldsAmount", SwiftFieldTransformer.transform(definition.getFieldsAmount(), definition.getName()));
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);
 	}

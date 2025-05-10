@@ -10,9 +10,11 @@ struct {{entity}}PickerView: View {
 
     private var filteredEntities: [{{entity}}] {
         viewModel.entities.filter {
-        $0.type{{entity}} == selectedFilter
-        &&  $0.deletedAt == nil
-        &&  $0.remoteId != nil
+          {{#hasType}}
+          $0.type{{entity}}Raw == selectedFilter.rawValue &&
+          {{/hasType}}
+          $0.deletedAt == nil  &&
+          $0.remoteId != nil
          }
     }
 
@@ -37,11 +39,11 @@ struct {{entity}}PickerView: View {
                                 selected{{entity}} = item
                                 dismiss()
                             } label: {
-                                {{#fields}}
-	{{#isDisplayName}}
-                                Text(item.{{name}})
-                                {{/isDisplayName}}
-{{/fields}}
+
+
+                                Text(item.name)
+
+
                             }
                         }
                     }
@@ -79,6 +81,9 @@ struct {{entity}}PickerView: View {
             }
             onAppear {
                    viewModel.fetchEntities()
+                   {{#hasType}}
+                   viewModel.fixType{{entity}}RawIfMissing()
+                   {{/hasType}}
                }
         }
     }

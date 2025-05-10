@@ -1,51 +1,48 @@
 import SwiftUI
 
 struct {{entity}}SummaryView: View {
+
+{{#hasSummary}}
     let {{entityLowerCase}}s: [{{entity}}]
     let defaultCurrency: String
 
-    private var totalType1: Double {
-      //todo
-      /*  {{entityLowerCase}}s
-            .filter { $0.type{{entity}} == .type1 }
-            .reduce(0) { $0 + $1.amount }
+    //type1 = IN
+    //type2 = OUT
 
-            */
-             return 0.0
+    private var totalType1: Double {
+        {{entityLowerCase}}s
+            .filter { $0.type{{entity}}Raw == {{entity}}Type.type1.rawValue }
+            .reduce(0) { $0 + $1.amount }
     }
 
+
     private var totalType2: Double {
-    //todo
-    /*
         {{entityLowerCase}}s
-            .filter { $0.type{{entity}} == .type2 }
+            .filter { $0.type{{entity}}Raw == {{entity}}Type.type2.rawValue }
             .reduce(0) { $0 + $1.amount }
-            */
-            return 0.0
     }
 
     private var difference: Double {
-        totalType2 - totalType1
+        totalType1 - totalType2
     }
-
     var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("Total Type1:")
+                Text("Total \({{entity}}Type.type1.rawValue)")
                 Spacer()
-                Text("\(totalType1, format: .currency(code: defaultCurrency))")
+                Text("\(totalType1, specifier: "%.0f") \(defaultCurrency)")
             }
             HStack {
-                Text("Total Type2:")
+                Text("Total \({{entity}}Type.type2.rawValue):")
                 Spacer()
-                Text("\(totalType2, format: .currency(code: defaultCurrency))")
+                Text("\(totalType2, specifier: "%.0f") \(defaultCurrency)")
             }
             Divider()
             HStack {
                 Text("Difference:")
                     .fontWeight(.bold)
                 Spacer()
-                Text("\(difference, format: .currency(code: defaultCurrency))")
+                Text("\(difference, specifier: "%.0f") \(defaultCurrency)")
                     .fontWeight(.bold)
             }
         }
@@ -54,4 +51,5 @@ struct {{entity}}SummaryView: View {
         .cornerRadius(8)
         .padding(.horizontal)
     }
+    {{/hasSummary}}
 }
