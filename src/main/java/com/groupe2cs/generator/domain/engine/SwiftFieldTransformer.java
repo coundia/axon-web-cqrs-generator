@@ -37,7 +37,7 @@ public class SwiftFieldTransformer {
 			f.put("isInt", swiftType.equals("Int") || swiftType.equals("Int64"));
 			f.put("isBool", swiftType.equals("Bool"));
 			f.put("isDate", swiftType.equals("Date"));
-			f.put("isEnum", isEnum(field.getType()));
+			f.put("isEnum", isEnum(field));
 
 			f.put("readOnly", field.getReadOnly());
 
@@ -72,11 +72,8 @@ public class SwiftFieldTransformer {
 		};
 	}
 
-	private static boolean isEnum(String type) {
-		String base = type.toLowerCase();
-		return !(base.equals("string") || base.equals("int") || base.equals("integer") || base.equals("double")
-				|| base.equals("long") || base.equals("boolean") || base.equals("uuid")
-				|| base.startsWith("java.time") || base.equals("date"));
+	private static boolean isEnum(FieldDefinition field) {
+		return "enum".equalsIgnoreCase(field.getEntityType());
 	}
 
 	private static String getDefaultValue(String swiftType, boolean isNullable) {

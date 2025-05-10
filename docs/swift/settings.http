@@ -12,6 +12,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String", "unique": true },
+	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
 
 	  { "name": "stringValue", "type": "String" },
 	  { "name": "descriptions", "type": "String",

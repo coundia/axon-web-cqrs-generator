@@ -9,11 +9,13 @@ Content-Type: application/json
 	"name": "Category",
 	"table": "categories", 
 	"title": "Categories list",
+    "hasType": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "displayName": "Name", "type": "String" },
-	  { "name": "typeCategory", "type": "CategoryType", "nullable": true,
-		"defaultValue": "nil"
+	  { "name": "typeCategoryRaw", "type": "String",
+		"defaultValue": "nil",
+		"entityType": "enum"
 	  },
 	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }

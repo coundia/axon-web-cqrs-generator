@@ -38,6 +38,7 @@ public class EntityDefinition implements Serializable {
 	private String apiPrefix = "";
 	private String title = "";
 	private Boolean shared = false;
+	private Boolean hasType = false;
 	private String bind = "";
 	private String header = "";
 

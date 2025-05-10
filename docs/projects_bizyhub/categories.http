@@ -12,7 +12,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String" },
-	  { "name": "typeCategory", "type": "String", "nullable": true },
+	  { "name": "typeCategoryRaw", "type": "String", "nullable": true },
 	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]

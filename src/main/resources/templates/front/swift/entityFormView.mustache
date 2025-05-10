@@ -18,15 +18,41 @@ struct {{entity}}FormView: View {
          @State private var  {{name}}LocalId: String? = nil
         {{/isManyToOne}}
     {{/fields}}
+
+        @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
+
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
                         {{^readOnly}}
+                        {{^isEnum}}
                         {{> SwiftFieldInput }}
+                        {{/isEnum}}
                         {{/readOnly}}
                     {{/fields}}
+
+                    {{#hasType}}
+
+                      Picker(
+                        "Type",
+                        selection: Binding(
+                            get: {
+                                {{entity}}Type(rawValue: type{{entity}}Raw)
+                                    ?? {{entity}}Type.allCases.first!
+                            },
+                            set: {
+                                type{{entity}}Raw = $0.rawValue
+                            }
+                        )
+                    ) {
+                        ForEach({{entity}}Type.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+
+                    {{/hasType}}
                 }
                 Section {
                     Button("Save", action: handleSave)

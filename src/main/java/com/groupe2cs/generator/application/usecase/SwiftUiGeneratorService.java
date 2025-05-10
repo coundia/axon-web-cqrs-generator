@@ -278,6 +278,8 @@ public class SwiftUiGeneratorService {
 		context.put("headerLowerCase", Utils.unCapitalize(definition.getHeader()));
 		context.put("headerUpperCase", Utils.capitalize(definition.getHeader()));
 
+		context.put("hasType", definition.getHasType());
+
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
 		String content = templateEngine.render(template.getTemplatePath(), context);
