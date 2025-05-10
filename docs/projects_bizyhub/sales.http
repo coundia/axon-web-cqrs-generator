@@ -37,6 +37,13 @@ Content-Type: application/json
 		"relation": "manyToOne",
 		"nullable": true
 	  }
+	,
+	  {
+		"name": "category",
+		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
+		"relation": "manyToOne",
+		"nullable": true
+	  }
 	]
   }
 }
