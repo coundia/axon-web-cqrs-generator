@@ -26,7 +26,9 @@ private let calendar = Calendar.current
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
 
 @State private var selectedMonth: Date = Date()
-
+{{#header}}
+@AppStorage("lastUsed{{headerUpperCase}}Id") private var lastUsed{{headerUpperCase}}Id: String?
+{{/header}}
 init(modelContext: ModelContext, user: User) {
     self.user = user
     _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
@@ -205,6 +207,11 @@ var body: some View {
             Button("Delete", role: .destructive) { if let item = selectedForDelete { viewModel.markDeleted(item); selectedForDelete = nil } }
             Button("Cancel", role: .cancel) { selectedForDelete = nil }
         }
+        {{#header}}
+       .onChange(of: selected{{headerUpperCase}}) { acct in
+            viewModel.current{{headerUpperCase}}Id = acct?.remoteId
+            lastUsed{{headerUpperCase}}Id = acct?.remoteId
+        }{{/header}}
         .onAppear {
             viewModel.fetchEntities()
             let start = startOfMonth(selectedMonth)
@@ -212,8 +219,15 @@ var body: some View {
             viewModel.selectedStartDate = start
             viewModel.selectedEndDate = end
             {{#header}}
-    {{headerLowerCase}}ViewModel.fetchEntities()
-            if selected{{headerUpperCase}} == nil, let first = {{headerLowerCase}}ViewModel.entities.first { selected{{headerUpperCase}} = first }
+            {{headerLowerCase}}ViewModel.fetchEntities()
+            if selected{{headerUpperCase}} == nil {
+                if let lastId = lastUsed{{headerUpperCase}}Id,
+                   let match = {{headerLowerCase}}ViewModel.entities.first(where: { $0.remoteId == lastId }) {
+                    selected{{headerUpperCase}} = match
+                } else if let first = {{headerLowerCase}}ViewModel.entities.first {
+                    selected{{headerUpperCase}} = first
+                }
+            }
             {{/header}}
         }
     }

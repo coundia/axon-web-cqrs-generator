@@ -21,8 +21,12 @@ struct {{entity}}FormView: View {
         {{/isEnum}}
     {{/fields}}
 
-        @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
-        @State private var type{{entity}}Raw: String = {{entity}}Type.allCases.first!.rawValue ?? ""
+@State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
+@State private var type{{entity}}Raw: String = {{entity}}Type.allCases.first!.rawValue ?? ""
+
+{{#hasCategory}}
+@AppStorage("lastUsedCategoryId") private var lastUsedCategoryId: String?
+{{/hasCategory}}
 
     var body: some View {
         NavigationView {
@@ -108,11 +112,30 @@ struct {{entity}}FormView: View {
                 {{headerLowerCase}} = acc.remoteId
             }
         {{/header}}
+        {{#hasCategory}}
+        if selectedCategory == nil {
+                let categories = try? modelContext.fetch(FetchDescriptor<Category>())
+                if let lastId = lastUsedCategoryId,
+                   let found = categories?.first(where: { $0.remoteId == lastId }) {
+                    selectedCategory = found
+                    category = found.remoteId
+                    categoryLocalId = found.id
+                } else if let first = categories?.first {
+                    selectedCategory = first
+                    category = first.remoteId
+                    categoryLocalId = first.id
+                }
+            }
+        {{/hasCategory}}
+
                 if let e = entity {
                     {{#fields}}
             {{name}} = e.{{name}}
         {{/fields}}
                 }
+         {{#hasCategory}}
+        type{{entity}}Raw = selectedCategory?.typeCategoryRaw ?? "NA"
+         {{/hasCategory}}
             }
 
 

@@ -41,6 +41,7 @@ public class EntityDefinition implements Serializable {
 	private Boolean hasType = false;
 	private Boolean hasSummary = false;
 	private Boolean hasDate = false;
+	private Boolean hasCategory = false;
 	private String bind = "";
 	private String header = "";
 
