@@ -14,7 +14,7 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "displayName": "Name", "type": "String" },
 	  { "name": "typeCategoryRaw", "type": "String",
-		"defaultValue": "nil",
+
 		"entityType": "enum"
 	  },
 	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},

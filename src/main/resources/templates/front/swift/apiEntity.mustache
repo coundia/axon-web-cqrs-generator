@@ -20,4 +20,18 @@ struct API{{entity}} {
         ]
         return components.url!
     }
+
+    {{#transactional}}
+     static func queryByAccount(_ account: String) -> URL {
+        var components = URLComponents()
+        components.scheme = APIConfiguration.baseURL.scheme
+        components.host = APIConfiguration.baseURL.host
+        components.port = APIConfiguration.baseURL.port
+        components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLowerCase}}/account").path
+        components.queryItems = [
+            URLQueryItem(name: "account", value: account)
+        ]
+        return components.url!
+    }
+    {{/transactional}}
 }

@@ -7,7 +7,14 @@ extension {{entity}}ListViewModel {
         print("[pullEntities]")
             let manager = {{entity}}PullService(modelContext: modelContext, user: user)
             do {
+            {{^transactional}}
             try await manager.pullAndMerge{{entity}}s()
+            {{/transactional}}
+            {{#transactional}}
+            try await manager.pullAndMerge{{entity}}sByAccount(accountId: currentAccountId ?? "")
+            {{/transactional}}
+
+
             } catch {
             await MainActor.run {
                 errorMessage = mapError(error)
@@ -26,6 +33,11 @@ extension {{entity}}ListViewModel {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 await pull()
                 await pull()
+                await MainActor.run { self.showSuccessToast = true }
+
+                await MainActor.run {
+                     fetchEntities()
+                 }
 
             } catch {
             await MainActor.run {
@@ -42,10 +54,10 @@ extension {{entity}}ListViewModel {
         {{entity}}DeltaDto(
         id: $0.remoteId ?? "null",
         {{#fields}}
-            {{^isId}}
-                {{name}}: $0.{{name}},
+    {{^isId}}
+        {{name}}: $0.{{name}},
         {{/isId}}
-        {{/fields}}
+{{/fields}}
         type: $0.statusRaw
         )
         }
@@ -108,24 +120,24 @@ extension {{entity}}ListViewModel {
 
         let delta = {{entity}}DeltaDto(
             {{#fields}}
-                {{#isId}}
+    {{#isId}}
                         id: entity.remoteId ?? "",
                         {{/isId}}
-                {{^isId}}
-                    {{#isText}}
-                        {{name}}: entity.{{name}} ?? "",
+    {{^isId}}
+        {{#isText}}
+            {{name}}: entity.{{name}} ?? "",
                         {{/isText}}
-                    {{#isDouble}}
-                        {{name}}: entity.{{name}},
+        {{#isDouble}}
+            {{name}}: entity.{{name}},
                         {{/isDouble}}
-                    {{#isBool}}
-                        {{name}}: entity.{{name}},
+        {{#isBool}}
+            {{name}}: entity.{{name}},
                         {{/isBool}}
-                    {{#isDate}}
-                        {{name}}: entity.{{name}},
+        {{#isDate}}
+            {{name}}: entity.{{name}},
                         {{/isDate}}
-                {{/isId}}
-            {{/fields}}
+    {{/isId}}
+{{/fields}}
             type: entity.status.rawValue
         )
 

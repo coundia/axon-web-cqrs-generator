@@ -12,7 +12,7 @@ Content-Type: application/json
     "hasType": true,
     "hasDate": true,
     "transactional": true,
-"hasCategory": true,
+    "hasCategory": true,
 	"title": "Transaction Management",
 	"fields": [
 	  {

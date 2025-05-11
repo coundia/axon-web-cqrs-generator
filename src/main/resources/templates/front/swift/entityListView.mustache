@@ -215,6 +215,10 @@ var body: some View {
        .onChange(of: selected{{headerUpperCase}}) { acct in
             viewModel.current{{headerUpperCase}}Id = acct?.remoteId
             lastUsed{{headerUpperCase}}Id = acct?.remoteId
+
+            viewModel.fetchEntities()
+
+
         }{{/header}}
         .onAppear {
             viewModel.fetchEntities()

@@ -1,0 +1,178 @@
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Account",
+	"table": "accounts",
+	"shared": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name",  "type": "String", "displayName": "Name"  },
+	  { "name": "currency", "type": "String" , "displayName": "Currency", "defaultValue": "\"XOF\"" },
+	  { "name": "currentBalance", "type": "Double", "displayName": "Balance", "defaultValue": 0.0 },
+	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "displayName": "Active", "defaultValue": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "AccountUser",
+	"bind": "username",
+	"table": "account_users",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name",   "type": "String"},
+
+	  { "name": "account",  "displayName": "account", "entityType": "Account", "type": "String", "relation": "manyToOne", "nullable": true },
+	  { "name": "username",   "displayName": "username", "type": "String"  },
+
+	  { "name": "details", "type": "String", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"title": "Categories list",
+	"hasType": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "displayName": "Name", "type": "String" },
+	  { "name": "typeCategoryRaw", "type": "String",
+
+		"entityType": "enum"
+	  },
+	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Transaction",
+	"table": "transactions",
+	"header": "account",
+	"hasSummary": true,
+	"hasType": true,
+	"hasDate": true,
+	"transactional": true,
+	"hasCategory": true,
+	"title": "Transaction Management",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "amount",
+		"type": "Double",
+		"displayName": "Amount",
+
+		"indicators": [
+		  "sum"
+		]
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Name"
+	  },
+
+	  {
+		"name": "details",
+		"type": "String",
+		"defaultValue": "No details",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"displayName": "Activé",
+		"type": "Boolean",
+		"defaultValue": true
+	  },
+	  {
+		"name": "account",
+		"displayName": "account",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "category",
+		"displayName": "Categories",
+		"entityType": "Category",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "typeTransactionRaw",
+		"type": "String",
+		"displayName": "type",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "Date",
+		"displayName": "Date",
+		"defaultValue": "date()",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "TransactionUser",
+	"table": "transaction_users",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name",   "type": "String"},
+
+	  { "name": "transaction",  "displayName": "transaction", "entityType": "Transaction", "type": "String", "relation": "manyToOne", "nullable": true },
+	  { "name": "username",   "displayName": "username", "type": "String"  },
+
+	  { "name": "details", "type": "String", "nullable": true},
+	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+
+###

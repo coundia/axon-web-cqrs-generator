@@ -29,19 +29,19 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 	{{#fields}}
 	{{^isId}}
 
-        {{^shared}}
+        {{^transactional}}
 	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC")
 	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
-	{{/shared}}
-        {{#shared}}
+	{{/transactional}}
 
+        {{#transactional}}
  	@Query("""
 	SELECT DISTINCT t FROM {{entityName}} t
 	LEFT JOIN AccountUser au ON au.account.id = t.account.id
-	WHERE t.account.id = :values AND (t.createdBy.id = :userId OR au.user.id = :userId)
+	WHERE t.account.id = :valueId AND (t.createdBy.id = :userId OR au.user.id = :userId OR au.account.createdBy.id = :userId)
 	""")
-	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} values, String userId);
-	{{/shared}}
+	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} valueId, String userId);
+	{{/transactional}}
 
 	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.updatedAtAudit DESC ")
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});

@@ -154,14 +154,17 @@ struct {{entity}}FormView: View {
         type{{entity}}Raw = selectedCategory?.typeCategoryRaw ?? "NA"
          {{/hasCategory}}
 
-
+{{#fields}}
+    {{#isDouble}}
          if entity == nil {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    isAmountFocused = true
+                    is{{nameCapitalized}}Focused = true
                 }
             }
+{{/isDouble}}
 
-            }
+{{/fields}}
+      }
 
 
 }
