@@ -50,7 +50,12 @@ var filtered{{entity}}s: [{{entity}}] {
             current{{headerUpperCase}}Id == nil || $0.{{headerLowerCase}} == current{{headerUpperCase}}Id
         }
         .filter {
+        {{^hasDate}}
             guard let date = $0.updatedAt,
+            {{/hasDate}}
+            {{#hasDate}}
+            guard let date = $0.date{{entity}},
+            {{/hasDate}}
                 let sd = selectedStartDate,
                 let ed = selectedEndDate
             else { return true }
@@ -68,7 +73,12 @@ var filtered{{entity}}s: [{{entity}}] {
             predicate: #Predicate { item in
                 item.user?.username == username && item.statusRaw != cond
             },
+            {{^hasDate}}
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+            {{/hasDate}}
+            {{#hasDate}}
+            sortBy: [SortDescriptor(\.date{{entity}}, order: .reverse)]
+            {{/hasDate}}
         )
         do {
             entities = try modelContext.fetch(descriptor)
@@ -78,9 +88,9 @@ var filtered{{entity}}s: [{{entity}}] {
         isLoading = false
     }
 {{#header}}
-    func fetchEntitiesBy{{headerUpperCase}}(accountId: String?) {
+    func fetchEntitiesBy{{headerUpperCase}}({{headerLowerCase}}Id: String?) {
         print("[fetchEntitiesBy{{headerUpperCase}}]")
-        print(accountId)
+        print({{headerLowerCase}}Id)
         isLoading = true
         let cond = "{{entity}}Status.delete".uppercased()
         let descriptor = FetchDescriptor<{{entity}}>(
@@ -90,7 +100,12 @@ var filtered{{entity}}s: [{{entity}}] {
                     && ( item.{{headerLowerCase}} == {{headerLowerCase}}Id
                     || item.{{headerLowerCase}}LocalId == {{headerLowerCase}}Id )
             },
+            {{^hasDate}}
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+            {{/hasDate}}
+            {{#hasDate}}
+            sortBy: [SortDescriptor(\.date{{entity}}, order: .reverse)]
+            {{/hasDate}}
         )
         do {
             entities = try modelContext.fetch(descriptor)
@@ -190,6 +205,61 @@ try modelContext.save()
 errorMessage = mapError(error)
 }
 }
+
+ func search{{entity}}s(text: String, by criteria: {{entity}}SearchCriteria) {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            fetchEntities()
+            return
+        }
+
+        isLoading = true
+        let cond = "{{entity}}Status.delete".uppercased()
+
+        let commonPredicate: ({{entity}}) -> Bool = { item in
+            guard let username = item.user?.username,
+                  username == self.username,
+                  item.statusRaw != cond else {
+                return false
+            }
+
+{{#header}}
+            let matches{{headerUpperCase}} = self.current{{headerUpperCase}}Id == nil ||
+            item.{{headerLowerCase}} == self.current{{headerUpperCase}}Id ||
+            item.{{headerLowerCase}}LocalId == self.current{{headerUpperCase}}Id
+{{/header}}
+            let matchesDate: Bool
+            if let sd = self.selectedStartDate, let ed = self.selectedEndDate
+            {{#hasDate}}, let date = item.date{{entity}} {{/hasDate}}
+            {{^hasDate}}, let date = item.updatedAt {{/hasDate}}
+             {
+                matchesDate = date >= sd && date <= ed
+            } else {
+                matchesDate = true
+            }
+
+            let matchesText: Bool
+            switch criteria {
+
+            {{#fieldsDisplayed}}
+             case .{{nameLowerCase}}:
+                matchesText = item.{{nameLowerCase}}.localizedStandardContains(text) ?? false
+            {{/fieldsDisplayed}}
+
+            @unknown default:
+                matchesText = false
+            }
+
+            return {{#header}} matches{{headerUpperCase}} && {{/header}}  matchesDate && matchesText
+        }
+
+        do {
+            entities = try modelContext.fetch(FetchDescriptor<{{entity}}>()).filter(commonPredicate)
+        } catch {
+            errorMessage = mapError(error)
+        }
+
+        isLoading = false
+    }
 
 
 

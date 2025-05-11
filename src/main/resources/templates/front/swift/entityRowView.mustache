@@ -10,28 +10,17 @@ struct {{entity}}RowView: View {
         colorScheme == .dark ? .black : Color(UIColor.secondarySystemBackground)
     }
 
+{{#hasType}}
   private var customTextColor: Color {
         entity.type{{entity}}Raw == {{entity}}Type.type2.rawValue ? .red : .green
     }
-
-
+    {{/hasType}}
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-         VStack(alignment: .leading, spacing: 2) {
-
-          Label {
-                        Text(statusText)
-                    } icon: {
-                        Image(systemName: statusIcon)
-                    }
-                    .foregroundColor(customTextColor)
-                    .font(.caption)
-
-                iconView
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+             iconView
                     .frame(width: 32, height: 32)
                     .padding(.top, 4)
-
-
                 }
              VStack(alignment: .leading, spacing: 2) {
                     {{#fieldsDisplayed}}
@@ -40,27 +29,43 @@ struct {{entity}}RowView: View {
                             .fontWeight(.bold)
                             .foregroundColor(.secondary)
                     {{/fieldsDisplayed}}
-                if let updatedAt = entity.updatedAt {
-                Text(" \(formattedDate(updatedAt))")
+                    {{#hasDate}}
+                         if let dateEntity = entity.date{{entity}} {
+                Text(" \(formattedDate(dateEntity))")
                     .font(.caption2)
                     .foregroundColor(.gray)
                  }
+                    {{/hasDate}}
+                {{^hasDate}}
+                    if let updatedAt = entity.updatedAt {
+                    Text(" \(formattedDate(updatedAt))")
+                        .font(.caption2)
+                        .foregroundColor(.gray)
+                     }
+                 {{/hasDate}}
+                 Label {
+                     Text(statusText)
+                    } icon: {
+                        Image(systemName: statusIcon)
+                    }{{#hasType}}
+                    .foregroundColor(customTextColor){{/hasType}}
+                    .font(.caption)
             }
+             Spacer()
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-
                       {{#fieldsAmount}}
-                       Spacer()
                             Text("\(entity.{{name}}, specifier: "%.0f")")
                             .font(.subheadline)
                             .bold()
-                            .foregroundColor(customTextColor)
+                            {{#hasType}}
+                            .foregroundColor(customTextColor){{/hasType}}
                     {{/fieldsAmount}}
                 }
             }
         }
         .padding(.vertical, 8)
-        .background(rowBackgroundColor)
+        .padding(.horizontal)
     }
 
     private var iconView: some View {

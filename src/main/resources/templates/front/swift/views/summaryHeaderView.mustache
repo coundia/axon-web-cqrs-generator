@@ -1,8 +1,7 @@
+{{#hasSummary}}
 import SwiftUI
 
 struct {{entity}}SummaryView: View {
-
-{{#hasSummary}}
     let {{entityLowerCase}}s: [{{entity}}]
     let defaultCurrency: String
 
@@ -51,5 +50,6 @@ struct {{entity}}SummaryView: View {
         .cornerRadius(8)
         .padding(.horizontal)
     }
-    {{/hasSummary}}
+
 }
+ {{/hasSummary}}

@@ -1,17 +1,17 @@
 import Foundation
 
 enum {{entity}}SearchCriteria: String, CaseIterable, Identifiable {
-    {{#fields}}
+    {{#fieldsDisplayed}}
     case {{nameLowerCase}}
-{{/fields}}
+    {{/fieldsDisplayed}}
 
-    var id: String { rawValue }
+ var id: String { rawValue }
 
     var title: String {
         switch self {
-            {{#fields}}
+            {{#fieldsDisplayed}}
             case .{{nameLowerCase}}: return "{{name}}"
-            {{/fields}}
+            {{/fieldsDisplayed}}
         }
     }
 }

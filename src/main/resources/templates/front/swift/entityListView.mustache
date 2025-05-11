@@ -20,6 +20,11 @@ private let calendar = Calendar.current
 @State private var isSyncing = false
 @State private var showingTrash = false
 
+
+@State private var showSearch = false
+@State private var searchText = ""
+@State private var searchCriteria: {{entity}}SearchCriteria = .name
+
 @State private var selectedMonth: Date = Date()
 
 init(modelContext: ModelContext, user: User) {
@@ -53,6 +58,61 @@ var body: some View {
         {{/hasSummary}}
             {{/header}}
 
+             HStack {
+
+                    Button {
+                        Task {
+                            isSyncing = true
+                            await viewModel.sync()
+                            isSyncing = false
+                        }
+                    } label: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .font(.title2)
+                            .foregroundColor(.accentColor)
+                    }
+                    .padding(.leading)
+
+
+                    if !searchText.isEmpty {
+                        Button {
+                            searchText = ""
+                            viewModel.searchText = ""
+                            viewModel.fetchEntities()
+                        } label: {
+                            Label("Clear: \"\(searchText)\"", systemImage: "xmark.circle.fill")
+                                .foregroundColor(.red)
+                                .font(.subheadline)
+                        }
+                        .padding(.leading)
+                    }else{
+                        //add notification here
+                        if let name = user.name {
+                               HStack(spacing: 4) {
+                                   Text("Welcome, \(name)")
+                               }
+                               .font(.subheadline)
+                               .padding(.leading)
+                               .padding(.trailing)
+                           }
+                    }
+
+                    Spacer()
+
+                    Button {
+                        showForm = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.accentColor)
+                    }
+                    .padding(.trailing)
+                }
+                .padding(.vertical, 4)
+                .background(Color(.systemGroupedBackground))
+                .cornerRadius(10)
+                .padding(.horizontal)
+
              if showingTrash {
                 {{entity}}TrashContentView(viewModel: viewModel)
             } else {
@@ -75,14 +135,12 @@ var body: some View {
              ToolbarItem(placement: .principal) {
                     Button { show{{headerUpperCase}}Picker = true } label: {
                         HStack {
-                            Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
+                             VStack{
+                                Text("\(selected{{headerUpperCase}}?.currentBalance ?? 0.0 , specifier: "%.0f")")
+                                Text(selected{{headerUpperCase}}?.name ?? "Select {{headerUpperCase}}")
 
-                            Spacer()
-                           // Image(systemName: "chevron.down")
-                           // Button("All") { selected{{headerUpperCase}} = nil }
-                             //   .cornerRadius(8)
+                            }
                         }
-                        .background(Color(.systemGray6))
                         .cornerRadius(8)
                     }
                 }
@@ -93,7 +151,8 @@ var body: some View {
                         showingTrash: $showingTrash,
                         isSyncing: $isSyncing,
                         showForm: $showForm,
-                        syncAction: viewModel.sync
+                        syncAction: viewModel.sync,
+                        showSearch: $showSearch
                     )
                 }
             }
@@ -102,6 +161,17 @@ var body: some View {
                     {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
                 }
                 {{/header}}
+
+        .sheet(isPresented: $showSearch) {
+                Search{{entity}}View(
+                    isPresented: $showSearch,
+                    searchText: $searchText,
+                    searchCriteria: $searchCriteria,
+                    onSearch: {
+                        viewModel.search{{entity}}s(text: searchText, by: searchCriteria)
+                    }
+                )
+            }
         .sheet(isPresented: $showForm, onDismiss: {
         resetSheets()
         viewModel.fetchEntities()
@@ -150,12 +220,10 @@ var body: some View {
 }
 
      private func resetSheets() {
-           /* showForm = false
             selectedForDuplicate = nil
             selectedForDetails = nil
             selectedForDelete = nil
-            {{#header}}show{{headerUpperCase}}Picker = false
-            {{/header}}*/
+            selected = nil
         }
 
 }

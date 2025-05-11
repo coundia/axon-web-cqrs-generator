@@ -6,8 +6,17 @@ struct {{entity}}MenuView: View {
     @Binding var showForm: Bool
     let syncAction: () async -> Void
 
+     @Binding var showSearch: Bool
+
     var body: some View {
         Menu {
+
+        Button {
+                showSearch = true
+            } label: {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+
             Button {
                 withAnimation { showingTrash.toggle() }
             } label: {

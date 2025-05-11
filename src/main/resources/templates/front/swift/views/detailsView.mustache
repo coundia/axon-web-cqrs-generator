@@ -162,9 +162,7 @@ struct {{entity}}DetailsView: View {
     {{/isDisplayName}}
 {{/fields}}
 
-        {{#hasType}}
-            detailItem(icon: "info.circle", title: "Type",  value: {{entityLowerCase}}.type{{entity}}Raw  ?? "NONE")
-        {{/hasType}}
+
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
