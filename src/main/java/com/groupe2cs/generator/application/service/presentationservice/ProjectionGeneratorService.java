@@ -49,6 +49,8 @@ public class ProjectionGeneratorService {
         context.put("entity", definition.getEntity());
         context.put("name", definition.getName());
 
+        context.put("transactional", definition.getTransactional());
+
         context.put("imports", imports);
         var fields = definition.getFieldsWithRelations();
         context.put("fields", FieldTransformer.transform(fields, definition.getName()));

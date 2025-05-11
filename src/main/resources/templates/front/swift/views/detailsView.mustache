@@ -82,15 +82,7 @@ struct {{entity}}DetailsView: View {
             Spacer()
 
             Menu {
-                if let onEdit = onEdit {
-                    Button("Edit", systemImage: "pencil", action: onEdit)
-                }
-                if let onDuplicate = onDuplicate {
-                    Button("Duplicate", systemImage: "doc.on.doc", action: onDuplicate)
-                }
-                if let onDelete = onDelete {
-                    Button("Delete", systemImage: "trash", role: .destructive, action: onDelete)
-                }
+
                 {{#shared}}
                 Button("Share", systemImage: "square.and.arrow.up") {
                     selectedUser = {{entity}}User()

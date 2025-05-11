@@ -7,6 +7,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"shared": true,
+	"transactional": true,
 	"table": "transactions",
 	"fields": [
 	  {

@@ -7,11 +7,11 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
-	"shared": true,
 	"header": "account",
     "hasSummary": true,
     "hasType": true,
     "hasDate": true,
+    "transactional": true,
 "hasCategory": true,
 	"title": "Transaction Management",
 	"fields": [
@@ -20,23 +20,25 @@ Content-Type: application/json
 		"type": "String"
 	  },
 	  {
-		"name": "name",
-		"type": "String",
-		"displayName": "Name"
-	  },
-	  {
 		"name": "amount",
 		"type": "Double",
 		"displayName": "Amount",
+
 		"indicators": [
 		  "sum"
 		]
 	  },
 	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Name"
+	  },
+
+	  {
 		"name": "details",
 		"type": "String",
+		"defaultValue": "No details",
 		"displayName": "Description",
-		"unique": true,
 		"nullable": true
 	  },
 	  {
@@ -65,7 +67,6 @@ Content-Type: application/json
         "name": "typeTransactionRaw",
         "type": "String",
 		"displayName": "type",
-		"defaultValue": "nil",
 		"entityType": "enum"
 	  },
 	  {

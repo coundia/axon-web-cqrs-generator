@@ -282,6 +282,8 @@ public class SwiftUiGeneratorService {
 		context.put("hasSummary", definition.getHasSummary());
 		context.put("hasDate", definition.getHasDate());
 		context.put("hasCategory", definition.getHasCategory());
+		context.put("transactional", definition.getTransactional());
+
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));

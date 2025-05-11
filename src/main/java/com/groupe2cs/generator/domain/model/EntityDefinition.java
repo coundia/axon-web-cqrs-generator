@@ -36,12 +36,14 @@ public class EntityDefinition implements Serializable {
 	private Boolean multiTenant = false;
 	private Boolean isGenerated = false;
 	private String apiPrefix = "";
+	private String defaultValue = "";
 	private String title = "";
 	private Boolean shared = false;
 	private Boolean hasType = false;
 	private Boolean hasSummary = false;
 	private Boolean hasDate = false;
 	private Boolean hasCategory = false;
+	private Boolean transactional = false;
 	private String bind = "";
 	private String header = "";
 

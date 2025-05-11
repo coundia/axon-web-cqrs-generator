@@ -19,9 +19,10 @@ public class SwiftFieldTransformer {
 
 			f.put("name", name);
 			f.put("nameLowerCase", Utils.unCapitalize(name));
+			f.put("nameCapitalized", Utils.capitalize(name));
 			f.put("realType", swiftType);
 			f.put("nullable", isNullable);
-			f.put("defaultValue", getDefaultValue(swiftType, isNullable));
+			f.put("defaultValue", getDefaultValue(field));
 			f.put("isId", field.isId());
 
 			// UI helpers
@@ -52,6 +53,7 @@ public class SwiftFieldTransformer {
 
 			f.put("entityType", field.getEntityType());
 
+
 			result.add(f);
 		}
 
@@ -76,8 +78,13 @@ public class SwiftFieldTransformer {
 		return "enum".equalsIgnoreCase(field.getEntityType());
 	}
 
-	private static String getDefaultValue(String swiftType, boolean isNullable) {
-		if (isNullable) return "nil";
+	private static String getDefaultValue(FieldDefinition field) {
+		if (field.getNullable()) return "nil";
+		String swiftType = toSwiftType(field.getType());
+
+		if(field.getDefaultValue() != null) {
+			return field.getDefaultValue();
+		}
 
 		return switch (swiftType) {
 			case "String" -> "\"\"";

@@ -66,6 +66,10 @@ var body: some View {
                         Task {
                             isSyncing = true
                             await viewModel.sync()
+
+                             {{#header}}
+                            await {{headerLowerCase}}ViewModel.sync()
+{{/header}}
                             isSyncing = false
                         }
                     } label: {

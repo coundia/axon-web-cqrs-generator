@@ -9,18 +9,26 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.config.ProcessingGroup;
 import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+{{#transactional}}
+import com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account;
+import com.groupe2cs.bizyhub.accounts.infrastructure.repository.AccountRepository;
+{{/transactional}}
+import lombok.RequiredArgsConstructor;
 
 @AllowReplay(value = false)
 @Slf4j
 @Component
+@Transactional
+@RequiredArgsConstructor
 @ProcessingGroup("{{name}}")
 public class {{name}}Projection {
 
 private final {{name}}Repository repository;
 
-public {{name}}Projection({{name}}Repository repository) {
-this.repository = repository;
-}
+{{#transactional}}
+private final AccountRepository accountRepository;
+{{/transactional}}
 
 @EventHandler
 public void on({{name}}CreatedEvent event) {
@@ -47,7 +55,13 @@ if(event.getCreatedBy() !=null){
 
 
 repository.save(entity);
+
+{{#transactional}}
+this.apply{{name}}ToAccount(entity.getAccount().getId(),entity.getAmount(),entity.getType{{name}}Raw());
+{{/transactional}}
+
 log.info("{{name}} inserted: {}", entity);
+
 } catch (Exception e) {
 log.error("Error saving {{name}}: {}", e.getMessage(), e);
 throw e;
@@ -59,6 +73,10 @@ public void on({{name}}UpdatedEvent event) {
 try {
 {{entity}} entity = repository.findById(event.getId().value())
 .orElseThrow(() -> new RuntimeException("{{name}} not found"));
+
+{{#transactional}}
+ this.refund{{name}}(entity.getAccount().getId(),entity.getAmount(),entity.getType{{name}}Raw());
+{{/transactional}}
 
 {{#editableFields}}
 	{{#isManyToOne}}
@@ -81,6 +99,11 @@ if(entity.getTenant() == null && event.getTenant() != null) {
 {{/isMultiTenant}}
 
 repository.save(entity);
+
+{{#transactional}}
+this.apply{{name}}ToAccount(entity.getAccount().getId(),entity.getAmount(),entity.getType{{name}}Raw());
+{{/transactional}}
+
 log.info("{{name}} updated successfully: {}", event.getId().value());
 } catch (Exception e) {
 log.error("Error updating {{name}}: {}", e.getMessage(), e);
@@ -91,6 +114,13 @@ throw e;
 @EventHandler
 public void on({{name}}DeletedEvent event) {
 try {
+
+{{#transactional}}
+{{name}} entity = repository.findById(event.getId().value())
+					.orElseThrow(() -> new RuntimeException("{{name}} not found"));
+this.refund{{name}}(entity.getAccount().getId(),entity.getAmount(),entity.getType{{name}}Raw());
+{{/transactional}}
+
 repository.deleteById(event.getId().value());
 log.info("{{name}} deleted successfully: {}", event.getId().value());
 } catch (Exception e) {
@@ -98,4 +128,36 @@ log.error("Error deleting {{name}}: {}", e.getMessage(), e);
 throw e;
 }
 }
+{{#transactional}}
+public void apply{{name}}ToAccount(String accountId, Double amount, String type) {
+
+		log.info("Applying transaction to account: {}, amount: {}, type: {}", accountId, amount, type);
+		Account account = accountRepository.findById(accountId)
+				.orElseThrow(() -> new RuntimeException("Account not found"));
+
+		if(amount < 0) {
+			log.error("{{name}} amount cannot be negative: {}", amount);
+			throw new IllegalArgumentException("{{name}} amount cannot be negative");
+		}
+
+		if ("IN".equalsIgnoreCase(type)) {
+			account.setCurrentBalance(account.getCurrentBalance() + amount);
+			log.info("Account updated with credit amount: {}, account:{}", amount, account.getId());
+		}
+
+		if ("OUT".equalsIgnoreCase(type)) {
+			account.setCurrentBalance(account.getCurrentBalance() - amount);
+			log.info("Account updated with debit amount: {}, account:{}", amount, account.getId());
+		}
+
+		account.setUpdatedAt(java.time.Instant.now());
+		accountRepository.save(account);
+	}
+
+	public void refund{{name}}(String accountId, Double amount, String type) {
+		log.info("Refunding transaction for account: {}, amount: {}, type: {}", accountId, amount, type);
+		String reverseType = "IN".equalsIgnoreCase(type) ? "OUT" : "IN";
+		apply{{name}}ToAccount(accountId, amount, reverseType);
+	}
+	{{/transactional}}
 }

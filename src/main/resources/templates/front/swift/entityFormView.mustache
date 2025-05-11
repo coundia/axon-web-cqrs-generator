@@ -19,6 +19,10 @@ struct {{entity}}FormView: View {
              @State private var  {{name}}LocalId: String? = nil
             {{/isManyToOne}}
         {{/isEnum}}
+    {{#isDouble}}
+        @State private var {{name}}String: String = ""
+        @FocusState private var is{{nameCapitalized}}Focused: Bool
+    {{/isDouble}}
     {{/fields}}
 
 @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
@@ -85,22 +89,31 @@ struct {{entity}}FormView: View {
         if let e = entity {
             viewModel.updateEntity(e,
                 {{#fields}}
+    {{#isDouble}}
+        {{name}}: Double({{name}}String) ?? 0.0,
+    {{/isDouble}}
+    {{^isDouble}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
                {{#isManyToOne}}
         {{name}}LocalId: {{name}}LocalId,
                {{/isManyToOne}}
+    {{/isDouble}}
                 {{/fields}}
             )
         } else {
             viewModel.createEntity(
                 {{#fields}}
+    {{#isDouble}}
+        {{name}}: Double({{name}}String) ?? 0.0,
+    {{/isDouble}}
+    {{^isDouble}}
     {{^isId}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
              {{/isId}}
             {{#isManyToOne}}
             {{name}}LocalId: {{name}}LocalId,
                {{/isManyToOne}}
-
+    {{/isDouble}}
 {{/fields}}
             )
         }
@@ -131,11 +144,23 @@ struct {{entity}}FormView: View {
                 if let e = entity {
                     {{#fields}}
             {{name}} = e.{{name}}
+
+            {{#isDouble}}
+            {{name}}String = String(format: "%.0f", e.{{name}} ?? 0.0)
+            {{/isDouble}}
         {{/fields}}
                 }
          {{#hasCategory}}
         type{{entity}}Raw = selectedCategory?.typeCategoryRaw ?? "NA"
          {{/hasCategory}}
+
+
+         if entity == nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    isAmountFocused = true
+                }
+            }
+
             }
 
 

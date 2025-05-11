@@ -8,12 +8,9 @@ textField("{{displayName}}", text: ${{name}})
 {{/isText}}
 
 {{#isDouble}}
-    {{#nullable}}
-doubleField("{{displayName}}", value: Binding(get: { {{name}} ?? 0.0 }, set: { {{name}} = $0 }))
-    {{/nullable}}
-    {{^nullable}}
-doubleField("{{displayName}}", value: ${{name}})
-    {{/nullable}}
+    TextField("{{displayName}}", text: ${{name}}String)
+    .keyboardType(.decimalPad)
+    .focused($is{{nameCapitalized}}Focused)
 {{/isDouble}}
 
 {{#isInt}}
