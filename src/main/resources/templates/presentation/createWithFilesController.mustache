@@ -68,6 +68,8 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 	.build();
 
+	metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
+
 	{{name}}Response response = applicationService.create{{name}}(
 	{{#fieldFiles}}{{nameCamelCase}}{{^last}}, {{/last}}{{/fieldFiles}}{{#fields}}{{^isId}},
 		{{nameCamelCase}}{{/isId}}{{/fields}},

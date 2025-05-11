@@ -61,6 +61,7 @@ public ResponseEntity<{{name}}Response> update{{name}}(
 		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 	.build();
 
+    metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
 
 	{{name}}Response response = applicationService.update{{name}}({{name}}Id.create(id),
 	request,

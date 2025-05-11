@@ -18,34 +18,28 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC limit 1 ")
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.tenant.id = ?2 ORDER BY e.updatedAtAudit DESC ")
+	List<{{entityName}}> findByIdAndTenantId(String id, String tenantId);
+
 	Page<{{entityName}}> findByCreatedById(String createdById, Pageable pageable);
-	{{#isMultiTenant}}
 	Page<{{entityName}}> findAllByTenantId(String tenantId, Pageable pageable);
-	{{/isMultiTenant}}
 
 	{{#fields}}
 	{{^isId}}
-	{{^isUnique}}
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC")
-	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
-	{{/isUnique}}
-	{{#isUnique}}
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.createdAtAudit DESC limit 1 ")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC")
+	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
+
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.updatedAtAudit DESC ")
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
-	Optional<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.name = ?2 ORDER BY e.updatedAtAudit DESC ")
+	List<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
 
-	{{/isUnique}}
-
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.name = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
-	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
-
-	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.id = ?2 ORDER BY e.createdAtAudit DESC limit 1 ")
-	Optional<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
+	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.tenant.id = ?2 ORDER BY e.updatedAtAudit DESC ")
+	List<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
 	{{/isId}}
 	{{/fields}}
 
@@ -56,6 +50,15 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
     WHERE s.tenant.id = :tenantId AND (s.createdBy.id = :userId OR su.user.id = :userId)
     """)
 	Page<{{entityName}}> findAllOwnedOrShared(@Param("userId") String userId, @Param("tenantId") String tenantId, Pageable pageable);
+
+
+	@Query("""
+	SELECT DISTINCT t FROM {{entityName}} t
+	LEFT JOIN AccountUser au ON au.account.id = t.account.id
+	WHERE t.account.id = :accountId AND (t.createdBy.id = :userId OR au.user.id = :userId)
+	""")
+	List<{{entityName}}> findByAccountOwnedOrShared(@Param("accountId") String accountId, @Param("userId") String userId);
+
 	{{/shared}}
 
 

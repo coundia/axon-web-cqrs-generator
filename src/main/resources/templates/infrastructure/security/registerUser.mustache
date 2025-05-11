@@ -32,7 +32,8 @@ if (tenantId == null) {
 	throw new IllegalArgumentException("Tenant ID is required - when multi-tenant");
 }
 
-if (userRepository.findByUsernameAndTenantId(request.getUsername(),tenantId).isPresent()) {
+if (userRepository.findByUsernameAndTenantId(request.getUsername(),tenantId).stream()
+        .findFirst().isPresent()) {
 	log.error("User with username {} already exists in tenant {}", request.getUsername(), tenantId);
 	throw new IllegalArgumentException("Username “admin” already exists in tenant");
 }

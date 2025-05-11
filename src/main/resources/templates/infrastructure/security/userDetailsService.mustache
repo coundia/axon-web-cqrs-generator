@@ -29,6 +29,8 @@ String tenantId = tenantIdentifierResolver.resolveCurrentTenantIdentifier();
 log.debug("Loading user '{}' for tenant '{}'", username, tenantId);
 
 User user = userRepository.findByUsernameAndTenantId(username,tenantId)
+.stream()
+.findFirst()
 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
 //load for lazy

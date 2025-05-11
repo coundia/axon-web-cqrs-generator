@@ -70,6 +70,7 @@ public ResponseEntity<{{#isId}}{{name}}Response{{/isId}}{{^isId}}List<{{name}}Re
 		.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
 		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 	.build();
+	metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
 
 	var future = applicationService.findBy{{name}}{{field.nameCapitalized}}({{name}}{{field.nameCapitalized}}
 	.create({{field.name}}) , metaRequest);

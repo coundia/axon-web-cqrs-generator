@@ -66,6 +66,8 @@ public ResponseEntity<String> delete{{name}}(
 		.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 	.build();
 
+	metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
+
 	applicationService.delete{{name}}(idVo, metaRequest);
 
 	return ResponseEntity.ok("{{name}} deleted successfully");

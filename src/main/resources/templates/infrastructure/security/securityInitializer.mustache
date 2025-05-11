@@ -41,7 +41,8 @@ createUserIfNotExist(tenant, USER_USERNAME, PASSWORD_USER, roles.get(ROLE_USER))
 }
 
 private Tenant findOrCreateTenant(String tenantName) {
-return tenantRepository.findByName(tenantName).orElseGet(() ->
+return tenantRepository.findByName(tenantName).stream()
+.findFirst().orElseGet(() ->
 tenantRepository.save(Tenant.builder()
 .id(UUID.randomUUID().toString())
 .name(tenantName)
@@ -52,7 +53,8 @@ tenantRepository.save(Tenant.builder()
 
 private void createPermissions(Tenant tenant) {
 DEFAULT_PERMISSIONS.forEach(name ->
-permissionRepository.findByNameAndTenantName(name, tenant.getName()).orElseGet(() ->
+permissionRepository.findByNameAndTenantName(name, tenant.getName()).stream()
+.findFirst().orElseGet(() ->
 permissionRepository.save(Permission.builder()
 .id(UUID.randomUUID().toString())
 .name(name)
@@ -71,7 +73,8 @@ return result;
 }
 
 private Role findOrCreateRole(Tenant tenant, String name) {
-return roleRepository.findByNameAndTenantName(name, tenant.getName()).orElseGet(() ->
+return roleRepository.findByNameAndTenantName(name, tenant.getName()).stream()
+.findFirst().orElseGet(() ->
 roleRepository.save(Role.builder()
 .id(UUID.randomUUID().toString())
 .name(name)
@@ -93,7 +96,8 @@ rolePermissionRepository.save(RolePermission.builder()
 }
 
 private void createUserIfNotExist(Tenant tenant, String username, String rawPassword, Role role) {
-userRepository.findByUsernameAndTenantName(username, tenant.getName()).orElseGet(() -> {
+userRepository.findByUsernameAndTenantName(username, tenant.getName()).stream()
+.findFirst().orElseGet(() -> {
 var user = userRepository.save(User.builder()
 .id(UUID.randomUUID().toString())
 .username(username)

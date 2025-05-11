@@ -11,7 +11,7 @@ Content-Type: application/json
 	"auditable": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
+	  { "name": "name", "type": "String" },
 	  { "name": "stringValue", "type": "String" },
 	  { "name": "description", "type": "String",
 		"nullable": true
@@ -23,36 +23,3 @@ Content-Type: application/json
 	]
   }
 }
-###
-
-POST http://127.0.0.1:8071/api/v1/generator/all
-Accept: application/x-ndjson
-Content-Type: application/json
-
-{
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/settings",
-  "definition": {
-	"name": "Setting",
-	"table": "settings",
-	"multiTenant": true,
-	"auditable": true,
-	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
-
-	  { "name": "reference", "type": "String", "unique": true },
-	  { "name": "updatedAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-
-	  { "name": "stringValue", "type": "String" },
-	  { "name": "descriptions", "type": "String",
-
-		"nullable": true
-	  },
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
-	],
-	"stack": [
-	  "Security"
-	]
-  }
-}
-

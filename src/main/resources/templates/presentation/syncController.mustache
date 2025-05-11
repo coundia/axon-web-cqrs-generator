@@ -51,6 +51,9 @@ public class {{className}} {
 				.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
 				.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
 			.build();
+
+			metaRequest.setIsAdmin(RequestContext.isAdmin(jwt));
+
 			applicationService.sync{{name}}(
 					request,
 					metaRequest

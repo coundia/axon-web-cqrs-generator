@@ -11,7 +11,7 @@ Content-Type: application/json
 	"table": "products",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
+	  { "name": "name", "type": "String"},
 	  { "name": "price", "type": "Double", "nullable": true,
 		"defaultValue": 0.0
 	  },
