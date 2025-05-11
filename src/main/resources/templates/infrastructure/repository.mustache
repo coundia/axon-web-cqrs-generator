@@ -29,8 +29,19 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
 	{{#fields}}
 	{{^isId}}
 
+        {{^shared}}
 	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC")
 	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
+	{{/shared}}
+        {{#shared}}
+
+ 	@Query("""
+	SELECT DISTINCT t FROM {{entityName}} t
+	LEFT JOIN AccountUser au ON au.account.id = t.account.id
+	WHERE t.account.id = :values AND (t.createdBy.id = :userId OR au.user.id = :userId)
+	""")
+	List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} values, String userId);
+	{{/shared}}
 
 	@Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = ?1  ORDER BY e.updatedAtAudit DESC ")
 	Optional<{{entityName}}> findBy{{nameJpa}}({{primitiveType}} {{nameLowerCase}});
@@ -51,13 +62,6 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
     """)
 	Page<{{entityName}}> findAllOwnedOrShared(@Param("userId") String userId, @Param("tenantId") String tenantId, Pageable pageable);
 
-
-	@Query("""
-	SELECT DISTINCT t FROM {{entityName}} t
-	LEFT JOIN AccountUser au ON au.account.id = t.account.id
-	WHERE t.account.id = :accountId AND (t.createdBy.id = :userId OR au.user.id = :userId)
-	""")
-	List<{{entityName}}> findByAccountOwnedOrShared(@Param("accountId") String accountId, @Param("userId") String userId);
 
 	{{/shared}}
 

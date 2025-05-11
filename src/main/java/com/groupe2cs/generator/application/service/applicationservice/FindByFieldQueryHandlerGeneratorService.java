@@ -61,6 +61,8 @@ public class FindByFieldQueryHandlerGeneratorService {
 
             imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
 
+            context.put("shared", definition.getShared());
+            context.put("transactional", definition.getTransactional());
 
             context.put("imports", imports);
 

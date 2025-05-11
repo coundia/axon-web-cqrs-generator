@@ -78,6 +78,7 @@ public class RepositoryGeneratorService {
         context.put("shared", definition.getShared());
 
         context.put("entityNameLowerCase", Utils.unCapitalize(definition.getEntity()));
+        context.put("transactional", definition.getTransactional());
 
         String content = templateEngine.render("infrastructure/repository.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);

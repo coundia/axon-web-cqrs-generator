@@ -31,6 +31,8 @@ public class QueryHandlerGeneratorService {
         context.put("nameAggregate", definition.getName());
         context.put("entity", definition.getEntity());
         context.put("name", definition.getName());
+        context.put("transactional", definition.getTransactional());
+        context.put("shared", definition.getShared());
 
         Set<String> imports = new LinkedHashSet<>();
         imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
