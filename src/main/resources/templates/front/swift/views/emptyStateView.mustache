@@ -13,7 +13,7 @@ struct {{entity}}EmptyStateView: View {
             Text(t("Aucune {{entity}} pour le moment."))
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Button("Add {{entity}}") {
+            Button(t("Ajouter {{entity}}")) {
                 onAdd()
             }
             .buttonStyle(.borderedProminent)

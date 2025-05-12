@@ -27,18 +27,18 @@ struct {{entity}}SummaryView: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text(t("Total \({{entity}}Type.type1.rawValue)"))
+                Text(t({{entity}}Type.type1.rawValue))
                 Spacer()
                 Text("\(totalType1, specifier: "%.0f") \(defaultCurrency)")
             }
             HStack {
-                Text("Total \({{entity}}Type.type2.rawValue):")
+                Text(t({{entity}}Type.type2.rawValue))
                 Spacer()
                 Text("\(totalType2, specifier: "%.0f") \(defaultCurrency)")
             }
             Divider()
             HStack {
-                Text("Difference:")
+                Text(t("Difference"))
                     .fontWeight(.bold)
                 Spacer()
                 Text("\(difference, specifier: "%.0f") \(defaultCurrency)")

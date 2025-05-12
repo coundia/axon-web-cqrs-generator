@@ -14,13 +14,13 @@ struct {{entity}}MenuView: View {
         Button {
                 showSearch = true
             } label: {
-                Label("Search", systemImage: "magnifyingglass")
+                Label(t("Rechercher"), systemImage: "magnifyingglass")
             }
 
             Button {
                 withAnimation { showingTrash.toggle() }
             } label: {
-                Label(showingTrash ? "Show Active" : "Show Trash", systemImage: "tray")
+                Label(showingTrash ? t("Liste") : t("Corbeille"), systemImage: "tray")
             }
 
             if !showingTrash {
@@ -31,11 +31,11 @@ struct {{entity}}MenuView: View {
                         isSyncing = false
                     }
                 } label: {
-                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                    Label(t("Synchroniser"), systemImage: "arrow.triangle.2.circlepath")
                 }
 
                 Button { showForm = true } label: {
-                    Label("Add {{entity}}", systemImage: "plus")
+                    Label(t("Ajouter {{entity}}"), systemImage: "plus")
                 }
             }
         } label: {

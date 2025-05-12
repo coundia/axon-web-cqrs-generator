@@ -7,6 +7,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Account",
 	"table": "accounts",
+	"title": "Compte",
 	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
@@ -14,7 +15,7 @@ Content-Type: application/json
 	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "currency", "type": "String" , "displayName": "Devise", "defaultValue": "\"XOF\"" },
 	  { "name": "currentBalance", "type": "Double", "displayName": "Solde de départ", "defaultValue": 0.0 },
-
+	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
 	  { "name": "isActive", "type": "Boolean", "displayName": "Est active", "defaultValue": true }
 	]
   }
@@ -31,6 +32,7 @@ Content-Type: application/json
 	"name": "AccountUser",
 	"bind": "username",
 	"table": "account_users",
+	"title": "Partage",
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name",   "type": "String", "displayName": "Message" },
@@ -55,7 +57,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Category",
 	"table": "categories",
-	"title": "Categories list",
+	"title": "Catégorie",
 	"hasType": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
@@ -82,7 +84,7 @@ Content-Type: application/json
 	"hasDate": true,
 	"transactional": true,
 	"hasCategory": true,
-	"title": "Transaction Management",
+	"title": "Transaction",
 	"fields": [
 	  {
 		"name": "id",
@@ -160,6 +162,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Setting",
 	"table": "settings",
+	"title": "Paramètre",
 	"multiTenant": true,
 	"auditable": true,
 	"apiPrefix": "admin",
