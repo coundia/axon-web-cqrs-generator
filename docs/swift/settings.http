@@ -13,9 +13,9 @@ Content-Type: application/json
 	"isPublic": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" ,"displayName": "Key"},
+	  { "name": "name", "type": "String" ,"displayName": "Key" ,"isLowerCase": true },
 	  { "name": "value", "type": "String","displayName": "Value" },
-	  { "name": "locale", "type": "String","displayName": "Langue" },
+	  { "name": "locale", "type": "String","displayName": "Langue","isLowerCase": true },
 	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]

@@ -156,7 +156,7 @@ func updateEntity(_ item: {{entity}},
 {{/fields}}
 ) {
 {{#fields}}
-	item.{{name}} = {{name}}
+	item.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
 {{#isManyToOne}}
     item.{{name}}LocalId = {{name}}LocalId
 {{/isManyToOne}}

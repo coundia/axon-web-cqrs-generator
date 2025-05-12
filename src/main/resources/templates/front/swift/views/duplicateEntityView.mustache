@@ -21,7 +21,7 @@ struct Duplicate{{entity}}View: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Duplicate {{entity}}")) {
+                Section(header: Text(t("Duplication {{entity}}"))) {
                     {{#fields}}
                     {{^readOnly}}
                         {{> SwiftFieldInput }}

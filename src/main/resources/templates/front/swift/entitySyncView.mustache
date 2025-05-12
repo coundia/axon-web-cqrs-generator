@@ -19,7 +19,7 @@ struct {{entity}}SyncView: View {
             .disabled(isSyncing)
 
             if showMessage {
-                Text(message)
+                Text(t(message))
                     .foregroundColor(.blue)
                     .font(.subheadline)
             }

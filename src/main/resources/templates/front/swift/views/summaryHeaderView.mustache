@@ -27,7 +27,7 @@ struct {{entity}}SummaryView: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text("Total \({{entity}}Type.type1.rawValue)")
+                Text(t("Total \({{entity}}Type.type1.rawValue)"))
                 Spacer()
                 Text("\(totalType1, specifier: "%.0f") \(defaultCurrency)")
             }

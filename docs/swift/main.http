@@ -10,12 +10,12 @@ Content-Type: application/json
 	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name",  "type": "String", "displayName": "Name"  },
-	  { "name": "currency", "type": "String" , "displayName": "Currency", "defaultValue": "\"XOF\"" },
-	  { "name": "currentBalance", "type": "Double", "displayName": "Balance", "defaultValue": 0.0 },
-	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
-	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "displayName": "Active", "defaultValue": true }
+	  { "name": "name",  "type": "String", "displayName": "Nom"  },
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
+	  { "name": "currency", "type": "String" , "displayName": "Devise", "defaultValue": "\"XOF\"" },
+	  { "name": "currentBalance", "type": "Double", "displayName": "Solde de départ", "defaultValue": 0.0 },
+
+	  { "name": "isActive", "type": "Boolean", "displayName": "Est active", "defaultValue": true }
 	]
   }
 }
@@ -33,12 +33,12 @@ Content-Type: application/json
 	"table": "account_users",
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name",   "type": "String"},
+	  { "name": "name",   "type": "String", "displayName": "Message" },
 
-	  { "name": "account",  "displayName": "account", "entityType": "Account", "type": "String", "relation": "manyToOne", "nullable": true },
-	  { "name": "username",   "displayName": "username", "type": "String"  },
+	  { "name": "account",  "displayName": "Compte", "entityType": "Account", "type": "String", "relation": "manyToOne", "nullable": true },
+	  { "name": "username",   "displayName": "Partager avec (Nom identifiant)", "type": "String"  },
 
-	  { "name": "details", "type": "String", "nullable": true},
+	  { "name": "details", "displayName": "Description","type": "String", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]
   }
@@ -59,12 +59,9 @@ Content-Type: application/json
 	"hasType": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "displayName": "Name", "type": "String" },
-	  { "name": "typeCategoryRaw", "type": "String",
-
-		"entityType": "enum"
-	  },
-	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
+	  { "name": "name", "displayName": "Nom", "type": "String" },
+	  { "name": "typeCategoryRaw", "type": "String", "entityType": "enum"},
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]
   }
@@ -94,7 +91,7 @@ Content-Type: application/json
 	  {
 		"name": "amount",
 		"type": "Double",
-		"displayName": "Amount",
+		"displayName": "Montant",
 
 		"indicators": [
 		  "sum"
@@ -103,13 +100,14 @@ Content-Type: application/json
 	  {
 		"name": "name",
 		"type": "String",
-		"displayName": "Name"
+		"defaultValue": "\"Pas de motif\"",
+		"displayName": "Motif"
 	  },
 
 	  {
 		"name": "details",
 		"type": "String",
-		"defaultValue": "No details",
+		"defaultValue": "Pas de description",
 		"displayName": "Description",
 		"nullable": true
 	  },
@@ -121,7 +119,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "account",
-		"displayName": "account",
+		"displayName": "Compte",
 		"entityType": "Account",
 		"type": "String",
 		"relation": "manyToOne",
@@ -129,7 +127,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "category",
-		"displayName": "Categories",
+		"displayName": "Category",
 		"entityType": "Category",
 		"type": "String",
 		"relation": "manyToOne",
@@ -144,15 +142,15 @@ Content-Type: application/json
 	  {
 		"name": "dateTransaction",
 		"type": "Date",
-		"displayName": "Date",
+		"displayName": "Date transaction",
 		"defaultValue": "date()",
 		"nullable": true
 	  }
 	]
   }
 }
-
 ###
+
 POST http://127.0.0.1:8071/api/v1/generator/swiftui
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -160,19 +158,21 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
-	"name": "TransactionUser",
-	"table": "transaction_users",
+	"name": "Setting",
+	"table": "settings",
+	"multiTenant": true,
+	"auditable": true,
+	"apiPrefix": "admin",
+	"isPublic": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name",   "type": "String"},
-
-	  { "name": "transaction",  "displayName": "transaction", "entityType": "Transaction", "type": "String", "relation": "manyToOne", "nullable": true },
-	  { "name": "username",   "displayName": "username", "type": "String"  },
-
-	  { "name": "details", "type": "String", "nullable": true},
+	  { "name": "name", "type": "String" ,"displayName": "Clé" ,"isLowerCase": true },
+	  { "name": "value", "type": "String","displayName": "Valeur" },
+	  { "name": "locale", "type": "String","displayName": "Langue","isLowerCase": true },
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
 	]
   }
 }
-
 ###
+

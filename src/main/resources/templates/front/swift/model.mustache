@@ -34,14 +34,17 @@ final class {{entity}} {
 
     init(
         {{#fields}}
-            {{^isId}}{{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
-                {{/isId}}{{/fields}}
+            {{^isId}}
+                {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+             {{/isId}}
+            {{/fields}}
                 type{{entity}}: {{entity}}Type = .type1,
                 order: Int = 0
             ) {
                 self.id = UUID().uuidString
-                {{#fields}}
-            {{^isId}}self.{{name}} = {{name}}
+        {{#fields}}
+            {{^isId}}
+            self.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
             {{/isId}}
             {{#isManyToOne}}
                 self.{{name}}LocalId = {{name}}

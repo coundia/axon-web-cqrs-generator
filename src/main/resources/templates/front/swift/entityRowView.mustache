@@ -24,7 +24,7 @@ struct {{entity}}RowView: View {
                 }
              VStack(alignment: .leading, spacing: 2) {
                     {{#fieldsDisplayed}}
-                        Text(entity.{{name}} ?? "no {{name}}")
+                        Text(t(entity.{{name}} ?? "no {{name}}"))
                             .font(.caption)
                             .fontWeight(.bold)
                             .foregroundColor(.secondary)

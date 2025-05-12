@@ -12,8 +12,8 @@ struct Search{{entity}}View: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Search {{entity}}s")) {
-                    TextField("Enter search text", text: $searchText)
+                Section(header: Text(t("Rechercher {{entity}}s"))) {
+                    TextField(t("Text à rechercher"), text: $searchText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
                     Picker("Search By", selection: $searchCriteria) {

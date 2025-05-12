@@ -24,7 +24,7 @@ struct {{entity}}PickerView: View {
               {{#hasType}}
                 Picker("Type", selection: $selectedFilter) {
                     ForEach({{entity}}Type.allCases, id: \.self) { type in
-                        Text(type.rawValue.capitalized).tag(type)
+                        Text(t(type.rawValue.capitalized)).tag(type)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -39,26 +39,22 @@ struct {{entity}}PickerView: View {
                                 selected{{entity}} = item
                                 dismiss()
                             } label: {
-
-
-                                Text(item.name)
-
-
+                                Text(t(item.name))
                             }
                         }
                     }
 
                     Section {
-                        Button("Refresh") {
+                        Button(t("Rafraîchir")) {
                             viewModel.fetchEntities()
                         }
-                        Button("Add New {{entity}}") {
+                        Button(t("Ajouter {{entity}}")) {
                             showForm = true
                         }
                     }
                 }
             }
-            .navigationTitle("Select {{entity}}")
+            .navigationTitle(t("Sélectionner {{entity}}"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
