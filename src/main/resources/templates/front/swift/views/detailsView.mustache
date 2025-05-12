@@ -45,9 +45,9 @@ struct {{entity}}DetailsView: View {
                 }
             }
         }
-        .alert("✅ Success", isPresented: $viewModel.showSuccessToast) {
+       /* .alert("✅ Synced", isPresented: $viewModel.showSuccessToast) {
             Button("OK", role: .cancel) {}
-        }
+        }*/
         {{#shared}}
         .sheet(isPresented: $showCreateUser) {
             {{entity}}UserEditView(

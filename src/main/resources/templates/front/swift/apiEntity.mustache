@@ -13,7 +13,12 @@ struct API{{entity}} {
         components.scheme = APIConfiguration.baseURL.scheme
         components.host = APIConfiguration.baseURL.host
         components.port = APIConfiguration.baseURL.port
-        components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLowerCase}}s").path
+        {{^isPublic}}
+     components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLowerCase}}s").path
+        {{/isPublic}}
+        {{#isPublic}}
+     components.path = APIConfiguration.baseURL.appendingPathComponent("public/queries/{{entityLowerCase}}s").path
+        {{/isPublic}}
         components.queryItems = [
             URLQueryItem(name: "page", value: "0"),
             URLQueryItem(name: "limit", value: "10000")

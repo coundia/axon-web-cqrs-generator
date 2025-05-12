@@ -81,6 +81,7 @@ http
 
 ).permitAll()
 .requestMatchers("/actuator/prometheus").permitAll()
+.requestMatchers("/api/public/**").permitAll()
 .requestMatchers("/api/v1/admin/**").hasAuthority(IS_ADMIN)
 .anyRequest().authenticated()
 )

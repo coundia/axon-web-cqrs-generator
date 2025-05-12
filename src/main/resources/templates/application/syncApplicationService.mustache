@@ -8,102 +8,93 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import java.time.Instant;
 
-
 @Service
 @RequiredArgsConstructor
 public class {{className}} {
 
+	private final {{name}}Gate gateService;
 	private final CommandGateway commandGateway;
 	{{#bind}}
-	private final UserRepository userRepository ;
-  {{/bind}}
-	public void sync{{name}}({{name}}SyncRequest request,
-MetaRequest metaRequest
+	private final UserRepository userRepository;
+	{{/bind}}
 
-) {
+	public void sync{{name}}({{name}}SyncRequest request, MetaRequest metaRequest) {
 		for (var d : request.getDeltas()) {
 			switch (d.getType()) {
 				case "CREATE" -> {
 
-Create{{name}}Command command = Create{{name}}Command.builder()
-{{#editableFields}}
-	{{^isId}}
-		.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
-	{{/isId}}
+
+					Create{{name}}Command command = Create{{name}}Command.builder()
+						{{#editableFields}}
+    {{^isId}}
+								.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+							{{/isId}}
 {{/editableFields}}
-.build();
-{{#bind}}
-        String userName = d.getUsername();
-        if(userName != null){
-            userName = userName.toLowerCase();
-            String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId())
-            .stream()
-            .findFirst()
-            .orElseThrow().getId();
-            command.setUser({{name}}User.create(userId));
-        }
+						.build();
 
-    {{/bind}}
-		{{#isMultiTenant}}
-		if(metaRequest.getTenantId() != null) {
-			command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
-		}
-		{{/isMultiTenant}}
-		if(metaRequest.getUserId() != null) {
-			command.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
-		}
+					{{#bind}}
+					String userName = d.getUsername();
+					if (userName != null) {
+						userName = userName.toLowerCase();
+						String userId = userRepository.findByUsernameAndTenantId(userName, metaRequest.getTenantId())
+							.stream()
+							.findFirst()
+							.orElseThrow()
+							.getId();
+						command.setUser({{name}}User.create(userId));
+					}
+					{{/bind}}
 
-		commandGateway.sendAndWait(
-							command
-				);
+{{#isMultiTenant}}
+					if (metaRequest.getTenantId() != null) {
+						command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+					}
+					{{/isMultiTenant}}
 
-		}
+					if (metaRequest.getUserId() != null) {
+						command.setCreatedBy({{name}}CreatedBy.create(metaRequest.getUserId()));
+					}
+
+					commandGateway.sendAndWait(command);
+				}
+
 				case "UPDATE" -> {
-		Update{{name}}Command update = Update{{name}}Command.builder()
-		{{#editableFields}}
-			.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
-		{{/editableFields}}
-		.build();
-		{{#bind}}
-	   String userName = d.getUsername();
-        if(userName != null){
-            userName = userName.toLowerCase();
-            String userId = userRepository.findByUsernameAndTenantId(userName,metaRequest.getTenantId())
-            .stream()
-            .findFirst()
-            .orElseThrow()
-            .getId();
-            update.setUser({{name}}User.create(userId));
-        }
-    {{/bind}}
+					if (!gateService.canDelete(metaRequest.getUserId(), d.getId()) && !metaRequest.getIsAdmin()) {
+						throw new RuntimeException("Unauthorized to update {{name}} with id " + d.getId());
+					}
 
-		if(metaRequest.getTenantId() != null) {
-			//update.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
-		}
-		if(metaRequest.getUserId() != null) {
-			//update.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
-		}
+					Update{{name}}Command update = Update{{name}}Command.builder()
+						{{#editableFields}}
+							.{{name}}({{entity}}{{nameCapitalized}}.create(d.get{{nameCapitalized}}()))
+						{{/editableFields}}
+						.build();
 
-		commandGateway.sendAndWait(
-		update
-				);
+					{{#bind}}
+					String userName = d.getUsername();
+					if (userName != null) {
+						userName = userName.toLowerCase();
+						String userId = userRepository.findByUsernameAndTenantId(userName, metaRequest.getTenantId())
+							.stream()
+							.findFirst()
+							.orElseThrow()
+							.getId();
+						update.setUser({{name}}User.create(userId));
+					}
+					{{/bind}}
 
-		}
-		case "DELETE" -> {
-				Delete{{entity}}Command delete = Delete{{entity}}Command.builder()
-					.id({{entity}}Id.create(d.getId()) )
-					.build();
-
-				if(metaRequest.getTenantId() != null) {
-					//delete.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
+					commandGateway.sendAndWait(update);
 				}
 
-				if(metaRequest.getUserId() != null) {
-					//delete.setCreatedBy( {{name}}CreatedBy.create(metaRequest.getUserId()));
-				}
-				commandGateway.sendAndWait(
-				delete
-				 );
+				case "DELETE" -> {
+					if (!gateService.canDelete(metaRequest.getUserId(), d.getId()) && !metaRequest.getIsAdmin()) {
+						throw new RuntimeException("Unauthorized to delete {{name}} with id " + d.getId());
+					}
+
+					Delete{{entity}}Command delete = Delete{{entity}}Command.builder()
+						.id({{entity}}Id.create(d.getId()))
+						.build();
+
+					commandGateway.sendAndWait(delete);
 				}
 			}
 		}

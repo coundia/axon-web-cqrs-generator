@@ -49,6 +49,11 @@ public class ListControllerGeneratorService {
             context.put("isAdmin", true);
         }
 
+        if(definition.getIsPublic()){
+            String content = templateEngine.render("presentation/publicController.mustache", context);
+            fileWriterService.write(outputDir, definition.getName() + "PublicController.java", content);
+        }
+
         String content = templateEngine.render("presentation/listController.mustache", context);
         fileWriterService.write(outputDir, definition.getName() + "ListController.java", content);
     }

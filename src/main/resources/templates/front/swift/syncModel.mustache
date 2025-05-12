@@ -33,7 +33,6 @@ extension {{entity}}ListViewModel {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 await pull()
                 await pull()
-                await MainActor.run { self.showSuccessToast = true }
 
                 await MainActor.run {
                      fetchEntities()
@@ -143,7 +142,7 @@ extension {{entity}}ListViewModel {
 
         do {
             try await Sync{{entity}}UseCase().execute(with: [delta])
-            errorMessage = "✅ Success !"
+            //errorMessage = "✅ Success !"
 
             entity.status = .syncing
              saveContext()
@@ -151,7 +150,7 @@ extension {{entity}}ListViewModel {
             try? await Task.sleep(nanoseconds: 1_000_000_000)
                  await  pull()
 
-            await MainActor.run { self.showSuccessToast = true }
+           // await MainActor.run { self.showSuccessToast = true }
 
         } catch {
               await MainActor.run {

@@ -283,13 +283,14 @@ public class SwiftUiGeneratorService {
 		context.put("hasDate", definition.getHasDate());
 		context.put("hasCategory", definition.getHasCategory());
 		context.put("transactional", definition.getTransactional());
-
+		context.put("isPublic", definition.getIsPublic());
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("fieldsDisplayed", SwiftFieldTransformer.transform(definition.getFieldsToDisplay(), definition.getName()));
 		context.put("fieldsAmount", SwiftFieldTransformer.transform(definition.getFieldsAmount(), definition.getName()));
 		String content = templateEngine.render(template.getTemplatePath(), context);
+
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);
 	}
 }

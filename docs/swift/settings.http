@@ -9,20 +9,16 @@ Content-Type: application/json
 	"table": "settings",
 	"multiTenant": true,
 	"auditable": true,
+    "apiPrefix": "admin",
+	"isPublic": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String", "unique": true },
-	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
-
-	  { "name": "stringValue", "type": "String" },
-	  { "name": "descriptions", "type": "String",
-
-		"nullable": true
-	  },
+	  { "name": "name", "type": "String" ,"displayName": "Key"},
+	  { "name": "value", "type": "String","displayName": "Value" },
+	  { "name": "locale", "type": "String","displayName": "Langue" },
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
-	],
-	"stack": [
-	  "Security"
 	]
   }
 }
+###

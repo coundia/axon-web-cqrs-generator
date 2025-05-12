@@ -1,0 +1,68 @@
+package {{package}};
+
+{{#imports}}
+import {{.}};
+{{/imports}}
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.concurrent.CompletableFuture;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/public/queries/{{nameLower}}s")
+@Tag(name = "{{name}} Queries", description = "Endpoints public for listing paginated {{nameLower}}s")
+public class {{name}}PublicController {
+
+    private final {{name}}ReadApplicationService applicationService;
+
+    private final CurrentTenantIdentifierResolver currentTenantIdentifierResolver;
+
+    @GetMapping
+    @Operation(
+    summary = "List paginated {{nameLower}}s",
+    description = "Returns a paginated list of {{nameLower}}s based on page and limit parameters"
+    )
+    @ApiResponses(value = {
+    @ApiResponse(
+    responseCode = "200",
+    description = "Successfully retrieved list of {{nameLower}}s",
+    content = @Content(mediaType = "application/json", schema = @Schema(implementation = {{name}}PagedResponse.class))
+    ),
+    @ApiResponse(
+    responseCode = "500",
+    description = "Internal server error",
+    content = @Content
+    )
+    })
+    public {{name}}PagedResponse list(
+        @Parameter(description = "Page number (zero-based index)", example = "0")
+        @RequestParam(defaultValue = "0") int page,
+
+        @Parameter(description = "Number of items per page", example = "10")
+        @RequestParam(defaultValue = "10") int limit
+        ) {
+
+            MetaRequest metaRequest = new MetaRequest();
+                metaRequest.setTenantId(currentTenantIdentifierResolver.resolveCurrentTenantIdentifier());
+                metaRequest.setIsAdmin(true);
+
+            return applicationService.findAll(page,limit, metaRequest);
+         }
+}

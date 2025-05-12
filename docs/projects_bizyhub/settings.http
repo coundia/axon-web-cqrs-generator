@@ -7,19 +7,15 @@ Content-Type: application/json
   "definition": {
 	"name": "Setting",
 	"table": "settings",
-	"multiTenant": true,
-	"auditable": true,
+    "isPublic": true,
+    "isAdmin": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "stringValue", "type": "String" },
-	  { "name": "description", "type": "String",
-		"nullable": true
-	  },
+	  { "name": "name", "type": "String" ,"displayName": "Key"},
+	  { "name": "value", "type": "String","displayName": "Value" },
+	  { "name": "locale", "type": "String","displayName": "Langue" },
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
-	],
-	"stack": [
-	  "Security"
 	]
   }
 }
