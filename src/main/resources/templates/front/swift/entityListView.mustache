@@ -45,6 +45,9 @@ private func startOfMonth(_ date: Date) -> Date {
 var body: some View {
     NavigationView {
         VStack(spacing: 8) {
+
+        GuestFeatureNoticeView(user: user)
+
         {{#header}}
             MonthSelectorCommunView(selectedMonth: $selectedMonth) { newMonth in
                 let start = startOfMonth(newMonth)
@@ -64,7 +67,10 @@ var body: some View {
              HStack {
 
                     Button {
+
                         Task {
+
+
                             isSyncing = true
                             await viewModel.sync()
 
@@ -143,7 +149,24 @@ var body: some View {
                     Button { show{{headerUpperCase}}Picker = true } label: {
                         HStack {
                              VStack{
-                                Text("\(selected{{headerUpperCase}}?.currentBalance ?? 0.0 , specifier: "%.0f")")
+
+                             if user.isAnnonym == true {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "eye.slash")
+                                                .foregroundColor(.gray)
+                                            Text(t("Abonné"))
+                                                .font(.caption2)
+                                                .fontWeight(.bold)
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(Color.orange)
+                                                .cornerRadius(6)
+                                        }
+                                    } else {
+                                         Text("\(selected{{headerUpperCase}}?.currentBalance ?? 0.0 , specifier: "%.0f")")
+                                    }
+
                                 Text(selected{{headerUpperCase}}?.name ?? "Sélectionner {{headerUpperCase}}")
 
                             }
