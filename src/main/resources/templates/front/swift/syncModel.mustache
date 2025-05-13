@@ -11,7 +11,14 @@ extension {{entity}}ListViewModel {
             try await manager.pullAndMerge{{entity}}s()
             {{/transactional}}
             {{#transactional}}
-            try await manager.pullAndMerge{{entity}}sByAccount(accountId: currentAccountId ?? "")
+            let remoteId = currentAccount?.remoteId ?? ""
+
+            if(remoteId.isEmpty) {
+                errorMessage = "No remoteId for account"
+                showErrorToast = true
+                return
+            }
+            try await manager.pullAndMerge{{entity}}sByAccount(accountId: remoteId ?? "")
             {{/transactional}}
 
 

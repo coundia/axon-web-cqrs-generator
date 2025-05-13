@@ -54,6 +54,7 @@ var body: some View {
             }
             .onChange(of: selected{{headerUpperCase}}) { acct in
                 viewModel.current{{headerUpperCase}}Id = acct?.id
+                viewModel.selected{{headerUpperCase}} = acct
             }
             {{#hasSummary}}
         {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")

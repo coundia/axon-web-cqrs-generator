@@ -26,7 +26,7 @@ struct {{entity}}FormView: View {
     {{/fields}}
 
 @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
-@State private var type{{entity}}Raw: String = {{entity}}Type.allCases.first!.rawValue ?? ""
+@State private var type{{entity}}Raw: String = t({{entity}}Type.allCases.first!.rawValue) ?? ""
 
 {{#hasCategory}}
 @AppStorage("lastUsedCategoryId") private var lastUsedCategoryId: String?
@@ -59,7 +59,7 @@ struct {{entity}}FormView: View {
                         )
                     ) {
                         ForEach({{entity}}Type.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+                            Text(t(type.rawValue.capitalized)).tag(type)
                         }
                     }
 
@@ -133,7 +133,7 @@ struct {{entity}}FormView: View {
                 if let lastId = lastUsedCategoryId,
                    let found = categories?.first(where: { $0.id == lastId }) {
                     selectedCategory = found
-                    category = found.name
+                    category = found.remoteId
                     categoryLocalId = found.id
                 } else if let first = categories?.first {
                     selectedCategory = first

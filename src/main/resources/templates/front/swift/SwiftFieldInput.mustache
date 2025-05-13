@@ -44,12 +44,12 @@ dateField("{{displayName}}", date: ${{name}})
 {{#isManyToOne}}
 
 HStack {
-    Text("{{entityType}}")
+    Text(t("{{entityType}}"))
     Spacer()
     if let item = selected{{entityType}} {
-        Text(item.name).foregroundColor(.secondary)
+        Text(t(item.name)).foregroundColor(.secondary)
     } else {
-        Text("None").foregroundColor(.gray)
+        Text(t("Sélectionner")).foregroundColor(.gray)
     }
 }
 .onTapGesture {

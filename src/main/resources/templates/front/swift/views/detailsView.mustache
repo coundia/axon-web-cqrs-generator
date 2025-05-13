@@ -24,8 +24,8 @@ struct {{entity}}DetailsView: View {
         ScrollView {
             VStack(spacing: 24) {
                 header
-                section(title: "Overview", content: overviewSection)
-                section(title: "Metadata", content: metaSection)
+                section(title: t("Information"), content: overviewSection)
+                section(title: t("Détails"), content: metaSection)
 
                 if let msg = syncMessage {
                     Text(msg)
@@ -84,7 +84,7 @@ struct {{entity}}DetailsView: View {
             Menu {
 
                 {{#shared}}
-                Button("Share", systemImage: "square.and.arrow.up") {
+                Button(t("Partager"), systemImage: "square.and.arrow.up") {
                     selectedUser = {{entity}}User()
                     selectedUser?.{{entityLowerCase}} = {{entityLowerCase}}.remoteId
                     selectedUser?.name = {{entityLowerCase}}.name
@@ -92,7 +92,7 @@ struct {{entity}}DetailsView: View {
                     showCreateUser = true
                 }
                 {{/shared}}
-                Button("Copy Remote ID", systemImage: "doc.on.doc") {
+                Button(t("Copier ID"), systemImage: "doc.on.doc") {
                     UIPasteboard.general.string = {{entityLowerCase}}.remoteId
                 }
                 Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
@@ -101,7 +101,7 @@ struct {{entity}}DetailsView: View {
                          await viewModel.pull()
                     }
                 }
-                Button("Close", systemImage: "xmark") {
+                Button("Fermer", systemImage: "xmark") {
                     dismiss()
                 }
 
@@ -130,25 +130,25 @@ struct {{entity}}DetailsView: View {
             {{#fields}}
     {{#isDisplayName}}
     {{#isText}}
-            detailItem(icon: "person.text.rectangle", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ?? "-")
+            detailItem(icon: "person.text.rectangle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
 {{/isText}}
     {{#isInt}}
-            detailItem(icon: "number", title: "{{displayName}}", value: String({{entityLowerCase}}.{{name}}))
+            detailItem(icon: "number", title: t("{{displayName}}"), value: String({{entityLowerCase}}.{{name}}))
             {{/isInt}}
     {{#isFloat}}
-            detailItem(icon: "number", title: "{{displayName}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            detailItem(icon: "number", title: t("{{displayName}}"), value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
             {{/isFloat}}
     {{#isString}}
-            detailItem(icon: "textformat", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ?? "-")
+            detailItem(icon: "textformat", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
             {{/isString}}
     {{#isDouble}}
-            detailItem(icon: "dollarsign.circle", title: "{{displayName}}", value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            detailItem(icon: "dollarsign.circle", title: t("{{displayName}}"), value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
             {{/isDouble}}
     {{#isBool}}
-            detailItem(icon: "checkmark.circle", title: "{{displayName}}", value: {{entityLowerCase}}.{{name}} ? "Yes" : "No")
+            detailItem(icon: "checkmark.circle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ? t("Oui") : t("Non"))
             {{/isBool}}
     {{#isDate}}
-        detailItem(icon: "calendar", title: "{{displayName}}", value: formatDate({{entityLowerCase}}.{{name}}))
+        detailItem(icon: "calendar", title: t("{{displayName}}"), value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isDate}}
 
     {{/isDisplayName}}
@@ -165,14 +165,14 @@ struct {{entity}}DetailsView: View {
             {{#fields}}
     {{#isId}}
             detailItem(icon: "info.circle", title: "Id", value: {{entityLowerCase}}.id ?? "-")
-            detailItem(icon: "info.circle", title: "Remote id", value: {{entityLowerCase}}.remoteId ?? "-")
+            detailItem(icon: "info.circle", title: t("Id dans le serveur"), value: {{entityLowerCase}}.remoteId ?? "-")
             {{/isId}}
     {{#isUpdatedAt}}
-            detailItem(icon: "clock", title: "Updated", value: formatDate({{entityLowerCase}}.{{name}}))
+            detailItem(icon: "clock", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isUpdatedAt}}
 {{/fields}}
 
-        detailItem(icon: "person.text.rectangle", title: "User",  value: {{entityLowerCase}}.user?.username ?? "-")
+        detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.user?.username ?? "-")
 
          }
         .padding()
@@ -185,10 +185,10 @@ struct {{entity}}DetailsView: View {
                 .frame(width: 28)
                 .foregroundColor(.blue)
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
+                Text(t(title))
                     .font(.caption)
                     .foregroundColor(.gray)
-                Text(value)
+                Text(t(value))
                     .font(.body)
             }
             Spacer()
