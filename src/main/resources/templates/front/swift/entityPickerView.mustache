@@ -74,8 +74,7 @@ struct {{entity}}PickerView: View {
 
                     viewModel: viewModel
                 )
-            }
-            onAppear {
+            }.onAppear {
                    viewModel.fetchEntities()
                    {{#hasType}}
                    viewModel.fixType{{entity}}RawIfMissing()
