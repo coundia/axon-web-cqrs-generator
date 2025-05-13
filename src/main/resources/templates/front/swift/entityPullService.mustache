@@ -110,6 +110,19 @@ final class {{entity}}PullService {
             {{/fields}}
         )
         entity.remoteId = remote.id
+
+        print("[{{entity}}PullService] 🆔 remoteId: \(remote.id)")
+
+        //save id to local and server
+
+        entity.reference = remote.reference
+        {{#fields}}
+            {{#isManyToOne}}
+        entity.{{name}}LocalId = remote.{{name}}
+            {{/isManyToOne}}
+        {{/fields}}
+        entity.id =  remote.id
+
         entity.syncAt = Date()
         entity.status = .sync
         entity.statusRaw = {{entity}}Status.sync.rawValue

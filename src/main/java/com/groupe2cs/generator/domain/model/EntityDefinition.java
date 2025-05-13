@@ -45,6 +45,7 @@ public class EntityDefinition implements Serializable {
 	private Boolean hasCategory = false;
 	private Boolean transactional = false;
 	private Boolean isPublic = false;
+	private Boolean isAutoSave = true;
 	private String bind = "";
 	private String header = "";
 

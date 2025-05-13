@@ -86,6 +86,9 @@ struct {{entity}}FormView: View {
     }
 
     private func handleSave() {
+
+    var entityToSync: {{entity}}?
+
         if let e = entity {
             viewModel.updateEntity(e,
                 {{#fields}}
@@ -100,8 +103,12 @@ struct {{entity}}FormView: View {
     {{/isDouble}}
                 {{/fields}}
             )
+
+            entityToSync = e
+
         } else {
-            viewModel.createEntity(
+
+           entityToSync = viewModel.createEntity(
                 {{#fields}}
     {{#isDouble}}
         {{name}}: Double({{name}}String) ?? 0.0,
@@ -117,6 +124,27 @@ struct {{entity}}FormView: View {
 {{/fields}}
             )
         }
+
+      {{#isAutoSave}}
+        guard let toSync = entityToSync else { return }
+
+        Task {
+            do {
+                try await viewModel.sync(entity: toSync)
+                await MainActor.run {
+                    viewModel.errorMessage = nil
+                    viewModel.showSuccessToast = true
+                    withAnimation { isPresented = false }
+                }
+            } catch {
+                await MainActor.run {
+                    viewModel.errorMessage = "KO"
+                    viewModel.showSuccessToast = true
+                }
+            }
+        }
+        {{/isAutoSave}}
+
         withAnimation { isPresented = false }
     }
      private func populateForm() {

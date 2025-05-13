@@ -78,7 +78,7 @@ struct {{entity}}RowView: View {
     private var statusText: String {
         switch entity.status {
         case .sync: t("Synchronisé")
-        case .syncing: t("Envoyé")
+        case .syncing: t("En cours")
         case .failed: t("Echoué")
         case .create: t("Nouveau")
         case .update: t("Modifié")

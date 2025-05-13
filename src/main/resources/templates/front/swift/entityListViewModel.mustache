@@ -126,7 +126,7 @@ func createEntity(
 {{name}}LocalId: String? = nil,
 {{/isManyToOne}}
 {{/fields}}
-) {
+) -> {{entity}} {
 let item = {{entity}}(
 {{#fields}}
 {{^isId}}
@@ -146,65 +146,69 @@ item.{{name}}LocalId = {{name}}LocalId
 print("createEntity \(item.name)")
 modelContext.insert(item)
 saveContext()
+return item
 }
 
 func updateEntity(_ item: {{entity}},
-{{#fields}}
-	{{name}}: {{realType}},
-    {{#isManyToOne}}
-    {{name}}LocalId: String? = nil,
-    {{/isManyToOne}}
-{{/fields}}
-) {
-{{#fields}}
-	item.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
-{{#isManyToOne}}
-    item.{{name}}LocalId = {{name}}LocalId
-{{/isManyToOne}}
-{{/fields}}
+    {{#fields}}
+        {{name}}: {{realType}},
+        {{#isManyToOne}}
+        {{name}}LocalId: String? = nil,
+        {{/isManyToOne}}
+    {{/fields}}
+    ) -> {{entity}} {
+        {{#fields}}
+            item.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
+        {{#isManyToOne}}
+            item.{{name}}LocalId = {{name}}LocalId
+        {{/isManyToOne}}
+        {{/fields}}
 
-if item.remoteId == nil {
-print("[updateEntity] remoteId is nil  \(item.name)")
-item.status = .create
-} else {
-print("[updateEntity] local ok \(item.name)")
-item.status = .update
+        if item.remoteId == nil {
+            print("[updateEntity] remoteId is nil  \(item.name)")
+            item.status = .create
+            } else {
+            print("[updateEntity] local ok \(item.name)")
+            item.status = .update
+        }
+
+            item.reference = item.id
+            item.user = user
+            print("updated \(item.name)")
+            item.updatedAt = Date()
+            item.syncAt = nil
+            print("updateEntity \(item.name)")
+      saveContext()
+
+      return item
 }
 
-item.reference = item.id
-item.user = user
-print("updated \(item.name)")
-item.updatedAt = Date()
-item.syncAt = nil
-print("updateEntity \(item.name)")
-saveContext()
-}
+func deleteEntity(_ item: {{entity}}) -> {{entity}}{
+    item.status = .delete
+    item.deletedAt = Date()
+    item.updatedAt = Date()
+    item.syncAt = nil
 
-func deleteEntity(_ item: {{entity}}) {
-item.status = .delete
-item.deletedAt = Date()
-item.updatedAt = Date()
-item.syncAt = nil
+    if item.remoteId == nil {
+    item.remoteId = "NOT_EXIST_YET"
+    print("Deleted \(item.name)")
+    modelContext.delete(item)
+    } else {
+    item.status = .delete
+    }
 
-if item.remoteId == nil {
-item.remoteId = "NOT_EXIST_YET"
-print("Deleted \(item.name)")
-modelContext.delete(item)
-} else {
-item.status = .delete
-}
-
-item.user = user
-print("deleteEntity \(item.name)")
-saveContext()
+    item.user = user
+    print("deleteEntity \(item.name)")
+    saveContext()
+     return item
 }
 
 public func saveContext() {
-do {
-try modelContext.save()
-} catch {
-errorMessage = mapError(error)
-}
+    do {
+    try modelContext.save()
+    } catch {
+    errorMessage = mapError(error)
+    }
 }
 
  func search{{entity}}s(text: String, by criteria: {{entity}}SearchCriteria) {
@@ -261,7 +265,6 @@ errorMessage = mapError(error)
 
         isLoading = false
     }
-
 
 
 }

@@ -153,8 +153,6 @@ struct {{entity}}DetailsView: View {
 
     {{/isDisplayName}}
 {{/fields}}
-
-
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
@@ -170,10 +168,12 @@ struct {{entity}}DetailsView: View {
     {{#isUpdatedAt}}
             detailItem(icon: "clock", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isUpdatedAt}}
+
+    {{#isManyToOne}}
+            detailItem(icon: "info.circle", title: t("{{name}} Local Id"), value:  {{entityLowerCase}}.{{name}}LocalId ?? "-")
+            {{/isManyToOne}}
 {{/fields}}
-
         detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.user?.username ?? "-")
-
          }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))

@@ -84,6 +84,7 @@ Content-Type: application/json
 	"hasDate": true,
 	"transactional": true,
 	"hasCategory": true,
+    "isAutoSave": true,
 	"title": "Transaction",
 	"fields": [
 	  {

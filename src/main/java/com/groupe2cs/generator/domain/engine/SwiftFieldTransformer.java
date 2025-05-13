@@ -29,7 +29,7 @@ public class SwiftFieldTransformer {
 			f.put("isDisplayName", field.getDisplayName() != null && !field.getDisplayName().isEmpty());
 			f.put("isIcon", name.equalsIgnoreCase("icon"));
 			f.put("isUpdatedAt", name.equalsIgnoreCase("updatedAt"));
-			f.put("isParentRelation", name.toLowerCase().contains("parent"));
+			//f.put("isParentRelation", name.toLowerCase().contains("parent"));
 			f.put("isTypeIndicator", name.toLowerCase().contains("type"));
 			f.put("isDefaultIndicator", name.equalsIgnoreCase("isDefault"));
 
