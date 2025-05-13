@@ -1,3 +1,4 @@
+{{^isManyToOne}}
 {{#isText}}
     {{#nullable}}
 textField("{{displayName}}", text: Binding(get: { {{name}} ?? "" }, set: { {{name}} = $0 }))
@@ -39,7 +40,7 @@ dateField("{{displayName}}", date: Binding(get: { {{name}} ?? Date() }, set: { {
 dateField("{{displayName}}", date: ${{name}})
     {{/nullable}}
 {{/isDate}}
-
+{{/isManyToOne}}
 {{#isManyToOne}}
 
 HStack {
@@ -55,6 +56,7 @@ HStack {
     show{{entityType}}Picker = true
 }
 .sheet(isPresented: $show{{entityType}}Picker, onDismiss: {
+
      {{name}} = selected{{entityType}}?.remoteId
      {{name}}LocalId = selected{{entityType}}?.id
 

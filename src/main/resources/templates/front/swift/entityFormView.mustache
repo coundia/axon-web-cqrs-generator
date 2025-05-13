@@ -122,7 +122,9 @@ struct {{entity}}FormView: View {
      private func populateForm() {
         {{#header}}
             if entity == nil, let acc = current{{headerUpperCase}} {
+                {{headerLowerCase}}LocalId = acc.id
                 {{headerLowerCase}} = acc.remoteId
+                selected{{headerUpperCase}} = acc
             }
         {{/header}}
         {{#hasCategory}}
@@ -131,7 +133,7 @@ struct {{entity}}FormView: View {
                 if let lastId = lastUsedCategoryId,
                    let found = categories?.first(where: { $0.id == lastId }) {
                     selectedCategory = found
-                    category = found.remoteId
+                    category = found.name
                     categoryLocalId = found.id
                 } else if let first = categories?.first {
                     selectedCategory = first

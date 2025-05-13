@@ -47,7 +47,7 @@ var filtered{{entity}}s: [{{entity}}] {
         .filter { $0.deletedAt == nil }
         {{#header}}
         .filter {
-            current{{headerUpperCase}}Id == nil || $0.{{headerLowerCase}} == current{{headerUpperCase}}Id
+            current{{headerUpperCase}}Id == nil || $0.{{headerLowerCase}}LocalId == current{{headerUpperCase}}Id
         }
         .filter {
         {{^hasDate}}
@@ -97,7 +97,7 @@ var filtered{{entity}}s: [{{entity}}] {
             predicate: #Predicate { item in
                 item.user?.username == username && item.statusRaw != cond
                      && item.{{headerLowerCase}} != nil
-                    && ( item.{{headerLowerCase}} == {{headerLowerCase}}Id
+                    && ( item.{{headerLowerCase}}LocalId == {{headerLowerCase}}Id
                     || item.{{headerLowerCase}}LocalId == {{headerLowerCase}}Id )
             },
             {{^hasDate}}

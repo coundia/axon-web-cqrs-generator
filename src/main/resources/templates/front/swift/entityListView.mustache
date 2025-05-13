@@ -53,7 +53,7 @@ var body: some View {
                 viewModel.selectedEndDate = end
             }
             .onChange(of: selected{{headerUpperCase}}) { acct in
-                viewModel.current{{headerUpperCase}}Id = acct?.remoteId
+                viewModel.current{{headerUpperCase}}Id = acct?.id
             }
             {{#hasSummary}}
         {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
@@ -213,11 +213,10 @@ var body: some View {
         }
         {{#header}}
        .onChange(of: selected{{headerUpperCase}}) { acct in
-            viewModel.current{{headerUpperCase}}Id = acct?.remoteId
-            lastUsed{{headerUpperCase}}Id = acct?.remoteId
+            viewModel.current{{headerUpperCase}}Id = acct?.id
+            lastUsed{{headerUpperCase}}Id = acct?.id
 
             viewModel.fetchEntities()
-
 
         }{{/header}}
         .onAppear {
@@ -230,7 +229,7 @@ var body: some View {
             {{headerLowerCase}}ViewModel.fetchEntities()
             if selected{{headerUpperCase}} == nil {
                 if let lastId = lastUsed{{headerUpperCase}}Id,
-                   let match = {{headerLowerCase}}ViewModel.entities.first(where: { $0.remoteId == lastId }) {
+                   let match = {{headerLowerCase}}ViewModel.entities.first(where: { $0.id == lastId }) {
                     selected{{headerUpperCase}} = match
                 } else if let first = {{headerLowerCase}}ViewModel.entities.first {
                     selected{{headerUpperCase}} = first
