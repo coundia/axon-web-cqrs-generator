@@ -13,8 +13,8 @@ struct {{entity}}PickerView: View {
           {{#hasType}}
           $0.type{{entity}}Raw == selectedFilter.rawValue &&
           {{/hasType}}
-          $0.deletedAt == nil  &&
-          $0.remoteId != nil
+          $0.deletedAt == nil
+          //&& $0.remoteId != nil
          }
     }
 

@@ -77,12 +77,12 @@ struct {{entity}}RowView: View {
 
     private var statusText: String {
         switch entity.status {
-        case .sync: "Synced"
-        case .syncing: "Syncing"
-        case .failed: "Failed"
-        case .create: "Created"
-        case .update: "Modified"
-        case .delete, .trash: "Deleted"
+        case .sync: t("Synchronisé")
+        case .syncing: t("Envoyé")
+        case .failed: t("Echoué")
+        case .create: t("Nouveau")
+        case .update: t("Modifié")
+        case .delete, .trash: t("Supprimé")
         }
     }
 

@@ -35,15 +35,15 @@ final class {{entity}}PullService {
     ) async throws {
         print("[{{entity}}PullService] 🌍 Fetching from \(url)")
 
+     var request = URLRequest(url: url)
+     request.setValue("application/json", forHTTPHeaderField: "Accept")
+{{^isPublic}}
         guard let token = TokenProvider.shared.getToken() else {
             print("[{{entity}}PullService] ❌ Missing token")
             throw AppError.missingToken
         }
-
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+{{/isPublic}}
         let (data, response) = try await URLSession.shared.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse,

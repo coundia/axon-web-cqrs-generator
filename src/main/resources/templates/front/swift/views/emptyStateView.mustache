@@ -10,10 +10,10 @@ struct {{entity}}EmptyStateView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .foregroundColor(.gray.opacity(0.6))
-            Text(t("Aucune {{entity}} pour le moment."))
+            Text(t("Aucune '{{entity}}' pour le moment."))
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Button(t("Ajouter {{entity}}")) {
+            Button(t("Ajouter '{{entity}}' ")) {
                 onAdd()
             }
             .buttonStyle(.borderedProminent)

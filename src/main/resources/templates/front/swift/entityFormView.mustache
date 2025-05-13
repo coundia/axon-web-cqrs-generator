@@ -129,7 +129,7 @@ struct {{entity}}FormView: View {
         if selectedCategory == nil {
                 let categories = try? modelContext.fetch(FetchDescriptor<Category>())
                 if let lastId = lastUsedCategoryId,
-                   let found = categories?.first(where: { $0.remoteId == lastId }) {
+                   let found = categories?.first(where: { $0.id == lastId }) {
                     selectedCategory = found
                     category = found.remoteId
                     categoryLocalId = found.id
