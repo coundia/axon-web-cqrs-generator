@@ -9,6 +9,11 @@ private let calendar = Calendar.current
 @StateObject private var viewModel: {{entity}}ListViewModel
 {{#header}}
 @StateObject private var {{headerLowerCase}}ViewModel: {{headerUpperCase}}ListViewModel
+{{#hasCategory}}
+@StateObject private var categoryViewModel: CategoryListViewModel
+{{/hasCategory}}
+
+
 @State private var selected{{headerUpperCase}}: {{headerUpperCase}}?
 @State private var show{{headerUpperCase}}Picker = false
 {{/header}}
@@ -35,6 +40,9 @@ init(modelContext: ModelContext, user: User) {
     {{#header}}
     _{{headerLowerCase}}ViewModel = StateObject(wrappedValue: {{headerUpperCase}}ListViewModel(modelContext: modelContext, user: user))
     {{/header}}
+    {{#hasCategory}}
+    _categoryViewModel = StateObject(wrappedValue: CategoryListViewModel(modelContext: modelContext, user: user))
+    {{/hasCategory}}
 }
 
 private func startOfMonth(_ date: Date) -> Date {
@@ -69,14 +77,14 @@ var body: some View {
                     Button {
 
                         Task {
-
-
                             isSyncing = true
-                            await viewModel.sync()
-
-                             {{#header}}
+                            {{#header}}
                             await {{headerLowerCase}}ViewModel.sync()
-{{/header}}
+                            {{/header}}
+                            {{#hasCategory}}
+                            await categoryViewModel.sync()
+                            {{/hasCategory}}
+                            await viewModel.sync()
                             isSyncing = false
                         }
                     } label: {
@@ -250,8 +258,19 @@ var body: some View {
             let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
             viewModel.selectedStartDate = start
             viewModel.selectedEndDate = end
+
+            Task{
+                isSyncing = true
+                {{#header}}
+                 await {{headerLowerCase}}ViewModel.sync()
+                {{/header}}
+                {{#hasCategory}}
+                 await categoryViewModel.sync()
+                {{/hasCategory}}
+                 isSyncing = false
+            }
+
             {{#header}}
-            {{headerLowerCase}}ViewModel.fetchEntities()
             if selected{{headerUpperCase}} == nil {
                 if let lastId = lastUsed{{headerUpperCase}}Id,
                    let match = {{headerLowerCase}}ViewModel.entities.first(where: { $0.id == lastId }) {
