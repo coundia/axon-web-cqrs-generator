@@ -162,21 +162,22 @@ var body: some View {
              else {
                  ScrollViewReader { proxy in
                     {{entity}}ListContentView(
-                        {{entityLowerCase}}s: sortedChatBots,
+                        {{entityLowerCase}}s: sorted{{entity}}s,
                         onSelect: { item in selectedForDetails = .init(item) },
                         onDelete: { item in selectedForDelete = item },
                         onAdd: { selected = nil; showForm = true },
                         onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
                         onDuplicate: { item in selectedForDuplicate = .init(item) },
                         onEdit: { item in selected = item; showForm = true }
-                    ).onChange(of: sortedChatBots.count) { _ in
+                    ).onChange(of: sorted{{entity}}s.count) { _ in
+                            scrollToBottom(proxy: proxy)
+                    }
+                    .onAppear {
+                    viewModel.fetchEntities()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             scrollToBottom(proxy: proxy)
                         }
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                scrollToBottom(proxy: proxy)
-                            }
-                        }
+                    }
                 }
              }
             Divider()
@@ -305,6 +306,7 @@ var body: some View {
             viewModel.fetchEntities()
 
         }{{/header}}
+        {{^isChat}}
         .onAppear {
             viewModel.fetchEntities()
             let start = startOfMonth(selectedMonth)
@@ -339,6 +341,7 @@ var body: some View {
             }
             {{/header}}
         }
+        {{/isChat}}
     }
 
 }
@@ -366,13 +369,13 @@ var body: some View {
         inputText = ""
     }
 
-    private var sortedChatBots: [ChatBot] {
-        viewModel.filteredChatBots.sorted(by: { $0.updatedAt ?? .distantPast < $1.updatedAt ?? .distantPast })
+    private var sorted{{entity}}s: [{{entity}}] {
+        viewModel.filtered{{entity}}s.sorted(by: { $0.updatedAt ?? .distantPast < $1.updatedAt ?? .distantPast })
     }
 
 
     private func scrollToBottom(proxy: ScrollViewProxy) {
-        if let last = sortedChatBots.last {
+        if let last = sorted{{entity}}s.last {
             withAnimation {
                 proxy.scrollTo(last.id, anchor: .bottom)
             }

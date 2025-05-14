@@ -1,15 +1,14 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: software
+title: Axon Web Code Generator (CQRS + DDD)
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  Ce logiciel est mis à disposition à des fins de démonstration uniquement.
+  Il n’est pas open-source. Pour toute utilisation, merci de contacter l’auteur.
 type: software
 authors:
   - given-names: Papa
     family-names: Coundia
-    name-particle: Papa
     email: papacoundia@gmail.com
-license: CC-BY-NC-SA-4.0
+license: "All rights reserved"
+version: "1.0.0"
+repository-code: https://github.com/coundia/spring-axon-rabbitmq-web-jpa-starter
+date-released: 2025-05-14

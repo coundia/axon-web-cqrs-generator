@@ -66,3 +66,9 @@ Entite (Sale)
 
 
 [https://github.com/coundia/spring-axon-rabbitmq-web-jpa-starter](https://github.com/coundia/spring-axon-rabbitmq-web-jpa-starter)
+
+
+⚠️ All rights reserved.
+
+This repository is publicly visible for demonstration purposes only.
+You may not use, copy, modify, or distribute any part of this code without explicit permission from the author.
