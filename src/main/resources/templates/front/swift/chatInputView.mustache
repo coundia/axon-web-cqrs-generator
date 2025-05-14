@@ -1,0 +1,23 @@
+
+struct ChatInputView: View {
+    @Binding var inputText: String
+    let onSend: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            TextField("Ecrivez un message...", text: $inputText)
+                .padding(10)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+
+            Button(action: onSend) {
+                Image(systemName: "paperplane.fill")
+                    .padding(10)
+                    .background(inputText.isEmpty ? Color.gray : Color.accentColor)
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+            }
+            .disabled(inputText.isEmpty)
+        }
+    }
+}

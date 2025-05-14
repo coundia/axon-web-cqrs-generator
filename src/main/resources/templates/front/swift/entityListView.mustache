@@ -33,6 +33,8 @@ private let calendar = Calendar.current
 {{/isChat}}
 {{#isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .messages
+@State private var inputText: String = ""
+
 {{/isChat}}
 @State private var selectedMonth: Date = Date()
 
@@ -143,7 +145,8 @@ var body: some View {
 
              if showingTrash {
                 {{entity}}TrashContentView(viewModel: viewModel)
-            } else {
+            }  {{^isChat}}
+             else {
                 {{entity}}ListContentView(
                     {{entityLowerCase}}s: viewModel.filtered{{entity}}s,
                     onSelect: { item in selectedForDetails = .init(item) },
@@ -154,6 +157,33 @@ var body: some View {
                     onEdit: { item in selected = item; showForm = true }
                 )
             }
+{{/isChat}}
+            {{#isChat}}
+             else {
+                 ScrollViewReader { proxy in
+                    {{entity}}ListContentView(
+                        {{entityLowerCase}}s: sortedChatBots,
+                        onSelect: { item in selectedForDetails = .init(item) },
+                        onDelete: { item in selectedForDelete = item },
+                        onAdd: { selected = nil; showForm = true },
+                        onLoadMore: viewModel.loadMore{{entity}}sIfNeeded,
+                        onDuplicate: { item in selectedForDuplicate = .init(item) },
+                        onEdit: { item in selected = item; showForm = true }
+                    ).onChange(of: sortedChatBots.count) { _ in
+                            scrollToBottom(proxy: proxy)
+                        }
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                scrollToBottom(proxy: proxy)
+                            }
+                        }
+                }
+             }
+            Divider()
+            ChatInputView(inputText: $inputText, onSend: sendMessage)
+            .padding(.horizontal)
+            .padding(.bottom)
+            {{/isChat}}
         }
         {{^header}}
          .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
@@ -310,6 +340,7 @@ var body: some View {
             {{/header}}
         }
     }
+
 }
 
      private func resetSheets() {
@@ -319,6 +350,36 @@ var body: some View {
             selected = nil
         }
 
+         {{#isChat}}
+     private func sendMessage() {
+        let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        viewModel.createEntity(
+            messages: trimmed,
+            responses: "",
+            state: "",
+            updatedAt: Date(),
+            reference: UUID().uuidString
+        )
+        viewModel.fetchEntities()
+        inputText = ""
+    }
+
+    private var sortedChatBots: [ChatBot] {
+        viewModel.filteredChatBots.sorted(by: { $0.updatedAt ?? .distantPast < $1.updatedAt ?? .distantPast })
+    }
+
+
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        if let last = sortedChatBots.last {
+            withAnimation {
+                proxy.scrollTo(last.id, anchor: .bottom)
+            }
+        }
+    }
+    {{/isChat}}
+
 }
 
 private struct IdentifiableWrapper<T>: Identifiable {
@@ -326,3 +387,7 @@ private struct IdentifiableWrapper<T>: Identifiable {
     let value: T
     init(_ value: T) { self.value = value }
 }
+
+{{#isChat}}
+{{> chatInputView }}
+{{/isChat}}
