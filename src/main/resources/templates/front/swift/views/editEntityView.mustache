@@ -101,13 +101,13 @@ struct {{entity}}EditView: View {
 
     private func getTitle() -> String {
         if(isShared){
-            return "Share {{entity}}"
+            return t("Partager {{entity}}")
         }
 
         if let e = entity {
-            return "Edit \(e.name ?? "")"
+            return t("Modification {{entity}} ")
         } else {
-            return "New {{entity}}"
+            return t("Création {{entity}} ")
         }
     }
 }

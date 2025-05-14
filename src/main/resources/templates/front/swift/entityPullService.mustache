@@ -69,13 +69,13 @@ final class {{entity}}PullService {
                 guard remoteItem.updatedAt ?? .distantPast > (local.updatedAt ?? .distantPast) ||
                       local.statusRaw == {{entity}}Status.syncing.rawValue else {
                     local.remoteId = remoteItem.id
-                    print("[{{entity}}PullService] ⏩ Skipped: \(local.name)")
+                    print("[{{entity}}PullService] ⏩ Skipped: \(local.id)")
                     continue
                 }
-                print("[{{entity}}PullService] 🔄 Updating: \(local.name)")
+                print("[{{entity}}PullService] 🔄 Updating: \(local.id)")
                 update(local: local, with: remoteItem)
             } else {
-                print("[{{entity}}PullService] ➕ Creating: \(remoteItem.name)")
+                print("[{{entity}}PullService] ➕ Creating: \(remoteItem.id)")
                 let new = make{{entity}}(from: remoteItem)
                 new.user = user
                 modelContext.insert(new)

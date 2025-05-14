@@ -12,7 +12,12 @@ let username: String
 @Published var showSuccessToast = false
 @Published var showErrorToast = false
 @Published var searchText: String = ""
+{{^isChat}}
 @Published var searchCriteria: {{entity}}SearchCriteria = .name
+{{/isChat}}
+{{#isChat}}
+@Published var searchCriteria: {{entity}}SearchCriteria = .messages
+{{/isChat}}
 @Published var showAdd{{entity}}Sheet = false
 @Published var showExportSheet = false
 @Published var showSyncToCloudSheet = false
@@ -143,7 +148,7 @@ item.{{name}}LocalId = {{name}}LocalId
 {{/isManyToOne}}
 {{/fields}}
 
-print("createEntity \(item.name)")
+print("createEntity \(item.id)")
 modelContext.insert(item)
 saveContext()
 return item
@@ -165,19 +170,19 @@ func updateEntity(_ item: {{entity}},
         {{/fields}}
 
         if item.remoteId == nil {
-            print("[updateEntity] remoteId is nil  \(item.name)")
+            print("[updateEntity] remoteId is nil  \(item.id)")
             item.status = .create
             } else {
-            print("[updateEntity] local ok \(item.name)")
+            print("[updateEntity] local ok \(item.id)")
             item.status = .update
         }
 
             item.reference = item.id
             item.user = user
-            print("updated \(item.name)")
+            print("updated \(item.id)")
             item.updatedAt = Date()
             item.syncAt = nil
-            print("updateEntity \(item.name)")
+            print("updateEntity \(item.id)")
       saveContext()
 
       return item
@@ -191,14 +196,14 @@ func deleteEntity(_ item: {{entity}}) -> {{entity}}{
 
     if item.remoteId == nil {
     item.remoteId = "NOT_EXIST_YET"
-    print("Deleted \(item.name)")
+    print("Deleted \(item.id)")
     modelContext.delete(item)
     } else {
     item.status = .delete
     }
 
     item.user = user
-    print("deleteEntity \(item.name)")
+    print("deleteEntity \(item.id)")
     saveContext()
      return item
 }

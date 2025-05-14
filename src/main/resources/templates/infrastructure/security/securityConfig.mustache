@@ -4,6 +4,7 @@ package {{package}};
 import {{.}};
 {{/imports}}
 
+import io.swagger.v3.oas.models.servers.Server;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -117,9 +118,6 @@ public class SecurityConfig {
                 .url("https://cloud.megastore.sn")
                 .description("Production - Megastore");
 
-        Server pcoundiaServer = new Server()
-                .url("https://cloud.pcoundia.com")
-                .description("Production - Pcoundia");
 
         return new OpenAPI()
         .info(new Info().title("API").version("1.0"))

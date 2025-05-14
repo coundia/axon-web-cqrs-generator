@@ -114,7 +114,7 @@ extension {{entity}}ListViewModel {
 
      public func sync(entity: {{entity}} ) async {
 
-        print("[syncEntity] \(entity.name)")
+        print("[syncEntity] \(entity.id)")
 
         if(entity.remoteId != nil) {
             entity.status = .update

@@ -189,17 +189,22 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
-	"name": "Chat",
-	"table": "chat",
-	"title": "Chat",
-	"multiTenant": true,
-	"auditable": true,
-	"apiPrefix": "admin",
-	"isPublic": true,
+	"name": "ChatBot",
+	"table": "chatbot",
+	"title": "Messages",
+
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"isAutoSave": true,
+	"isChat": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "request", "type": "String", "displayName": "Message"},
-	  { "name": "response", "type": "String", "displayName": "Réponse"}
+	  { "name": "messages", "type": "String" ,"displayName": "Message" },
+	  { "name": "responses", "type": "String" ,"displayName": "Réponses" , "nullable": true},
+	  { "name": "state", "type": "String" ,"displayName": "Etat" , "nullable": true}
 	]
   }
 }

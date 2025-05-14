@@ -47,6 +47,7 @@ public class EntityDefinition implements Serializable {
 	private Boolean isPublic = false;
 	private Boolean isAutoSave = true;
 	private Boolean isPremium = false;
+	private Boolean isChat = false;
 	private String bind = "";
 	private String header = "";
 
@@ -329,8 +330,10 @@ public class EntityDefinition implements Serializable {
 		return fields.stream()
 				.filter(f -> {
 					String n = f.getName().toLowerCase();
-					return n.equalsIgnoreCase("name") ||
-							  n.equals("title");
+					return n.equalsIgnoreCase("name")
+							||  n.equals("title")
+							||  n.equals("messages")
+							;
 				})
 				.toList();
 	}

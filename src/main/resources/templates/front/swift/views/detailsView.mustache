@@ -72,11 +72,10 @@ struct {{entity}}DetailsView: View {
                 .foregroundColor(.blue)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text({{entityLowerCase}}.name ?? "No name")
+                    {{#fieldsDisplayed}}
+                Text({{entityLowerCase}}.{{nameLowerCase}} ?? "-")
                     .font(.title2.bold())
-                Text({{entityLowerCase}}.details ?? "No details")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                 {{/fieldsDisplayed}}
             }
 
             Spacer()

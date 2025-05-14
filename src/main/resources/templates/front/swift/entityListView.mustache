@@ -28,7 +28,12 @@ private let calendar = Calendar.current
 
 @State private var showSearch = false
 @State private var searchText = ""
+{{^isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
+{{/isChat}}
+{{#isChat}}
+@State private var searchCriteria: {{entity}}SearchCriteria = .messages
+{{/isChat}}
 @State private var selectedMonth: Date = Date()
 
 {{#header}}
