@@ -32,7 +32,8 @@ Content-Type: application/json
 	"name": "AccountUser",
 	"bind": "username",
 	"table": "account_users",
-	"title": "Partage",
+	"title": "Comptes partagés",
+    "isPremium": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name",   "type": "String", "displayName": "Message" },
@@ -175,6 +176,30 @@ Content-Type: application/json
 	  { "name": "locale", "type": "String","displayName": "Langue","isLowerCase": true },
 	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
 	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	]
+  }
+}
+###
+
+
+POST http://127.0.0.1:8071/api/v1/generator/swiftui
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
+  "definition": {
+	"name": "Chat",
+	"table": "chat",
+	"title": "Chat",
+	"multiTenant": true,
+	"auditable": true,
+	"apiPrefix": "admin",
+	"isPublic": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "request", "type": "String", "displayName": "Message"},
+	  { "name": "response", "type": "String", "displayName": "Réponse"}
 	]
   }
 }

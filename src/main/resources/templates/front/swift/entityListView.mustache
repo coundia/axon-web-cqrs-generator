@@ -154,6 +154,22 @@ var body: some View {
          .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
         {{/header}}
         .toolbar {
+        {{#isPremium}}
+                      ToolbarItem(placement: .principal) {
+                        HStack(spacing: 6) {
+                                if user.isPremium {
+                                    Text("Premium")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Color.yellow.opacity(0.8))
+                                        .foregroundColor(.black)
+                                        .cornerRadius(6)
+                                }
+                            }
+                       }
+            {{/isPremium}}
             {{#header}}
              ToolbarItem(placement: .principal) {
                     Button { show{{headerUpperCase}}Picker = true } label: {
