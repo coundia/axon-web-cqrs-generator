@@ -8,6 +8,8 @@ struct {{entity}}MenuView: View {
 
      @Binding var showSearch: Bool
 
+    @AppStorage("autoSave{{entity}}") private var autoSave: Bool = true
+
     var body: some View {
         Menu {
 
@@ -38,6 +40,12 @@ struct {{entity}}MenuView: View {
                     Label(t("Ajouter {{entity}}"), systemImage: "plus")
                 }
             }
+
+            Toggle(isOn: $autoSave) {
+                Label(t("Sauvegarde auto"), systemImage: autoSave ? "checkmark.circle" : "circle")
+            }
+
+
         } label: {
             Image(systemName: "ellipsis.circle")
                 .font(.title2)

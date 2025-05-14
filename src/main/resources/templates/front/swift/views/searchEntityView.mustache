@@ -16,7 +16,7 @@ struct Search{{entity}}View: View {
                     TextField(t("Text à rechercher"), text: $searchText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                    Picker("Search By", selection: $searchCriteria) {
+                    Picker("Rechercher par", selection: $searchCriteria) {
                         ForEach({{entity}}SearchCriteria.allCases) { criteria in
                             Text(criteria.rawValue).tag(criteria)
                         }
@@ -24,16 +24,16 @@ struct Search{{entity}}View: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
             }
-            .navigationTitle("Search")
+            .navigationTitle("Recherche")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Search") {
+                    Button("Rechercher") {
                         onSearch()
                         isPresented = false
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
+                    Button("Fermer") {
                         dismiss()
                     }
                 }

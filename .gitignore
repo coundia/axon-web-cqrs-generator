@@ -33,3 +33,6 @@ build/
 .vscode/
 HELP.md
 docs/HELP
+
+
+src/main/resources/application-prod.properties

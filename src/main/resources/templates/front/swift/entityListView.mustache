@@ -29,11 +29,13 @@ private let calendar = Calendar.current
 @State private var showSearch = false
 @State private var searchText = ""
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
-
 @State private var selectedMonth: Date = Date()
+
 {{#header}}
 @AppStorage("lastUsed{{headerUpperCase}}Id") private var lastUsed{{headerUpperCase}}Id: String?
 {{/header}}
+
+
 init(modelContext: ModelContext, user: User) {
     self.user = user
     _viewModel = StateObject(wrappedValue: {{entity}}ListViewModel(modelContext: modelContext, user: user))
@@ -272,6 +274,11 @@ var body: some View {
 
             {{#header}}
             if selected{{headerUpperCase}} == nil {
+
+            {{headerLowerCase}}ViewModel.fetchEntities()
+            {{#hasCategory}}
+            categoryViewModel.fetchEntities()
+             {{/hasCategory}}
                 if let lastId = lastUsed{{headerUpperCase}}Id,
                    let match = {{headerLowerCase}}ViewModel.entities.first(where: { $0.id == lastId }) {
                     selected{{headerUpperCase}} = match

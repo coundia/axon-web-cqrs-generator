@@ -31,6 +31,7 @@ struct {{entity}}FormView: View {
 {{#hasCategory}}
 @AppStorage("lastUsedCategoryId") private var lastUsedCategoryId: String?
 {{/hasCategory}}
+@AppStorage("autoSave{{entity}}") private var autoSave: Bool = {{isAutoSave}}
 
     var body: some View {
         NavigationView {
@@ -125,25 +126,25 @@ struct {{entity}}FormView: View {
             )
         }
 
-      {{#isAutoSave}}
-        guard let toSync = entityToSync else { return }
+      if autoSave {
+            guard let toSync = entityToSync else { return }
 
-        Task {
-            do {
-                try await viewModel.sync(entity: toSync)
-                await MainActor.run {
-                    viewModel.errorMessage = nil
-                    viewModel.showSuccessToast = true
-                    withAnimation { isPresented = false }
-                }
-            } catch {
-                await MainActor.run {
-                    viewModel.errorMessage = "KO"
-                    viewModel.showSuccessToast = true
+            Task {
+                do {
+                    try await viewModel.sync(entity: toSync)
+                    await MainActor.run {
+                        viewModel.errorMessage = nil
+                        viewModel.showSuccessToast = true
+                        withAnimation { isPresented = false }
+                    }
+                } catch {
+                    await MainActor.run {
+                        viewModel.errorMessage = "KO"
+                        viewModel.showSuccessToast = true
+                    }
                 }
             }
-        }
-        {{/isAutoSave}}
+       }
 
         withAnimation { isPresented = false }
     }
