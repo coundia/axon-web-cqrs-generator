@@ -163,17 +163,49 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/chatbots",
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/chats",
   "definition": {
-	"name": "ChatBot",
-	"table": "chatbot",
-	"title": "ChatBot",
+	"name": "Chat",
+	"table": "chat",
+	"title": "Chat",
 	"isChat": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "messages", "type": "String" ,"displayName": "Message" },
-	  { "name": "responses", "type": "String" ,"displayName": "Responses" , "nullable": true},
-	  { "name": "state", "type": "String" ,"displayName": "Etat" , "nullable": true}
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "messages",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "responsesJson",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Réponse",
+		"nullable": true
+	  },
+	  {
+		"name": "responses",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Réponse",
+		"nullable": true
+	  },
+	  {
+		"name": "state",
+		"type": "String",
+		"displayName": "Etat",
+		"nullable": true
+	  },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  }
 	]
   }
 }

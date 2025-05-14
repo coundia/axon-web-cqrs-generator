@@ -10,13 +10,44 @@ Content-Type: application/json
 	"title": "Compte",
 	"shared": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name",  "type": "String", "displayName": "Nom"  },
-	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
-	  { "name": "currency", "type": "String" , "displayName": "Devise", "defaultValue": "\"XOF\"" },
-	  { "name": "currentBalance", "type": "Double", "displayName": "Solde de départ", "defaultValue": 0.0 },
-	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
-	  { "name": "isActive", "type": "Boolean", "displayName": "Est active", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Nom"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "currency",
+		"type": "String",
+		"displayName": "Devise",
+		"defaultValue": "\"XOF\""
+	  },
+	  {
+		"name": "currentBalance",
+		"type": "Double",
+		"displayName": "Solde de départ",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "previousBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"displayName": "Est active",
+		"defaultValue": true
+	  }
 	]
   }
 }
@@ -33,16 +64,41 @@ Content-Type: application/json
 	"bind": "username",
 	"table": "account_users",
 	"title": "Comptes partagés",
-    "isPremium": true,
+	"isPremium": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name",   "type": "String", "displayName": "Message" },
-
-	  { "name": "account",  "displayName": "Compte", "entityType": "Account", "type": "String", "relation": "manyToOne", "nullable": true },
-	  { "name": "username",   "displayName": "Partager avec (Nom identifiant)", "type": "String"  },
-
-	  { "name": "details", "displayName": "Description","type": "String", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "account",
+		"displayName": "Compte",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"displayName": "Partager avec (Nom identifiant)",
+		"type": "String"
+	  },
+	  {
+		"name": "details",
+		"displayName": "Description",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
@@ -53,7 +109,6 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
 	"name": "Category",
@@ -61,14 +116,35 @@ Content-Type: application/json
 	"title": "Catégorie",
 	"hasType": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "displayName": "Nom", "type": "String" },
-	  { "name": "typeCategoryRaw", "type": "String", "entityType": "enum"},
-	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"displayName": "Nom",
+		"type": "String"
+	  },
+	  {
+		"name": "typeCategoryRaw",
+		"type": "String",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/swiftui
 Accept: application/x-ndjson
@@ -85,7 +161,7 @@ Content-Type: application/json
 	"hasDate": true,
 	"transactional": true,
 	"hasCategory": true,
-    "isAutoSave": false,
+	"isAutoSave": false,
 	"title": "Transaction",
 	"fields": [
 	  {
@@ -96,7 +172,6 @@ Content-Type: application/json
 		"name": "amount",
 		"type": "Double",
 		"displayName": "Montant",
-
 		"indicators": [
 		  "sum"
 		]
@@ -107,7 +182,6 @@ Content-Type: application/json
 		"defaultValue": "\"Pas de motif\"",
 		"displayName": "Motif"
 	  },
-
 	  {
 		"name": "details",
 		"type": "String",
@@ -153,6 +227,7 @@ Content-Type: application/json
 	]
   }
 }
+
 ###
 
 POST http://127.0.0.1:8071/api/v1/generator/swiftui
@@ -170,15 +245,42 @@ Content-Type: application/json
 	"apiPrefix": "admin",
 	"isPublic": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" ,"displayName": "Clé" ,"isLowerCase": true },
-	  { "name": "value", "type": "String","displayName": "Valeur" },
-	  { "name": "locale", "type": "String","displayName": "Langue","isLowerCase": true },
-	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Clé",
+		"isLowerCase": true
+	  },
+	  {
+		"name": "value",
+		"type": "String",
+		"displayName": "Valeur"
+	  },
+	  {
+		"name": "locale",
+		"type": "String",
+		"displayName": "Langue",
+		"isLowerCase": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
+
 ###
 
 
@@ -189,10 +291,10 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/labs/swift/ges-depense/ges-depense",
   "definition": {
-	"name": "ChatBot",
-	"table": "chatbot",
-	"title": "Messages",
-
+	"name": "Chat",
+	"table": "chat",
+	"title": "Chat",
+    "header": "account",
 	"hasSummary": false,
 	"hasType": false,
 	"hasDate": false,
@@ -201,12 +303,45 @@ Content-Type: application/json
 	"isAutoSave": true,
 	"isChat": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "messages", "type": "String" ,"displayName": "Message" },
-	  { "name": "responses", "type": "String" ,"displayName": "Réponses" , "nullable": true},
-	  { "name": "state", "type": "String" ,"displayName": "Etat" , "nullable": true}
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "messages",
+		"type": "String",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "responses",
+		"type": "String",
+		"displayName": "Réponses",
+		"nullable": true
+	  },
+	  {
+		"name": "responsesJson",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Réponse",
+		"nullable": true
+	  },
+	  {
+		"name": "state",
+		"type": "String",
+		"displayName": "Etat",
+		"nullable": true
+	  },
+	  {
+		"name": "account",
+		"displayName": "Compte",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  }
 	]
   }
 }
+
 ###
 

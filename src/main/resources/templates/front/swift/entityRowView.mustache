@@ -4,68 +4,169 @@ import SwiftData
 struct {{entity}}RowView: View {
     let entity: {{entity}}
 
-        @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) var colorScheme
 
-           private var rowBackgroundColor: Color {
+    @State private var showStatusText = false
+
+    {{#isChat}}
+     @EnvironmentObject var transactionViewModel: TransactionListViewModel
+     @EnvironmentObject var accountViewModel: AccountListViewModel
+      @Environment(\.modelContext) private var modelContext
+
+    @State private var showConfirmation = false
+    @State private var confirmationAction: (() -> Void)?
+    @State private var confirmationMessage = ""
+
+    {{/isChat}}
+
+    private var rowBackgroundColor: Color {
         colorScheme == .dark ? .black : Color(UIColor.secondarySystemBackground)
     }
 
-{{#hasType}}
-  private var customTextColor: Color {
+    {{#hasType}}
+    private var customTextColor: Color {
         entity.type{{entity}}Raw == {{entity}}Type.type2.rawValue ? .red : .green
     }
     {{/hasType}}
+
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-             iconView
+        VStack(spacing: 10) {
+            HStack(alignment: .top) {
+                iconView
                     .frame(width: 32, height: 32)
                     .padding(.top, 4)
-                }
-             VStack(alignment: .leading, spacing: 2) {
+
+                VStack(alignment: .leading, spacing: 4) {
                     {{#fieldsDisplayed}}
-                        Text(t(entity.{{name}} ?? "no {{name}}"))
-                            .font(.caption)
-                            .fontWeight(.bold)
-                            .foregroundColor(.secondary)
+                    Text(t(entity.{{name}} ?? "no {{name}}"))
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.secondary)
                     {{/fieldsDisplayed}}
-                    {{#hasDate}}
-                         if let dateEntity = entity.date{{entity}} {
-                Text(" \(formattedDate(dateEntity))")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
-                 }
+
+{{#hasDate}}
+                    if let dateEntity = entity.date{{entity}} {
+                        Text(formattedDate(dateEntity))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                    }
                     {{/hasDate}}
-                {{^hasDate}}
+{{^hasDate}}
                     if let updatedAt = entity.updatedAt {
-                    Text(" \(formattedDate(updatedAt))")
-                        .font(.caption2)
-                        .foregroundColor(.gray)
-                     }
-                 {{/hasDate}}
-                 Label {
-                     Text(statusText)
-                    } icon: {
-                        Image(systemName: statusIcon)
-                    }{{#hasType}}
-                    .foregroundColor(customTextColor){{/hasType}}
+                        Text(formattedDate(updatedAt))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                    }
+                    {{/hasDate}}
+
+                     HStack(spacing: 6) {
+                        statusIconView
+                        if showStatusText {
+                            Text(statusText)
+                                .font(.caption)
+                                .transition(.opacity)
+                        }
+                    }
+                    .onTapGesture {
+                        withAnimation { showStatusText = true }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation { showStatusText = false }
+                        }
+                    }
+
+                    {{#hasType}}
+                    .foregroundColor(customTextColor)
+                    {{/hasType}}
                     .font(.caption)
-            }
-             Spacer()
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                      {{#fieldsAmount}}
-                            Text("\(entity.{{name}}, specifier: "%.0f")")
+
+                    {{#isChat}}
+                     if let response = entity.responses, !response.isEmpty {
+                        HStack {
+                            Spacer()
+                             VStack(alignment: .trailing, spacing: 8) {
+                                Text(response)
+                                    .padding(10)
+                                    .background(
+                                        entity.state == "ACCEPTED" ? Color.green.opacity(0.2) :
+                                        entity.state == "REJECTED" ? Color.red.opacity(0.2) :
+                                        Color.green.opacity(0.1)
+                                    )
+                                    .foregroundColor(.primary)
+                                    .cornerRadius(12)
+
+                                if entity.state == "ACCEPTED" {
+                                    Text(t("Message accepté"))
+                                        .font(.caption2)
+                                        .foregroundColor(.green)
+                                        .padding(.top, 4)
+                                } else if entity.state == "REJECTED" {
+                                    Text(t("Message rejeté"))
+                                        .font(.caption2)
+                                        .foregroundColor(.red)
+                                        .padding(.top, 4)
+                                }
+
+                                if entity.state == "REPLIED" {
+                                    HStack(spacing: 12) {
+                                        Button("Rejeter") {
+                                            confirmationMessage = t("Êtes-vous sûr de vouloir rejeter ?")
+                                            confirmationAction = { updateState("REJECTED") }
+                                            showConfirmation = true
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(Color.red.opacity(0.1))
+                                        .foregroundColor(.red)
+                                        .cornerRadius(8)
+
+                                        Button("Accepter") {
+                                            confirmationMessage = t("Êtes-vous sûr de vouloir accepter ?")
+                                            confirmationAction = {
+                                                updateState("ACCEPTED")
+                                                processResponseIfNeeded(from: entity)
+                                            }
+                                            showConfirmation = true
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(Color.green.opacity(0.1))
+                                        .foregroundColor(.green)
+                                        .cornerRadius(8)
+                                    }
+                                    .font(.caption)
+                                }
+                            }
+                        }
+                    }
+                    {{/isChat}}
+                }
+
+                Spacer()
+
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        {{#fieldsAmount}}
+                        Text("\(entity.{{name}}, specifier: "%.0f")")
                             .font(.subheadline)
                             .bold()
                             {{#hasType}}
-                            .foregroundColor(customTextColor){{/hasType}}
-                    {{/fieldsAmount}}
+                            .foregroundColor(customTextColor)
+                            {{/hasType}}
+{{/fieldsAmount}}
+                    }
                 }
             }
         }
         .padding(.vertical, 8)
         .padding(.horizontal)
+        {{#isChat}}
+        .confirmationDialog(confirmationMessage, isPresented: $showConfirmation) {
+            Button(t("Confirmer"), role: .destructive) {
+                confirmationAction?()
+            }
+            Button(t("Annuler"), role: .cancel) {}
+        }
+        {{/isChat}}
     }
 
     private var iconView: some View {
@@ -85,28 +186,29 @@ struct {{entity}}RowView: View {
         case .delete, .trash: t("Supprimé")
         }
     }
-
-    private var statusIcon: String {
+    private var statusIconView: some View {
         switch entity.status {
-        case .sync: "checkmark.seal.fill"
-        case .syncing: "arrow.triangle.2.circlepath"
-        case .failed: "xmark.octagon.fill"
-        case .create: "sparkles"
-        case .update: "pencil.circle.fill"
-        case .delete, .trash: "trash.fill"
+        case .sync:
+            return AnyView(HStack(spacing: -6) {
+                Image(systemName: "checkmark")
+                Image(systemName: "checkmark")
+            }.font(.caption2).foregroundColor(.green))
+        case .syncing:
+            return AnyView(HStack(spacing: -6) {
+                Image(systemName: "checkmark")
+                Image(systemName: "checkmark")
+            }.font(.caption2).foregroundColor(.gray))
+        case .failed:
+            return AnyView(Image(systemName: "xmark.octagon.fill").font(.caption2).foregroundColor(.red))
+        case .create:
+            return AnyView(Image(systemName: "checkmark").font(.caption2).foregroundColor(.gray))
+        case .update:
+            return AnyView(Image(systemName: "pencil.circle.fill").font(.caption2).foregroundColor(.orange))
+        case .delete, .trash:
+            return AnyView(Image(systemName: "trash.fill").font(.caption2).foregroundColor(.black))
         }
     }
 
-    private var statusColor: Color {
-        switch entity.status {
-        case .sync: .green
-        case .syncing: .blue
-        case .failed: .red
-        case .create: .gray
-        case .update: .orange
-        case .delete, .trash: .black
-        }
-    }
 
     private func formattedDate(_ date: Date?) -> String {
         guard let date else { return "-" }
@@ -115,4 +217,49 @@ struct {{entity}}RowView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+
+    {{#isChat}}
+   private func updateState(_ newState: String) {
+        entity.state = newState
+        try? modelContext.save()
+    }
+
+    private func processResponseIfNeeded(from entity: Chat) {
+        guard let json = entity.responsesJson, !json.isEmpty else { return }
+        guard let data = json.data(using: .utf8) else { return }
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        do {
+            let response = try decoder.decode(SyncTransactionRequest.self, from: data)
+
+            Task { @MainActor in
+                for dto in response.deltas {
+                    let transaction = transactionViewModel.createEntity(
+                        amount: dto.amount,
+                        name: dto.name,
+                        details: dto.details,
+                        isActive: dto.isActive,
+                        account: transactionViewModel.currentAccount?.id,
+                        accountLocalId: transactionViewModel.currentAccount?.remoteId,
+                        category: dto.category,
+                        categoryLocalId: dto.category,
+                        typeTransactionRaw: dto.typeTransactionRaw,
+                        dateTransaction: Date(),
+                        updatedAt: Date(),
+                        reference: dto.reference
+                    )
+
+                    await transactionViewModel.sync(entity: transaction)
+                    await accountViewModel.pull()
+                }
+            }
+
+        } catch {
+            print("[ChatRowView] ❌ JSON decode failed: \(error)")
+        }
+    }
+{{/isChat}}
+
 }

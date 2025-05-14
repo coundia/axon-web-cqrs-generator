@@ -64,7 +64,12 @@ final class {{entity}}PullService {
         print("[{{entity}}PullService] 🗂 Found \(local{{entity}}s.count) local transactions")
 
         for remoteItem in remoteItems {
-            if let index = local{{entity}}s.firstIndex(where: { $0.reference == remoteItem.reference }) {
+
+            guard let remoteRef = remoteItem.reference else {
+                print("⚠️ remoteItem.reference is nil")
+                continue
+            }
+            if let index = local{{entity}}s.firstIndex(where: { $0.reference == remoteRef}) {
                 let local = local{{entity}}s[index]
                 guard remoteItem.updatedAt ?? .distantPast > (local.updatedAt ?? .distantPast) ||
                       local.statusRaw == {{entity}}Status.syncing.rawValue else {

@@ -41,10 +41,6 @@ extension {{entity}}ListViewModel {
                 await pull()
                 await pull()
 
-                await MainActor.run {
-                     fetchEntities()
-                 }
-
             } catch {
             await MainActor.run {
                 errorMessage = mapError(error)

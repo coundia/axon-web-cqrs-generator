@@ -80,10 +80,15 @@ try {
 
 {{#editableFields}}
 	{{#isManyToOne}}
-		entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
+
+     if(event.get{{nameCapitalized}}() != null) {
+		  entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
+	  }
 	{{/isManyToOne}}
 	{{^isManyToOne}}
+	if(event.get{{nameCapitalized}}() != null) {
 		entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
+    }
 	{{/isManyToOne}}
 {{/editableFields}}
 

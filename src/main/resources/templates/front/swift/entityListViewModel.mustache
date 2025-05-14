@@ -122,37 +122,38 @@ var filtered{{entity}}s: [{{entity}}] {
     }
 {{/header}}
 
-func createEntity(
-{{#fields}}
-{{^isId}}
-{{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
-{{/isId}}
-{{#isManyToOne}}
-{{name}}LocalId: String? = nil,
-{{/isManyToOne}}
-{{/fields}}
-) -> {{entity}} {
-let item = {{entity}}(
-{{#fields}}
-{{^isId}}
-{{name}}: {{name}},
-{{/isId}}
-{{/fields}}
-)
-item.user = user
-item.reference = item.id
+    func createEntity(
+        {{#fields}}
+        {{^isId}}
+        {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+        {{/isId}}
+        {{#isManyToOne}}
+        {{name}}LocalId: String? = nil,
+        {{/isManyToOne}}
+        {{/fields}}
+            ) -> {{entity}} {
 
-{{#fields}}
-{{#isManyToOne}}
-item.{{name}}LocalId = {{name}}LocalId
-{{/isManyToOne}}
-{{/fields}}
+        let item = {{entity}}(
+        {{#fields}}
+        {{^isId}}
+        {{name}}: {{name}},
+        {{/isId}}
+        {{/fields}}
+        )
+        item.user = user
+        item.reference = item.id
 
-print("createEntity \(item.id)")
-modelContext.insert(item)
-saveContext()
-return item
-}
+        {{#fields}}
+        {{#isManyToOne}}
+        item.{{name}}LocalId = {{name}}LocalId
+        {{/isManyToOne}}
+        {{/fields}}
+
+        print("createEntity \(item.id)")
+        modelContext.insert(item)
+        saveContext()
+        return item
+    }
 
 func updateEntity(_ item: {{entity}},
     {{#fields}}
