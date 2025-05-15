@@ -314,11 +314,12 @@ var body: some View {
             viewModel.current{{headerUpperCase}} = acct
             lastUsed{{headerUpperCase}}Id = acct?.id
 
-            transactionViewModel.currentAccount = acct
-
             viewModel.fetchEntities()
 
         }{{/header}}
+            {{#isChat}}
+            transactionViewModel.currentAccount = acct
+            {{/isChat}}
 
         .onAppear {
             viewModel.fetchEntities()

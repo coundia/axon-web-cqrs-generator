@@ -4,7 +4,7 @@ import SwiftData
 extension {{entity}}ListViewModel {
 
     func pull() async {
-        print("[pullEntities]")
+        print("[{{entity}}ListViewModel.pullEntities]")
             let manager = {{entity}}PullService(modelContext: modelContext, user: user)
             do {
             {{^transactional}}
@@ -31,7 +31,7 @@ extension {{entity}}ListViewModel {
     }
 
      func sync() async {
-        print("[syncEntities]")
+        print("[{{entity}}ListViewModel.syncEntities]")
              do {
             try
                 await pull()
@@ -50,6 +50,7 @@ extension {{entity}}ListViewModel {
     }
 
     func syncAllEntities() async {
+    print("[{{entity}}ListViewModel.syncAllEntities]")
         let unsynced = fetchEntitiesUnSynced()
 
         let deltas: [{{entity}}DeltaDto] = unsynced.map {
@@ -90,6 +91,8 @@ extension {{entity}}ListViewModel {
 
 
     func fetchEntitiesUnSynced() -> [{{entity}}] {
+
+     print("[{{entity}}ListViewModel.fetchEntitiesUnSynced]")
             print("[fetchEntitiesUnSynced]")
              let descriptor = FetchDescriptor<{{entity}}>(
               predicate: #Predicate {
@@ -109,6 +112,8 @@ extension {{entity}}ListViewModel {
         }
 
      public func sync(entity: {{entity}} ) async {
+
+     print("[{{entity}}ListViewModel.sync(entity)]")
 
         print("[syncEntity] \(entity.id)")
 
