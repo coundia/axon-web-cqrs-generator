@@ -76,6 +76,8 @@ private func startOfMonth(_ date: Date) -> Date {
 
 var body: some View {
     NavigationView {
+
+     ZStack {
         VStack(spacing: 8) {
 
         GuestFeatureNoticeView(user: user)
@@ -218,6 +220,27 @@ var body: some View {
         {{^header}}
          .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
         {{/header}}
+
+        //btn
+        VStack {
+                Spacer()
+                Button(action: {
+                    selected = nil
+                    showForm = true
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .resizable()
+                        .frame(width: 56, height: 56)
+                        .foregroundColor(.accentColor)
+                        .shadow(radius: 4)
+                }
+                .accessibilityLabel("Ajouter une transaction")
+                .padding(.bottom, 16)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(true)
+        //btn end
+        } //end ztack
         .toolbar {
         {{#isPremium}}
                       ToolbarItem(placement: .principal) {
