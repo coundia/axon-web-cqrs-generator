@@ -83,6 +83,8 @@ final class {{entity}}PullService {
                 print("[{{entity}}PullService] ➕ Creating: \(remoteItem.id)")
                 let new = make{{entity}}(from: remoteItem)
                 new.user = user
+                new.createdBy = remoteItem.createdBy
+                new.tenant = remoteItem.tenant
                 modelContext.insert(new)
             }
         }

@@ -40,7 +40,16 @@ struct {{entity}}PickerView: View {
                                 selected{{entity}} = item
                                 dismiss()
                             } label: {
-                                Text(t(item.name))
+                              HStack {
+                                    Text(t(item.name))
+                                    Spacer()
+                                    if let createdBy = item.createdBy {
+                                        Text(t(createdBy))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+
                             }
                         }
                     }

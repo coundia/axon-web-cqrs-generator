@@ -44,6 +44,14 @@ struct {{entity}}RowView: View {
                         .foregroundColor(.secondary)
                     {{/fieldsDisplayed}}
 
+                        if let createdBy = entity.createdBy {
+                             Text(entity.user?.username == entity.createdBy ? t("Moi") : createdBy)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                        }
+
 {{#hasDate}}
                     if let dateEntity = entity.date{{entity}} {
                         Text(formattedDate(dateEntity))

@@ -141,6 +141,7 @@ var filtered{{entity}}s: [{{entity}}] {
         {{/fields}}
         )
         item.user = user
+        item.createdBy = user.username
         item.reference = item.id
 
         {{#fields}}

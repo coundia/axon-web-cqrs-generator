@@ -172,7 +172,7 @@ struct {{entity}}DetailsView: View {
             detailItem(icon: "info.circle", title: t("{{name}} Local Id"), value:  {{entityLowerCase}}.{{name}}LocalId ?? "-")
             {{/isManyToOne}}
 {{/fields}}
-        detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.user?.username ?? "-")
+        detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.createdBy ?? "-")
          }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))

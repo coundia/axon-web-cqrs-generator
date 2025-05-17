@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 struct {{entity}}ListView: View {
 
@@ -25,15 +26,23 @@ private let calendar = Calendar.current
 @State private var isSyncing = false
 @State private var showingTrash = false
 
+ @StateObject private var speechRecognizer = SpeechRecognizer()
+@State private var isLoading = false
+@State private var loadingText = "Chargement en cours..."
 
 @State private var showSearch = false
 @State private var searchText = ""
 {{^isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
 {{/isChat}}
+
 {{#isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .messages
 @State private var inputText: String = ""
+
+
+@State private var showOCRScanner = false
+@State private var isProcessingOCR = false
 
 @StateObject private var transactionViewModel: TransactionListViewModel
 @State private var scrollTrigger = UUID()
@@ -192,7 +201,17 @@ var body: some View {
                 }
              }
             Divider()
-            ChatInputView(inputText: $inputText, onSend: sendMessage)
+
+            ChatInputView(
+                   inputText: $inputText,
+                    onSend: sendMessage,
+                    onOCR: handleOCR,
+                    speechRecognizer: speechRecognizer,
+                    clearAction: clearInput,
+                    selectedAccount: $selectedAccount,
+                    viewModel: transactionViewModel
+                )
+
             .padding(.horizontal)
             .padding(.bottom)
             {{/isChat}}
@@ -300,6 +319,13 @@ var body: some View {
                 viewModel: viewModel
             )
         }
+        {{#isChat}}
+        .sheet(isPresented: $showOCRScanner) {
+                OCRScannerView(isProcessing: $isProcessingOCR) { extractedText in
+                    inputText = extractedText
+                }
+            }
+        {{/isChat}}
         .confirmationDialog(
             t("Êtes-vous sûr de vouloir supprimer cet élément ?"),
             isPresented: Binding(get: { selectedForDelete != nil }, set: { if !$0 { selectedForDelete = nil } }),
@@ -315,12 +341,17 @@ var body: some View {
             lastUsed{{headerUpperCase}}Id = acct?.id
 
             viewModel.fetchEntities()
-
-        }{{/header}}
             {{#isChat}}
             transactionViewModel.currentAccount = acct
             {{/isChat}}
 
+        } {{/header}}
+
+          .overlay {
+             if {{#isChat}} isProcessingOCR || {{/isChat}} isLoading {
+                 LoadingOverlayView(text: loadingText)
+            }
+            }
         .onAppear {
             viewModel.fetchEntities()
             let start = startOfMonth(selectedMonth)
@@ -329,6 +360,7 @@ var body: some View {
             viewModel.selectedEndDate = end
 
             Task{
+                 isLoading = true
                 isSyncing = true
                 {{#header}}
                  await {{headerLowerCase}}ViewModel.sync()
@@ -337,6 +369,7 @@ var body: some View {
                  await categoryViewModel.sync()
                 {{/hasCategory}}
                  isSyncing = false
+                  isLoading = false
             }
 
             {{#header}}
@@ -406,6 +439,20 @@ var body: some View {
             proxy.scrollTo("bottom", anchor: .bottom)
         }
     }
+
+    private func clearInput() {
+        speechRecognizer.stopTranscribing()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            speechRecognizer.transcribedText = ""
+            inputText = ""
+        }
+    }
+
+    private func handleOCR() {
+        showOCRScanner = true
+    }
+
     {{/isChat}}
 
 }
@@ -415,7 +462,3 @@ private struct IdentifiableWrapper<T>: Identifiable {
     let value: T
     init(_ value: T) { self.value = value }
 }
-
-{{#isChat}}
-{{> chatInputView }}
-{{/isChat}}

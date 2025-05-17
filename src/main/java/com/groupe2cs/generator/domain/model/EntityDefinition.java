@@ -300,8 +300,6 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getDtoFields() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.filter(f -> !f.getName().equalsIgnoreCase("createdBy"))
-				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
 				.toList();
 	}
 
@@ -312,6 +310,7 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
 				.toList();
 	}
+
 
 	public boolean hasManyToOne(){
 

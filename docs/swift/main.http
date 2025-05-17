@@ -322,18 +322,15 @@ Content-Type: application/json
 		"name": "responsesJson",
 		"type": "String",
 		"columnDefinition": "Text",
-		"displayName": "Réponse",
 		"nullable": true
 	  },
 	  {
 		"name": "state",
 		"type": "String",
-		"displayName": "Etat",
 		"nullable": true
 	  },
 	  {
 		"name": "account",
-		"displayName": "Compte",
 		"entityType": "Account",
 		"type": "String",
 		"relation": "manyToOne",
