@@ -115,7 +115,7 @@ var body: some View {
                         //add notification here
                         if let name = user.name {
                                HStack(spacing: 4) {
-                                 Text(t("Bienvenue ")+" : "+name)
+                                 Text(t("Bienvenue "))
                                }
                                .font(.subheadline)
                                .padding(.leading)
@@ -144,17 +144,6 @@ var body: some View {
                             .foregroundColor(.accentColor)
                     }
                     .padding(.leading)
-
-{{^isChat}}
-                    Button {
-                        showForm = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.accentColor)
-                    }
-                    .padding(.trailing)
-                    {{/isChat}}
                 }
                 .padding(.vertical, 4)
                 .background(Color(.systemGroupedBackground))
@@ -220,7 +209,7 @@ var body: some View {
         {{^header}}
          .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
         {{/header}}
-
+        {{^isChat}}
         //btn
         VStack {
                 Spacer()
@@ -234,12 +223,13 @@ var body: some View {
                         .foregroundColor(.accentColor)
                         .shadow(radius: 4)
                 }
-                .accessibilityLabel("Ajouter une transaction")
+                .accessibilityLabel("Ajouter une {{entity}}")
                 .padding(.bottom, 16)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(true)
         //btn end
+         {{/isChat}}
         } //end ztack
         .toolbar {
         {{#isPremium}}
