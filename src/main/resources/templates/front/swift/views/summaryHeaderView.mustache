@@ -45,7 +45,7 @@ struct {{entity}}SummaryView: View {
 
             HStack {
                 Label("Net", systemImage: "equal.circle.fill")
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color("TenantColorPrimary"))
                 Spacer()
                 Text("\(difference, specifier: "%.0f") \(defaultCurrency)")
                     .foregroundColor(difference >= 0 ? .green : .red)

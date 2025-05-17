@@ -30,7 +30,7 @@ struct {{entity}}DetailsView: View {
                 if let msg = syncMessage {
                     Text(msg)
                         .font(.subheadline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color("TenantColorPrimary"))
                 }
             }
             .padding()
@@ -68,8 +68,8 @@ struct {{entity}}DetailsView: View {
                 .scaledToFit()
                 .frame(width: 52, height: 52)
                 .padding()
-                .background(Circle().fill(Color.blue.opacity(0.1)))
-                .foregroundColor(.blue)
+                .background(Circle().fill(Color("TenantColorPrimary").opacity(0.1)))
+                .foregroundColor(Color("TenantColorPrimary"))
 
             VStack(alignment: .leading, spacing: 4) {
                     {{#fieldsDisplayed}}
@@ -182,7 +182,7 @@ struct {{entity}}DetailsView: View {
         HStack(spacing: 16) {
             Image(systemName: icon)
                 .frame(width: 28)
-                .foregroundColor(.blue)
+                .foregroundColor(Color("TenantColorPrimary"))
             VStack(alignment: .leading, spacing: 4) {
                 Text(t(title))
                     .font(.caption)

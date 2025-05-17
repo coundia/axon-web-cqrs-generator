@@ -212,7 +212,6 @@ var body: some View {
                     viewModel: transactionViewModel
                 )
 
-            .padding(.horizontal)
             .padding(.bottom)
             {{/isChat}}
         }
@@ -257,9 +256,15 @@ var body: some View {
                                         }
                                     } else {
                                          Text("\(selected{{headerUpperCase}}?.currentBalance ?? 0.0 , specifier: "%.0f")")
+                                          .font(.title3)
+                                           .fontWeight(.bold)
+                                           .foregroundColor(Color("TenantColorPrimary"))
                                     }
 
                                 Text(selected{{headerUpperCase}}?.name ?? "Sélectionner {{headerUpperCase}}")
+                                 .font(.title3)
+                                           .fontWeight(.bold)
+                                           .foregroundColor(Color("TenantColorPrimary"))
 
                             }
                         }
@@ -281,6 +286,10 @@ var body: some View {
                 }
             }
             {{#header}}
+
+            .navigationBarTitleDisplayMode(.inline)
+
+            //end toolbar
          .sheet(isPresented: $show{{headerUpperCase}}Picker, onDismiss: resetSheets) {
                     {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
                 }
