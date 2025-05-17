@@ -29,10 +29,10 @@ let username: String
 @Published var current{{headerUpperCase}} : {{headerUpperCase}}?
 {{/header}}
 
-    @Published var selectedStartDate: Date?
-    @Published var selectedEndDate: Date?
+@Published var selectedStartDate: Date?
+@Published var selectedEndDate: Date?
 
-
+@ObservedObject var network = NetworkMonitor.shared
 
     init(modelContext: ModelContext, user: User) {
         self.modelContext = modelContext

@@ -5,6 +5,12 @@ extension {{entity}}ListViewModel {
 
     func pull() async {
         print("[{{entity}}ListViewModel.pullEntities]")
+
+         guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
+
             let manager = {{entity}}PullService(modelContext: modelContext, user: user)
             do {
             {{^transactional}}
@@ -33,6 +39,12 @@ extension {{entity}}ListViewModel {
 
     func push() async {
         print("[{{entity}}ListViewModel.push]")
+
+         guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
+
        do {
             try
                 await MainActor.run { _ = fetchEntitiesUnSynced() }
@@ -51,6 +63,12 @@ extension {{entity}}ListViewModel {
 
      func sync() async {
         print("[{{entity}}ListViewModel.syncEntities]")
+
+         guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
+
              do {
             try
                 await pull()
@@ -70,6 +88,12 @@ extension {{entity}}ListViewModel {
 
     func syncAllEntities() async {
     print("[{{entity}}ListViewModel.syncAllEntities]")
+
+     guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
+
         let unsynced = fetchEntitiesUnSynced()
 
         let deltas: [{{entity}}DeltaDto] = unsynced.map {
@@ -132,7 +156,12 @@ extension {{entity}}ListViewModel {
 
      public func sync(entity: {{entity}} ) async {
 
-     print("[{{entity}}ListViewModel.sync(entity)]")
+            print("[{{entity}}ListViewModel.sync(entity)]")
+
+            guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
 
         print("[syncEntity] \(entity.id)")
 
@@ -187,6 +216,11 @@ extension {{entity}}ListViewModel {
     func syncIfNeeded() async {
 
         print("[{{entity}}ListViewModel.syncIfNeeded]")
+
+         guard NetworkMonitor.shared.isAppOffline == false else {
+                print("🛑 [Offline] Mod mode active, skipping API call.")
+                return
+            }
 
         let descriptor = FetchDescriptor<{{entity}}>(
             predicate: #Predicate { $0.remoteId != nil },
