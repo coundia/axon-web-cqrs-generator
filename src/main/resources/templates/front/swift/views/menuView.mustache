@@ -4,6 +4,8 @@ struct {{entity}}MenuView: View {
     @Binding var showingTrash: Bool
     @Binding var isSyncing: Bool
     @Binding var showForm: Bool
+     let pushAction: () async -> Void
+    let pullAction: () async -> Void
     let syncAction: () async -> Void
 
      @Binding var showSearch: Bool
@@ -26,6 +28,27 @@ struct {{entity}}MenuView: View {
             }
 
             if !showingTrash {
+
+             Button {
+                    Task {
+                        isSyncing = true
+                        await pushAction()
+                        isSyncing = false
+                    }
+                } label: {
+                    Label(t("Envoyer (Push)"), systemImage: "arrow.up.circle.fill")
+                }
+
+                Button {
+                    Task {
+                        isSyncing = true
+                        await pullAction()
+                        isSyncing = false
+                    }
+                } label: {
+                    Label(t("Récupérer (Pull)"), systemImage: "arrow.down.circle.fill")
+                }
+
                 Button {
                     Task {
                         isSyncing = true

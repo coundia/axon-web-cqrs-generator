@@ -21,6 +21,25 @@ extension {{entity}}ListViewModel {
             try await manager.pullAndMerge{{entity}}sByAccount(accountId: remoteId ?? "")
             {{/transactional}}
 
+            await MainActor.run { self.fetchEntities() }
+
+            } catch {
+            await MainActor.run {
+                errorMessage = mapError(error)
+                showErrorToast = true
+            }
+        }
+    }
+
+    func push() async {
+        print("[{{entity}}ListViewModel.push]")
+       do {
+            try
+                await MainActor.run { _ = fetchEntitiesUnSynced() }
+                await syncAllEntities()
+                try? await Task.sleep(nanoseconds: 500_000_000)
+
+                await MainActor.run { self.fetchEntities() }
 
             } catch {
             await MainActor.run {
@@ -39,7 +58,7 @@ extension {{entity}}ListViewModel {
                 await syncAllEntities()
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
                 await pull()
-                await pull()
+
 
             } catch {
             await MainActor.run {
@@ -150,15 +169,12 @@ extension {{entity}}ListViewModel {
 
         do {
             try await Sync{{entity}}UseCase().execute(with: [delta])
-            //errorMessage = "✅ Success !"
 
             entity.status = .syncing
              saveContext()
 
             try? await Task.sleep(nanoseconds: 1_000_000_000)
                  await  pull()
-
-           // await MainActor.run { self.showSuccessToast = true }
 
         } catch {
               await MainActor.run {
@@ -167,6 +183,32 @@ extension {{entity}}ListViewModel {
             }
         }
     }
+
+    func syncIfNeeded() async {
+
+        print("[{{entity}}ListViewModel.syncIfNeeded]")
+
+        let descriptor = FetchDescriptor<{{entity}}>(
+            predicate: #Predicate { $0.remoteId != nil },
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+
+        do {
+            let existing = try modelContext.fetch(descriptor)
+            if existing.isEmpty {
+                print("[syncIfNeeded] No data found. Sync required.")
+                await sync()
+            } else {
+                print("[syncIfNeeded] Data exists. No sync needed.")
+            }
+        } catch {
+            await MainActor.run {
+                errorMessage = mapError(error)
+                showErrorToast = true
+            }
+        }
+    }
+
 
 
 }

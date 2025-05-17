@@ -56,7 +56,7 @@ struct {{entity}}PickerView: View {
 
                     Section {
                         Button(t("Rafraîchir")) {
-                            viewModel.fetchEntities()
+                            Task{ await viewModel.pull()}
                         }
                         Button(t("Ajouter {{entity}}")) {
                             showForm = true

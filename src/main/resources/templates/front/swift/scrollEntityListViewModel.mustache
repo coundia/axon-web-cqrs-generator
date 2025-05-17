@@ -5,11 +5,12 @@ extension {{entity}}ListViewModel {
 
     func loadMore{{entity}}sIfNeeded(current item: {{entity}}) {
 
-        print("[loadMore{{entity}}sIfNeeded]")
+        print("[{{entity}}ListViewModel.loadMore{{entity}}sIfNeeded]")
         guard let last = entities.last, last.id == item.id else { return }
         loadMore{{entity}}s()
     }
     private func loadMore{{entity}}s() {
+    print("[{{entity}}ListViewModel.loadMore{{entity}}s]")
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }

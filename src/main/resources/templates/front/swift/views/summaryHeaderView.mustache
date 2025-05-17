@@ -5,15 +5,11 @@ struct {{entity}}SummaryView: View {
     let {{entityLowerCase}}s: [{{entity}}]
     let defaultCurrency: String
 
-    //type1 = IN
-    //type2 = OUT
-
     private var totalType1: Double {
         {{entityLowerCase}}s
             .filter { $0.type{{entity}}Raw == {{entity}}Type.type1.rawValue }
             .reduce(0) { $0 + $1.amount }
     }
-
 
     private var totalType2: Double {
         {{entityLowerCase}}s
@@ -24,32 +20,63 @@ struct {{entity}}SummaryView: View {
     private var difference: Double {
         totalType1 - totalType2
     }
+
     var body: some View {
-        VStack(spacing: 8) {
+        VStack {
             HStack {
-                Text(t({{entity}}Type.type1.rawValue))
+                Label("IN", systemImage: "arrow.down.circle.fill")
+                    .foregroundColor(.green)
                 Spacer()
-                Text("\(totalType1, specifier: "%.0f") \(defaultCurrency)")
+                Text("+\(totalType1, specifier: "%.0f") \(defaultCurrency)")
+                    .foregroundColor(.green)
+                    .fontWeight(.medium)
             }
+
             HStack {
-                Text(t({{entity}}Type.type2.rawValue))
+                Label("OUT", systemImage: "arrow.up.circle.fill")
+                    .foregroundColor(.red)
                 Spacer()
-                Text("\(totalType2, specifier: "%.0f") \(defaultCurrency)")
+                Text("-\(totalType2, specifier: "%.0f") \(defaultCurrency)")
+                    .foregroundColor(.red)
+                    .fontWeight(.medium)
             }
-            Divider()
+
+            Divider().padding(.vertical, 4)
+
             HStack {
-                Text(t("Difference"))
-                    .fontWeight(.bold)
+                Label("Net", systemImage: "equal.circle.fill")
+                    .foregroundColor(.blue)
                 Spacer()
                 Text("\(difference, specifier: "%.0f") \(defaultCurrency)")
+                    .foregroundColor(difference >= 0 ? .green : .red)
                     .fontWeight(.bold)
             }
         }
         .padding()
-        .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(8)
-        .padding(.horizontal)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(12)
+        .shadow(radius: 2)
+ 
     }
 
+    private func summaryRow(label: String, amount: Double, icon: String, color: Color) -> some View {
+        HStack {
+            Label {
+                Text(label)
+                    .fontWeight(.semibold)
+            } icon: {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+            }
+
+            Spacer()
+
+            Text("\(amount, specifier: "%.0f") \(defaultCurrency)")
+                .foregroundColor(color)
+                .fontWeight(.medium)
+        }
+        .font(.subheadline)
+    }
 }
+
  {{/hasSummary}}

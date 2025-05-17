@@ -130,7 +130,7 @@ var body: some View {
                             {{#header}}
                             await {{headerLowerCase}}ViewModel.sync()
                             {{/header}}
-{{#hasCategory}}
+                            {{#hasCategory}}
                             await categoryViewModel.sync()
                             {{/hasCategory}}
                             await viewModel.sync()
@@ -193,7 +193,7 @@ var body: some View {
                          scrollToBottom(proxy: proxy)
                      }
                     .onAppear {
-                    viewModel.fetchEntities()
+
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             scrollToBottom(proxy: proxy)
                         }
@@ -273,6 +273,8 @@ var body: some View {
                         showingTrash: $showingTrash,
                         isSyncing: $isSyncing,
                         showForm: $showForm,
+                        pushAction: viewModel.push,
+                         pullAction: viewModel.pull,
                         syncAction: viewModel.sync,
                         showSearch: $showSearch
                     )
@@ -353,7 +355,7 @@ var body: some View {
             }
             }
         .onAppear {
-            viewModel.fetchEntities()
+
             let start = startOfMonth(selectedMonth)
             let end = calendar.date(byAdding: .month, value: 1, to: start)!.addingTimeInterval(-1)
             viewModel.selectedStartDate = start
@@ -363,13 +365,13 @@ var body: some View {
                  isLoading = true
                 isSyncing = true
                 {{#header}}
-                 await {{headerLowerCase}}ViewModel.sync()
+                 await {{headerLowerCase}}ViewModel.syncIfNeeded()
                 {{/header}}
                 {{#hasCategory}}
-                 await categoryViewModel.sync()
+                 await categoryViewModel.syncIfNeeded()
                 {{/hasCategory}}
-                 isSyncing = false
-                  isLoading = false
+                isSyncing = false
+                isLoading = false
             }
 
             {{#header}}
@@ -387,6 +389,8 @@ var body: some View {
                 }
             }
             {{/header}}
+
+            viewModel.fetchEntities()
         }
 
     }

@@ -71,7 +71,7 @@ var filtered{{entity}}s: [{{entity}}] {
 }
 
  func fetchEntities() {
-        print("[fetchEntities]")
+        print("[{{entity}}ListViewModel.fetchEntities]")
         
         isLoading = true
         let cond = "{{entity}}Status.delete".uppercased()
@@ -95,8 +95,8 @@ var filtered{{entity}}s: [{{entity}}] {
     }
 {{#header}}
     func fetchEntitiesBy{{headerUpperCase}}({{headerLowerCase}}Id: String?) {
-        print("[fetchEntitiesBy{{headerUpperCase}}]")
-        print({{headerLowerCase}}Id)
+        print("[{{entity}}ListViewModel.fetchEntitiesBy{{headerUpperCase}}]")
+
         isLoading = true
         let cond = "{{entity}}Status.delete".uppercased()
         let descriptor = FetchDescriptor<{{entity}}>(
@@ -133,6 +133,8 @@ var filtered{{entity}}s: [{{entity}}] {
         {{/fields}}
             ) -> {{entity}} {
 
+             print("[{{entity}}ListViewModel.createEntity]")
+
         let item = {{entity}}(
         {{#fields}}
         {{^isId}}
@@ -164,6 +166,8 @@ func updateEntity(_ item: {{entity}},
         {{/isManyToOne}}
     {{/fields}}
     ) -> {{entity}} {
+
+    print("[{{entity}}ListViewModel.updateEntity]")
         {{#fields}}
             item.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
         {{#isManyToOne}}
@@ -191,6 +195,8 @@ func updateEntity(_ item: {{entity}},
 }
 
 func deleteEntity(_ item: {{entity}}) -> {{entity}}{
+ print("[{{entity}}ListViewModel.deleteEntity]")
+
     item.status = .delete
     item.deletedAt = Date()
     item.updatedAt = Date()
@@ -212,6 +218,8 @@ func deleteEntity(_ item: {{entity}}) -> {{entity}}{
 
 public func saveContext() {
     do {
+    print("[{{entity}}ListViewModel.saveContext]")
+
     try modelContext.save()
     } catch {
     errorMessage = mapError(error)
@@ -219,6 +227,9 @@ public func saveContext() {
 }
 
  func search{{entity}}s(text: String, by criteria: {{entity}}SearchCriteria) {
+
+     print("[{{entity}}ListViewModel.search{{entity}}s]")
+
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             fetchEntities()
             return
