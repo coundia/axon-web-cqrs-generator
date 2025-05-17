@@ -91,7 +91,6 @@ var body: some View {
             }
             .onChange(of: selected{{headerUpperCase}}) { acct in
                 viewModel.current{{headerUpperCase}}Id = acct?.id
-
             }
             {{#hasSummary}}
         {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
@@ -99,7 +98,6 @@ var body: some View {
             {{/header}}
 
              HStack {
-
                     if !searchText.isEmpty {
                         Button {
                             searchText = ""
@@ -139,7 +137,7 @@ var body: some View {
                             isSyncing = false
                         }
                     } label: {
-                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
                             .font(.title2)
                             .foregroundColor(.accentColor)
                     }

@@ -11,10 +11,18 @@ struct {{entity}}SummaryView: View {
             .reduce(0) { $0 + $1.amount }
     }
 
+    private var countType1: Int {
+        {{entityLowerCase}}s.filter { $0.type{{entity}}Raw == {{entity}}Type.type1.rawValue }.count
+    }
+
     private var totalType2: Double {
         {{entityLowerCase}}s
             .filter { $0.type{{entity}}Raw == {{entity}}Type.type2.rawValue }
             .reduce(0) { $0 + $1.amount }
+    }
+
+    private var countType2: Int {
+        {{entityLowerCase}}s.filter { $0.type{{entity}}Raw == {{entity}}Type.type2.rawValue }.count
     }
 
     private var difference: Double {
@@ -24,7 +32,7 @@ struct {{entity}}SummaryView: View {
     var body: some View {
         VStack {
             HStack {
-                Label("IN", systemImage: "arrow.down.circle.fill")
+                Label("IN (\(countType1))", systemImage: "arrow.down.circle.fill")
                     .foregroundColor(.green)
                 Spacer()
                 Text("+\(totalType1, specifier: "%.0f") \(defaultCurrency)")
@@ -33,7 +41,7 @@ struct {{entity}}SummaryView: View {
             }
 
             HStack {
-                Label("OUT", systemImage: "arrow.up.circle.fill")
+                Label("OUT (\(countType2))", systemImage: "arrow.up.circle.fill")
                     .foregroundColor(.red)
                 Spacer()
                 Text("-\(totalType2, specifier: "%.0f") \(defaultCurrency)")
@@ -56,7 +64,6 @@ struct {{entity}}SummaryView: View {
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(12)
         .shadow(radius: 2)
- 
     }
 
     private func summaryRow(label: String, amount: Double, icon: String, color: Color) -> some View {
@@ -78,5 +85,4 @@ struct {{entity}}SummaryView: View {
         .font(.subheadline)
     }
 }
-
- {{/hasSummary}}
+{{/hasSummary}}
