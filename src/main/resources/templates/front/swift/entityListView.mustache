@@ -381,18 +381,26 @@ var body: some View {
             viewModel.selectedStartDate = start
             viewModel.selectedEndDate = end
 
-            Task{
-                 isLoading = true
-                isSyncing = true
+            Task { [weak viewModel, {{#header}}{{headerLowerCase}}ViewModel, {{/header}}{{#hasCategory}}categoryViewModel{{/hasCategory}}] in
+                await MainActor.run {
+                    isLoading = true
+                    isSyncing = true
+                }
+
                 {{#header}}
-                 await {{headerLowerCase}}ViewModel.syncIfNeeded()
+                await {{headerLowerCase}}ViewModel.syncIfNeeded()
                 {{/header}}
-                {{#hasCategory}}
-                 await categoryViewModel.syncIfNeeded()
+
+            {{#hasCategory}}
+                await categoryViewModel.syncIfNeeded()
                 {{/hasCategory}}
-                isSyncing = false
-                isLoading = false
+
+                await MainActor.run {
+                    isSyncing = false
+                    isLoading = false
+                }
             }
+
 
             {{#header}}
             if selected{{headerUpperCase}} == nil {
