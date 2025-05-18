@@ -27,6 +27,7 @@ public class FieldDefinition implements Serializable {
 	private String defaultValue;
 	private Boolean readOnly = false;
 	private Boolean IsLowerCase = false;
+	private Boolean focus = false;
 	private Set<String> indicators = new HashSet<>();
 	private String displayName;
 	private String confidentiel;

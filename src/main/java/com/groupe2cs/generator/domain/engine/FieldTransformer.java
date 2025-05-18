@@ -65,6 +65,7 @@ public class FieldTransformer {
 
             f.put("repository",  field.getRepository());
             f.put("hasRepository",  field.hasRepository());
+            f.put("focus",  field.getFocus());
 
             result.add(f);
         }

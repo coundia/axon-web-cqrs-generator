@@ -51,6 +51,7 @@ public class SwiftFieldTransformer {
 			f.put("label", field.getLabel());
 			f.put("isManyToOne", field.isManyToOne());
 
+			f.put("focus",  field.getFocus());
 			f.put("isLowerCase", field.getIsLowerCase());
 
 			f.put("entityType", field.getEntityType());

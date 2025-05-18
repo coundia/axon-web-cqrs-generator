@@ -17,6 +17,7 @@ Content-Type: application/json
 	  {
 		"name": "name",
 		"type": "String",
+		"focus": true,
 		"displayName": "Nom"
 	  },
 	  {
@@ -122,6 +123,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "name",
+		"focus": true,
 		"displayName": "Nom",
 		"type": "String"
 	  },
@@ -170,6 +172,7 @@ Content-Type: application/json
 	  {
 		"name": "amount",
 		"type": "Double",
+		"focus": true,
 		"displayName": "Montant",
 		"indicators": [
 		  "sum"
@@ -250,6 +253,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "name",
+		"focus": true,
 		"type": "String",
 		"displayName": "Clé",
 		"isLowerCase": true
@@ -293,7 +297,7 @@ Content-Type: application/json
 	"name": "Chat",
 	"table": "chat",
 	"title": "Chat",
-    "header": "account",
+	"header": "account",
 	"hasSummary": false,
 	"hasType": false,
 	"hasDate": false,
@@ -308,6 +312,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "messages",
+		"focus": true,
 		"type": "String",
 		"displayName": "Message"
 	  },

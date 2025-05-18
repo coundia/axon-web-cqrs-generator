@@ -21,8 +21,12 @@ struct {{entity}}FormView: View {
         {{/isEnum}}
     {{#isDouble}}
         @State private var {{name}}String: String = ""
-        @FocusState private var is{{nameCapitalized}}Focused: Bool
     {{/isDouble}}
+
+    {{#focus}}
+        @FocusState private var is{{nameCapitalized}}Focused: Bool
+    {{/focus}}
+
     {{/fields}}
 
 @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
@@ -188,13 +192,13 @@ struct {{entity}}FormView: View {
          {{/hasCategory}}
 
 {{#fields}}
-    {{#isDouble}}
+    {{#focus}}
          if entity == nil {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     is{{nameCapitalized}}Focused = true
                 }
             }
-{{/isDouble}}
+    {{/focus}}
 
 {{/fields}}
       }

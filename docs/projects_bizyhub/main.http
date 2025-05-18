@@ -10,13 +10,39 @@ Content-Type: application/json
 	"table": "accounts",
 	"shared": true,
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "currency", "type": "String", "defaultValue": "\"XOF\"" },
-	  { "name": "currentBalance", "type": "Double", "defaultValue": 0.0 },
-	  { "name": "previousBalance", "type": "Double", "defaultValue": 0.0 },
-	  { "name": "details", "type": "String", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "currency",
+		"type": "String",
+		"defaultValue": "\"XOF\""
+	  },
+	  {
+		"name": "currentBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "previousBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
@@ -34,16 +60,41 @@ Content-Type: application/json
 	"bind": "username",
 	"table": "account_users",
 	"fields": [
-	  { "name": "id", "type": "String" },
-
-	  { "name": "name",   "type": "String"},
-
-	  { "name": "account", "type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account", "relation": "manyToOne", "nullable": true },
-	  { "name": "user",   "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne", "nullable": true },
-	  { "name": "username", "type": "String",   "nullable": true },
-
-	  { "name": "details", "type": "String", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "user",
+		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
@@ -55,20 +106,39 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-
   "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/categories",
   "definition": {
 	"name": "Category",
 	"table": "categories",
 	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "typeCategoryRaw", "type": "String", "nullable": true },
-	  { "name": "details", "type": "String", "displayName": "details", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "typeCategoryRaw",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "details",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
+
 ###
 
 POST http://127.0.0.1:8071/api/v1/generator/all
@@ -110,25 +180,28 @@ Content-Type: application/json
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
 		"relation": "manyToOne",
 		"nullable": true
-	  }
-	,
+	  },
 	  {
 		"name": "category",
 		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
 		"relation": "manyToOne",
 		"nullable": true
 	  },
-	  { "name": "typeTransactionRaw", "type": "String", "nullable": true },
+	  {
+		"name": "typeTransactionRaw",
+		"type": "String",
+		"nullable": true
+	  },
 	  {
 		"name": "dateTransaction",
 		"type": "java.time.Instant",
 		"defaultValue": "java.time.Instant.now()",
 		"nullable": true
-
 	  }
 	]
   }
 }
+
 ###
 
 POST http://127.0.0.1:8071/api/v1/generator/all
@@ -142,16 +215,41 @@ Content-Type: application/json
 	"bind": "username",
 	"table": "transaction_users",
 	"fields": [
-	  { "name": "id", "type": "String" },
-
-	  { "name": "name",   "type": "String"},
-
-	  { "name": "transaction", "type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction", "relation": "manyToOne", "nullable": true },
-	  { "name": "user",   "type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User", "relation": "manyToOne", "nullable": true },
-	  { "name": "username", "type": "String",   "nullable": true },
-
-	  { "name": "details", "type": "String", "nullable": true},
-	  { "name": "isActive", "type": "Boolean", "defaultValue": true }
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "transaction",
+		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "user",
+		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
 	]
   }
 }
@@ -217,19 +315,43 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-"outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/settings",
-"definition": {
-"name": "Setting",
-"table": "settings",
-"isPublic": true,
-"isAdmin": true,
-"fields": [
-{ "name": "id", "type": "String" },
-{ "name": "name", "type": "String" ,"displayName": "Key"},
-{ "name": "value", "type": "String","displayName": "Value" },
-{ "name": "locale", "type": "String","displayName": "Langue" },
-{ "name": "details", "type": "String", "displayName": "Description", "nullable": true},
-{ "name": "isActive", "type": "Boolean", "defaultValue": true }
-]
-}
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/settings",
+  "definition": {
+	"name": "Setting",
+	"table": "settings",
+	"isPublic": true,
+	"isAdmin": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Key"
+	  },
+	  {
+		"name": "value",
+		"type": "String",
+		"displayName": "Value"
+	  },
+	  {
+		"name": "locale",
+		"type": "String",
+		"displayName": "Langue"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
 }
