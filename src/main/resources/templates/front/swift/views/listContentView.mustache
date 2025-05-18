@@ -25,6 +25,7 @@ struct {{entity}}ListContentView: View {
                                 onSelect(item)
                             }
                             .contextMenu {
+                             {{#isChat}}
                                 Button {
                                     onEdit(item)
                                 } label: {
@@ -36,7 +37,7 @@ struct {{entity}}ListContentView: View {
                                 } label: {
                                     Label("Duplicate", systemImage: "doc.on.doc")
                                 }
-
+                            {{/isChat}}
                                 Button(role: .destructive) {
                                     onDelete(item)
                                 } label: {

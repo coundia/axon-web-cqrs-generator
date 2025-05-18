@@ -14,7 +14,7 @@ struct {{entity}}MenuView: View {
     @AppStorage("autoSave{{entity}}") private var autoSave: Bool = true
 
     var effectiveAutoSave: Bool {
-        autoSave && !network.isAppOffline
+        autoSave
     }
 
     var body: some View {
@@ -64,9 +64,12 @@ struct {{entity}}MenuView: View {
                     Label(t("Synchroniser"), systemImage: "arrow.triangle.2.circlepath")
                 }.disabled(network.isAppOffline)
 
+                {{#isChat}}
                 Button { showForm = true } label: {
                     Label(t("Ajouter {{entity}}"), systemImage: "plus")
                 }
+                {{/isChat}}
+
             }
 
             Toggle(isOn: $autoSave) {
