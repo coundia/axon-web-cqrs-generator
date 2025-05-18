@@ -9,8 +9,13 @@ struct {{entity}}MenuView: View {
     let syncAction: () async -> Void
 
      @Binding var showSearch: Bool
+     @ObservedObject var network = NetworkMonitor.shared
 
     @AppStorage("autoSave{{entity}}") private var autoSave: Bool = true
+
+    var effectiveAutoSave: Bool {
+        autoSave && !network.isAppOffline
+    }
 
     var body: some View {
         Menu {
@@ -37,7 +42,7 @@ struct {{entity}}MenuView: View {
                     }
                 } label: {
                     Label(t("Envoyer (Push)"), systemImage: "arrow.up.circle.fill")
-                }
+                }.disabled(network.isAppOffline)
 
                 Button {
                     Task {
@@ -47,7 +52,7 @@ struct {{entity}}MenuView: View {
                     }
                 } label: {
                     Label(t("Récupérer (Pull)"), systemImage: "arrow.down.circle.fill")
-                }
+                }.disabled(network.isAppOffline)
 
                 Button {
                     Task {
@@ -57,7 +62,7 @@ struct {{entity}}MenuView: View {
                     }
                 } label: {
                     Label(t("Synchroniser"), systemImage: "arrow.triangle.2.circlepath")
-                }
+                }.disabled(network.isAppOffline)
 
                 Button { showForm = true } label: {
                     Label(t("Ajouter {{entity}}"), systemImage: "plus")
@@ -65,8 +70,10 @@ struct {{entity}}MenuView: View {
             }
 
             Toggle(isOn: $autoSave) {
-                Label(t("Sauvegarde auto"), systemImage: autoSave ? "checkmark.circle" : "circle")
+                Label(t("Sauvegarde auto"), systemImage: effectiveAutoSave ? "checkmark.circle" : "circle")
             }
+            .disabled(network.isAppOffline)
+
 
 
         } label: {

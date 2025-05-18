@@ -31,6 +31,8 @@ struct {{entity}}FormView: View {
 {{#hasCategory}}
 @AppStorage("lastUsedCategoryId") private var lastUsedCategoryId: String?
 {{/hasCategory}}
+
+@ObservedObject var network = NetworkMonitor.shared
 @AppStorage("autoSave{{entity}}") private var autoSave: Bool = {{isAutoSave}}
 
     var body: some View {
@@ -67,12 +69,7 @@ struct {{entity}}FormView: View {
                     {{/hasType}}
                 }
                 Section {
-                    Button(t("Enregistrer"),
-                         action: {
-                            triggerHaptic(.light)
-                            handleSave
-                         }
-                     )
+                    Button(t("Enregistrer"), action: handleSave)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color("TenantColorPrimary"))

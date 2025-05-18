@@ -26,12 +26,14 @@ private let calendar = Calendar.current
 @State private var isSyncing = false
 @State private var showingTrash = false
 
- @StateObject private var speechRecognizer = SpeechRecognizer()
+@StateObject private var speechRecognizer = SpeechRecognizer()
 @State private var isLoading = false
 @State private var loadingText = "Chargement en cours..."
 
 @State private var showSearch = false
 @State private var searchText = ""
+@ObservedObject var network = NetworkMonitor.shared
+
 {{^isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
 {{/isChat}}
@@ -142,6 +144,7 @@ var body: some View {
                             .font(.title2)
                             .foregroundColor(.accentColor)
                     }
+                    .disabled(network.isAppOffline)
                     .padding(.leading)
                 }
                 .padding(.vertical, 4)
@@ -254,11 +257,11 @@ var body: some View {
                         HStack {
                              VStack{
 
-                             if user.isAnnonym == true {
+                             if network.isAppOffline == true {
                                         HStack(spacing: 4) {
                                             Image(systemName: "eye.slash")
                                                 .foregroundColor(.gray)
-                                            Text(t("Abonné"))
+                                            Text(t("Hors ligne"))
                                                 .font(.caption2)
                                                 .fontWeight(.bold)
                                                 .foregroundColor(.white)
