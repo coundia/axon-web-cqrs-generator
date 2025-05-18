@@ -34,6 +34,8 @@ private let calendar = Calendar.current
 @State private var searchText = ""
 @ObservedObject var network = NetworkMonitor.shared
 
+@State private var showAnalytics = false
+
 {{^isChat}}
 @State private var searchCriteria: {{entity}}SearchCriteria = .name
 {{/isChat}}
@@ -96,7 +98,17 @@ var body: some View {
             }
             {{#hasSummary}}
         {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
-        {{/hasSummary}}
+
+            Button {
+                showAnalytics.toggle()
+            } label: {
+                Label("Analyse", systemImage: "chart.pie.fill")
+                    .font(.subheadline)
+                    .foregroundColor(.accentColor)
+            }
+            .accessibilityLabel("Afficher les statistiques")
+
+{{/hasSummary}}
             {{/header}}
 
              HStack {
@@ -306,6 +318,19 @@ var body: some View {
             .navigationBarTitleDisplayMode(.inline)
 
             //end toolbar
+            {{#hasSummary}}
+            //hasSummary
+             .sheet(isPresented: $showAnalytics) {
+                TransactionSummaryPopupView(
+                        transactions: viewModel.filteredTransactions,
+                        categories: categoryViewModel.entities,
+                        defaultCurrency: selectedAccount?.currency ?? "XOF",
+                        user: user
+                    )
+                .presentationDetents([.medium, .large])
+            }
+            {{/hasSummary}}
+            //end hasSummary
          .sheet(isPresented: $show{{headerUpperCase}}Picker, onDismiss: resetSheets) {
                     {{headerUpperCase}}PickerView(selected{{headerUpperCase}}: $selected{{headerUpperCase}}, viewModel: {{headerLowerCase}}ViewModel)
                 }

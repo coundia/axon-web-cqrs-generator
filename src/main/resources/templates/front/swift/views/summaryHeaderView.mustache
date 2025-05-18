@@ -32,7 +32,7 @@ struct {{entity}}SummaryView: View {
     var body: some View {
         VStack {
             HStack {
-                Label("IN (\(countType1))", systemImage: "arrow.down.circle.fill")
+                Label(t("IN")+" (\(countType1))", systemImage: "arrow.down.circle.fill")
                     .foregroundColor(.green)
                 Spacer()
                 Text("+\(totalType1, specifier: "%.0f") \(defaultCurrency)")
@@ -41,7 +41,7 @@ struct {{entity}}SummaryView: View {
             }
 
             HStack {
-                Label("OUT (\(countType2))", systemImage: "arrow.up.circle.fill")
+                Label(t("OUT")+" (\(countType2))", systemImage: "arrow.up.circle.fill")
                     .foregroundColor(.red)
                 Spacer()
                 Text("-\(totalType2, specifier: "%.0f") \(defaultCurrency)")
@@ -52,7 +52,7 @@ struct {{entity}}SummaryView: View {
             Divider().padding(.vertical, 4)
 
             HStack {
-                Label("Net", systemImage: "equal.circle.fill")
+                Label(t("Net"), systemImage: "equal.circle.fill")
                     .foregroundColor(Color("TenantColorPrimary"))
                 Spacer()
                 Text("\(difference, specifier: "%.0f") \(defaultCurrency)")
