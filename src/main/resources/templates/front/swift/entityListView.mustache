@@ -126,6 +126,7 @@ var body: some View {
                      Button {
 
                         Task {
+                            triggerHaptic(.light)
                             isSyncing = true
                             {{#header}}
                             await {{headerLowerCase}}ViewModel.sync()
@@ -212,6 +213,7 @@ var body: some View {
         VStack {
                 Spacer()
                 Button(action: {
+                    triggerHaptic(.light)
                     selected = nil
                     showForm = true
                 }) {

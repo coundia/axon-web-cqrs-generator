@@ -67,7 +67,12 @@ struct {{entity}}FormView: View {
                     {{/hasType}}
                 }
                 Section {
-                    Button(t("Enregistrer"), action: handleSave)
+                    Button(t("Enregistrer"),
+                         action: {
+                            triggerHaptic(.light)
+                            handleSave
+                         }
+                     )
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color("TenantColorPrimary"))
