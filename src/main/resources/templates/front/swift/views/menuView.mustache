@@ -64,7 +64,7 @@ struct {{entity}}MenuView: View {
                     Label(t("Synchroniser"), systemImage: "arrow.triangle.2.circlepath")
                 }.disabled(network.isAppOffline)
 
-                {{#isChat}}
+                {{^isChat}}
                 Button { showForm = true } label: {
                     Label(t("Ajouter {{entity}}"), systemImage: "plus")
                 }
