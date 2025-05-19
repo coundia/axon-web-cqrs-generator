@@ -49,6 +49,23 @@ public class SecurityGeneratorService {
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("username").type("String").build(),
 								FieldDefinition.builder().name("password").type("String").build(),
+								FieldDefinition.builder().name("firstName").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("lastName").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("email").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("telephone").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("limitPerDay")
+										.columnDefinition("INT DEFAULT 10")
+										.type("Integer").nullable(true).defaultValue("10").build(),
+
+								FieldDefinition.builder().name("isPremium").type("Boolean").nullable(true).build(),
+								FieldDefinition.builder().name("enabled").type("Boolean").nullable(true).build(),
+								FieldDefinition.builder().name("isBan").type("Boolean").nullable(true).build(),
+
+								FieldDefinition.builder().name("message")
+										.type("String")
+										.columnDefinition("Text")
+										.nullable(true).build(),
+
 								FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
 						))
 						.auditable(true)
@@ -323,6 +340,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("AuthMe",
 						"infrastructure/security/authMe.mustache",
 						Set.of(
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",

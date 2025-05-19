@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.Map;
 
@@ -49,17 +51,37 @@ public ResponseEntity<ApiResponseDto> me(@AuthenticationPrincipal Jwt jwt) {
 
 	 MetaRequest metaRequest = new MetaRequest();
 
+	 Boolean isAdmin = RequestContext.isAdmin(jwt);
+
 	UserPrincipal userPrincipal = (UserPrincipal) userDetailsService.loadUserByUsername(username);
 
-	return ResponseEntity.ok(ApiResponseDto.ok(
-		Map.of(
-			"username", username,
-			"roles", userPrincipal.getRoles(),
-			"tenantId", userPrincipal.getTenantId(),
-			"id", userPrincipal.getId(),
-			"authorities", userPrincipal.getAuthorities()
-		)
-	));
+
+	Map<String, Object> data = new HashMap<>();
+	data.put("id", userPrincipal.getId());
+	data.put("username", userPrincipal.getUsername());
+
+	data.put("firstName", userPrincipal.getFirstName());
+	data.put("lastName", userPrincipal.getLastName());
+	data.put("email", userPrincipal.getEmail());
+	data.put("telephone", userPrincipal.getTelephone());
+
+
+	data.put("tenantId", userPrincipal.getTenantId());
+	data.put("createdBy", userPrincipal.getCreatedBy());
+	data.put("limitPerDay", userPrincipal.getLimitPerDay());
+	data.put("isPremium", userPrincipal.isPremium());
+	data.put("isAdmin", isAdmin);
+
+	data.put("isEnabled", userPrincipal.isEnabled());
+	data.put("isBan", userPrincipal.isBan());
+	data.put("message", userPrincipal.getMessage());
+
+	data.put("authorities", userPrincipal.getAuthorities());
+	data.put("roles", userPrincipal.getRoles());
+
+	return ResponseEntity.ok(ApiResponseDto.ok(data));
+
+
 	}
-	}
+}
 
