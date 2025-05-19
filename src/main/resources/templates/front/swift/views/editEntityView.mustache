@@ -14,7 +14,18 @@ struct {{entity}}EditView: View {
 
     {{#fields}}
     @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
+
+{{#isManyToOne}}
+             @State private var show{{entityType}}Picker = false
+             @State private var selected{{entityType}}: {{entityType}}? = nil
+             @State private var  {{name}}LocalId: String? = nil
+            {{/isManyToOne}}
+
 {{/fields}}
+
+{{#hasCategory}}
+@AppStorage("lastUsedCategoryId") private var lastUsedCategoryId: String?
+{{/hasCategory}}
 
     var body: some View {
         NavigationView {
@@ -55,6 +66,10 @@ struct {{entity}}EditView: View {
             viewModel.updateEntity(e,
                 {{#fields}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
+               {{#isManyToOne}}
+        {{name}}LocalId: {{name}}LocalId,
+               {{/isManyToOne}}
+
                 {{/fields}}
             )
 
@@ -82,7 +97,13 @@ struct {{entity}}EditView: View {
                 {{#fields}}
     {{^isId}}
         {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
-             {{/isId}}   {{/fields}}
+             {{/isId}}
+
+    {{#isManyToOne}}
+        {{name}}LocalId: {{name}}LocalId,
+               {{/isManyToOne}}
+
+{{/fields}}
             )
         }
     }

@@ -169,6 +169,7 @@ struct {{entity}}DetailsView: View {
             {{/isUpdatedAt}}
 
     {{#isManyToOne}}
+            detailItem(icon: "info.circle", title: t("{{name}}  Id"), value:  {{entityLowerCase}}.{{name}} ?? "-")
             detailItem(icon: "info.circle", title: t("{{name}} Local Id"), value:  {{entityLowerCase}}.{{name}}LocalId ?? "-")
             {{/isManyToOne}}
 {{/fields}}

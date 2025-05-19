@@ -104,10 +104,11 @@ struct {{entity}}FormView: View {
     {{/isDouble}}
     {{^isDouble}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
-               {{#isManyToOne}}
-        {{name}}LocalId: {{name}}LocalId,
+
+                {{/isDouble}}
+             {{#isManyToOne}}
+                  {{name}}LocalId: {{name}}LocalId,
                {{/isManyToOne}}
-    {{/isDouble}}
                 {{/fields}}
             )
 
@@ -124,10 +125,11 @@ struct {{entity}}FormView: View {
     {{^isId}}
     {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
              {{/isId}}
-            {{#isManyToOne}}
-            {{name}}LocalId: {{name}}LocalId,
-               {{/isManyToOne}}
+
     {{/isDouble}}
+    {{#isManyToOne}}
+        {{name}}LocalId: {{name}}LocalId,
+               {{/isManyToOne}}
 {{/fields}}
             )
         }
@@ -186,7 +188,23 @@ struct {{entity}}FormView: View {
             {{name}}String = String(format: "%.0f", e.{{name}} ?? 0.0)
             {{/isDouble}}
         {{/fields}}
+
+            {{#header}}
+                if selected{{headerUpperCase}} == nil, let accId = e.account {
+                    let descriptor = FetchDescriptor<{{headerUpperCase}}>(
+                        predicate: #Predicate {
+                            $0.id == accId || $0.remoteId == accId
+                        }
+                    )
+                    if let acc = try? modelContext.fetch(descriptor).first {
+                        selected{{headerUpperCase}} = acc
+                         {{headerLowerCase}}LocalId  = acc.id
+                          {{headerLowerCase}} = acc.remoteId
+                    }
+                }{{/header}}
+
                 }
+
          {{#hasCategory}}
         type{{entity}}Raw = selectedCategory?.typeCategoryRaw ?? "NA"
          {{/hasCategory}}

@@ -265,13 +265,13 @@ struct {{entity}}RowView: View {
                         name: dto.name,
                         details: dto.details,
                         isActive: dto.isActive,
-                        account: transactionViewModel.currentAccount?.id,
-                        accountLocalId: transactionViewModel.currentAccount?.remoteId,
+                        account: transactionViewModel.currentAccount?.remoteId,
+                        accountLocalId: transactionViewModel.currentAccount?.id,
                         category: dto.category,
                         categoryLocalId: dto.category,
                         typeTransactionRaw: dto.typeTransactionRaw,
-                        dateTransaction: Date(),
-                        updatedAt: Date(),
+                        dateTransaction: dto.dateTransaction,
+                        updatedAt: dto.updatedAt,
                         reference: dto.reference
                     )
 
