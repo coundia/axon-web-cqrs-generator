@@ -49,7 +49,7 @@ public class SecurityGeneratorService {
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("username").type("String").build(),
 								FieldDefinition.builder().name("password").type("String").build(),
-								FieldDefinition.builder().name("firstName").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("firstName").type("String").nullable(true).defaultValue("").build(),
 								FieldDefinition.builder().name("lastName").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("email").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("telephone").type("String").nullable(true).build(),

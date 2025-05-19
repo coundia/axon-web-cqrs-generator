@@ -9,6 +9,7 @@ Content-Type: application/json
 	"name": "Account",
 	"table": "accounts",
 	"shared": true,
+
 	"fields": [
 	  {
 		"name": "id",
