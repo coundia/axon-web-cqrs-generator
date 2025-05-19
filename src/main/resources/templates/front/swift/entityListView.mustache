@@ -51,6 +51,9 @@ private let calendar = Calendar.current
 @StateObject private var transactionViewModel: TransactionListViewModel
 @State private var scrollTrigger = UUID()
 
+@State private var showLimitToast = false
+
+
 {{/isChat}}
 @State private var selectedMonth: Date = Date()
 
@@ -205,6 +208,9 @@ var body: some View {
                     }
                 }
              }
+
+         MessageUsageView(used: viewModel.used(), limit: user.limitPerDay)
+
             Divider()
 
             ChatInputView(
@@ -400,9 +406,20 @@ var body: some View {
         } {{/header}}
 
           .overlay {
-             if {{#isChat}} isProcessingOCR || {{/isChat}} isLoading {
-                 LoadingOverlayView(text: loadingText)
-            }
+                 if {{#isChat}} isProcessingOCR || {{/isChat}} isLoading {{#isChat}}  , !showLimitToast {{/isChat}}{
+                     LoadingOverlayView(text: loadingText)
+                }
+                {{#isChat}}
+                 if showLimitToast {
+                  ToastView(message: t("Vous avez atteint la limite journalière de messages autorisés."), color:.red)
+                      .onAppear {
+                          DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                              showLimitToast = false
+                          }
+                      }
+              }
+              {{/isChat}}
+
             }
         .onAppear {
 
@@ -449,6 +466,15 @@ var body: some View {
             {{/header}}
 
             viewModel.fetchEntities()
+            {{#isChat}}
+            if viewModel.hasReachedDailyLimit() {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    showLimitToast = true
+                }
+                print("****** LIMIT ATTEINT *****")
+
+            }
+            {{/isChat}}
         }
 
     }
@@ -464,6 +490,15 @@ var body: some View {
 
          {{#isChat}}
      private func sendMessage() {
+
+      if viewModel.hasReachedDailyLimit() {
+             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                 showLimitToast = true
+             }
+             print("****** LIMIT ATTEINT *****")
+             return
+         }
+
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 

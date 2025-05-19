@@ -284,5 +284,29 @@ public func saveContext() {
         isLoading = false
     }
 
+    {{#isChat}}
+     func hasReachedDailyLimit() -> Bool {
+        print("hasReachedDailyLimit")
+        let limit = user.limitPerDay
+
+
+        return used() >= limit
+    }
+
+    func used() -> Int {
+        print("used")
+
+        let today = Calendar.current.startOfDay(for: Date())
+        let messagesToday = entities.filter {
+            ($0.updatedAt ?? .distantPast) >= today
+        }.count
+
+        print("Messages today:", messagesToday)
+
+        return messagesToday
+    }
+    {{/isChat}}
+
+
 
 }
