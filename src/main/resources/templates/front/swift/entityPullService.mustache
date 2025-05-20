@@ -6,11 +6,13 @@ final class {{entity}}PullService {
     private let modelContext: ModelContext
     private let user: User
     private let userId: UUID
+    private let username: String
 
     init(modelContext: ModelContext, user: User) {
         self.modelContext = modelContext
         self.user = user
         self.userId = user.id
+        self.username = user.username ?? ""
     }
  {{#transactional}}
     @MainActor
@@ -58,7 +60,7 @@ final class {{entity}}PullService {
         print("[{{entity}}PullService] ✅ Decoded \(remoteItems.count) transactions")
 
         let local{{entity}}s = try modelContext.fetch(
-            FetchDescriptor<{{entity}}>(predicate: #Predicate { $0.user?.id == userId })
+            FetchDescriptor<{{entity}}>(predicate: #Predicate { $0.user?.username == username })
         )
 
         print("[{{entity}}PullService] 🗂 Found \(local{{entity}}s.count) local transactions")

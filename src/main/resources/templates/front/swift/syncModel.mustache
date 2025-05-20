@@ -223,7 +223,7 @@ extension {{entity}}ListViewModel {
             }
 
         let descriptor = FetchDescriptor<{{entity}}>(
-            predicate: #Predicate { $0.remoteId != nil },
+            predicate: #Predicate { $0.remoteId != nil && $0.user?.username == username  },
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
         )
 

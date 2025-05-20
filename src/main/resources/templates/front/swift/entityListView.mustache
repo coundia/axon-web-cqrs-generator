@@ -102,8 +102,14 @@ var body: some View {
             {{#hasSummary}}
         {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
 
-            Button {
-                showAnalytics.toggle()
+             Button {
+                Task {
+                    isLoading = true
+                    loadingText = "Chargement des catégories..."
+                    await categoryViewModel.pull()
+                    isLoading = false
+                    showAnalytics.toggle()
+                }
             } label: {
                 Label("Analyse", systemImage: "chart.pie.fill")
                     .font(.subheadline)
@@ -486,7 +492,25 @@ var body: some View {
             selectedForDetails = nil
             selectedForDelete = nil
             selected = nil
+            {{^isChat}}
+            {{#header}}
+            Task {
+                await MainActor.run {
+                    isLoading = true
+                    loadingText = "Mise à jour des données..."
+                }
+
+                await {{headerLowerCase}}ViewModel.pull()
+                await categoryViewModel.pull()
+
+                await MainActor.run {
+                    isLoading = false
+                }
+            }
+            {{/header}}
+            {{/isChat}}
         }
+
 
          {{#isChat}}
      private func sendMessage() {

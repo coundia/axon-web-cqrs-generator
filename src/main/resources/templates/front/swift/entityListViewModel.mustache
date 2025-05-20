@@ -307,6 +307,14 @@ public func saveContext() {
     }
     {{/isChat}}
 
-
+{{^isChat}}
+     func getNameById(for id: String?) -> String {
+        guard let id else { return "NA" }
+        if  entities.isEmpty {
+             fetchEntities()
+        }
+        return entities.first(where: { $0.remoteId == id || $0.id == id   })?.name ?? "NF"
+    }
+ {{/isChat}}
 
 }
