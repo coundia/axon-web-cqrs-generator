@@ -10,13 +10,24 @@ struct {{entity}}PickerView: View {
     @State private var showForm: Bool = false
 
     private var filteredEntities: [{{entity}}] {
-        viewModel.entities.filter {
-          {{#hasType}}
-          $0.type{{entity}}Raw == selectedFilter.rawValue &&
-          {{/hasType}}
-          $0.deletedAt == nil
-          && $0.remoteId != nil
+        let isAnnonym = viewModel.user.isAnnonym
+
+           if(isAnnonym){
+           return  viewModel.entities.filter {
+              {{#hasType}}
+              $0.type{{entity}}Raw == selectedFilter.rawValue &&
+              {{/hasType}}
+              $0.deletedAt == nil
+             }
          }
+
+         return  viewModel.entities.filter {
+              {{#hasType}}
+              $0.type{{entity}}Raw == selectedFilter.rawValue &&
+              {{/hasType}}
+              $0.deletedAt == nil
+              && $0.remoteId != nil
+             }
     }
 
     var body: some View {
