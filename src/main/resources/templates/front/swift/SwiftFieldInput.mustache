@@ -32,14 +32,16 @@ Toggle("{{displayName}}", isOn: ${{name}})
 {{/isBool}}
 
 {{#isDate}}
-    {{#nullable}}
-dateField("{{displayName}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
-    {{/nullable}}
-    {{^nullable}}
-dateField("{{displayName}}", date: ${{name}})
-    {{/nullable}}
+        {{#nullable}}
+        dateField("{{displayName}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
+        {{/nullable}}
+        {{^nullable}}
+        dateField("{{displayName}}", date: ${{name}})
+        {{/nullable}}
 {{/isDate}}
+
 {{/isManyToOne}}
+
 {{#isManyToOne}}
 
 HStack {

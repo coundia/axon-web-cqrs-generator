@@ -15,4 +15,5 @@ public func intField(_ label: String, value: Binding<Int>) -> some View {
 
 public func dateField(_ label: String, date: Binding<Date>) -> some View {
     DatePicker(label, selection: date, displayedComponents: .date)
+        .environment(\.locale, Locale(identifier: "fr_FR"))
 }
