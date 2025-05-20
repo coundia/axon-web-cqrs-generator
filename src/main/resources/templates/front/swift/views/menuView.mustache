@@ -25,13 +25,13 @@ struct {{entity}}MenuView: View {
             } label: {
                 Label(t("Rechercher"), systemImage: "magnifyingglass")
             }
-
+{{^isChat}}
             Button {
                 withAnimation { showingTrash.toggle() }
             } label: {
                 Label(showingTrash ? t("Liste") : t("Corbeille"), systemImage: "tray")
             }
-
+{{/isChat}}
             if !showingTrash {
 
              Button {
