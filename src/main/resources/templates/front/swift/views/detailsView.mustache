@@ -133,16 +133,16 @@ struct {{entity}}DetailsView: View {
             detailItem(icon: "person.text.rectangle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
             {{/isText}}
                 {{#isInt}}
-            detailItem(icon: "number", title: t("{{displayName}}"), value: String({{entityLowerCase}}.{{name}}))
+            detailItem(icon: "number", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isInt}}
                  {{#isFloat}}
-            detailItem(icon: "number", title: t("{{displayName}}"), value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            detailItem(icon: "number", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isFloat}}
                 {{#isString}}
             detailItem(icon: "textformat", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
             {{/isString}}
                 {{#isDouble}}
-            detailItem(icon: "dollarsign.circle", title: t("{{displayName}}"), value: String(format: "%.2f", {{entityLowerCase}}.{{name}}))
+            detailItem(icon: "dollarsign.circle", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isDouble}}
              {{#isBool}}
             detailItem(icon: "checkmark.circle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ? t("Oui") : t("Non"))
@@ -167,21 +167,14 @@ struct {{entity}}DetailsView: View {
 
     private var metaSection: some View {
         VStack(spacing: 12) {
-            {{#fields}}
-    {{#isId}}
-            detailItem(icon: "info.circle", title: "Id", value: {{entityLowerCase}}.id ?? "-")
-            detailItem(icon: "info.circle", title: t("Id dans le serveur"), value: {{entityLowerCase}}.remoteId ?? "-")
-            {{/isId}}
-    {{#isUpdatedAt}}
-            detailItem(icon: "clock", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
-            {{/isUpdatedAt}}
 
-    {{#isManyToOne}}
-            detailItem(icon: "info.circle", title: t("{{name}}  Id"), value:  {{entityLowerCase}}.{{name}} ?? "-")
-            detailItem(icon: "info.circle", title: t("{{name}} Local Id"), value:  {{entityLowerCase}}.{{name}}LocalId ?? "-")
-            {{/isManyToOne}}
-{{/fields}}
         detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.createdBy ?? "-")
+
+         {{#fields}}
+        {{#isUpdatedAt}}
+        detailItem(icon: "clock", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
+        {{/isUpdatedAt}}
+        {{/fields}}
          }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
@@ -203,13 +196,6 @@ struct {{entity}}DetailsView: View {
         }
     }
 
-    private func formatDate(_ date: Date?) -> String {
-        guard let date = date else { return "-" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
-    }
 
 {{#fields}}
     {{#isManyToOne}}
