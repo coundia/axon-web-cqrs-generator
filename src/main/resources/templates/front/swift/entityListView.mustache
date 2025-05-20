@@ -515,6 +515,8 @@ var body: some View {
          {{#isChat}}
      private func sendMessage() {
 
+     clearInput()
+
       if viewModel.hasReachedDailyLimit() {
              DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                  showLimitToast = true
@@ -548,6 +550,11 @@ var body: some View {
          DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             scrollTrigger = UUID()
         }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+             Task { await viewModel.pull() }
+             scrollTrigger = UUID()
+         }
     }
 
     private var sorted{{entity}}s: [{{entity}}] {
@@ -562,11 +569,15 @@ var body: some View {
     }
 
     private func clearInput() {
-        speechRecognizer.stopTranscribing()
+
+         if(speechRecognizer.isRecording){
+            speechRecognizer.stopTranscribing()
+        }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             speechRecognizer.transcribedText = ""
             inputText = ""
+            scrollTrigger = UUID()
         }
     }
 

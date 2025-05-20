@@ -15,13 +15,17 @@ struct {{entity}}PickerView: View {
           $0.type{{entity}}Raw == selectedFilter.rawValue &&
           {{/hasType}}
           $0.deletedAt == nil
-          //&& $0.remoteId != nil
+          && $0.remoteId != nil
          }
     }
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
+                Text("Seuls les éléments synchronisés sont listés ici.")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 8)
               {{#hasType}}
                 Picker("Type", selection: $selectedFilter) {
                     ForEach({{entity}}Type.allCases, id: \.self) { type in
@@ -30,8 +34,7 @@ struct {{entity}}PickerView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-
-                 {{/hasType}}
+              {{/hasType}}
 
                 List {
                     Section {
@@ -40,7 +43,7 @@ struct {{entity}}PickerView: View {
                                 selected{{entity}} = item
                                 dismiss()
                             } label: {
-                              HStack {
+                                HStack {
                                     Text(t(item.name))
                                     Spacer()
                                     if let createdBy = item.createdBy {
@@ -49,7 +52,6 @@ struct {{entity}}PickerView: View {
                                             .foregroundColor(.secondary)
                                     }
                                 }
-
                             }
                         }
                     }
@@ -81,17 +83,16 @@ struct {{entity}}PickerView: View {
                     {{#header}}
                     current{{headerUpperCase}}: .constant(nil),
                     {{/header}}
-
                     viewModel: viewModel
                 )
-            }.onAppear {
-                   viewModel.fetchEntities()
-                   {{#hasType}}
-                   viewModel.fixType{{entity}}RawIfMissing()
-                   {{/hasType}}
-               }
+            }
+            .onAppear {
+                viewModel.fetchEntities()
+                {{#hasType}}
+                viewModel.fixType{{entity}}RawIfMissing()
+                {{/hasType}}
+            }
         }
     }
 }
-
 {{/isChat}}
