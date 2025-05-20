@@ -45,17 +45,13 @@ struct {{entity}}DetailsView: View {
                 }
             }
         }
-       /* .alert("✅ Synced", isPresented: $viewModel.showSuccessToast) {
-            Button("OK", role: .cancel) {}
-        }*/
         {{#shared}}
         .sheet(isPresented: $showCreateUser) {
             {{entity}}UserEditView(
-                 isShared: .constant(true),
+                isShared: .constant(true),
                 isPresented: $showCreateUser,
                 entity: $selectedUser,
                 viewModel: {{entity}}UserListViewModel(modelContext: modelContext, user: user)
-
             )
         }
         {{/shared}}
@@ -72,16 +68,19 @@ struct {{entity}}DetailsView: View {
                 .foregroundColor(Color("TenantColorPrimary"))
 
             VStack(alignment: .leading, spacing: 4) {
-                    {{#fieldsDisplayed}}
+                {{#fieldsDisplayed}}
                 Text({{entityLowerCase}}.{{nameLowerCase}} ?? "-")
-                    .font(.title2.bold())
-                 {{/fieldsDisplayed}}
+                .font(.title2.bold())
+                .lineLimit(1)
+                .truncationMode(.tail)
+
+
+                {{/fieldsDisplayed}}
             }
 
             Spacer()
 
             Menu {
-
                 {{#shared}}
                 Button(t("Partager"), systemImage: "square.and.arrow.up") {
                     selectedUser = {{entity}}User()
@@ -96,14 +95,13 @@ struct {{entity}}DetailsView: View {
                 }
                 Button("Sync", systemImage: "arrow.triangle.2.circlepath") {
                     Task {
-                         await viewModel.sync(entity:{{entityLowerCase}})
-                         await viewModel.pull()
+                        await viewModel.sync(entity:{{entityLowerCase}})
+                        await viewModel.pull()
                     }
                 }
                 Button("Fermer", systemImage: "xmark") {
                     dismiss()
                 }
-
             } label: {
                 Image(systemName: "ellipsis.circle")
                     .font(.title3)
@@ -127,37 +125,34 @@ struct {{entity}}DetailsView: View {
     private var overviewSection: some View {
         VStack(spacing: 12) {
             {{#fields}}
-             {{#isDisplayName}}
-                 {{^isManyToOne}}
-                {{#isText}}
-            detailItem(icon: "person.text.rectangle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
+    {{#isDisplayName}}
+        {{^isManyToOne}}
+            {{#isText}}
+            detailItem(icon: "text.alignleft", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
             {{/isText}}
-                {{#isInt}}
-            detailItem(icon: "number", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
+            {{#isInt}}
+            detailItem(icon: "number.circle", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isInt}}
-                 {{#isFloat}}
-            detailItem(icon: "number", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
+            {{#isFloat}}
+            detailItem(icon: "number.circle", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isFloat}}
-                {{#isString}}
-            detailItem(icon: "textformat", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
+            {{#isString}}
+            detailItem(icon: "textformat.abc", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ?? "-")
             {{/isString}}
-                {{#isDouble}}
+            {{#isDouble}}
             detailItem(icon: "dollarsign.circle", title: t("{{displayName}}"), value: formatCurrency(String({{entityLowerCase}}.{{name}})))
             {{/isDouble}}
-             {{#isBool}}
-            detailItem(icon: "checkmark.circle", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ? t("Oui") : t("Non"))
+            {{#isBool}}
+            detailItem(icon: "checkmark.seal", title: t("{{displayName}}"), value: {{entityLowerCase}}.{{name}} ? t("Oui") : t("Non"))
             {{/isBool}}
-             {{#isDate}}
-        detailItem(icon: "calendar", title: t("{{displayName}}"), value: formatDate({{entityLowerCase}}.{{name}}))
+            {{#isDate}}
+            detailItem(icon: "calendar", title: t("{{displayName}}"), value: formatDate({{entityLowerCase}}.{{name}}))
             {{/isDate}}
-                     {{/isManyToOne}}
+        {{/isManyToOne}}
 
-         {{#isManyToOne}}
-  detailItem(icon: "person.text.rectangle",
-   title: t("{{displayName}}"), value: get{{nameCapitalized}}Name( {{entityLowerCase}}.{{name}} ?? ""))
-
-         {{/isManyToOne}}
-
+        {{#isManyToOne}}
+            detailItem(icon: "link", title: t("{{displayName}}"), value: get{{nameCapitalized}}Name({{entityLowerCase}}.{{name}} ?? ""))
+            {{/isManyToOne}}
     {{/isDisplayName}}
 {{/fields}}
         }
@@ -167,17 +162,14 @@ struct {{entity}}DetailsView: View {
 
     private var metaSection: some View {
         VStack(spacing: 12) {
-
-         detailItem(icon: "info.circle", title: t("ID distant"), value: {{entityLowerCase}}.remoteId ?? "-")
-
-        detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.createdBy ?? "-")
-
-         {{#fields}}
-        {{#isUpdatedAt}}
-        detailItem(icon: "clock", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
-        {{/isUpdatedAt}}
-        {{/fields}}
-         }
+            detailItem(icon: "info.circle", title: t("ID distant"), value: {{entityLowerCase}}.remoteId ?? "-")
+            detailItem(icon: "person.crop.circle", title: t("Crée par"), value: {{entityLowerCase}}.createdBy ?? "-")
+            {{#fields}}
+    {{#isUpdatedAt}}
+            detailItem(icon: "clock.arrow.circlepath", title: t("Date Mise à jour"), value: formatDate({{entityLowerCase}}.{{name}}))
+            {{/isUpdatedAt}}
+{{/fields}}
+        }
         .padding()
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
     }
@@ -198,14 +190,12 @@ struct {{entity}}DetailsView: View {
         }
     }
 
-
-{{#fields}}
+    {{#fields}}
     {{#isManyToOne}}
-    func get{{nameCapitalized}}Name(_ id: String)-> String{
-         let viewModel{{nameCapitalized}} = {{nameCapitalized}}ListViewModel(modelContext: modelContext, user: user)
-       return viewModel{{nameCapitalized}}.getNameById(for:  id)
+    func get{{nameCapitalized}}Name(_ id: String) -> String {
+        let viewModel{{nameCapitalized}} = {{nameCapitalized}}ListViewModel(modelContext: modelContext, user: user)
+        return viewModel{{nameCapitalized}}.getNameById(for: id)
     }
-{{/isManyToOne}}
-    {{/fields}}
-
+    {{/isManyToOne}}
+{{/fields}}
 }
