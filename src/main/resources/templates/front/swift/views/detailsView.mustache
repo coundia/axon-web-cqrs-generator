@@ -168,6 +168,8 @@ struct {{entity}}DetailsView: View {
     private var metaSection: some View {
         VStack(spacing: 12) {
 
+         detailItem(icon: "info.circle", title: t("ID distant"), value: {{entityLowerCase}}.remoteId ?? "-")
+
         detailItem(icon: "person.text.rectangle", title: t("Crée par"),  value: {{entityLowerCase}}.createdBy ?? "-")
 
          {{#fields}}
