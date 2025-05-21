@@ -16,8 +16,8 @@ return {{nameAggregate}}Response.builder()
 		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}())
 	{{/isManyToOne}}
 {{/editableFields}}
-    .createdBy(entity.getCreatedBy().getUsername())
-    .tenant(entity.getTenant().getName())
+    .createdBy(entity.getCreatedBy() != null ? entity.getCreatedBy().getUsername(): null)
+    .tenant(entity.getTenant() != null ? entity.getTenant().getId() : null)
 .build();
 }
 
