@@ -48,14 +48,19 @@ description = "Deletes a {{nameLowercase}} based on the provided identifier"
 @ApiResponse(responseCode = "200", description = "{{name}} deleted successfully"),
 @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @Content),
 @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
-})
-public ResponseEntity<String> delete{{name}}(
+}
+)
+public ResponseEntity<ApiResponseDto> delete{{name}}(
 	@Parameter(description = "ID of the {{nameLowercase}} to delete", required = true)
 	@PathVariable String id,
 	@AuthenticationPrincipal Jwt jwt
 	) {
 	if (id == null || id.isEmpty()) {
-	return ResponseEntity.badRequest().body("Invalid ID");
+
+	return ResponseEntity.badRequest().body(ResponseEntity.badRequest().body(ApiResponseDto.builder()
+			.code(0)
+			.message("Invalid ID supplied")
+			.build()));
 	}
 
 	try {
@@ -70,10 +75,16 @@ public ResponseEntity<String> delete{{name}}(
 
 	applicationService.delete{{name}}(idVo, metaRequest);
 
-	return ResponseEntity.ok("{{name}} deleted successfully");
+	return ResponseEntity.ok(ResponseEntity.badRequest().body(ApiResponseDto.builder()
+			.code(1)
+			.message("{{nameLowercase}} with id " + id + " deleted successfully")
+			.build()));
 	} catch (Exception e) {
 	log.error("Error deleting {{nameLowercase}} with id {}: {}", id, e.getMessage());
-	return ResponseEntity.internalServerError().body("Error deleting {{nameLowercase}}");
+	return ResponseEntity.internalServerError().body(ResponseEntity.badRequest().body(ApiResponseDto.builder()
+			.code(0)
+			.message(e.getMessage())
+			.build()));
 	}
 	}
 	}

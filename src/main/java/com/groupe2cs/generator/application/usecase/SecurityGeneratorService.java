@@ -229,6 +229,12 @@ public class SecurityGeneratorService {
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
+				new SharedTemplate("WebConfig",
+						"infrastructure/security/webConfig.mustache",
+						null
+						 ,
+						baseDir + "/" + generatorProperties.getConfigPackage()),
+
 				new SharedTemplate("ConstanteConfig",
 						"infrastructure/security/constanteConfig.mustache",
 						null,

@@ -48,6 +48,7 @@ public class DeleteControllerGeneratorService {
         String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
         imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
         imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
+        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto");
 
         context.put("imports", imports);
 
