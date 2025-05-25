@@ -57,10 +57,12 @@ public ResponseEntity<ApiResponseDto> delete{{name}}(
 	) {
 	if (id == null || id.isEmpty()) {
 
-	return ResponseEntity.badRequest().body(ResponseEntity.badRequest().body(ApiResponseDto.builder()
+	return ResponseEntity.badRequest().body(
+	ApiResponseDto.builder()
 			.code(0)
 			.message("Invalid ID supplied")
-			.build()));
+			.build()
+			);
 	}
 
 	try {
@@ -75,16 +77,20 @@ public ResponseEntity<ApiResponseDto> delete{{name}}(
 
 	applicationService.delete{{name}}(idVo, metaRequest);
 
-	return ResponseEntity.ok(ResponseEntity.badRequest().body(ApiResponseDto.builder()
+	return ResponseEntity.ok(
+	ApiResponseDto.builder()
 			.code(1)
 			.message("{{nameLowercase}} with id " + id + " deleted successfully")
-			.build()));
+			.build()
+			);
 	} catch (Exception e) {
 	log.error("Error deleting {{nameLowercase}} with id {}: {}", id, e.getMessage());
-	return ResponseEntity.internalServerError().body(ResponseEntity.badRequest().body(ApiResponseDto.builder()
-			.code(0)
-			.message(e.getMessage())
-			.build()));
+	return ResponseEntity.internalServerError().body(
+	        ApiResponseDto.builder()
+                .code(0)
+                .message(e.getMessage())
+                .build()
+			);
 	}
 	}
 	}

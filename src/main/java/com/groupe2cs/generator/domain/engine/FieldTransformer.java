@@ -66,11 +66,18 @@ public class FieldTransformer {
             f.put("repository",  field.getRepository());
             f.put("hasRepository",  field.hasRepository());
             f.put("focus",  field.getFocus());
+            f.put("hasLike",  field.getPrimitiveType().equalsIgnoreCase("String"));
+            f.put("hasNameField", hasNameField(fields));
 
             result.add(f);
         }
 
         return result;
+    }
+
+    private static Boolean hasNameField(List<FieldDefinition> fields) {
+        return fields.stream()
+                .anyMatch(field -> field.getName().equalsIgnoreCase("name") );
     }
 
     private static String getTestValue(FieldDefinition field) {
