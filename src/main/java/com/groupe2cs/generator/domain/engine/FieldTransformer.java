@@ -68,6 +68,11 @@ public class FieldTransformer {
             f.put("focus",  field.getFocus());
             f.put("hasLike",  field.getPrimitiveType().equalsIgnoreCase("String"));
             f.put("hasNameField", hasNameField(fields));
+            f.put("isDate", field.getType().toLowerCase().contains("date")
+                    || field.getType().toLowerCase().contains("instant") ||
+                    field.getType().toLowerCase().contains("localdatetime") ||
+                    field.getType().toLowerCase().contains("timestamp")
+            );
 
             result.add(f);
         }
