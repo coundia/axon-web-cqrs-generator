@@ -99,4 +99,19 @@ public class Utils {
         throw new IllegalArgumentException("src folder not found in path: " + baseDir);
     }
 
+    public static String pluralize(String name) {
+        if (name == null || name.isEmpty()) return name;
+        if (name.endsWith("y") && name.length() > 1 && !isVowel(name.charAt(name.length() - 2))) {
+            return name.substring(0, name.length() - 1) + "ies";
+        }
+        if (name.endsWith("s") || name.endsWith("x") || name.endsWith("z") || name.endsWith("ch") || name.endsWith("sh")) {
+            return name + "es";
+        }
+        return name + "s";
+    }
+
+    private static boolean isVowel(char c) {
+        return "aeiouAEIOU".indexOf(c) != -1;
+    }
+
 }

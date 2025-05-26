@@ -337,6 +337,12 @@ public class EntityDefinition implements Serializable {
 				.toList();
 	}
 
+	public List<FieldDefinition> getFieldWithDisplayName() {
+		return fields.stream()
+				.filter(f -> f.getDisplayName() != null && !f.getDisplayName().isEmpty())
+				.toList();
+	}
+
 
 	public List<FieldDefinition> getFieldsAmount() {
 		return fields.stream()
@@ -349,6 +355,30 @@ public class EntityDefinition implements Serializable {
 				})
 				.toList();
 	}
+
+
+	public void addDefaultFieldIfMissing() {
+		List<FieldDefinition> fields = this.fields;
+
+		if (!this.hasField("updatedAt")) {
+			fields.add(FieldDefinition.builder()
+					.name("updatedAt")
+					.type("Date")
+					.readOnly(true)
+					.nullable(true)
+					.build());
+		}
+
+		if (!this.hasField("reference")) {
+			fields.add(FieldDefinition.builder()
+					.name("reference")
+					.type("String")
+					.readOnly(true)
+					.nullable(true)
+					.build());
+		}
+	}
+
 
 
 }

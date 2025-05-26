@@ -1,0 +1,23 @@
+import { Routes } from '@angular/router';
+import { authGuard } from '../../shared/security/guard/auth.guard';
+
+export const {{entityLowerCase}}Routes: Routes = [
+  {
+    path: '{{entityLowerCase}}',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/{{entityLowerCase}}-list.component').then(m => m.{{entity}}ListComponent),
+  },
+  {
+    path: '{{entityLowerCase}}/new',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/{{entityLowerCase}}-form.component').then(m => m.{{entity}}FormComponent),
+  },
+  {
+    path: '{{entityLowerCase}}/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/{{entityLowerCase}}-form.component').then(m => m.{{entity}}FormComponent),
+  },
+];

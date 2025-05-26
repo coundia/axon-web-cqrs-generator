@@ -1,0 +1,349 @@
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "Account",
+	"table": "accounts",
+	"title": "Compte",
+	"shared": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"focus": true,
+		"displayName": "Nom"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "currency",
+		"type": "String",
+		"displayName": "Devise",
+		"defaultValue": "\"XOF\""
+	  },
+	  {
+		"name": "currentBalance",
+		"type": "Double",
+		"displayName": "Solde de départ",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "previousBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"displayName": "Est active",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "AccountUser",
+	"bind": "username",
+	"table": "account_users",
+	"title": "Comptes partagés",
+	"isPremium": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "account",
+		"displayName": "Compte",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"displayName": "Partager avec (Nom identifiant)",
+		"type": "String"
+	  },
+	  {
+		"name": "details",
+		"displayName": "Description",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"title": "Catégorie",
+	"hasType": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"focus": true,
+		"displayName": "Nom",
+		"type": "String"
+	  },
+	  {
+		"name": "typeCategoryRaw",
+		"type": "String",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "Transaction",
+	"table": "transactions",
+	"header": "account",
+	"hasSummary": true,
+	"hasType": true,
+	"hasDate": true,
+	"transactional": true,
+	"hasCategory": true,
+	"title": "Transaction",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "amount",
+		"type": "Double",
+		"focus": true,
+		"displayName": "Montant",
+		"indicators": [
+		  "sum"
+		]
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"defaultValue": "\"Pas de motif\"",
+		"displayName": "Motif"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"defaultValue": "Pas de description",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"displayName": "Activé",
+		"type": "Boolean",
+		"defaultValue": true
+	  },
+	  {
+		"name": "account",
+		"displayName": "Compte",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "category",
+		"displayName": "Category",
+		"entityType": "Category",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "typeTransactionRaw",
+		"type": "String",
+		"displayName": "type",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "Date",
+		"displayName": "Date transaction",
+		"defaultValue": "date()",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "Setting",
+	"table": "settings",
+	"title": "Paramètre",
+	"multiTenant": true,
+	"auditable": true,
+	"apiPrefix": "admin",
+	"isPublic": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"focus": true,
+		"type": "String",
+		"displayName": "Clé",
+		"isLowerCase": true
+	  },
+	  {
+		"name": "value",
+		"type": "String",
+		"displayName": "Valeur"
+	  },
+	  {
+		"name": "locale",
+		"type": "String",
+		"displayName": "Langue",
+		"isLowerCase": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true,
+		"defaultValue": "\"NA\""
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+
+
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "definition": {
+	"name": "Chat",
+	"table": "chat",
+	"title": "Chat",
+	"header": "account",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"isAutoSave": true,
+	"isChat": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "messages",
+		"focus": true,
+		"type": "String",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "responses",
+		"type": "String",
+		"displayName": "Réponses",
+		"nullable": true
+	  },
+	  {
+		"name": "responsesJson",
+		"type": "String",
+		"columnDefinition": "Text",
+		"nullable": true
+	  },
+	  {
+		"name": "state",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "account",
+		"entityType": "Account",
+		"type": "String",
+		"relation": "manyToOne",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+

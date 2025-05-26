@@ -1,0 +1,8 @@
+export type Type{{entity}} = 'IN' | 'OUT';
+
+export interface {{entity}} {
+{{#fields}}
+    {{name}}{{#nullable}}?{{/nullable}}: {{type}};
+{{/fields}}
+}
+

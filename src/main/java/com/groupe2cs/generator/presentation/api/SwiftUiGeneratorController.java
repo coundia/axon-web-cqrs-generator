@@ -23,37 +23,14 @@ public class SwiftUiGeneratorController {
 	public Flux<String> generate(@RequestBody EntityDefinitionDTO request) {
 		String output = request.getOutputDir() + "/"+ request.getDefinition().getName();
 
-		//add refrence and updateAt
 		EntityDefinition entityDefinition = request.getDefinition();
 
 		List<FieldDefinition> fields = new ArrayList<>(
 				entityDefinition.getFields()
 		);
 
-
-		if(!entityDefinition.hasField("updatedAt")){
-			FieldDefinition updatedAt = FieldDefinition
-					.builder()
-					.name("updatedAt")
-					.type("Date")
-					.readOnly(true)
-					.nullable(true)
-					.build();
-			fields.add(updatedAt);
-		}
-
-		if(!entityDefinition.hasField("reference")){
-			FieldDefinition reference = FieldDefinition
-					.builder()
-					.name("reference")
-					.type("String")
-					.readOnly(true)
-					.nullable(true)
-					.build();
-			fields.add(reference);
-		}
-
 		entityDefinition.setFields(fields);
+		entityDefinition.addDefaultFieldIfMissing();
 
 
 		return swiftUiGeneratorService.generate(entityDefinition, output);
