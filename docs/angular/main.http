@@ -187,7 +187,7 @@ Content-Type: application/json
 	  {
 		"name": "details",
 		"type": "String",
-		"defaultValue": "Pas de description",
+		"defaultValue": "\"Pas de description\"",
 		"displayName": "Description",
 		"nullable": true
 	  },
@@ -223,7 +223,7 @@ Content-Type: application/json
 		"name": "dateTransaction",
 		"type": "Date",
 		"displayName": "Date transaction",
-		"defaultValue": "date()",
+		"defaultValue": "new Date().toISOString().substring(0, 10)",
 		"nullable": true
 	  }
 	]

@@ -1,16 +1,18 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
 import { {{entity}} } from '../models/{{entityLowerCase}}.model';
-import {AlertService} from '../../../shared/components/alert/alert.service';
-import {FieldDefinition} from '../../../shared/components/models/field-definition';
+import { AlertService } from '../../../shared/components/alert/alert.service';
+import { FieldDefinition } from '../../../shared/components/models/field-definition';
+import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
+import {toDatetimeLocalString} from '../../../shared/hooks/Parsing';
 
 @Component({
   selector: 'app-{{entityLowerCase}}-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, EntityToolbarActionComponent],
   templateUrl: './{{entityLowerCase}}-form.component.html',
 })
 export class {{entity}}FormComponent implements OnInit {
@@ -18,11 +20,11 @@ export class {{entity}}FormComponent implements OnInit {
   private readonly service = inject({{entity}}Service);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly alert = inject(AlertService);
 
   readonly id = this.route.snapshot.paramMap.get('id');
   readonly isEdit = signal(!!this.id);
-  readonly isLoading = signal(false)
-  readonly alert = inject(AlertService)
+  readonly isLoading = signal(false);
 
   readonly form = this.fb.group({
     {{#fields}}
@@ -32,18 +34,46 @@ export class {{entity}}FormComponent implements OnInit {
 
   readonly fields: FieldDefinition[] = [
     {{#fields}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}} },
+    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}}, entityType: '{{entityType}}' },
     {{/fields}}
   ];
 
   ngOnInit() {
     if (this.isEdit()) {
-      const existing = this.service.{{entityLowerCase}}s().find(e => e.id === this.id);
+      let existing = this.service.{{entityLowerCase}}s().find(e => e.id === this.id);
       if (existing) {
         this.form.patchValue({
           {{#fields}}
-    {{name}}: existing.{{name}},
+                 {{^isDate}}
+                {{name}}: existing.{{name}},
+                {{/isDate}}
+                {{#isDate}}
+                {{name}}: toDatetimeLocalString(existing.{{name}}) || '',
+                {{/isDate}}
           {{/fields}}
+        });
+      } else {
+        this.isLoading.set(true);
+        this.service.getById?.(this.id!).subscribe?.({
+          next: e => {
+            if (e) {
+              this.form.patchValue({
+                {{#fields}}
+                    {{^isDate}}
+                    {{name}}: e.{{name}},
+                    {{/isDate}}
+                    {{#isDate}}
+                    {{name}}: toDatetimeLocalString(e.{{name}}) || '',
+                    {{/isDate}}
+                {{/fields}}
+              });
+            }
+            this.isLoading.set(false);
+          },
+          error: _ => {
+            this.isLoading.set(false);
+            this.alert.show('{{entity}} introuvable', 'error');
+          }
         });
       }
     }
@@ -61,6 +91,12 @@ export class {{entity}}FormComponent implements OnInit {
 
     this.isLoading.set(true);
 
+    {{#fields}}
+    {{#isDate}}
+    data.{{name}} = new Date(data.{{name}} || now).toISOString();
+    {{/isDate}}
+{{/fields}}
+
     const request = this.isEdit()
       ? this.service.update(this.id!, data)
       : this.service.create(data);
@@ -76,8 +112,12 @@ export class {{entity}}FormComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.alert.show('An error occurred while saving the {{entityLowerCase}}. Please try again.','error');
+        this.alert.show('An error occurred while saving the {{entityLowerCase}}. Please try again.', 'error');
       }
-    })
+    });
   }
+
+   onDelete() {
+        //todo
+      }
 }

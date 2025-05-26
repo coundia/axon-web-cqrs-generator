@@ -1,46 +1,82 @@
 <div class="max-w-xl mx-auto p-6 bg-base-100 rounded-2xl shadow-xl space-y-6">
-  <a routerLink="/{{entityLowerCase}}" class="btn btn-sm btn-outline gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-    </svg>
-    Retour à la liste
-  </a>
 
-  <h2 class="text-2xl font-bold text-center text-primary">
+  <app-view-toolbar-actions
+    [backLink]="'/{{entityLowerCase}}'"
+    [editLink]="'/{{entityLowerCase}}/' + (id || '') + '/edit'"
+    [newLink]="'/{{entityLowerCase}}/new'"
+    [showDelete]="isEdit()"
+    [editMode]="isEdit()"
+    (delete)="onDelete()"
+  />
+
+  <h2 class="text-2xl font-bold text-center text-primary mb-6">
     @if (isEdit()) { Modifier } @else { Nouvelle } {{entity}}
   </h2>
 
   <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
     @for (field of fields; track field.name) {
-      <div class="form-control" *ngIf="field.type !== 'boolean'">
-        <label class="label">
-          <span class="label-text">{{ field.displayName }}</span>
-        </label>
+      @switch(field.entityType) {
+        @case('Boolean') {
+          <div class="form-control flex flex-row items-center gap-2">
+            <input
+              type="checkbox"
+              [formControlName]="field.name"
+              class="toggle toggle-primary"
+              id="{{ field.name }}"
+            />
+            <label [for]="field.name" class="label-text cursor-pointer select-none">
+              {{open}} field.displayName ? field.displayName : field.name }}
+            </label>
+          </div>
+        }
+        @case('Text') {
+          <div class="form-control">
+            <label class="label mb-1">
+              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
+            </label>
+            <textarea
+              [formControlName]="field.name"
+              class="textarea textarea-bordered w-full"
+              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
+              rows="3"
+            ></textarea>
+          </div>
+        }
 
-        @if (field.type === 'textarea') {
-          <textarea [formControlName]="field.name" class="textarea textarea-bordered w-full" placeholder="{{ field.displayName }}"></textarea>
+        @case('Date') {
+          <div class="form-control">
+            <label class="label mb-1">
+              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
+            </label>
+            <input
+              type="datetime-local"
+              [formControlName]="field.name"
+              class="input input-bordered w-full"
+              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
+            />
+          </div>
         }
-        @else if (field.type === 'select') {
-          <select [formControlName]="field.name" class="select select-bordered w-full">
-            @for (opt of field.options || []; track opt.value) {
-              <option [value]="opt.value"> {{{open}}} opt.label {{{close}}}</option>
-            }
-          </select>
+        @default {
+          <div class="form-control">
+            <label class="label mb-1">
+              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
+            </label>
+            <input
+              type="text"
+              [formControlName]="field.name"
+              class="input input-bordered w-full"
+              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
+              autocomplete="off"
+            />
+          </div>
         }
-        @else {
-          <input type="text" [formControlName]="field.name" class="input input-bordered w-full" placeholder="{{ field.displayName }}" />
-        }
-      </div>
-
-      <div class="form-control" *ngIf="field.type === 'boolean'">
-        <label class="label cursor-pointer">
-          <span class="label-text">{{ field.displayName }}</span>
-          <input type="checkbox" [formControlName]="field.name" class="checkbox" />
-        </label>
-      </div>
+      }
     }
 
-    <button type="submit" class="btn btn-primary w-full" [disabled]="form.invalid">
+    <button type="submit" class="btn btn-primary w-full mt-4" [disabled]="form.invalid || isLoading()">
+      @if (isLoading()) {
+        <span class="loading loading-spinner loading-xs mr-2"></span>
+      }
       @if (isEdit()) { Mettre à jour } @else { Enregistrer }
     </button>
   </form>

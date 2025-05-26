@@ -31,6 +31,10 @@ public class AngularFieldTransformer {
 			f.put("focus", field.getFocus());
 			f.put("isLowerCase", field.getIsLowerCase());
 			f.put("entityType", field.getEntityType());
+
+			f.put("isDate", field.getType().equalsIgnoreCase("date") ||
+					field.getEntityType().equalsIgnoreCase("date")
+			);
 			result.add(f);
 		}
 

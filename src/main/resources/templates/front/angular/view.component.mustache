@@ -1,30 +1,76 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
 import { {{entity}} } from '../models/{{entityLowerCase}}.model';
 import { FieldDefinition } from '../../../shared/components/models/field-definition';
+import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
+import { AlertService } from '../../../shared/components/alert/alert.service';
 
 @Component({
   selector: 'app-{{entityLowerCase}}-view',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, EntityToolbarActionComponent],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
 export class {{entity}}ViewComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject({{entity}}Service);
+  private readonly router = inject(Router);
+  private readonly alert = inject(AlertService);
 
   readonly id = this.route.snapshot.paramMap.get('id');
-  readonly item = this.service.{{entityLowerCase}}s().find(e => e.id === this.id) as {{entity}};
+  readonly item = signal<{{entity}} | null>(this.service.{{entityLowerCase}}s().find(e => e.id === this.id) ?? null);
+  readonly isLoading = signal(false);
 
   readonly fields: FieldDefinition[] = [
     {{#fields}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}} },
+    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}}, entityType: '{{entityType}}' },
     {{/fields}}
   ];
 
-  getFieldValue(item: {{entity}}, field: string): any {
+  constructor() {
+    effect(() => {
+      if (!this.item()) {
+        this.isLoading.set(true);
+        this.service.getById?.(this.id!).subscribe?.({
+          next: e => {
+            this.item.set(e);
+            this.isLoading.set(false);
+          },
+          error: _ => {
+            this.alert.show('{{entity}} introuvable', 'error');
+            this.isLoading.set(false);
+          }
+        });
+      }
+    });
+  }
+
+   getFieldValue(item: {{entity}}, field: string): any {
     return (item as Record<string, any>)[field];
   }
+
+  onDelete() {
+    const id = this.item()?.id ?? this.id ?? null;
+    if (!id) {
+      this.alert.show(`{{entity}} "${this.id}" introuvable`, 'error');
+      return;
+    }
+    const confirmed = window.confirm(`Supprimer "${id}" ?`);
+    if (!confirmed) return;
+    this.service.delete?.(id).subscribe?.({
+      next: () => {
+        this.alert.show(`{{entity}} "${id}" supprimé(e)`, 'success');
+        setTimeout(() => {
+          this.router.navigate(['/{{entityLowerCase}}']);
+        }, 600);
+      },
+      error: err => {
+        this.alert.show(`Erreur suppression "{{entity}} ${id}"`, 'error');
+      }
+    });
+  }
+
+
 }

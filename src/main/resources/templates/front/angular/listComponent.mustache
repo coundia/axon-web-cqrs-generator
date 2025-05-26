@@ -15,10 +15,12 @@ import { PaginationJoinComponent } from '../../../shared/components/pagination/p
 import { GlobalDrawerComponent } from '../../../shared/components/drawer/global-drawer.component';
 import {FieldDefinition} from '../../../shared/components/models/field-definition';
 import {GlobalDrawerFormComponent} from '../../../shared/components/drawer/app-global-drawer-form';
-import {getDefaultValue} from '../../../shared/hooks/Parsing';
+
 import {SortHeaderComponent} from '../../../shared/components/tri/sort-header.component';
 import {SortService} from '../../../shared/components/tri/sort.service';
 import {SHARED_IMPORTS} from '../../../shared/constantes/shared-imports';
+
+import {getDefaultValue, toDatetimeLocalString} from '../../../shared/hooks/Parsing';
 
 
 @Component({
@@ -64,13 +66,13 @@ export class {{entity}}ListComponent implements OnInit {
   readonly selectedItem = signal<{{entity}} | null>(null);
   readonly allFields: FieldDefinition[] = [
     {{#allFields}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#defaultValue}}, defaultValue: '{{defaultValue}}'{{/defaultValue}} },
+    { name: '{{name}}' , displayName: '{{displayName}}', type: '{{type}}'{{#defaultValue}}, defaultValue: '{{defaultValue}}'{{/defaultValue}} , entityType: '{{entityType}}'},
     {{/allFields}}
   ];
 
   readonly fieldsToDisplay: FieldDefinition[] = [
     {{#fieldsToDisplay}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}' },
+    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}' , entityType: '{{entityType}}' },
     {{/fieldsToDisplay}}
   ];
 
@@ -91,6 +93,12 @@ export class {{entity}}ListComponent implements OnInit {
     for (const field of fields) {
       const defaultValue = data[field.name] ?? getDefaultValue(field) ?? null;
       const isRequired = field.nullable === false;
+
+      if (field.entityType === 'Date' || field.type === 'date') {
+        group[field.name] = [toDatetimeLocalString(defaultValue), isRequired ? Validators.required : []];
+        continue;
+      }
+
       group[field.name] = [defaultValue, isRequired ? Validators.required : []];
     }
     return this.fb.group(group);
@@ -115,16 +123,16 @@ export class {{entity}}ListComponent implements OnInit {
     const item = this.list().find(e => e.id === id);
     if (!item) return;
 
-    const confirmed = window.confirm(`Supprimer "${item.name}" ?`);
+    const confirmed = window.confirm(`Supprimer "${item.id}" ?`);
     if (!confirmed) return;
 
     this.service.delete(id).subscribe({
       next: () => {
-        this.alert.show(`{{entity}} "${item.name}" supprimé(e)`, 'success');
+        this.alert.show(`{{entity}} "${item.id}" supprimé(e)`, 'success');
         setTimeout(() => this.refresh(), 1500);
       },
       error: err => {
-        this.alert.show(`Erreur suppression "${item.name}"`, 'error');
+        this.alert.show(`Erreur suppression "${item.id}"`, 'error');
       }
     });
   }
@@ -177,9 +185,16 @@ export class {{entity}}ListComponent implements OnInit {
   }
 
   handleSave(data: any) {
+    const now = new Date().toISOString();
+    {{#fields}}
+    {{#isDate}}
+    data.{{name}} = new Date(data.{{name}} || now).toISOString();
+    {{/isDate}}
+{{/fields}}
+
     if (this.editMode && this.itemId) {
 
-        data.updatedAt = new Date().toISOString();
+
       this.service.update(this.itemId, data).subscribe({
         next: () => {
           this.alert.show('{{entity}} mis(e) à jour avec succès', 'success');
@@ -192,7 +207,7 @@ export class {{entity}}ListComponent implements OnInit {
       });
     } else {
 
-      data.updatedAt = new Date().toISOString();
+
       this.service.create(data).subscribe({
         next: () => {
           this.alert.show('{{entity}} créé(e) avec succès', 'success');
