@@ -5,7 +5,8 @@ import java.util.List;
 public class FileWriterSkipList {
 
 	private static final List<String> FILES_TO_SKIP = List.of(
-			"FindByPasswordResetTokenHandler.java"
+			"FindByPasswordResetTokenHandler.java",
+			"UserRepository.java"
 			//"FindByApiKeyAppKeyHandler.java"
 	);
 
