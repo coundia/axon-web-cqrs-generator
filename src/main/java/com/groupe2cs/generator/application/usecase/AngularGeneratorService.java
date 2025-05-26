@@ -67,7 +67,20 @@ public class AngularGeneratorService {
 						outputDir + "/services",
 						null,
 						".ts"),
-
+				//add component
+				new SharedTemplate(entity + "-view.component",
+						"front/angular/view.component.html.mustache",
+						null,
+						outputDir + "/components",
+						null,
+						".html"),
+				new SharedTemplate(entity + "-view.component",
+						"front/angular/view.component.mustache",
+						null,
+						outputDir + "/components",
+						null,
+						".ts"),
+				//end add component
 				new SharedTemplate(
 						Utils.unCapitalize(entity),
 						"front/angular/translation.fr.mustache",

@@ -178,6 +178,8 @@ export class {{entity}}ListComponent implements OnInit {
 
   handleSave(data: any) {
     if (this.editMode && this.itemId) {
+
+        data.updatedAt = new Date().toISOString();
       this.service.update(this.itemId, data).subscribe({
         next: () => {
           this.alert.show('{{entity}} mis(e) à jour avec succès', 'success');
@@ -189,6 +191,8 @@ export class {{entity}}ListComponent implements OnInit {
         }
       });
     } else {
+
+      data.updatedAt = new Date().toISOString();
       this.service.create(data).subscribe({
         next: () => {
           this.alert.show('{{entity}} créé(e) avec succès', 'success');

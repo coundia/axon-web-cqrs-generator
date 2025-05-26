@@ -1,0 +1,30 @@
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
+import { {{entity}} } from '../models/{{entityLowerCase}}.model';
+import { FieldDefinition } from '../../../shared/components/models/field-definition';
+
+@Component({
+  selector: 'app-{{entityLowerCase}}-view',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './{{entityLowerCase}}-view.component.html',
+})
+export class {{entity}}ViewComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly service = inject({{entity}}Service);
+
+  readonly id = this.route.snapshot.paramMap.get('id');
+  readonly item = this.service.{{entityLowerCase}}s().find(e => e.id === this.id) as {{entity}};
+
+  readonly fields: FieldDefinition[] = [
+    {{#fields}}
+    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}} },
+    {{/fields}}
+  ];
+
+  getFieldValue(item: {{entity}}, field: string): any {
+    return (item as Record<string, any>)[field];
+  }
+}

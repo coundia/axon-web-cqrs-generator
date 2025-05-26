@@ -20,4 +20,10 @@ export const {{entityLowerCase}}Routes: Routes = [
     loadComponent: () =>
       import('./components/{{entityLowerCase}}-form.component').then(m => m.{{entity}}FormComponent),
   },
+    {
+    path: '{{entityLowerCase}}/:id/view',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/{{entityLowerCase}}-view.component').then(m => m.{{entity}}ViewComponent),
+  }
 ];

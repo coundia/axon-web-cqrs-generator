@@ -100,8 +100,10 @@
   [item]="selectedItem()!"
   [title]= " '{{entityLowerCase}}.details' | translate  "
   [fields]="allFields"
-  [editLink]="'/{{entityLowerCase}}/' + selectedItem()?.id + '/edit'"
   (remove)="deleteById($event)"
+   [editLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/edit'"
+  [viewLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/view'"
+  [addLink]="'/{{entityLowerCase}}/new'"
 />
 
 <app-global-drawer-form
@@ -115,4 +117,7 @@
   [attr.key]="formKey()"
   (save)="handleSave($event)"
   (delete)="handleDelete($event)"
+  [editLink]="'/{{entityLowerCase}}/' + itemId + '/edit'"
+  [viewLink]="'/{{entityLowerCase}}/' + itemId + '/view'"
+  [addLink]="'/{{entityLowerCase}}/new'"
 />
