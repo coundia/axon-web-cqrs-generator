@@ -5,6 +5,7 @@ import com.groupe2cs.generator.application.dto.EntityDefinitionDTO;
 import com.groupe2cs.generator.application.usecase.AngularGeneratorService;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.domain.model.FieldDefinition;
+import com.groupe2cs.generator.shared.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class AngularGeneratorController {
 
 	@PostMapping("/angular")
 	public ApiResponseDto generate(@RequestBody EntityDefinitionDTO request) {
-		String output = request.getOutputDir() + "/" + request.getDefinition().getName();
+		String output = request.getOutputDir() + "/" + Utils.unCapitalize(request.getDefinition().getName());
 		EntityDefinition entityDefinition = request.getDefinition();
 
 		List<FieldDefinition> fields = new ArrayList<>(entityDefinition.getFields());

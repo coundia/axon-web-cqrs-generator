@@ -109,7 +109,7 @@
 <app-global-drawer-form
   *ngIf="drawerVisible"
   [title]="title"
-  [fields]="fieldsToDisplay"
+  [fields]="allFields"
   [form]="form"
   [submitLabel]="submitLabel"
   [editMode]="editMode"
@@ -120,4 +120,5 @@
   [editLink]="'/{{entityLowerCase}}/' + itemId + '/edit'"
   [viewLink]="'/{{entityLowerCase}}/' + itemId + '/view'"
   [addLink]="'/{{entityLowerCase}}/new'"
+  [getEntities]="getEntities.bind(this)"
 />

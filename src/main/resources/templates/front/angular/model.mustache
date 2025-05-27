@@ -1,8 +1,17 @@
+{{#fields}}
+{{#isManyToOne}}
+import {{openOne}} {{nameCapitalized}} } from '../../{{name}}/models/{{name}}.model';
+{{/isManyToOne}}
+{{/fields}}
+
 export type Type{{entity}} = 'TYPE1' | 'TYPE2';
 
 export interface {{entity}} {
-{{#fields}}
+    {{#fields}}
     {{name}}{{#nullable}}?{{/nullable}}: {{type}};
-{{/fields}}
+    {{#isManyToOne}}
+    {{name}}Model?: {{nameCapitalized}};
+    {{/isManyToOne}}
+    {{/fields}}
 }
 

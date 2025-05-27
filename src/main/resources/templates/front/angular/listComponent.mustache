@@ -13,15 +13,18 @@ import { EmptyStateComponent } from '../../../shared/components/empty/empty-stat
 import { PaginationControlsComponent } from '../../../shared/components/pagination/pagination-controls.component';
 import { PaginationJoinComponent } from '../../../shared/components/pagination/pagination-join.component';
 import { GlobalDrawerComponent } from '../../../shared/components/drawer/global-drawer.component';
-import {FieldDefinition} from '../../../shared/components/models/field-definition';
+import {FieldDefinition, isValidUUID} from '../../../shared/components/models/field-definition';
 import {GlobalDrawerFormComponent} from '../../../shared/components/drawer/app-global-drawer-form';
-
 import {SortHeaderComponent} from '../../../shared/components/tri/sort-header.component';
 import {SortService} from '../../../shared/components/tri/sort.service';
 import {SHARED_IMPORTS} from '../../../shared/constantes/shared-imports';
-
 import {getDefaultValue, toDatetimeLocalString} from '../../../shared/hooks/Parsing';
-
+{{#fields}}
+{{#isManyToOne}}
+import {{openOne}} {{nameCapitalized}} } from '../../{{name}}/models/{{name}}.model';
+import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{{name}}.service';
+{{/isManyToOne}}
+{{/fields}}
 
 @Component({
   selector: 'app-{{entityLowerCase}}-list',
@@ -63,16 +66,37 @@ export class {{entity}}ListComponent implements OnInit {
   @Output() searchFieldChange = new EventEmitter<string>();
   @Output() searchTermChange = new EventEmitter<string>();
 
+    {{#fields}}
+    {{#isManyToOne}}
+    private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
+    {{name}}  =   signal<{{nameCapitalized}} | null>(null);
+    {{name}}s  =   signal<{{nameCapitalized}}[]>([]);
+    {{/isManyToOne}}
+    {{/fields}}
+
   readonly selectedItem = signal<{{entity}} | null>(null);
   readonly allFields: FieldDefinition[] = [
     {{#allFields}}
-    { name: '{{name}}' , displayName: '{{displayName}}', type: '{{type}}'{{#defaultValue}}, defaultValue: '{{defaultValue}}'{{/defaultValue}} , entityType: '{{entityType}}'},
+    { name: '{{name}}' ,
+    displayName: '{{displayName}}',
+    type: '{{type}}'{{#defaultValue}},
+    defaultValue: '{{defaultValue}}'{{/defaultValue}} ,
+    inputType: '{{inputType}}',
+    entityType: '{{entityType}}',
+    relation: '{{relation}}'
+    },
     {{/allFields}}
   ];
 
   readonly fieldsToDisplay: FieldDefinition[] = [
     {{#fieldsToDisplay}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}' , entityType: '{{entityType}}' },
+    { name: '{{name}}',
+    displayName: '{{displayName}}',
+    type: '{{type}}' ,
+    entityType: '{{entityType}}' ,
+    inputType: '{{inputType}}',
+    relation: '{{relation}}'
+    },
     {{/fieldsToDisplay}}
   ];
 
@@ -141,7 +165,30 @@ export class {{entity}}ListComponent implements OnInit {
     const item = this.list().find(e => e.id === id);
     if (!item) return;
     this.selectedItem.set(null);
-    setTimeout(() => this.selectedItem.set(item), 0);
+     {{#fields}}
+    {{#isManyToOne}}
+     if (item.{{name}}) {
+        this.{{name}}Service.getById(item.{{name}}).subscribe({
+          next: {{name}} => {
+             item.{{name}}Model = {{name}};
+              this.selectedItem.set({
+              ...item,
+              {{name}}Model: {{name}}
+            });
+          },
+          error: err => {
+            this.alert.show('Erreur lors de la récupération .', 'error');
+
+          }
+        });
+    }
+    {{/isManyToOne}}
+    {{/fields}}
+
+    {{^hasManyToOne}}
+     setTimeout(() => this.selectedItem.set(item), 0);
+    {{/hasManyToOne}}
+
   }
 
   onSearch({ field, value }: { field: string; value: string }): void {
@@ -197,7 +244,7 @@ export class {{entity}}ListComponent implements OnInit {
 
       this.service.update(this.itemId, data).subscribe({
         next: () => {
-          this.alert.show('{{entity}} mis(e) à jour avec succès', 'success');
+          this.alert.show('Mis(e) à jour "{{entity}}" en cours.', 'success');
           this.closeDrawer();
           this.refresh();
         },
@@ -210,7 +257,7 @@ export class {{entity}}ListComponent implements OnInit {
 
       this.service.create(data).subscribe({
         next: () => {
-          this.alert.show('{{entity}} créé(e) avec succès', 'success');
+          this.alert.show('Création "{{entity}}" en cours.  ', 'success');
           this.closeDrawer();
           this.refresh();
         },
@@ -244,6 +291,7 @@ export class {{entity}}ListComponent implements OnInit {
 
   openDrawerForCreate() {
     this.drawerVisible = false;
+    this.fetchDeps();
     setTimeout(() => {
       this.drawerVisible = true;
       this.formKey.update(k => k + 1);
@@ -258,6 +306,7 @@ export class {{entity}}ListComponent implements OnInit {
 
   openDrawerForEdit(item: {{entity}}) {
     this.drawerVisible = false;
+    this.fetchDeps();
     setTimeout(() => {
       this.drawerVisible = true;
       this.formKey.update(k => k + 1);
@@ -292,4 +341,24 @@ export class {{entity}}ListComponent implements OnInit {
   selectedFieldType(): string {
     return this.fieldsToDisplay.find(f => f.name === this.searchField)?.type ?? 'text';
   }
+
+
+    fetchDeps() {
+        {{#fields}}
+        {{#isManyToOne}}
+             this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
+            {{/isManyToOne}}
+    {{/fields}}
+        }
+
+
+    getEntities(name: string) {
+        {{#fields}}
+    {{#isManyToOne}}
+        if (name === '{{name}}') return this.{{name}}s();
+        {{/isManyToOne}}
+{{/fields}}
+    return [];
+    }
+
 }

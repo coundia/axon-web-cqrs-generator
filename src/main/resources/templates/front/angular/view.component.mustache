@@ -7,10 +7,17 @@ import { FieldDefinition } from '../../../shared/components/models/field-definit
 import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
 import { AlertService } from '../../../shared/components/alert/alert.service';
 
+{{#fields}}
+{{#isManyToOne}}
+import {{openOne}} {{nameCapitalized}} } from '../../{{name}}/models/{{name}}.model';
+import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{{name}}.service';
+{{/isManyToOne}}
+{{/fields}}
+
 @Component({
   selector: 'app-{{entityLowerCase}}-view',
   standalone: true,
-  imports: [CommonModule, EntityToolbarActionComponent],
+  imports: [CommonModule, RouterLink, EntityToolbarActionComponent],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
 export class {{entity}}ViewComponent {
@@ -23,9 +30,22 @@ export class {{entity}}ViewComponent {
   readonly item = signal<{{entity}} | null>(this.service.{{entityLowerCase}}s().find(e => e.id === this.id) ?? null);
   readonly isLoading = signal(false);
 
+    {{#fields}}
+    {{#isManyToOne}}
+    private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
+    {{name}}  =   signal<{{nameCapitalized}} | null>(null);
+    {{/isManyToOne}}
+    {{/fields}}
+
   readonly fields: FieldDefinition[] = [
     {{#fields}}
-    { name: '{{name}}', displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}}, entityType: '{{entityType}}' },
+    {{^isId}}
+        { name: '{{name}}',
+        displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}},
+        entityType: '{{entityType}}',
+        relation: '{{relation}}'
+        },
+        {{/isId}}
     {{/fields}}
   ];
 
@@ -44,6 +64,26 @@ export class {{entity}}ViewComponent {
           }
         });
       }
+        {{#fields}}
+        {{#isManyToOne}}
+        if (this.item() && !this.item()!.{{name}}Model) {
+            this.{{name}}Service.getById(this.item()!.{{name}}!).subscribe({
+              next: {{name}} => {
+                this.{{name}}.set({{name}});
+
+                this.item.set({
+                  ...this.item()!,
+                  {{name}}Model: {{name}}
+                })
+
+              },
+              error: _ => {
+                this.alert.show('Erreur lors de la récupération {{name}}', 'error');
+              }
+            });
+          }
+        {{/isManyToOne}}
+        {{/fields}}
     });
   }
 
@@ -72,5 +112,9 @@ export class {{entity}}ViewComponent {
     });
   }
 
+
+   getRelatedModel(item: any, fieldName: string) {
+     return (item as any)[fieldName + 'Model'];
+  }
 
 }

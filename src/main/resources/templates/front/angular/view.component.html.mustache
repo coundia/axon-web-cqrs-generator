@@ -29,7 +29,20 @@
                 {{open}} getFieldValue(item()!, field.name) ? 'Oui' : 'Non' {{close}}
               </span>
             } @else {
-              {{open}} getFieldValue(item()!, field.name) || '-' {{close}}
+               @let relatedModel = getRelatedModel(item()!, field.name);
+               @if (relatedModel) {
+                    <a
+                      class="badge badge-primary badge-sm cursor-pointer hover:underline"
+                      [routerLink]="['/', field.name, relatedModel.id, 'view']"
+                      [title]="'Voir le détail de ' + relatedModel.name"
+                    >
+                    {{open}}  relatedModel.name || '—' }}
+                    </a>
+                  } @else {
+                    <span class="badge badge-ghost badge-sm">
+                        {{open}}  getFieldValue(item()!, field.name) || '—' }}
+                    </span>
+               }
             }
           </span>
         </div>

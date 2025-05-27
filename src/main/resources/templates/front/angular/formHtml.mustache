@@ -1,4 +1,4 @@
-<div class="max-w-xl mx-auto p-6 bg-base-100 rounded-2xl shadow-xl space-y-6">
+<div class="max-w-2xl mx-auto p-8 bg-base-100 rounded-2xl shadow-xl space-y-8 flex flex-col">
 
   <app-view-toolbar-actions
     [backLink]="'/{{entityLowerCase}}'"
@@ -7,73 +7,89 @@
     [showDelete]="isEdit()"
     [editMode]="isEdit()"
     (delete)="onDelete()"
+    class="sticky top-2 z-10"
   />
 
-  <h2 class="text-2xl font-bold text-center text-primary mb-6">
+  <h2 class="text-2xl font-bold text-center text-primary mb-8">
     @if (isEdit()) { Modifier } @else { Nouvelle } {{entity}}
   </h2>
 
-  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-5">
-    @for (field of fields; track field.name) {
-      @switch(field.entityType) {
-        @case('Boolean') {
-          <div class="form-control flex flex-row items-center gap-2">
-            <input
-              type="checkbox"
-              [formControlName]="field.name"
-              class="toggle toggle-primary"
-              id="{{ field.name }}"
-            />
-            <label [for]="field.name" class="label-text cursor-pointer select-none">
-              {{open}} field.displayName ? field.displayName : field.name }}
-            </label>
-          </div>
-        }
-        @case('Text') {
-          <div class="form-control">
-            <label class="label mb-1">
-              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
-            </label>
-            <textarea
-              [formControlName]="field.name"
-              class="textarea textarea-bordered w-full"
-              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
-              rows="3"
-            ></textarea>
-          </div>
-        }
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-8">
 
-        @case('Date') {
-          <div class="form-control">
-            <label class="label mb-1">
-              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
-            </label>
-            <input
-              type="datetime-local"
-              [formControlName]="field.name"
-              class="input input-bordered w-full"
-              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
-            />
-          </div>
-        }
-        @default {
-          <div class="form-control">
-            <label class="label mb-1">
-              <span class="label-text">{{open}} field.displayName ? field.displayName : field.name }}</span>
-            </label>
-            <input
-              type="text"
-              [formControlName]="field.name"
-              class="input input-bordered w-full"
-              placeholder="{{open}} field.displayName ? field.displayName : field.name }}"
-              autocomplete="off"
-            />
-          </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      @for (field of fields; track field.name) {
+        @switch(field.entityType) {
+          @case('Boolean') {
+            <div class="flex items-center gap-3">
+              <input
+                type="checkbox"
+                [formControlName]="field.name"
+                class="toggle toggle-primary"
+                id="{{open}} field.name }}"
+              />
+              <label [for]="field.name" class="label-text select-none">
+                {{open}} field.displayName || field.name }}
+              </label>
+            </div>
+          }
+          @case('Text') {
+            <div>
+              <label class="label mb-1">
+                <span class="label-text">{{open}} field.displayName || field.name }}</span>
+              </label>
+              <textarea
+                [formControlName]="field.name"
+                class="textarea textarea-bordered w-full"
+                placeholder="{{open}} field.displayName || field.name }}"
+                rows="3"
+              ></textarea>
+            </div>
+          }
+          @case('Date') {
+            <div>
+              <label class="label mb-1">
+                <span class="label-text">{{open}} field.displayName || field.name }}</span>
+              </label>
+              <input
+                type="datetime-local"
+                [formControlName]="field.name"
+                class="input input-bordered w-full"
+                placeholder="{{open}} field.displayName || field.name }}"
+              />
+            </div>
+          }
+          @default {
+
+          @if(field.relation =='manyToOne') {
+              <app-entity-picker
+                [entities]="getEntities(field.name)"
+                [label]="field.displayName || field.name"
+                [placeholder]="'Choisir ' + (field.displayName || field.name)"
+                idKey="id"
+                nameKey="name"
+                [formControlName]="field.name"
+                class="mb-4"
+              />
+            }
+
+            <div class="{{open}} field.inputType }}">
+              <label class="label mb-1">
+                <span class="label-text">{{open}} field.displayName || field.name }}</span>
+              </label>
+              <input
+                type="text"
+                [formControlName]="field.name"
+                class="input input-bordered w-full"
+                placeholder="{{open}} field.displayName || field.name }}"
+                autocomplete="off"
+              />
+            </div>
+          }
         }
       }
-    }
+    </div>
 
-    <button type="submit" class="btn btn-primary w-full mt-4" [disabled]="form.invalid || isLoading()">
+    <button type="submit" class="btn btn-primary btn-block mt-6 h-12 text-lg" [disabled]="form.invalid || isLoading()">
       @if (isLoading()) {
         <span class="loading loading-spinner loading-xs mr-2"></span>
       }

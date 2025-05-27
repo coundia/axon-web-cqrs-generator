@@ -32,6 +32,7 @@ public class FieldDefinition implements Serializable {
 	private String displayName;
 	private String confidentiel;
 	private String entityType;
+	private String inputType;
 
 	public String getEntityType() {
 
@@ -40,6 +41,15 @@ public class FieldDefinition implements Serializable {
 		}
 
 		return entityType;
+	}
+
+	public String getInputType() {
+
+		if (inputType == null) {
+			return type;
+		}
+
+		return inputType;
 	}
 
 	public String getDisplayName() {

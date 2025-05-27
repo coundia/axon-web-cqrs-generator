@@ -18,19 +18,19 @@ import java.util.Optional;
 @Repository
 public interface {{name}}Repository extends JpaRepository<{{entityName}}, String> {
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC limit 1 ")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.createdBy.id = ?2 ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC limit 1 ")
 	Optional<{{entityName}}> findByIdAndCreatedById(String id, String createdById);
-	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.tenant.id = ?2 ORDER BY e.updatedAtAudit DESC ")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.id = ?1 and e.tenant.id = ?2 ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC ")
 	List<{{entityName}}> findByIdAndTenantId(String id, String tenantId);
 
-    @Query("SELECT e FROM {{entityName}} e WHERE e.createdBy.id = ?1 ORDER BY e.updatedAtAudit DESC ")
+    @Query("SELECT e FROM {{entityName}} e WHERE e.createdBy.id = ?1 ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC ")
 	Page<{{entityName}}> findByCreatedById(String createdById, Pageable pageable);
 
-	@Query("SELECT e FROM {{entityName}} e WHERE e.tenant.id = ?1 ORDER BY e.updatedAtAudit DESC ")
+	@Query("SELECT e FROM {{entityName}} e WHERE e.tenant.id = ?1 ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC ")
 	Page<{{entityName}}> findAllByTenantId(String tenantId, Pageable pageable);
 
     {{#hasNameField}}
-     @Query("SELECT e FROM {{entityName}} e WHERE e.name = ?1 ORDER BY e.updatedAtAudit DESC limit 1 ")
+     @Query("SELECT e FROM {{entityName}} e WHERE e.name = ?1 ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC limit 1 ")
 	Optional<{{entityName}}> findByName(String name);
 	{{/hasNameField}}
 	{{#fields}}
@@ -38,10 +38,10 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         {{^isId}}
         {{^transactional}}
         {{#hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.createdBy.id = :createdById ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.createdBy.id = :createdById ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/ hasLike }}
         {{^hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.createdBy.id = :createdById ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.createdBy.id = :createdById ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/hasLike}}
         List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameLowerCase}}, String createdById);
         {{/transactional}}
@@ -54,18 +54,18 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} valueId, String userId);
         {{/transactional}}
         {{#hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.tenant.name = :tenantName ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.tenant.name = :tenantName ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/ hasLike }}
         {{^hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.tenant.name = :tenantName ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.tenant.name = :tenantName ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/hasLike}}
         List<{{entityName}}> findBy{{nameJpa}}AndTenantName({{primitiveType}} {{nameLowerCase}}, String tenantName);
 
         {{#hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.tenant.id = :tenantId ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE LOWER(e.{{nameJpaUnCapitalized}}) LIKE LOWER(CONCAT('%', :{{nameUnCapitalized}}, '%')) AND e.tenant.id = :tenantId ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/ hasLike }}
         {{^hasLike}}
-        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.tenant.id = :tenantId ORDER BY e.updatedAtAudit DESC")
+        @Query("SELECT e FROM {{entityName}} e WHERE e.{{nameJpaUnCapitalized}} = :{{nameUnCapitalized}} AND e.tenant.id = :tenantId ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC")
         {{/hasLike}}
        List<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameLowerCase}}, String tenantId);
         {{/isId}}
@@ -76,7 +76,7 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         WHERE e.{{nameJpaUnCapitalized}} >= :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
         AND e.{{nameJpaUnCapitalized}} < :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().plusDays(1).atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
         AND e.createdBy.id = :createdById
-        ORDER BY e.updatedAtAudit DESC
+        ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC
         """)
          List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameJpaUnCapitalized}}, String createdById);
 
@@ -85,7 +85,7 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         WHERE e.{{nameJpaUnCapitalized}} >= :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
         AND e.{{nameJpaUnCapitalized}} < :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().plusDays(1).atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
         AND e.tenant.id = :tenantId
-        ORDER BY e.updatedAtAudit DESC
+        ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC
         """)
          List<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameJpaUnCapitalized}}, String tenantId);
 
@@ -98,6 +98,7 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
     SELECT DISTINCT s FROM {{entityName}} s
     LEFT JOIN {{entityName}}User su ON su.{{entityNameLowerCase}} = s
     WHERE s.tenant.id = :tenantId AND (s.createdBy.id = :userId OR su.user.id = :userId)
+    ORDER BY s.updatedAtAudit DESC, s.createdAtAudit  DESC
     """)
 	Page<{{entityName}}> findAllOwnedOrShared(@Param("userId") String userId, @Param("tenantId") String tenantId, Pageable pageable);
 

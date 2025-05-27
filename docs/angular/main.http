@@ -3,7 +3,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "Account",
 	"table": "accounts",
@@ -59,7 +59,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "AccountUser",
 	"bind": "username",
@@ -110,7 +110,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "Category",
 	"table": "categories",
@@ -153,7 +153,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
@@ -167,11 +167,13 @@ Content-Type: application/json
 	"fields": [
 	  {
 		"name": "id",
+        "inputType": "hidden",
 		"type": "String"
 	  },
 	  {
 		"name": "amount",
 		"type": "Double",
+		"inputType": "number",
 		"focus": true,
 		"displayName": "Montant",
 		"indicators": [
@@ -181,18 +183,21 @@ Content-Type: application/json
 	  {
 		"name": "name",
 		"type": "String",
+		"inputType": "text",
 		"defaultValue": "\"Pas de motif\"",
 		"displayName": "Motif"
 	  },
 	  {
 		"name": "details",
 		"type": "String",
+		"inputType": "text",
 		"defaultValue": "\"Pas de description\"",
 		"displayName": "Description",
 		"nullable": true
 	  },
 	  {
 		"name": "isActive",
+		"inputType": "checkbox",
 		"displayName": "Activé",
 		"type": "Boolean",
 		"defaultValue": true
@@ -200,6 +205,7 @@ Content-Type: application/json
 	  {
 		"name": "account",
 		"displayName": "Compte",
+		"inputType": "hidden",
 		"entityType": "Account",
 		"type": "String",
 		"relation": "manyToOne",
@@ -207,6 +213,7 @@ Content-Type: application/json
 	  },
 	  {
 		"name": "category",
+		"inputType": "hidden",
 		"displayName": "Category",
 		"entityType": "Category",
 		"type": "String",
@@ -214,12 +221,14 @@ Content-Type: application/json
 		"nullable": true
 	  },
 	  {
+		"inputType": "text",
 		"name": "typeTransactionRaw",
 		"type": "String",
 		"displayName": "type",
 		"entityType": "enum"
 	  },
 	  {
+		"inputType": "date",
 		"name": "dateTransaction",
 		"type": "Date",
 		"displayName": "Date transaction",
@@ -237,7 +246,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "Setting",
 	"table": "settings",
@@ -293,7 +302,7 @@ Accept: application/x-ndjson
 Content-Type: application/json
 
 {
-  "outputDir": "/Users/pcoundia/labs/angular/angular19/src/app/features",
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
   "definition": {
 	"name": "Chat",
 	"table": "chat",

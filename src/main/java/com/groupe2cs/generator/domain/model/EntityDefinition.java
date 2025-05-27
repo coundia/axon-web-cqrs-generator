@@ -339,7 +339,11 @@ public class EntityDefinition implements Serializable {
 
 	public List<FieldDefinition> getFieldWithDisplayName() {
 		return fields.stream()
-				.filter(f -> f.getDisplayName() != null && !f.getDisplayName().isEmpty())
+				.filter(
+						f -> f.getDisplayName() != null
+								&& !f.getDisplayName().isEmpty()
+						&& !"manyToOne".equalsIgnoreCase(f.getRelation())
+				)
 				.toList();
 	}
 
@@ -380,5 +384,13 @@ public class EntityDefinition implements Serializable {
 	}
 
 
+	public Boolean  getHasManyToOne(){
+		return fields.stream()
+				.filter(f -> f.getRelation() != null)
+				.anyMatch(f -> f.getRelation().equalsIgnoreCase("manyToOne")
 
+				)
+				&& !name.equalsIgnoreCase("tenant")
+				&& !name.equalsIgnoreCase("createdBy");
+	}
 }
