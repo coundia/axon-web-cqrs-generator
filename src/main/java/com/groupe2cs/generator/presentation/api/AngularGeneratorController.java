@@ -27,7 +27,8 @@ public class AngularGeneratorController {
 		List<FieldDefinition> fields = new ArrayList<>(entityDefinition.getFields());
 
 		entityDefinition.setFields(fields);
-		entityDefinition.addDefaultFieldIfMissing();
+
+
 		angularGeneratorService.generate(entityDefinition, output);
 		return ApiResponseDto.ok("Angular code generated");
 	}

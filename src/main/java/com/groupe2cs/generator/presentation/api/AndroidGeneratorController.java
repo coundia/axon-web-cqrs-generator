@@ -24,7 +24,7 @@ public class AndroidGeneratorController {
 		EntityDefinition entityDefinition = request.getDefinition();
 
 		List<FieldDefinition> fields = new ArrayList<>(entityDefinition.getFields());
-		entityDefinition.addDefaultFieldIfMissing();
+		//entityDefinition.addDefaultFieldIfMissing();
 		entityDefinition.setFields(fields);
 
 		//androidGeneratorService.generate(entityDefinition, output);

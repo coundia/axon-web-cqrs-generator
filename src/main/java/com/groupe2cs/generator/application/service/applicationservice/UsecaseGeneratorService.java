@@ -146,11 +146,15 @@ public class UsecaseGeneratorService {
         context.put("entity", Utils.capitalize(definition.getEntity()));
         context.put("className", template.getClassName());
 
+        context.put("entityLowerCase", Utils.unCapitalize(definition.getEntity()));
+
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
         context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
         context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
         context.put("hasFiles", !definition.getFieldFiles().isEmpty());
         context.put("searchFields", FieldTransformer.transform(definition.searchFields(), definition.getName()));
+
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 
         context.put("isMultiTenant", definition.getMultiTenant());
 
@@ -169,6 +173,7 @@ public class UsecaseGeneratorService {
         context.put("name", Utils.capitalize(definition.getName()));
         context.put("nameAggregate", Utils.capitalize(definition.getName()));
         context.put("entity", Utils.capitalize(definition.getEntity()));
+        context.put("entityLowerCase", Utils.unCapitalize(definition.getEntity()));
 
         context.put("className", template.getClassName());
 

@@ -3,7 +3,7 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-
+import java.util.List;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +24,27 @@ private final AmazonS3 amazonS3;
 private String bucket;
 
 @Override
-public String storeFile(MultipartFile file) {
-try {
-String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-ObjectMetadata metadata = new ObjectMetadata();
-metadata.setContentLength(file.getSize());
-metadata.setContentType(file.getContentType());
+    public String storeFile(List<MultipartFile> file, MetaRequest metaRequest) {
+        	List<String> savedFiles = new ArrayList<>();
+			for (MultipartFile multipartFile : file) {
+				String filePath = createOneFile(multipartFile,metaRequest);
+				savedFiles.add(filePath);
+			}
+		return Utils.toJson(savedFiles);
+    }
 
-amazonS3.putObject(bucket, filename, file.getInputStream(), metadata);
+     private String createOneFile(MultipartFile file, MetaRequest metaRequest) {
+        try {
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
 
-return amazonS3.getUrl(bucket, filename).toString();
-} catch (IOException ex) {
-throw new RuntimeException("Failed to upload file to S3: " + ex.getMessage(), ex);
-}
-}
+         amazonS3.putObject(bucket, filename, file.getInputStream(), metadata);
+
+            return amazonS3.getUrl(bucket, filename).toString();
+        } catch (IOException ex) {
+         throw new RuntimeException("Failed to upload file to S3: " + ex.getMessage(), ex);
+        }
+    }
 }

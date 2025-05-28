@@ -33,6 +33,7 @@ public class FieldDefinition implements Serializable {
 	private String confidentiel;
 	private String entityType;
 	private String inputType;
+	private Boolean isFiles = false;
 
 	public String getEntityType() {
 
@@ -41,6 +42,15 @@ public class FieldDefinition implements Serializable {
 		}
 
 		return entityType;
+	}
+
+	public Boolean getIsFiles() {
+
+		if (isFiles == null) {
+			return false;
+		}
+
+		return isFiles;
 	}
 
 	public String getInputType() {
@@ -204,6 +214,7 @@ public class FieldDefinition implements Serializable {
 	public boolean isFileType() {
 		return
 				type.equalsIgnoreCase("MultipartFile") ||
+						type.equalsIgnoreCase("FileManager") ||
 						type.equalsIgnoreCase("PartFile") ||
 						type.equalsIgnoreCase("files") ||
 						type.equalsIgnoreCase("image") ||

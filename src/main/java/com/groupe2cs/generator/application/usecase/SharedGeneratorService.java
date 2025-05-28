@@ -36,6 +36,7 @@ public class SharedGeneratorService {
 
         String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
 
+
         List<SharedTemplate> sharedTemplates = List.of(
                 new SharedTemplate(
                         "StatusController",
@@ -55,7 +56,8 @@ public class SharedGeneratorService {
                         "FileStorageService",
                         "shared/fileStorageService.mustache",
                         Set.of(
-                                "org.springframework.web.multipart.MultipartFile"
+                                "org.springframework.web.multipart.MultipartFile",
+                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) + ".MetaRequest"
                         ),
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()
                 )
@@ -70,6 +72,9 @@ public class SharedGeneratorService {
                                 "java.nio.file.Files",
                                 "java.nio.file.Path",
                                 "java.nio.file.Paths",
+                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+                                Utils.getPackage(rootDir + "/fileManager/" + generatorProperties.getApplicationUseCasePackage()) + ".FileManagerCreateApplicationService",
+                                Utils.getPackage(rootDir + "/fileManager/" + generatorProperties.getDtoPackage()) + ".FileManagerRequest",
                                 "java.util.UUID"
                         ),
                         outputShared + "/" + generatorProperties.getInfrastructurePackage()
@@ -184,6 +189,7 @@ public class SharedGeneratorService {
         String outputDir = template.getOutput();
 
         context.put("package", Utils.getPackage(outputDir));
+
 
         context.put("imports", template.getImports());
         context.put("name", Utils.capitalize(definition.getName()));

@@ -8,66 +8,81 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class {{name}}UpdateControllerIntegrationTest extends BaseIntegrationTests {
 
-@Autowired
-private {{name}}Repository {{nameLower}}Repository;
+    @Autowired
+    private {{name}}Repository {{nameLower}}Repository;
 
-@Autowired
-private CommandGateway commandGateway;
+    @Autowired
+    private CommandGateway commandGateway;
 
-@Autowired
-private CommandGateway commandGatewayUpdate;
+    @Autowired
+    private CommandGateway commandGatewayUpdate;
 
-{{#fields}}
-{{#hasRepository}}
-@Autowired
-private {{repository}} ;
-{{/hasRepository}}
+    {{#fields}}
+    {{#hasRepository}}
+    @Autowired
+    private {{repository}};
+    {{/hasRepository}}
 {{/fields}}
 
-@Test
-void it_should_be_able_to_update_{{nameLower}}() {
+    @Test
+    void it_should_be_able_to_update_{{nameLower}}() {
 
-	String existingId = {{name}}Fixtures.randomOneViaCommand(
-	commandGateway,{{nameLower}}Repository,
-	  {{#fields}}
+        String existingId = {{name}}Fixtures.randomOneViaCommand(
+            commandGateway, {{nameLower}}Repository,
+            {{#fields}}
     {{#hasRepository}}
         {{nameUnCapitalized}}DataRepository,
-    {{/hasRepository}}
-    {{/fields}}
-	 getCurrentUser() ).getId().value();
+            {{/hasRepository}}
+{{/fields}}
+            getCurrentUser()
+        ).getId().value();
 
-	Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(commandGatewayUpdate,
-    {{nameLower}}Repository,
-     {{#fields}}
-        {{#hasRepository}}
-            {{nameUnCapitalized}}DataRepository,
-    {{/hasRepository}}
-    {{/fields}}
-     getCurrentUser());
+        Create{{name}}Command updated = {{name}}Fixtures.randomOneViaCommand(
+            commandGatewayUpdate, {{nameLower}}Repository,
+            {{#fields}}
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
+            {{/hasRepository}}
+{{/fields}}
+            getCurrentUser()
+        );
 
-	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
-	{{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, updated.getId().value());
+        {{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, existingId);
+        {{name}}Fixtures.byIdWaitExist({{nameLower}}Repository, updated.getId().value());
 
-	{{name}}Request requestDTO = new {{name}}Request();
-	{{#editableFields}}
-		{{^isId}}
-		{{#relation}}
-	 requestDTO.set{{nameCapitalized}}( updated.get{{nameCapitalized}}().value());
-		{{/relation}}
-		{{^relation}}
-	 requestDTO.set{{nameCapitalized}}({{{testDomainValue}}});
-		{{/relation}}
-		{{/isId}}
-	{{/editableFields}}
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        {{#editableFields}}
+    {{^isFiles}}
+        {{^isId}}
+            {{#relation}}
+        body.add("{{nameUnCapitalized}}", updated.get{{nameCapitalized}}().value());
+        {{/relation}}
+            {{^relation}}
+        body.add("{{nameUnCapitalized}}", {{{testDomainValue}}});
+        {{/relation}}
+        {{/isId}}
+    {{/isFiles}}
+{{/editableFields}}
 
-	String uri = "/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}/" + existingId;
-	ResponseEntity<String> response = this.put(uri,requestDTO);
+        HttpHeaders multipartHeaders = new HttpHeaders();
+        multipartHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, multipartHeaders);
 
-	}
+        String uri = "/api/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}/" + existingId;
+        ResponseEntity<String> response = testRestTemplate.exchange(
+            uri,
+            HttpMethod.PUT,
+            requestEntity,
+            String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }

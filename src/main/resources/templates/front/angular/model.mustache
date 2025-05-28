@@ -8,10 +8,15 @@ export type Type{{entity}} = 'TYPE1' | 'TYPE2';
 
 export interface {{entity}} {
     {{#fields}}
+    {{^isFiles}}
     {{name}}{{#nullable}}?{{/nullable}}: {{type}};
     {{#isManyToOne}}
     {{name}}Model?: {{nameCapitalized}};
     {{/isManyToOne}}
+    {{/isFiles}}
+    {{#isFiles}}
+    {{name}}?: any;
+    {{/isFiles}}
     {{/fields}}
 }
 

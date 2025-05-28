@@ -3,7 +3,7 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-
+import java.util.List;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.stereotype.Service;
 {{#hasFiles}}
@@ -21,32 +21,40 @@ private final CommandGateway commandGateway;
 
 {{#hasFiles}}
 public {{name}}Response create{{name}}(
-{{#hasFiles}}{{#fieldFiles}}MultipartFile {{nameCamelCase}},{{/fieldFiles}}{{/hasFiles}}
-{{#fields}}
-	{{^isId}}
-		{{primitiveType}} {{nameCamelCase}}{{^last}},{{/last}}
-	{{/isId}}
-{{/fields}},
+{{#hasFiles}}{{#fieldFiles}}List<MultipartFile> {{nameUnCapitalized}},{{/fieldFiles}}{{/hasFiles}}
+{{#editableFields}}
+{{^isId}}
+		{{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
+        {{/isId}}
+{{/editableFields}},
 MetaRequest metaRequest
 ) {
-{{#fieldFiles}}
-	{{entity}}{{nameCapitalized}} {{nameCamelCase}}Reference = {{entity}}{{nameCapitalized}}.create(fileStorageService.storeFile({{nameCamelCase}}));
-{{/fieldFiles}}
 
-{{name}}Request request = new {{name}}Request(
-{{#fields}}
-	{{^isId}}{{nameCamelCase}}{{^last}},{{/last}}{{/isId}}
-{{/fields}}
-);
-
+    {{name}}Request request = new {{name}}Request(
+        {{#editableFields}}
+        {{^isId}}
+        {{nameUnCapitalized}}{{^last}},{{/last}}
+        {{/isId}}
+        {{/editableFields}}
+    );
 
 Create{{name}}Command command = {{name}}Mapper.toCommand(
-request{{#hasFiles}},
-{{#fieldFiles}}{{nameCamelCase}}Reference{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
+request
 );
 
-commandGateway.sendAndWait(command);
+command.setCreatedBy({{name}}CreatedBy.create(metaRequest.getUserId()));
+command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
 
+commandGateway.sendAndWait(command);
+{{#hasFiles}}
+metaRequest.setObjectId(command.getId().value());
+metaRequest.setObjectName("{{entityLowerCase}}");
+{{#fieldFiles}}
+{{entity}}{{nameCapitalized}}.create(
+    fileStorageService.storeFile({{nameUnCapitalized}}, metaRequest)
+    );
+{{/fieldFiles}}
+{{/hasFiles}}
 return {{name}}Mapper.toResponse(command);
 }
 
@@ -61,9 +69,7 @@ request
 );
 
 command.setCreatedBy({{name}}CreatedBy.create(metaRequest.getUserId()));
-{{#isMultiTenant}}
-	command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
-{{/isMultiTenant}}
+command.setTenant({{name}}Tenant.create(metaRequest.getTenantId()));
 
 commandGateway.sendAndWait(command);
 return {{name}}Mapper.toResponse(command);

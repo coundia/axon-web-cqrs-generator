@@ -70,6 +70,8 @@ public class GroupMainGenerator {
 	}
 
 	public Flux<ApiResponseDto> generateStreaming(EntityDefinitionDTO definitionDto) {
+
+		log.info("📨 Requête reçue pour générer l'entité: {}", definitionDto.getDefinition().getName());
 		Sinks.Many<ApiResponseDto> sink = Sinks.many().unicast().onBackpressureBuffer();
 
 		EntityDefinition definition = definitionDto.getDefinition();
@@ -93,6 +95,7 @@ public class GroupMainGenerator {
 			fields.add(createdBy);
 			log.info("Adding field createdBy in {} ", definition.getName());
 		}
+		log.info("Adding field tenant in {} ", definition.getName());
 
 		if (!definition.hasField("tenant") &&
                 definition.getMultiTenant() &&
@@ -107,12 +110,13 @@ public class GroupMainGenerator {
 					.build();
 			fields.add(tenant);
 		}
+		log.info("Adding field after tenant in {} ", definition.getName());
 
 		definition.setFields(fields);
-
+		log.info("Adding field ettt tenant in {} ", definition.getName());
 		Mono.fromRunnable(() -> {
 			try {
-
+				log.info("Try adding {} ", definition.getName());
 				if (!definition.getIsGenerated()) {
 					emit(sink, "Generating commun ...");
 					sharedGeneratorService.generate(definition, outputDir);
@@ -195,6 +199,8 @@ public class GroupMainGenerator {
 				sink.tryEmitComplete();
 
 			} catch (Exception e) {
+				log.error("Error Try adding {} , {} ", definition.getName(), e.getMessage());
+				e.printStackTrace();
 				sink.tryEmitNext(ApiResponseDto.builder()
 						.code(500)
 						.message("❌ Error during generation: " + e.getMessage())

@@ -1,9 +1,8 @@
 package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.SharedTemplate;
+import com.groupe2cs.generator.domain.engine.*;
 import com.groupe2cs.generator.domain.engine.FileWriterService;
-import com.groupe2cs.generator.domain.engine.FileWriterService;
-import com.groupe2cs.generator.domain.engine.TemplateEngine;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.shared.Utils;
@@ -65,9 +64,14 @@ public class AndroidComposeGeneratorService {
 		context.put("isChat", definition.getIsChat());
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
-		context.put("fields", definition.getFields());
+
 		context.put("fieldsDisplayed", definition.getFieldsToDisplay());
 		context.put("fieldsAmount", definition.getFieldsAmount());
+
+		context.put("editableFields", AndroidComposeFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("fields", AndroidComposeFieldTransformer.transform(definition.getFields(), definition.getName()));
+		context.put("hasFiles", definition.getHasFiles());
+
 		String content = templateEngine.render(template.getTemplatePath(), context);
 
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);

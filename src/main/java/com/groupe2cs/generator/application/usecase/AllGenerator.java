@@ -11,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,70 +24,48 @@ public class AllGenerator implements Generator {
 	private final GroupMainGenerator groupMainGenerator;
 	private final SecurityGeneratorService securityGeneratorService;
 	private final MultiTenantGeneratorService multiTenantGeneratorService;
+	private final FileManagerGeneratorService fileManagerGeneratorService;
 
 	public Flux<ApiResponseDto> generate(@RequestBody EntityDefinitionDTO request) {
-
-		Sinks.Many<ApiResponseDto> sink = Sinks.many().unicast().onBackpressureBuffer();
-
 		EntityDefinition definition = request.getDefinition();
 		String outputDir = request.getOutputDir();
 
 		List<FieldDefinition> fields = new ArrayList<>(definition.getAllFields());
-
 		definition.getStack().add("sync");
 		definition.getStack().add("mail");
 		definition.getStack().add("security");
 		definition.setMultiTenant(true);
 		definition.setAuditable(true);
 
-		if(!definition.hasField("updatedAt")){
-			FieldDefinition updatedAt = FieldDefinition
-					.builder()
-					.name("updatedAt")
-					.type("java.time.Instant")
-					.defaultValue("java.time.Instant.now()")
-					.readOnly(true)
-					.nullable(true)
-					.build();
-			fields.add(updatedAt);
-		}
-
-		if(!definition.hasField("reference")){
-			FieldDefinition reference = FieldDefinition
-					.builder()
-					.name("reference")
-					.type("String")
-					.readOnly(true)
-					.nullable(true)
-					.build();
-			fields.add(reference);
-		}
+//		definition.addDefaultFieldIfMissing();
 
 		definition.setFields(fields);
 
 		log.info("📨 Requête reçue pour générer l'entité: {}", definition.getName());
-		log.info("📦 Fields: {}", fields.toString());
+		log.info("📦 Fields: {}", fields);
 		fields.forEach(
-				p -> log.info("Field : {} \n ", p.toString())
+				p -> log.info("Field : {} \n ", p)
 		);
 		log.info("📂 Dossier de sortie: {}", outputDir);
 		log.info("📂table: {}", definition.getTable());
 
-		//Module security
-		log.info("📦 Generation de la sécurité");
-		securityGeneratorService
-				.generate(definition, outputDir)
-				.doOnNext(msg -> sink.tryEmitComplete())
-				.subscribe();
+		Flux<ApiResponseDto> fileManagerFlux = fileManagerGeneratorService.generate(definition, outputDir)
+				.then(Mono.just(ApiResponseDto.builder().code(200).message("FileManager done").build()))
+				.flux();
 
-		// module multi-tenant
-		log.info("📦 Generation du module multi-tenant");
-		multiTenantGeneratorService
-				.generate(definition, outputDir)
-				.subscribe();
+		Flux<ApiResponseDto> securityFlux = securityGeneratorService.generate(definition, outputDir)
+				.map(msg -> ApiResponseDto.builder().code(200).message(msg).build());
 
-		log.info("📦 Generation de la sécurité terminée");
+		Flux<ApiResponseDto> multiTenantFlux = multiTenantGeneratorService.generate(definition, outputDir)
+				.then(Mono.just(ApiResponseDto.builder().code(200).message("MultiTenant done").build()))
+				.flux();
 
-		return groupMainGenerator.generateStreaming(request);
+		Flux<ApiResponseDto> groupMainFlux = groupMainGenerator.generateStreaming(request);
+
+		return Flux.merge(fileManagerFlux, securityFlux, multiTenantFlux, groupMainFlux);
+
+
+
+
 	}
 }

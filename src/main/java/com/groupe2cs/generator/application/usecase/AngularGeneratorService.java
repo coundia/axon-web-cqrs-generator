@@ -1,10 +1,7 @@
 package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.SharedTemplate;
-import com.groupe2cs.generator.domain.engine.AngularFieldTransformer;
-import com.groupe2cs.generator.domain.engine.FileWriterService;
-import com.groupe2cs.generator.domain.engine.SwiftFieldTransformer;
-import com.groupe2cs.generator.domain.engine.TemplateEngine;
+import com.groupe2cs.generator.domain.engine.*;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.shared.Utils;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +98,9 @@ public class AngularGeneratorService {
 		context.put("fields", AngularFieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("allFields", AngularFieldTransformer.transform(definition.getAllFields(), definition.getName()));
 		context.put("fieldsToDisplay", AngularFieldTransformer.transform(definition.getFieldWithDisplayName(), definition.getName()));
+
+		context.put("editableFields", AngularFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("hasFiles", !definition.getFieldFiles().isEmpty());
 
 		context.put("open", "{{");
 		context.put("close", "}}");

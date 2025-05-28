@@ -121,4 +121,6 @@
   [viewLink]="'/{{entityLowerCase}}/' + itemId + '/view'"
   [addLink]="'/{{entityLowerCase}}/new'"
   [getEntities]="getEntities.bind(this)"
+ [files]="files"
+ (filesChange)="files = $event"
 />

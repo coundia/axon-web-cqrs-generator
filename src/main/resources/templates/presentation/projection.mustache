@@ -44,6 +44,8 @@ try {
 {{/editableFields}}
 .build();
 
+entity.setId(event.getId().value());
+
 if(event.getCreatedBy() !=null){
 	entity.setCreatedBy( new User(event.getCreatedBy().value()));
 }
@@ -155,7 +157,7 @@ public void apply{{name}}ToAccount(String accountId, Double amount, String type)
 			log.info("Account updated with debit amount: {}, account:{}", amount, account.getId());
 		}
 
-		account.setUpdatedAt(java.time.Instant.now());
+		//account.setUpdatedAt(java.time.Instant.now());
 		accountRepository.save(account);
 	}
 

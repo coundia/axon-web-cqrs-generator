@@ -37,5 +37,6 @@ public class GeneratorProperties {
     private String securityPackage;
     private String configPackage;
     private String tenantPackage;
+    private String FileManagerPackage;
 
 }

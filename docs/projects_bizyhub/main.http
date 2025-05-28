@@ -268,6 +268,7 @@ Content-Type: application/json
 	"table": "chat",
 	"title": "Chat",
 	"isChat": true,
+	"hasFiles": true,
 	"fields": [
 	  {
 		"name": "id",
@@ -304,6 +305,12 @@ Content-Type: application/json
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
 		"relation": "manyToOne",
 		"nullable": true
+	  },
+	  {
+		"name": "files",
+		"type": "FileManager",
+		"isFiles": true,
+		"columnDefinition" : "TEXT"
 	  }
 	]
   }
@@ -380,6 +387,37 @@ Content-Type: application/json
 	  { "name": "status", "type": "String" , "nullable": true},
 	  { "name": "reserved", "type": "String" , "nullable": true},
 	  { "name": "errorMessage", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/fileManager",
+  "definition": {
+	"name": "FileManager",
+	"table": "file_manager",
+	"title": "FileManager",
+	"isFileManager": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "details", "type": "String",
+		"columnDefinition": "Text",
+		"nullable": true },
+	  { "name": "objectId", "type": "String" ,"nullable": true },
+	  { "name": "objectName", "type": "String" ,"nullable": true },
+	  { "name": "originalName", "type": "String" ,"nullable": true,"displayName": "Nom" },
+	  { "name": "mimeType", "type": "String","nullable": true },
+	  { "name": "size", "type": "Long" ,"nullable": true},
+	  { "name": "path", "type": "String" ,"nullable": true},
+	  { "name": "uri", "type": "String","nullable": true },
+	  { "name": "isPublic", "type": "Boolean", "nullable": true }
 	]
   }
 }

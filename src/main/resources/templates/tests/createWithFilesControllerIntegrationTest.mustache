@@ -11,57 +11,57 @@ import org.springframework.util.MultiValueMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import java.nio.charset.StandardCharsets;
 
 public class {{name}}CreateControllerIntegrationTest extends BaseIntegrationTests {
 
-@Autowired
-private CommandGateway commandGateway;
+    @Autowired
+    private CommandGateway commandGateway;
 
-
-{{#fields}}
+    {{#fields}}
     {{#hasRepository}}
-@Autowired
-private {{repository}} ;
-{{/hasRepository}}
+    @Autowired
+    private {{repository}};
+    {{/hasRepository}}
 {{/fields}}
 
-@Test
-void it_should_be_able_to_add_{{nameLower}}() {
+    @Test
+    void it_should_be_able_to_add_{{nameLower}}() {
 
-	{{name}}Request requestDTO = new {{name}}Request();
-
-	{{#fields}}
-		{{^isId}}
-	requestDTO.set{{nameCapitalized}}({{{testValue}}});
-		{{/isId}}
-	{{/fields}}
-
-MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-{{#fields}}
-	{{^isId}}
-		body.add("{{nameCamelCase}}", requestDTO.get{{nameCapitalized}}().toString());
-	{{/isId}}
-{{/fields}}
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        {{#editableFields}}
+    {{^isId}}
+        body.add("{{nameUnCapitalized}}", {{{testValue}}});
+        {{/isId}}
+{{/editableFields}}
 {{#fieldFiles}}
-	body.add("{{nameCamelCase}}", createFile());
-{{/fieldFiles}}
+        body.add("{{nameUnCapitalized}}", new ByteArrayResource("dummy content".getBytes(StandardCharsets.UTF_8)) {
+            @Override
+            public String getFilename() {
+                return "test.txt";
+            }
+        });
+        {{/fieldFiles}}
 
-headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders multipartHeaders = new HttpHeaders();
+        multipartHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, multipartHeaders);
 
-String uri = "/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}";
-ResponseEntity<{{name}}Response> response =
-	this.postForEntity(uri, requestEntity, {{name}}Response.class);
-	assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-	assertThat(response.getBody()).isNotNull();
-	assertThat(response.getBody().getId()).isNotNull();
+        String uri = "/api/v1{{apiPrefix}}/commands/{{entityUnCapitalized}}";
+        ResponseEntity<{{name}}Response> response =
+            testRestTemplate.postForEntity(uri, requestEntity, {{name}}Response.class);
 
-	{{#editableFields}}
-		{{^isId}}
-	assertThat(response.getBody().get{{nameCapitalized}}().toString())
-	.isEqualTo(requestDTO.get{{nameCapitalized}}().toString());
-		{{/isId}}
-	{{/editableFields}}
-	}
-	}
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getId()).isNotNull();
+
+        {{#editableFields}}
+    {{^isId}}
+        assertThat(response.getBody().get{{nameCapitalized}}().toString())
+            .isEqualTo(body.getFirst("{{nameUnCapitalized}}").toString());
+        {{/isId}}
+{{/editableFields}}
+    }
+}

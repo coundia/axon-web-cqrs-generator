@@ -24,9 +24,19 @@ public class MetaRequest implements Serializable {
 	private String version;
 	private String platform;
 	private Boolean isAdmin;
+	private String objectId;
+	private String objectName;
+	private Boolean isPublic = false;
 
 	public Boolean isAdmin(){
 		return this.isAdmin != null && this.isAdmin;
+	}
+
+	public Boolean getIsPublic() {
+		if (isPublic == null){
+			return false;
+		}
+		return isPublic;
 	}
 
 }

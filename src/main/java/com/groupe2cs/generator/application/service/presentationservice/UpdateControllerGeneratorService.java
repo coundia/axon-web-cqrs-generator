@@ -56,6 +56,8 @@ public class UpdateControllerGeneratorService {
         context.put("isMultiTenant", definition.getMultiTenant());
         context.put("nameUpperCase", definition.getName().toUpperCase());
         context.put("apiPrefix", definition.getApiPrefix());
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+
 
         if(!hasFiles){
             String content = templateEngine.render("presentation/updateController.mustache", context);

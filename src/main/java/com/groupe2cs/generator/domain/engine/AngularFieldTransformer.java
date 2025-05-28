@@ -37,6 +37,8 @@ public class AngularFieldTransformer {
 			f.put("isDate", field.getType().equalsIgnoreCase("date") ||
 					field.getEntityType().equalsIgnoreCase("date")
 			);
+			f.put("isFiles", field.getIsFiles());
+
 			result.add(f);
 		}
 

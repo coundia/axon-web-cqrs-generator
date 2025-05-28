@@ -59,6 +59,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly isLoading = signal(false);
   readonly page = signal(0);
   readonly size = signal(10);
+  files: File[] = [];
 
   searchField = 'name';
   searchTerm = '';
@@ -77,6 +78,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly selectedItem = signal<{{entity}} | null>(null);
   readonly allFields: FieldDefinition[] = [
     {{#allFields}}
+    {{^isFiles}}
     { name: '{{name}}' ,
     displayName: '{{displayName}}',
     type: '{{type}}'{{#defaultValue}},
@@ -85,6 +87,7 @@ export class {{entity}}ListComponent implements OnInit {
     entityType: '{{entityType}}',
     relation: '{{relation}}'
     },
+     {{/isFiles}}
     {{/allFields}}
   ];
 

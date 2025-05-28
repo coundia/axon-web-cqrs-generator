@@ -87,6 +87,15 @@
           }
         }
       }
+      {{#hasFiles}}
+      <div class="col-span-2">
+        <label class="label mb-1">
+          <span class="label-text">Fichiers</span>
+        </label>
+		  <app-multi-file-input (filesChange)="files = $event"></app-multi-file-input>
+	  </div>
+	  {{/hasFiles}}
+
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mt-6 h-12 text-lg" [disabled]="form.invalid || isLoading()">

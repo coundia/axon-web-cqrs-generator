@@ -56,6 +56,7 @@ public class FieldTransformer {
 
             f.put("unique", field.getUnique());
 
+
             f.put("nullable", field.getNullable());
             f.put("isUnique", field.getUnique() || field.isId());
 
@@ -73,6 +74,8 @@ public class FieldTransformer {
                     field.getType().toLowerCase().contains("localdatetime") ||
                     field.getType().toLowerCase().contains("timestamp")
             );
+
+            f.put("isFiles", field.getIsFiles());
 
             result.add(f);
         }

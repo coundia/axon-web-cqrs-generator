@@ -56,6 +56,7 @@ public class SwiftFieldTransformer {
 
 			f.put("entityType", field.getEntityType());
 
+			f.put("isFiles", field.getIsFiles());
 
 			result.add(f);
 		}

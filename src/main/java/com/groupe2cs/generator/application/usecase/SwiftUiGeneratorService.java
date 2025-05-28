@@ -1,9 +1,7 @@
 package com.groupe2cs.generator.application.usecase;
 
 import com.groupe2cs.generator.application.dto.SharedTemplate;
-import com.groupe2cs.generator.domain.engine.FileWriterService;
-import com.groupe2cs.generator.domain.engine.SwiftFieldTransformer;
-import com.groupe2cs.generator.domain.engine.TemplateEngine;
+import com.groupe2cs.generator.domain.engine.*;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.shared.Utils;
@@ -293,6 +291,10 @@ public class SwiftUiGeneratorService {
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("fieldsDisplayed", SwiftFieldTransformer.transform(definition.getFieldsToDisplay(), definition.getName()));
 		context.put("fieldsAmount", SwiftFieldTransformer.transform(definition.getFieldsAmount(), definition.getName()));
+		context.put("editableFields", AngularFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("hasFiles", definition.getHasFiles());
+
+
 		String content = templateEngine.render(template.getTemplatePath(), context);
 
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);

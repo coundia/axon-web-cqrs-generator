@@ -3,9 +3,9 @@ package {{package}};
 {{#imports}}
 import {{.}};
 {{/imports}}
-
+import java.util.List;
 
 public interface FileStorageService {
 
-String storeFile(MultipartFile file);
+String storeFile(List<MultipartFile> file, MetaRequest metaRequest);
 }

@@ -38,15 +38,12 @@ return {{nameAggregate}}Response.builder()
 }
 
 public static Create{{nameAggregate}}Command toCommand(
-{{nameAggregate}}Request request{{#hasFiles}}, {{#fieldFiles}}{{type}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/fieldFiles}}{{/hasFiles}}
+{{nameAggregate}}Request request
 ) {
 return Create{{nameAggregate}}Command.builder()
-{{#editableFields}}{{^isId}}
+{{#editableFields}}{{^isId}}{{^isFiles}}
 	.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
-{{/isId}}{{/editableFields}}{{#hasFiles}}
-	{{#fieldFiles}}
-		.{{nameUnCapitalized}}({{nameUnCapitalized}})
-	{{/fieldFiles}}{{/hasFiles}}
+{{/isFiles}}{{/isId}}{{/editableFields}}
 .build();
 }
 
@@ -54,24 +51,20 @@ return Create{{nameAggregate}}Command.builder()
 	public static Update{{nameAggregate}}Command toUpdateCommand({{nameAggregate}}Id id, {{nameAggregate}}Request request) {
 	return Update{{nameAggregate}}Command.builder()
 	.id(id)
-	{{#editableFields}}{{^isId}}
+	{{#editableFields}}
+	{{^isId}}
 		.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
-	{{/isId}}{{/editableFields}}
+    {{/isId}}
+	 {{/editableFields}}
 	.build();
 	}
 {{/hasFiles}}
 
 {{#hasFiles}}
 	public static Update{{nameAggregate}}Command toUpdateCommand(
-	{{nameAggregate}}Id id,
-	{{nameAggregate}}Request request,
 	{{#editableFields}}{{nameAggregate}}{{nameCapitalized}} {{nameUnCapitalized}}{{^last}}, {{/last}}{{/editableFields}}
 	) {
 	return Update{{nameAggregate}}Command.builder()
-	.id(id)
-	{{#editableFields}}{{^isId}}
-		.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
-	{{/isId}}{{/editableFields}}
 	{{#editableFields}}
 		.{{nameUnCapitalized}}({{nameUnCapitalized}})
 	{{/editableFields}}

@@ -17,7 +17,6 @@ export class {{entity}}Service {
 
   private headers(): HttpHeaders {
     return new HttpHeaders({
-      Authorization: `Bearer ${this.auth.token()}`,
       'Content-Type': 'application/json',
     });
   }
@@ -36,12 +35,36 @@ export class {{entity}}Service {
         })
       );
   }
-
+{{^hasFiles}}
   create(dto: Partial<{{entity}}>): Observable<any> {
     return this.http.post(`${this.base}/commands/{{entityLowerCase}}`, dto, {
       headers: this.headers(),
     });
   }
+{{/hasFiles}}
+
+{{#hasFiles}}
+  create(dto:   Partial<{{entity}}>): Observable<{{entity}}> {
+    const form = new FormData();
+    {{#fields}}
+    {{#isFiles}}
+    if (dto.{{name}}) {
+      for (const file of dto.{{name}}) {
+        form.append('{{name}}', file);
+      }
+    }
+    {{/isFiles}}
+    {{^isFiles}}
+    if(dto.{{name}} != undefined && dto.{{name}} !== null && dto.{{name}}.length > 0) {
+        form.append('{{name}}', dto.{{name}});
+    }
+    {{/isFiles}}
+    {{/fields}}
+
+    return this.http.post<{{entity}}>(`${this.base}/commands/{{entityLowerCase}}`, form);
+  }
+
+{{/hasFiles}}
 
   update(id: string, dto: Partial<{{entity}}>): Observable<any> {
     return this.http.put(`${this.base}/commands/{{entityLowerCase}}/${id}`, dto, {

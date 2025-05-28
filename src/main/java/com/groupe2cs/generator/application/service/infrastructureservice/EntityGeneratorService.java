@@ -37,7 +37,7 @@ public class EntityGeneratorService {
         context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 
 
-        context.put("fields", FieldTransformer.transform(definition.getFieldsWithRelations(), definition.getName()));
+        context.put("fields", FieldTransformer.transform(definition.getFieldsWithoutId(), definition.getName()));
         context.put("isAuditable", definition.getAuditable());
 
         Set<String> imports = new LinkedHashSet<>();

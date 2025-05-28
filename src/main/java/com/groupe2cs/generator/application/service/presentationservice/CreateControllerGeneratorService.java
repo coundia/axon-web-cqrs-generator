@@ -56,8 +56,12 @@ public class CreateControllerGeneratorService {
         context.put("hasFiles", !fieldFiles.isEmpty());
         if (!fieldFiles.isEmpty()) {
             Set<String> importsBis = new LinkedHashSet<>();
+            context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+
             importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
             importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+            importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
+            importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
             context.put("imports", importsBis);
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
             content = templateEngine.render("presentation/createWithFilesController.mustache", context);

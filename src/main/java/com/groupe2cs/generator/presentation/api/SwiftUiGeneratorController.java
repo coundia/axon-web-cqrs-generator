@@ -30,8 +30,7 @@ public class SwiftUiGeneratorController {
 		);
 
 		entityDefinition.setFields(fields);
-		entityDefinition.addDefaultFieldIfMissing();
-
+		//entityDefinition.addDefaultFieldIfMissing();
 
 		return swiftUiGeneratorService.generate(entityDefinition, output);
 	}

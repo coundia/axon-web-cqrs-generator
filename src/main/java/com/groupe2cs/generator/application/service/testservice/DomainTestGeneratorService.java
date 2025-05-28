@@ -65,6 +65,8 @@ public class DomainTestGeneratorService {
 
         var fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
         context.put("fields", fields);
+        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+
 
         context.put("imports", template.getImports());
 

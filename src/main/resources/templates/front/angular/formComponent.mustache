@@ -8,9 +8,10 @@ import { AlertService } from '../../../shared/components/alert/alert.service';
 import { FieldDefinition } from '../../../shared/components/models/field-definition';
 import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
 import {toDatetimeLocalString} from '../../../shared/hooks/Parsing';
-
 import {EntityPickerComponent} from '../../../shared/picker/app-entity-picker';
-
+{{#hasFiles}}
+import {MultiFileInputComponent} from '../../../shared/components/files/multi-file-input.component';
+{{/hasFiles}}
 
 {{#fields}}
 {{#isManyToOne}}
@@ -25,6 +26,9 @@ import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{
   standalone: true,
   imports: [CommonModule,
    ReactiveFormsModule,
+   {{#hasFiles}}
+   MultiFileInputComponent,
+    {{/hasFiles}}
     EntityPickerComponent,
     EntityToolbarActionComponent
     ],
@@ -42,31 +46,43 @@ export class {{entity}}FormComponent implements OnInit {
   readonly isLoading = signal(false);
 
     {{#fields}}
+    {{^isFiles}}
     {{#isManyToOne}}
     private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
     {{name}}s  =   signal<{{nameCapitalized}}[]>([]);
     {{/isManyToOne}}
+    {{/isFiles}}
+    {{#isFiles}}
+    {{name}}: File[] = [];
+    {{/isFiles}}
     {{/fields}}
 
   readonly form = this.fb.group({
     id: [ ""  ],
     {{#fields}}
+    {{^isFiles}}
     {{^isId}}
     {{name}}: [ {{{defaultValue}}} {{^nullable}}, Validators.required{{/nullable}} ],
     {{/isId}}
+    {{/isFiles}}
+    {{#isFiles}}
+    {{name}}: [null],
+    {{/isFiles}}
     {{/fields}}
   });
 
   readonly fields: FieldDefinition[] = [
-    {{#fields}}
+    {{#editableFields}}
+    {{^isFiles}}
     { name: '{{name}}',
-    displayName: '{{displayName}}',
-     type: '{{type}}'{{#options}}, options: {{options}}{{/options}},
+      displayName: '{{displayName}}',
+      type: '{{type}}'{{#options}}, options: {{options}}{{/options}},
       entityType: '{{entityType}}' ,
       inputType: '{{inputType}}',
       relation: '{{relation}}'
       },
-    {{/fields}}
+      {{/isFiles}}
+    {{/editableFields}}
   ];
 
   ngOnInit() {
@@ -74,14 +90,14 @@ export class {{entity}}FormComponent implements OnInit {
       let existing = this.service.{{entityLowerCase}}s().find(e => e.id === this.id);
       if (existing) {
         this.form.patchValue({
-          {{#fields}}
+          {{#editableFields}}
                  {{^isDate}}
                 {{name}}: existing.{{name}},
                 {{/isDate}}
                 {{#isDate}}
                 {{name}}: toDatetimeLocalString(existing.{{name}}) || '',
                 {{/isDate}}
-          {{/fields}}
+          {{/editableFields}}
         });
       } else {
         this.isLoading.set(true);
@@ -89,14 +105,14 @@ export class {{entity}}FormComponent implements OnInit {
           next: e => {
             if (e) {
               this.form.patchValue({
-                {{#fields}}
+                {{#editableFields}}
                     {{^isDate}}
                     {{name}}: e.{{name}},
                     {{/isDate}}
                     {{#isDate}}
                     {{name}}: toDatetimeLocalString(e.{{name}}) || '',
                     {{/isDate}}
-                {{/fields}}
+                {{/editableFields}}
               });
             }
             this.isLoading.set(false);
@@ -121,16 +137,18 @@ export class {{entity}}FormComponent implements OnInit {
     const now = new Date().toISOString();
 
     const data: Partial<{{entity}}> = {
-      ...this.form.getRawValue(),
-      updatedAt: now
+      ...this.form.getRawValue()
     };
 
     this.isLoading.set(true);
 
     {{#fields}}
     {{#isDate}}
-    data.{{name}} = new Date(data.{{name}} || now).toISOString();
+    data.{{name}} = data.{{name}} ? new Date(data.{{name}}).toISOString(): "";
     {{/isDate}}
+    {{#isFiles}}
+    data.{{name}} = this.{{name}}?.length ? this.{{name}} : undefined;
+    {{/isFiles}}
     {{/fields}}
 
     const request = this.isEdit()
@@ -175,6 +193,16 @@ export class {{entity}}FormComponent implements OnInit {
         {{/fields}}
     return [];
     }
+    {{#hasFiles}}
+     onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+          this.files = Array.from(input.files);
+        } else {
+          this.files = [];
+        }
+      }
+    {{/hasFiles}}
 
 
 }

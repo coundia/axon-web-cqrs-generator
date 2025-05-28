@@ -36,6 +36,7 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 
 {{#fields}}
 {{^isId}}
+{{^isFiles}}
 {{#relation}}
 {{#isOneToMany}}
 	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -51,14 +52,15 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 
 	@Column(nullable = {{nullable}}, {{#columnDefinition}}
 		columnDefinition = "{{columnDefinition}}",{{/columnDefinition}}
-		unique = {{unique}}  {{#size}},
-		length = {{size}}{{/size}}
+		unique = {{unique}}
+
 	)
 	{{#defaultValue}}
 	@Builder.Default{{/defaultValue}}
 
 	private {{primitiveType}} {{nameLowerCase}} {{#defaultValue}} = {{{defaultValue}}} {{/defaultValue}};
 {{/relation}}
+{{/isFiles}}
 {{/isId}}
 {{/fields}}
 	public {{entity}}(String id) {
@@ -70,9 +72,11 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 		return "{{entity}}{" +
 		"id='" + id + '\'' +
 		{{#fields}}
+    {{^isFiles}}
 		{{^isId}}
 			", {{nameLowerCase}}=" + {{nameLowerCase}} +
 		{{/isId}}
+        {{/isFiles}}
 		{{/fields}}
 		'}';
 	}

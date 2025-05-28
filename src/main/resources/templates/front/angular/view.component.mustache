@@ -39,6 +39,7 @@ export class {{entity}}ViewComponent {
 
   readonly fields: FieldDefinition[] = [
     {{#fields}}
+    {{^isFiles}}
     {{^isId}}
         { name: '{{name}}',
         displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}},
@@ -46,6 +47,7 @@ export class {{entity}}ViewComponent {
         relation: '{{relation}}'
         },
         {{/isId}}
+    {{/isFiles}}
     {{/fields}}
   ];
 

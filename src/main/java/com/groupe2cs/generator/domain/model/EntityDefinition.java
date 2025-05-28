@@ -48,8 +48,18 @@ public class EntityDefinition implements Serializable {
 	private Boolean isAutoSave = true;
 	private Boolean isPremium = false;
 	private Boolean isChat = false;
+	private Boolean hasFiles = false;
 	private String bind = "";
 	private String header = "";
+
+	public Boolean getHasFiles(){
+		if (hasFiles == null) {
+			return false;
+		}
+
+		return hasFiles;
+	}
+
 
 	public String getApiPrefix() {
 		if (apiPrefix == null) {
@@ -57,6 +67,14 @@ public class EntityDefinition implements Serializable {
 		}
 
 		return apiPrefix;
+	}
+
+	public Boolean getIsPublic() {
+		if (isPublic == null) {
+			return false;
+		}
+
+		return isPublic;
 	}
 
 	public String getTitle() {
@@ -121,7 +139,6 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getFields() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.filter(f -> !f.isFileType())
 				.toList();
 	}
 
@@ -308,6 +325,10 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
 				.filter(f -> !f.getName().equalsIgnoreCase("createdBy"))
 				.filter(f -> !f.getName().equalsIgnoreCase("tenant"))
+				.filter(f -> !f.getName().equalsIgnoreCase("updatedAt"))
+				.filter(f -> !f.getName().equalsIgnoreCase("createdAt"))
+				.filter(f -> !f.getName().equalsIgnoreCase("reference"))
+				.filter(f -> !f.isFileType())
 				.toList();
 	}
 

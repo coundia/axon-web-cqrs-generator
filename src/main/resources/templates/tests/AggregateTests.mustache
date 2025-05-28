@@ -19,14 +19,16 @@ void it_should_create_{{lowerName}}_with_valid_values() {
 {{/fields}}
 }
 
-{{#fields}}
+{{#editableFields}}
 	{{#hasValidation}}
+	{{^nullable}}
 		@Test
 		void it_should_throw_when_{{name}}_is_invalid() {
 		{{exceptionName}} error = assertThrows({{exceptionName}}.class, () -> {{type}}.create({{{errorTestValue}}}));
 		assertThat(error.getMessage()).isEqualTo("{{errorMessage}}");
 		}
+	{{/nullable}}
 	{{/hasValidation}}
-{{/fields}}
+{{/editableFields}}
 
 }

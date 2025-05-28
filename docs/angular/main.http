@@ -315,6 +315,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"isAutoSave": true,
 	"isChat": true,
+	"hasFiles": true,
 	"fields": [
 	  {
 		"name": "id",
@@ -349,7 +350,48 @@ Content-Type: application/json
 		"type": "String",
 		"relation": "manyToOne",
 		"nullable": true
+	  },
+	  {
+		"name": "files",
+		"type": "files",
+		"isFiles": true,
+		"columnDefinition" : "TEXT"
 	  }
+	]
+  }
+}
+
+###
+
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+
+  "outputDir": "/Users/pcoundia/labs/angular/topall-angular/src/app/features",
+  "definition": {
+	"name": "FileManager",
+	"table": "file_manager",
+	"title": "FileManager",
+	"isFileManager": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "details", "type": "String",
+		"columnDefinition": "Text",
+		"nullable": true },
+	  { "name": "objectId", "type": "String" ,"nullable": true },
+	  { "name": "objectName", "type": "String" ,"nullable": true },
+	  { "name": "originalName", "type": "String" ,"nullable": true,"displayName": "Nom" },
+	  { "name": "mimeType", "type": "String","nullable": true },
+	  { "name": "size", "type": "Long" ,"nullable": true},
+	  { "name": "path", "type": "String" ,"nullable": true},
+	  { "name": "uri", "type": "String","nullable": true },
+	  { "name": "isPublic", "type": "Boolean", "nullable": true }
 	]
   }
 }
