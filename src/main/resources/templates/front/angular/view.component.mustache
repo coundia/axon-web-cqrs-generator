@@ -14,10 +14,21 @@ import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{
 {{/isManyToOne}}
 {{/fields}}
 
+{{#hasFiles}}
+import {FileManager} from "../../fileManager/models/fileManager.model";
+import {FileManagerService} from "../../fileManager/services/fileManager.service";
+import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
+{{/hasFiles}}
+{{#isFileManager}}
+import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
+{{/isFileManager}}
+
 @Component({
   selector: 'app-{{entityLowerCase}}-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, EntityToolbarActionComponent],
+  imports: [CommonModule, RouterLink, EntityToolbarActionComponent,
+{{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
+],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
 export class {{entity}}ViewComponent {
@@ -29,6 +40,7 @@ export class {{entity}}ViewComponent {
   readonly id = this.route.snapshot.paramMap.get('id');
   readonly item = signal<{{entity}} | null>(this.service.{{entityLowerCase}}s().find(e => e.id === this.id) ?? null);
   readonly isLoading = signal(false);
+    hasFiles = {{hasFiles}};
 
     {{#fields}}
     {{#isManyToOne}}
@@ -36,6 +48,14 @@ export class {{entity}}ViewComponent {
     {{name}}  =   signal<{{nameCapitalized}} | null>(null);
     {{/isManyToOne}}
     {{/fields}}
+
+    {{#hasFiles}}
+    fileManagers  =   signal<FileManager[]>([]);
+    fileManagerService = inject(FileManagerService);
+    {{/hasFiles}}
+    {{#isFileManager}}
+    fileManagers  =   signal<FileManager[]>([]);
+    {{/isFileManager}}
 
   readonly fields: FieldDefinition[] = [
     {{#fields}}
@@ -53,6 +73,7 @@ export class {{entity}}ViewComponent {
 
   constructor() {
     effect(() => {
+    this.fetchDeps();
       if (!this.item()) {
         this.isLoading.set(true);
         this.service.getById?.(this.id!).subscribe?.({
@@ -119,4 +140,25 @@ export class {{entity}}ViewComponent {
      return (item as any)[fieldName + 'Model'];
   }
 
+   fetchDeps() {
+    {{#hasFiles}}
+      const  id = this.item()?.id ?? this.id ?? null;
+         if(id){
+            this.fileManagerService.search("objectId",id).subscribe(
+                data => this.fileManagers.set(data)
+            );
+        }
+    {{/hasFiles}}
+    }
+
+{{#hasFiles}}
+    removeFile(file: FileManager) {
+
+    }
+  {{/hasFiles}}
+{{#isFileManager}}
+    removeFile(file: FileManager) {
+
+    }
+  {{/isFileManager}}
 }

@@ -49,8 +49,17 @@ public class EntityDefinition implements Serializable {
 	private Boolean isPremium = false;
 	private Boolean isChat = false;
 	private Boolean hasFiles = false;
+	private Boolean isFileManager = false;
 	private String bind = "";
 	private String header = "";
+
+	public Boolean getIsFileManager(){
+		if (isFileManager == null) {
+			return false;
+		}
+
+		return isFileManager;
+	}
 
 	public Boolean getHasFiles(){
 		if (hasFiles == null) {

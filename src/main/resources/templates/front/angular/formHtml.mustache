@@ -1,108 +1,196 @@
-<div class="max-w-2xl mx-auto p-8 bg-base-100 rounded-2xl shadow-xl space-y-8 flex flex-col">
-
-  <app-view-toolbar-actions
-    [backLink]="'/{{entityLowerCase}}'"
-    [editLink]="'/{{entityLowerCase}}/' + (id || '') + '/edit'"
-    [newLink]="'/{{entityLowerCase}}/new'"
-    [showDelete]="isEdit()"
-    [editMode]="isEdit()"
-    (delete)="onDelete()"
-    class="sticky top-2 z-10"
-  />
-
-  <h2 class="text-2xl font-bold text-center text-primary mb-8">
-    @if (isEdit()) { Modifier } @else { Nouvelle } {{entity}}
-  </h2>
-
-  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-8">
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      @for (field of fields; track field.name) {
-        @switch(field.entityType) {
-          @case('Boolean') {
-            <div class="flex items-center gap-3">
-              <input
-                type="checkbox"
-                [formControlName]="field.name"
-                class="toggle toggle-primary"
-                id="{{open}} field.name }}"
-              />
-              <label [for]="field.name" class="label-text select-none">
-                {{open}} field.displayName || field.name }}
-              </label>
-            </div>
-          }
-          @case('Text') {
-            <div>
-              <label class="label mb-1">
-                <span class="label-text">{{open}} field.displayName || field.name }}</span>
-              </label>
-              <textarea
-                [formControlName]="field.name"
-                class="textarea textarea-bordered w-full"
-                placeholder="{{open}} field.displayName || field.name }}"
-                rows="3"
-              ></textarea>
-            </div>
-          }
-          @case('Date') {
-            <div>
-              <label class="label mb-1">
-                <span class="label-text">{{open}} field.displayName || field.name }}</span>
-              </label>
-              <input
-                type="datetime-local"
-                [formControlName]="field.name"
-                class="input input-bordered w-full"
-                placeholder="{{open}} field.displayName || field.name }}"
+<div class="min-h-screen bg-gradient-to-br from-base-200 via-base-100 to-base-200 py-4 sm:py-8">
+  <div class="container mx-auto px-4 max-w-7xl">
+    <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 lg:gap-8">
+      <div class="flex-1 min-w-0">
+        <div class="card bg-base-100/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-base-300/50 overflow-hidden">
+          <div class="sticky top-0 z-20 bg-base-100/95 backdrop-blur-sm border-b border-base-300/50">
+            <div class="px-4 sm:px-6 py-4">
+              <app-view-toolbar-actions
+                [backLink]="'/{{entityLowerCase}}'"
+                [editLink]="'/{{entityLowerCase}}/' + (id || '') + '/edit'"
+                [newLink]="'/{{entityLowerCase}}/new'"
+                [showDelete]="isEdit()"
+                [editMode]="isEdit()"
+                (delete)="onDelete()"
               />
             </div>
-          }
-          @default {
-
-          @if(field.relation =='manyToOne') {
-              <app-entity-picker
-                [entities]="getEntities(field.name)"
-                [label]="field.displayName || field.name"
-                [placeholder]="'Choisir ' + (field.displayName || field.name)"
-                idKey="id"
-                nameKey="name"
-                [formControlName]="field.name"
-                class="mb-4"
-              />
-            }
-
-            <div class="{{open}} field.inputType }}">
-              <label class="label mb-1">
-                <span class="label-text">{{open}} field.displayName || field.name }}</span>
-              </label>
-              <input
-                type="text"
-                [formControlName]="field.name"
-                class="input input-bordered w-full"
-                placeholder="{{open}} field.displayName || field.name }}"
-                autocomplete="off"
-              />
+          </div>
+          <div class="px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+            <div class="text-center">
+              <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                  </svg>
+                </div>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary bg-gradient-to-r from-primary to-primary/70 bg-clip-text">
+                  @if (isEdit()) { Modifier } @else { Nouvelle } {{entity}}
+                </h1>
+              </div>
+              <p class="text-base-content/70 text-sm sm:text-base max-w-md mx-auto">
+                @if (isEdit()) {
+                  Modifiez les informations de votre {{entityLowerCase}}
+                } @else {
+                  Créez un nouveau {{entityLowerCase}} et personnalisez ses paramètres
+                }
+              </p>
             </div>
-          }
-        }
+          </div>
+          <div class="px-4 sm:px-6 lg:px-8 pb-8">
+            <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6 sm:space-y-8">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                @for (field of fields; track field.name) {
+                  <div [class.lg\\:col-span-2]="field.entityType === 'Boolean' || field.entityType === 'Text'">
+                    <div class="form-control">
+                      <label class="flex items-center gap-3 pb-2 group">
+
+                        <span class="label-text font-semibold text-base text-base-content">
+                          {{open}} field.displayName || field.name }}
+                          @if(!field.nullable ){
+                            <span class="text-error">
+                              *
+                            </span>
+                          }
+                        </span>
+                      </label>
+
+                      @switch(field.entityType) {
+                        @case('Boolean') {
+                          <div class="flex items-center justify-between p-4 rounded-2xl border border-base-300 hover:border-primary/50 transition-all duration-200 hover:shadow-md">
+                            <span></span>
+                            <input
+                              type="checkbox"
+                              [formControlName]="field.name"
+                              class="toggle toggle-primary toggle-lg"
+                              id="{{ field.name }}"
+                            />
+                          </div>
+                        }
+                        @case('Text') {
+                          <textarea
+                            [formControlName]="field.name"
+                            class="textarea textarea-bordered textarea-lg min-h-[120px] rounded-2xl border-2 focus:border-primary/50 focus:shadow-lg transition-all duration-200 resize-none"
+                            placeholder="Saisissez {{open}} (field.displayName || field.name).toLowerCase() }}..."
+                          ></textarea>
+                        }
+                        @case('Date') {
+                          <input
+                            type="datetime-local"
+                            [formControlName]="field.name"
+                            class="input input-bordered input-lg rounded-2xl border-2 focus:border-primary/50 focus:shadow-lg transition-all duration-200"
+                          />
+                        }
+                        @default {
+                          @if(field.relation == 'manyToOne') {
+                            <app-entity-picker
+                              [entities]="getEntities(field.name)"
+                              [label]="field.displayName || field.name"
+                              [placeholder]="'Choisir ' + (field.displayName || field.name)"
+                              idKey="id"
+                              nameKey="name"
+                              [formControlName]="field.name"
+                              class="rounded-2xl"
+                            />
+                          } @else {
+                            <input
+                              type="text"
+                              [formControlName]="field.name"
+                              class="input input-bordered input-lg rounded-2xl border-2 focus:border-primary/50 focus:shadow-lg transition-all duration-200"
+                              placeholder="Saisissez {{open}} (field.displayName || field.name).toLowerCase() }}..."
+                              autocomplete="off"
+                            />
+                          }
+                        }
+                      }
+                    </div>
+                  </div>
+                }
+                {{^isFileManager}}
+    {{#hasFiles}}
+                @if(hasFiles){
+                  <div class="lg:col-span-2">
+                    <div class="form-control">
+                      <label class="flex items-center gap-2 pb-2">
+                        <span class="label-text font-semibold text-base flex items-center gap-2">
+                          <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                          </svg>
+                          Fichiers
+                        </span>
+                      </label>
+                      <div class="p-4 border-2 border-dashed border-base-300 rounded-2xl hover:border-primary/50 transition-all duration-200">
+                        <app-multi-file-input (filesChange)="files = $event"></app-multi-file-input>
+                      </div>
+                    </div>
+                  </div>
+                }
+                {{/hasFiles}}
+{{/isFileManager}}
+              </div>
+              <div class="pt-4">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg w-full h-14 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                  [disabled]="form.invalid || isLoading()"
+                  [class.loading]="isLoading()"
+                >
+                  @if (isLoading()) {
+                    <span class="loading loading-spinner loading-sm mr-2"></span>
+                    Traitement en cours...
+                  } @else {
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      @if (isEdit()) {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                      }
+                    </svg>
+                    @if (isEdit()) { Mettre à jour } @else { Créer {{entityLowerCase}} }
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {{^isFileManager}}
+    {{#hasFiles}}
+      @if(hasFiles){
+        <div class="w-full xl:w-80 xl:min-w-80">
+          <div class="card bg-base-100/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-base-300/50 sticky top-4">
+            <div class="card-body p-4 sm:p-6">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold ">Fichiers attachés</h3>
+              </div>
+              @if(fileManagers().length > 0) {
+                <div class="max-h-[700px] overflow-y-auto space-y-3">
+                  @for (file of fileManagers(); track file.name) {
+                    <div class="p-3 rounded-xl border border-base-300 hover:border-secondary/50 hover:shadow-md transition-all duration-200">
+                      <app-file-viewer [file]="file" />
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="text-center py-8">
+                  <div class="w-16 h-16 rounded-2xl bg-base-200 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                  <p class="text-base-content/60 text-sm">Aucun fichier attaché</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
       }
-      {{#hasFiles}}
-      <div class="col-span-2">
-        <label class="label mb-1">
-          <span class="label-text">Fichiers</span>
-        </label>
-		  <app-multi-file-input (filesChange)="files = $event"></app-multi-file-input>
-	  </div>
-	  {{/hasFiles}}
-
+      {{/hasFiles}}
+{{/isFileManager}}
     </div>
-
-    <button type="submit" class="btn btn-primary btn-block mt-6 h-12 text-lg" [disabled]="form.invalid || isLoading()">
-      @if (isLoading()) {
-        <span class="loading loading-spinner loading-xs mr-2"></span>
-      }
-      @if (isEdit()) { Mettre à jour } @else { Enregistrer }
-    </button>
-  </form>
+  </div>
 </div>

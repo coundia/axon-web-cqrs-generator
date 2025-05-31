@@ -10,7 +10,12 @@ import { EntityToolbarActionComponent } from '../../../shared/components/view-to
 import {toDatetimeLocalString} from '../../../shared/hooks/Parsing';
 import {EntityPickerComponent} from '../../../shared/picker/app-entity-picker';
 {{#hasFiles}}
+{{^isFileManager}}
+import {FileManager} from "../../fileManager/models/fileManager.model";
+import {FileManagerService} from "../../fileManager/services/fileManager.service";
 import {MultiFileInputComponent} from '../../../shared/components/files/multi-file-input.component';
+import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
+{{/isFileManager}}
 {{/hasFiles}}
 
 {{#fields}}
@@ -25,12 +30,13 @@ import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{
   selector: 'app-{{entityLowerCase}}-form',
   standalone: true,
   imports: [CommonModule,
+   EntityPickerComponent,
+    EntityToolbarActionComponent,
    ReactiveFormsModule,
-   {{#hasFiles}}
+    {{^isFileManager}}{{#hasFiles}}
    MultiFileInputComponent,
-    {{/hasFiles}}
-    EntityPickerComponent,
-    EntityToolbarActionComponent
+    FileViewerComponent,FileViewerComponent{{/hasFiles}} {{/isFileManager}}
+
     ],
   templateUrl: './{{entityLowerCase}}-form.component.html',
 })
@@ -56,6 +62,12 @@ export class {{entity}}FormComponent implements OnInit {
     {{name}}: File[] = [];
     {{/isFiles}}
     {{/fields}}
+
+{{#hasFiles}}
+fileManagers  =   signal<FileManager[]>([]);
+fileManagerService = inject(FileManagerService);
+{{/hasFiles}}
+ hasFiles = {{hasFiles}};
 
   readonly form = this.fb.group({
     id: [ ""  ],
@@ -125,9 +137,7 @@ export class {{entity}}FormComponent implements OnInit {
       }
     }
 
-    {{#hasManyToOne}}
     this.fetchDeps();
-    {{/hasManyToOne}}
 
   }
 
@@ -160,9 +170,15 @@ export class {{entity}}FormComponent implements OnInit {
         this.isLoading.set(false);
         this.alert.show("Operation en cours...!", 'success');
         setTimeout(() => {
-          this.alert.show("Opération réussie avec succès!", 'success');
+           this.fetchDeps();
+            if(!this.isEdit()){
+                this.form.reset();
+                {{#hasFiles}}
+                this.files = [];
+                {{/hasFiles}}
+          }
         }, 1000)
-        await this.router.navigate(['/{{entityLowerCase}}']);
+
       },
       error: (err) => {
         this.isLoading.set(false);
@@ -174,17 +190,22 @@ export class {{entity}}FormComponent implements OnInit {
    onDelete() {
         //todo
       }
-
+  fetchDeps() {
     {{#hasManyToOne}}
-    fetchDeps() {
         {{#fields}}
         {{#isManyToOne}}
          this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
         {{/isManyToOne}}
         {{/fields}}
-    }
+        {{#hasFiles}}
+         if(this.id){
+           this.fileManagerService.search("objectId",this.id).subscribe(
+               data => this.fileManagers.set(data)
+           );
+         }
+        {{/hasFiles}}
     {{/hasManyToOne}}
-
+  }
     getEntities(name: string) {
         {{#fields}}
         {{#isManyToOne}}

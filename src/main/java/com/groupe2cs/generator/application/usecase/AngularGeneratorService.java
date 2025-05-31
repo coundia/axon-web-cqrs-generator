@@ -108,6 +108,7 @@ public class AngularGeneratorService {
 		context.put("openOne", "{");
 		context.put("closeOne", "}");
 		context.put("hasManyToOne", definition.getHasManyToOne());
+		context.put("isFileManager", definition.getIsFileManager());
 
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);

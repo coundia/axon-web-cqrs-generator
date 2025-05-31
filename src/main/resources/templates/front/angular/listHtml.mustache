@@ -104,6 +104,14 @@
    [editLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/edit'"
   [viewLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/view'"
   [addLink]="'/{{entityLowerCase}}/new'"
+  [hasFiles] = "hasFiles"
+  {{#hasFiles}}
+  [fileManagers]="fileManagers()"
+  {{/hasFiles}}
+{{#isFileManager}}
+  [fileManagers]="fileManagers()"
+  {{/isFileManager}}
+  [isFileManager]= {{isFileManager}}
 />
 
 <app-global-drawer-form
@@ -123,4 +131,12 @@
   [getEntities]="getEntities.bind(this)"
  [files]="files"
  (filesChange)="files = $event"
+ [hasFiles] = "hasFiles"
+  {{#hasFiles}}
+  [fileManagers]="fileManagers()"
+  {{/hasFiles}}
+{{#isFileManager}}
+  [fileManagers]="fileManagers()"
+  {{/isFileManager}}
+  [isFileManager]= {{isFileManager}}
 />

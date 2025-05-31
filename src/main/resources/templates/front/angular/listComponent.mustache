@@ -26,6 +26,15 @@ import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{
 {{/isManyToOne}}
 {{/fields}}
 
+{{#hasFiles}}
+import {FileManager} from "../../fileManager/models/fileManager.model";
+import {FileManagerService} from "../../fileManager/services/fileManager.service";
+import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
+{{/hasFiles}}
+{{#isFileManager}}
+import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
+{{/isFileManager}}
+
 @Component({
   selector: 'app-{{entityLowerCase}}-list',
   standalone: true,
@@ -50,22 +59,32 @@ import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{
   templateUrl: './{{entityLowerCase}}-list.component.html',
 })
 export class {{entity}}ListComponent implements OnInit {
-  readonly service = inject({{entity}}Service);
+  readonly {{entityLowerCase}}Service = inject({{entity}}Service);
   readonly alert = inject(AlertService);
   readonly sortService = inject(SortService);
 
-  readonly list = this.service.{{entityLowerCase}}s;
-  readonly totalPages = this.service.totalPages;
+  readonly list = this.{{entityLowerCase}}Service.{{entityLowerCase}}s;
+  readonly totalPages = this.{{entityLowerCase}}Service.totalPages;
   readonly isLoading = signal(false);
   readonly page = signal(0);
   readonly size = signal(10);
   files: File[] = [];
+
+  hasFiles = {{hasFiles}};
 
   searchField = 'name';
   searchTerm = '';
 
   @Output() searchFieldChange = new EventEmitter<string>();
   @Output() searchTermChange = new EventEmitter<string>();
+
+{{#hasFiles}}
+    fileManagers  =   signal<FileManager[]>([]);
+    fileManagerService = inject(FileManagerService);
+    {{/hasFiles}}
+  {{#isFileManager}}
+    fileManagers  =   signal<FileManager[]>([]);
+    {{/isFileManager}}
 
     {{#fields}}
     {{#isManyToOne}}
@@ -137,7 +156,7 @@ export class {{entity}}ListComponent implements OnInit {
 
   refresh(): void {
     this.isLoading.set(true);
-    this.service.fetch(this.page(), this.size()).subscribe({
+    this.{{entityLowerCase}}Service.fetch(this.page(), this.size()).subscribe({
       next: () => this.isLoading.set(false),
       error: err => {
         this.alert.show('Erreur lors de la récupération des {{entityLowerCase}}s.', 'error');
@@ -153,7 +172,7 @@ export class {{entity}}ListComponent implements OnInit {
     const confirmed = window.confirm(`Supprimer "${item.id}" ?`);
     if (!confirmed) return;
 
-    this.service.delete(id).subscribe({
+    this.{{entityLowerCase}}Service.delete(id).subscribe({
       next: () => {
         this.alert.show(`{{entity}} "${item.id}" supprimé(e)`, 'success');
         setTimeout(() => this.refresh(), 1500);
@@ -167,6 +186,9 @@ export class {{entity}}ListComponent implements OnInit {
   showDetails(id: string): void {
     const item = this.list().find(e => e.id === id);
     if (!item) return;
+
+    this.fetchDeps(item);
+
     this.selectedItem.set(null);
      {{#fields}}
     {{#isManyToOne}}
@@ -199,7 +221,7 @@ export class {{entity}}ListComponent implements OnInit {
     this.searchTerm = value;
     if (!value) return this.refresh();
     this.isLoading.set(true);
-    this.service.search(field, value).subscribe({
+    this.{{entityLowerCase}}Service.search(field, value).subscribe({
       next: items => {
         this.list.set(items);
         this.isLoading.set(false);
@@ -245,7 +267,7 @@ export class {{entity}}ListComponent implements OnInit {
     if (this.editMode && this.itemId) {
 
 
-      this.service.update(this.itemId, data).subscribe({
+      this.{{entityLowerCase}}Service.update(this.itemId, data).subscribe({
         next: () => {
           this.alert.show('Mis(e) à jour "{{entity}}" en cours.', 'success');
           this.closeDrawer();
@@ -258,7 +280,7 @@ export class {{entity}}ListComponent implements OnInit {
     } else {
 
 
-      this.service.create(data).subscribe({
+      this.{{entityLowerCase}}Service.create(data).subscribe({
         next: () => {
           this.alert.show('Création "{{entity}}" en cours.  ', 'success');
           this.closeDrawer();
@@ -274,7 +296,7 @@ export class {{entity}}ListComponent implements OnInit {
   handleDelete(id: string) {
     const confirmed = window.confirm('Supprimer cet(te) {{entityLowerCase}} ?');
     if (!confirmed) return;
-    this.service.delete(id).subscribe({
+    this.{{entityLowerCase}}Service.delete(id).subscribe({
       next: () => {
         this.alert.show('{{entity}} supprimé(e)', 'success');
         this.closeDrawer();
@@ -309,7 +331,7 @@ export class {{entity}}ListComponent implements OnInit {
 
   openDrawerForEdit(item: {{entity}}) {
     this.drawerVisible = false;
-    this.fetchDeps();
+    this.fetchDeps(item);
     setTimeout(() => {
       this.drawerVisible = true;
       this.formKey.update(k => k + 1);
@@ -345,15 +367,18 @@ export class {{entity}}ListComponent implements OnInit {
     return this.fieldsToDisplay.find(f => f.name === this.searchField)?.type ?? 'text';
   }
 
+    fetchDeps(item?: {{entity}}): void {
 
-    fetchDeps() {
         {{#fields}}
         {{#isManyToOne}}
-             this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
-            {{/isManyToOne}}
-    {{/fields}}
-        }
+        this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
+        {{/isManyToOne}}
+        {{/fields}}
 
+        {{^isFileManager}}
+        this.getFileManager(item);
+        {{/isFileManager}}
+    }
 
     getEntities(name: string) {
         {{#fields}}
@@ -363,5 +388,25 @@ export class {{entity}}ListComponent implements OnInit {
 {{/fields}}
     return [];
     }
+
+    getFileManager(item?: {{entity}}): void {
+
+{{#hasFiles}}
+        if(!item?.id ){
+          return ;
+        }
+        this.fileManagerService.search('objectId', item.id).subscribe(files => {
+          this.fileManagers.set(files);
+        });
+        {{/hasFiles}}
+{{#isFileManager}}
+        if(!item?.id ){
+          return ;
+        }
+        this.fileManagerService.search('objectId', item.id).subscribe(files => {
+          this.fileManagers.set(files);
+        });
+        {{/isFileManager}}
+      }
 
 }

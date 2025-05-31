@@ -296,7 +296,6 @@ Content-Type: application/json
 
 ###
 
-
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -319,7 +318,8 @@ Content-Type: application/json
 	"fields": [
 	  {
 		"name": "id",
-		"type": "String"
+		"type": "String",
+        "inputType": "hidden"
 	  },
 	  {
 		"name": "messages",
@@ -385,12 +385,12 @@ Content-Type: application/json
 		"columnDefinition": "Text",
 		"nullable": true },
 	  { "name": "objectId", "type": "String" ,"nullable": true },
-	  { "name": "objectName", "type": "String" ,"nullable": true },
+	  { "name": "objectName", "type": "String" ,"displayName": "Module","nullable": true },
 	  { "name": "originalName", "type": "String" ,"nullable": true,"displayName": "Nom" },
 	  { "name": "mimeType", "type": "String","nullable": true },
 	  { "name": "size", "type": "Long" ,"nullable": true},
 	  { "name": "path", "type": "String" ,"nullable": true},
-	  { "name": "uri", "type": "String","nullable": true },
+	  { "name": "uri", "type": "String", "nullable": true },
 	  { "name": "isPublic", "type": "Boolean", "nullable": true }
 	]
   }
