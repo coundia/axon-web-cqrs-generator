@@ -124,7 +124,7 @@ export class {{entity}}ViewComponent {
     if (!confirmed) return;
     this.service.delete?.(id).subscribe?.({
       next: () => {
-        this.alert.show(`{{entity}} "${id}" supprimé(e)`, 'success');
+        this.alert.show(`suppression de {{entity}} "${id}" en cours... `, 'success');
         setTimeout(() => {
           this.router.navigate(['/{{entityLowerCase}}']);
         }, 600);

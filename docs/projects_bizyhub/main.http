@@ -311,6 +311,12 @@ Content-Type: application/json
 		"type": "FileManager",
 		"isFiles": true,
 		"columnDefinition" : "TEXT"
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "java.time.Instant",
+		"defaultValue": "java.time.Instant.now()",
+		"nullable": true
 	  }
 	]
   }

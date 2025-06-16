@@ -174,7 +174,7 @@ export class {{entity}}ListComponent implements OnInit {
 
     this.{{entityLowerCase}}Service.delete(id).subscribe({
       next: () => {
-        this.alert.show(`{{entity}} "${item.id}" supprimé(e)`, 'success');
+        this.alert.show(`Suppression de "{{entity}}" "${item.id}" en cours...`, 'success');
         setTimeout(() => this.refresh(), 1500);
       },
       error: err => {
@@ -298,7 +298,7 @@ export class {{entity}}ListComponent implements OnInit {
     if (!confirmed) return;
     this.{{entityLowerCase}}Service.delete(id).subscribe({
       next: () => {
-        this.alert.show('{{entity}} supprimé(e)', 'success');
+        this.alert.show('Suppression de "{{entity}}" en cours... ', 'success');
         this.closeDrawer();
         this.refresh();
       },
