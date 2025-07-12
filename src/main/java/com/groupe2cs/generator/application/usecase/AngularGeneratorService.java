@@ -83,11 +83,11 @@ public class AngularGeneratorService {
 		)
 		);
 
-		if (definition.getIsTauri()) {
+		if (definition.getTauri()) {
 			templates.add(
 					new SharedTemplate(
-							entity + ".tauri.service",
-							"front/angular/service.mustache",
+							entity + ".service",
+							"front/angular/service.tauri.mustache",
 							null,
 							outputDir + "/services",
 							null,
@@ -97,7 +97,7 @@ public class AngularGeneratorService {
 		} else {
 			templates.add(
 					new SharedTemplate(entity + ".service",
-							"front/angular/service.tauri.mustache",
+							"front/angular/service.mustache",
 							null,
 							outputDir + "/services",
 							null,

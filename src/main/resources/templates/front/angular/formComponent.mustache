@@ -99,7 +99,7 @@ fileManagerService = inject(FileManagerService);
 
   ngOnInit() {
     if (this.isEdit()) {
-      let existing = this.service.{{entityLowerCase}}s().find(e => e.id === this.id);
+      let existing = this.service.{{entityPluralLower}}().find(e => e.id === this.id);
       if (existing) {
         this.form.patchValue({
           {{#editableFields}}

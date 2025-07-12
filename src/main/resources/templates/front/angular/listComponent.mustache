@@ -63,7 +63,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly alert = inject(AlertService);
   readonly sortService = inject(SortService);
 
-  readonly list = this.{{entityLowerCase}}Service.{{entityLowerCase}}s;
+  readonly list = this.{{entityLowerCase}}Service.{{entityPluralLower}};
   readonly totalPages = this.{{entityLowerCase}}Service.totalPages;
   readonly isLoading = signal(false);
   readonly page = signal(0);
@@ -159,7 +159,7 @@ export class {{entity}}ListComponent implements OnInit {
     this.{{entityLowerCase}}Service.fetch(this.page(), this.size()).subscribe({
       next: () => this.isLoading.set(false),
       error: err => {
-        this.alert.show('Erreur lors de la récupération des {{entityLowerCase}}s.', 'error');
+        this.alert.show('Erreur lors de la récupération des {{entityPluralLower}}.', 'error');
         this.isLoading.set(false);
       }
     });

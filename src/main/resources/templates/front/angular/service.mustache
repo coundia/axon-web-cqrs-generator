@@ -11,7 +11,7 @@ export class {{entity}}Service {
   private readonly auth = inject(AuthService);
   private readonly base = `${API_BASE}/v1`;
 
-  readonly {{entityLowerCase}}s = signal<{{entity}}[]>([]);
+  readonly {{entityPluralLower}} = signal<{{entity}}[]>([]);
   readonly totalPages = signal(0);
   readonly totalElements = signal(0);
 
@@ -24,12 +24,12 @@ export class {{entity}}Service {
   fetch(page = 0, limit = 10): Observable<{ content: {{entity}}[]; totalPages: number; totalElements: number }> {
     return this.http
       .get<{ content: {{entity}}[]; totalPages: number; totalElements: number }>(
-        `${this.base}/queries/{{entityLowerCase}}s?page=${page}&limit=${limit}`,
+        `${this.base}/queries/{{entityPluralLower}}?page=${page}&limit=${limit}`,
         { headers: this.headers() }
       )
       .pipe(
         tap(res => {
-          this.{{entityLowerCase}}s.set(res.content);
+          this.{{entityPluralLower}}.set(res.content);
           this.totalPages.set(res.totalPages ?? 0);
           this.totalElements.set(res.totalElements ?? 0);
         })
@@ -123,7 +123,7 @@ export class {{entity}}Service {
         `${this.base}/queries/{{entityLowerCase}}/${field}?${field}=${encodeURIComponent(formattedValue)}`,
         { headers: this.headers() }
       )
-      .pipe(tap(res => this.{{entityLowerCase}}s.set(res)));
+      .pipe(tap(res => this.{{entityPluralLower}}.set(res)));
   }
 
   getById(id: string): Observable<{{entity}}> {

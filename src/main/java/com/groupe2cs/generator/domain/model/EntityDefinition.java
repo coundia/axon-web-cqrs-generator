@@ -52,7 +52,7 @@ public class EntityDefinition implements Serializable {
 	private Boolean isFileManager = false;
 	private String bind = "";
 	private String header = "";
-	private Boolean isTauri = false;
+	private Boolean tauri = false;
 	private String plural ;
 
 	public String getPlural() {
@@ -63,12 +63,12 @@ public class EntityDefinition implements Serializable {
 		return plural;
 	}
 
-	public  Boolean getIsTauri() {
-		if (isTauri == null) {
+	public  Boolean getTauri() {
+		if (tauri == null) {
 			return false;
 		}
 
-		return isTauri;
+		return tauri;
 	}
 
 	public Boolean getIsFileManager(){

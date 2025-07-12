@@ -5,10 +5,10 @@ import { DatabaseService } from '../../../shared/services/database.service';
 import { AlertService } from '../../../shared/components/alert/alert.service';
 import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
 
-const TABLE_NAME = '{{tableName}}';
+const TABLE_NAME = '{{entityPluralLower}}';
 
 @Injectable({ providedIn: 'root' })
-export class {{entityCapitalized}}TauriService {
+export class {{entityCapitalized}}Service {
   private db = inject(DatabaseService);
   private alert = inject(AlertService);
 
@@ -33,6 +33,7 @@ export class {{entityCapitalized}}TauriService {
         this.totalElements.set(totalElements);
       }),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur lors du chargement des {{entityPluralLower}} !`, 'error');
         return of({ content: [], totalPages: 0, totalElements: 0 });
       })
@@ -41,7 +42,7 @@ export class {{entityCapitalized}}TauriService {
 
   private getColumns(dto: Partial<{{entityCapitalized}}>): string[] {
 
-     const ignoredCols= ['id', 'createdAt', 'updatedAt'];
+     const ignoredCols = ['id', 'createdAt', 'updatedAt', 'files'];
 
     return Object.keys(dto).filter(k => !ignoredCols.includes(k));
   }
@@ -58,6 +59,7 @@ export class {{entityCapitalized}}TauriService {
       }),
       map(() => undefined),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur création {{entityLowerCase}}!`, 'error');
         throw err;
       })
@@ -76,6 +78,7 @@ export class {{entityCapitalized}}TauriService {
       }),
       map(() => undefined),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur mise à jour {{entityLowerCase}} !`, 'error');
         throw err;
       })
@@ -90,6 +93,7 @@ export class {{entityCapitalized}}TauriService {
       }),
       map(() => undefined),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur suppression {{entityLowerCase}} !`, 'error');
         throw err;
       })
@@ -100,6 +104,7 @@ export class {{entityCapitalized}}TauriService {
     return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} = ?`, [value])).pipe(
       tap(rows => this.{{entityPluralLower}}.set(rows)),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur recherche {{entityLowerCase}} !`, 'error');
         return of([]);
       })
@@ -111,6 +116,7 @@ export class {{entityCapitalized}}TauriService {
       map(rows => rows[0] ?? null),
       tap(item => this.selected{{entityCapitalized}}.set(item)),
       catchError(err => {
+        console.error(err);
         this.alert.show(`Erreur chargement {{entityLowerCase}} !`, 'error');
         return of(null);
       })

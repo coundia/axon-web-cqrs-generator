@@ -38,7 +38,7 @@ export class {{entity}}ViewComponent {
   private readonly alert = inject(AlertService);
 
   readonly id = this.route.snapshot.paramMap.get('id');
-  readonly item = signal<{{entity}} | null>(this.service.{{entityLowerCase}}s().find(e => e.id === this.id) ?? null);
+  readonly item = signal<{{entity}} | null>(this.service.{{entityPluralLower}}().find(e => e.id === this.id) ?? null);
   readonly isLoading = signal(false);
     hasFiles = {{hasFiles}};
 
