@@ -113,6 +113,7 @@ public class AngularGeneratorService {
 		context.put("entity", definition.getName());
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()) );
+		context.put("tableName", Utils.unCapitalize(definition.getName()) );
 		context.put("entityCapitalized", Utils.capitalize(definition.getName()) );
 		context.put("plural", definition.getPlural());
 		context.put("entityPluralLower", Utils.unCapitalize(definition.getPlural()));
