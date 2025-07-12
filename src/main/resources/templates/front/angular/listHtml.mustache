@@ -5,7 +5,10 @@
     <h2 class="text-2xl font-bold text-primary">
     {{open}} '{{entityLowerCase}}.title' | translate {{close}}
     </h2>
-
+ {{#hasSummary}}
+    <a class="btn btn-sm btn-primary btn-outline" [routerLink]="'/{{entityLowerCase}}/dashboard'">
+          {{open}} 'dashboard.title' | translate }}</a>
+ {{/hasSummary}}
     <app-search-box
       [fields]="fieldsToDisplay"
       [searchField]="searchField"

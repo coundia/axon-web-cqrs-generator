@@ -26,4 +26,13 @@ export const {{entityLowerCase}}Routes: Routes = [
     loadComponent: () =>
       import('./components/{{entityLowerCase}}-view.component').then(m => m.{{entity}}ViewComponent),
   }
+  {{#hasSummary}}
+  ,
+   {
+    path: '{{entityLowerCase}}/dashboard',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/dashboard.component').then(m => m.DashboardComponent),
+  }
+    {{/hasSummary}}
 ];

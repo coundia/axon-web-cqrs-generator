@@ -157,6 +157,8 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
+	"plural": "transactions",
+	"tauri": false,
 	"header": "account",
 	"hasSummary": true,
 	"hasType": true,

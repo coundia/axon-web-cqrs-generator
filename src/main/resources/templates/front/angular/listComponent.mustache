@@ -35,6 +35,8 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
 {{/isFileManager}}
 
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-{{entityLowerCase}}-list',
   standalone: true,
@@ -54,6 +56,7 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
     GlobalDrawerFormComponent,
     GlobalDrawerComponent,
     NgIf,
+    RouterLink,
     SortHeaderComponent
   ],
   templateUrl: './{{entityLowerCase}}-list.component.html',
