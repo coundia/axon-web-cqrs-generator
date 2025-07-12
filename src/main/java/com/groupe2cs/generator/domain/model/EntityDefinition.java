@@ -52,6 +52,24 @@ public class EntityDefinition implements Serializable {
 	private Boolean isFileManager = false;
 	private String bind = "";
 	private String header = "";
+	private Boolean isTauri = false;
+	private String plural ;
+
+	public String getPlural() {
+
+		if( plural == null || plural.isEmpty()) {
+			return Utils.pluralize(name);
+		}
+		return plural;
+	}
+
+	public  Boolean getIsTauri() {
+		if (isTauri == null) {
+			return false;
+		}
+
+		return isTauri;
+	}
 
 	public Boolean getIsFileManager(){
 		if (isFileManager == null) {
@@ -148,26 +166,26 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getFields() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getFieldsWithoutRelations() {
 		return fields.stream()
 				.filter(f -> !f.isFileType())
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getFieldsWithRelations() {
 		return fields.stream()
 				.filter(f -> !f.isFileType())
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getFieldsWithoutId() {
 		return fields.stream()
 				.filter(f -> !f.isId())
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getAllFields() {
@@ -177,7 +195,8 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.toList();
+				.collect(Collectors.toList());
+
 	}
 
 	public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
@@ -278,7 +297,7 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getFieldFiles() {
 		return fields.stream()
 				.filter(f -> f.isFileType())
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> searchFields() {
@@ -326,7 +345,7 @@ public class EntityDefinition implements Serializable {
 	public List<FieldDefinition> getDtoFields() {
 		return fields.stream()
 				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getEditableFields() {
@@ -338,7 +357,7 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> !f.getName().equalsIgnoreCase("createdAt"))
 				.filter(f -> !f.getName().equalsIgnoreCase("reference"))
 				.filter(f -> !f.isFileType())
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 
@@ -364,7 +383,7 @@ public class EntityDefinition implements Serializable {
 							||  n.equals("messages")
 							;
 				})
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public List<FieldDefinition> getFieldWithDisplayName() {
@@ -374,7 +393,7 @@ public class EntityDefinition implements Serializable {
 								&& !f.getDisplayName().isEmpty()
 						&& !"manyToOne".equalsIgnoreCase(f.getRelation())
 				)
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 
@@ -387,7 +406,7 @@ public class EntityDefinition implements Serializable {
 							|| n.equalsIgnoreCase("currentBalance")
 							;
 				})
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 

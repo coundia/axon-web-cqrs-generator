@@ -1,0 +1,117 @@
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, forkJoin, from, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
+import { DatabaseService } from '{{sharedPath}}/services/database.service';
+import { AlertService } from '{{sharedPath}}/components/alert/alert.service';
+import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
+
+const TABLE_NAME = '{{plural}}';
+
+@Injectable({ providedIn: 'root' })
+export class {{entityCapitalized}}TauriService {
+
+  private db = inject(DatabaseService);
+  private alert = inject(AlertService);
+
+  {{entityPluralLower}} = signal<{{entityCapitalized}}[]>([]);
+  selected{{entityCapitalized}} = signal<{{entityCapitalized}} | null>(null);
+  totalPages = signal(0);
+  totalElements = signal(0);
+
+  fetch(page = 0, limit = 10): Observable<{ content: {{entityCapitalized}}[]; totalPages: number; totalElements: number }> {
+    const offset = page * limit;
+    return forkJoin({
+      content: from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} LIMIT ? OFFSET ?`, [limit, offset])),
+      countRows: from(this.db.select<{ count: number }>(`SELECT COUNT(*) AS count FROM ${TABLE_NAME}`, []))
+    }).pipe(
+      map(({ content, countRows }) => {
+        const total = countRows[0]?.count ?? 0;
+        return { content, totalPages: Math.ceil(total / limit), totalElements: total };
+      }),
+      tap(({ content, totalPages, totalElements }) => {
+        this.{{entityPluralLower}}.set(content);
+        this.totalPages.set(totalPages);
+        this.totalElements.set(totalElements);
+      }),
+      catchError(err => {
+        this.alert.show(`Erreur lors du chargement des {{entityPluralLower}} !`, 'error');
+        return of({ content: [], totalPages: 0, totalElements: 0 });
+      })
+    );
+  }
+
+  private getColumns(dto: Partial<{{entityCapitalized}}>): string[] {
+    return Object.keys(dto).filter(k => !['id','createdAt','updatedAt'].includes(k));
+  }
+
+  create(dto: Partial<{{entityCapitalized}}>, page = 0, limit = 10): Observable<void> {
+    const cols = this.getColumns(dto);
+    const sql = `INSERT INTO ${TABLE_NAME} (${cols.join(',')}) VALUES (${cols.map(() => '?').join(',')})`;
+    const params = cols.map(k => (dto as any)[k]);
+
+    return from(this.db.execute(sql, params)).pipe(
+      tap(() => {
+        this.alert.show('{{entityCapitalized}} créée', 'success');
+        this.fetch(page, limit).subscribe();
+      }),
+      map(() => undefined),
+      catchError(err => {
+        this.alert.show(`Erreur création {{entityLowerCase}}!`, 'error');
+        throw err;
+      })
+    );
+  }
+
+  update(id: string, dto: Partial<{{entityCapitalized}}>, page = 0, limit = 10): Observable<void> {
+    const cols = this.getColumns(dto);
+    const sql = `UPDATE ${TABLE_NAME} SET ${cols.map(k => `${k} = ?`).join(',')} WHERE id = ?`;
+    const params = [...cols.map(k => (dto as any)[k]), id];
+
+    return from(this.db.execute(sql, params)).pipe(
+      tap(() => {
+        this.alert.show('{{entityCapitalized}} mise à jour', 'success');
+        this.fetch(page, limit).subscribe();
+      }),
+      map(() => undefined),
+      catchError(err => {
+        this.alert.show(`Erreur mise à jour {{entityLowerCase}} !`, 'error');
+        throw err;
+      })
+    );
+  }
+
+  delete(id: string, page = 0, limit = 10): Observable<void> {
+    return from(this.db.execute(`DELETE FROM ${TABLE_NAME} WHERE id = ?`, [id])).pipe(
+      tap(() => {
+        this.alert.show('{{entityCapitalized}} supprimé', 'success');
+        this.fetch(page, limit).subscribe();
+      }),
+      map(() => undefined),
+      catchError(err => {
+        this.alert.show(`Erreur suppression {{entityLowerCase}} !`, 'error');
+        throw err;
+      })
+    );
+  }
+
+  search(field: string, value: string): Observable<{{entityCapitalized}}[]> {
+    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} = ?`, [value])).pipe(
+      tap(rows => this.{{entityPluralLower}}.set(rows)),
+      catchError(err => {
+        this.alert.show(`Erreur recherche {{entityLowerCase}} !`, 'error');
+        return of([]);
+      })
+    );
+  }
+
+  getById(id: string): Observable<{{entityCapitalized}} | null> {
+    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE id = ?`, [id])).pipe(
+      map(rows => rows[0] ?? null),
+      tap(item => this.selected{{entityCapitalized}}.set(item)),
+      catchError(err => {
+        this.alert.show(`Erreur chargement {{entityLowerCase}} !`, 'error');
+        return of(null);
+      })
+    );
+  }
+}

@@ -34,6 +34,7 @@ public class FieldDefinition implements Serializable {
 	private String entityType;
 	private String inputType;
 	private Boolean isFiles = false;
+	private String plural ;
 
 	public String getEntityType() {
 
@@ -51,6 +52,14 @@ public class FieldDefinition implements Serializable {
 		}
 
 		return isFiles;
+	}
+
+	public String getPlural() {
+
+		 if( plural == null || plural.isEmpty()) {
+			 return Utils.pluralize(name);
+		 }
+		return plural;
 	}
 
 	public String getInputType() {

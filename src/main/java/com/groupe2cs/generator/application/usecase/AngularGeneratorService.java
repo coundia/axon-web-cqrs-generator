@@ -21,7 +21,7 @@ public class AngularGeneratorService {
 
 		String assets = Utils.getSrcDir(outputDir) + "/assets";
 
-		List<SharedTemplate> templates = List.of(
+		List<SharedTemplate> templates = new ArrayList<>(List.of(
 				new SharedTemplate(entity + ".routes",
 						"front/angular/routes.mustache",
 						null,
@@ -58,12 +58,7 @@ public class AngularGeneratorService {
 						outputDir + "/models",
 						null,
 						".ts"),
-				new SharedTemplate(entity + ".service",
-						"front/angular/service.mustache",
-						null,
-						outputDir + "/services",
-						null,
-						".ts"),
+
 				//add component
 				new SharedTemplate(entity + "-view.component",
 						"front/angular/view.component.html.mustache",
@@ -85,7 +80,30 @@ public class AngularGeneratorService {
 						assets + "/i18n/fr",
 						null,
 						".json")
+		)
 		);
+
+		if (definition.getIsTauri()) {
+			templates.add(
+					new SharedTemplate(
+							entity + ".tauri.service",
+							"front/angular/service.mustache",
+							null,
+							outputDir + "/services",
+							null,
+							".ts"
+					)
+			);
+		} else {
+			templates.add(
+					new SharedTemplate(entity + ".service",
+							"front/angular/service.tauri.mustache",
+							null,
+							outputDir + "/services",
+							null,
+							".ts")
+			);
+		}
 
 		templates.forEach(t -> generateFile(t, definition));
 	}
@@ -93,7 +111,11 @@ public class AngularGeneratorService {
 	private void generateFile(SharedTemplate template, EntityDefinition definition) {
 		Map<String, Object> context = new HashMap<>();
 		context.put("entity", definition.getName());
+
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()) );
+		context.put("entityCapitalized", Utils.capitalize(definition.getName()) );
+		context.put("plural", definition.getPlural());
+		context.put("entityPluralLower", Utils.unCapitalize(definition.getPlural()));
 
 		context.put("fields", AngularFieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("allFields", AngularFieldTransformer.transform(definition.getAllFields(), definition.getName()));
@@ -109,6 +131,7 @@ public class AngularGeneratorService {
 		context.put("closeOne", "}");
 		context.put("hasManyToOne", definition.getHasManyToOne());
 		context.put("isFileManager", definition.getIsFileManager());
+
 
 		String content = templateEngine.render(template.getTemplatePath(), context);
 		fileWriterService.write(template.getOutput(), template.getClassName() + template.getExt(), content);

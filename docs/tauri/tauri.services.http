@@ -1,0 +1,45 @@
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"plural": "categories",
+	"title": "Catégorie",
+	"hasType": true,
+    "tauri": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"focus": true,
+		"displayName": "Nom",
+		"type": "String"
+	  },
+	  {
+		"name": "typeCategoryRaw",
+		"type": "String",
+		"entityType": "enum"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
