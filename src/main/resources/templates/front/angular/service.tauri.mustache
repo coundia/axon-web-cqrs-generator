@@ -40,7 +40,10 @@ export class {{entityCapitalized}}TauriService {
   }
 
   private getColumns(dto: Partial<{{entityCapitalized}}>): string[] {
-    return Object.keys(dto).filter(k => !['id','createdAt','updatedAt'].includes(k));
+
+     const ignoredCols= ['id', 'createdAt', 'updatedAt'];
+
+    return Object.keys(dto).filter(k => !ignoredCols.includes(k));
   }
 
   create(dto: Partial<{{entityCapitalized}}>, page = 0, limit = 10): Observable<void> {
