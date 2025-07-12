@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, forkJoin, from, of } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
-import { DatabaseService } from '{{sharedPath}}/services/database.service';
-import { AlertService } from '{{sharedPath}}/components/alert/alert.service';
+import { DatabaseService } from '../../../shared/services/database.service';
+import { AlertService } from '../../../shared/components/alert/alert.service';
 import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
 
 const TABLE_NAME = '{{tableName}}';
