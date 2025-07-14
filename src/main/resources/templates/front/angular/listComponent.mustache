@@ -35,6 +35,9 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 import {FileViewerComponent} from "../../../shared/components/files/file-viewer.component";
 {{/isFileManager}}
 
+import {ImporterDrawerComponent} from "../../../shared/importer-drawer/importer-drawer.component";
+import {ExporterDrawerComponent} from "../../../shared/exporter-drawer/exporter-drawer.component";
+
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -57,7 +60,11 @@ import { RouterLink } from '@angular/router';
     GlobalDrawerComponent,
     NgIf,
     RouterLink,
-    SortHeaderComponent
+    SortHeaderComponent,
+
+    ImporterDrawerComponent,
+    ExporterDrawerComponent,
+
   ],
   templateUrl: './{{entityLowerCase}}-list.component.html',
 })
@@ -67,6 +74,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly sortService = inject(SortService);
 
   readonly list = this.{{entityLowerCase}}Service.{{entityPluralLower}};
+  readonly listAll = this.{{entityLowerCase}}Service.{{entityPluralLower}}All;
   readonly totalPages = this.{{entityLowerCase}}Service.totalPages;
   readonly isLoading = signal(false);
   readonly page = signal(0);
@@ -411,5 +419,56 @@ export class {{entity}}ListComponent implements OnInit {
         });
         {{/isFileManager}}
       }
+
+
+       // Importer Drawer
+    drawerImportVisible = signal(false);
+
+    openImportDrawer() {
+        this.drawerImportVisible.set(true);
+    }
+
+    closeImportDrawer() {
+        this.drawerImportVisible.set(false);
+    }
+
+    handleImport(items: Partial<{{entity}}>[]): void {
+        items.forEach((item) =>
+            this.{{entityLowerCase}}Service.create(item).subscribe()
+        );
+
+        this.alert.show(
+                        `{{entityLowerCase}} import en cours.`,
+                        'success'
+                    );
+    }
+
+    // Exporter Drawer
+    drawerExportVisible = signal(false);
+
+    openExportDrawer() {
+        this.drawerExportVisible.set(true);
+    }
+
+    getFieldNameOnly(){
+      return   this.allFields.map((field) => field.name);
+    }
+
+    exportAll(): void {
+        this.isLoading.set(true);
+        this.{{entityLowerCase}}Service.fetchAll().subscribe({
+          next: (items) => {
+            this.drawerExportVisible.set(true);
+            this.{{entityLowerCase}}Service.{{entityPluralLower}}All.set(items);
+          },
+          error: () => {
+            this.alert.show('Erreur lors de l\'exportation.', 'error');
+          },
+          complete: () => {
+            this.isLoading.set(false);
+          }
+    });
+
+  }
 
 }

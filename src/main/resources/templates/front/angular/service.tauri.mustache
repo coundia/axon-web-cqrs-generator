@@ -13,6 +13,7 @@ export class {{entityCapitalized}}Service {
   private alert = inject(AlertService);
 
   {{entityPluralLower}} = signal<{{entityCapitalized}}[]>([]);
+  {{entityPluralLower}}All = signal<{{entityCapitalized}}[]>([]);
   selected{{entityCapitalized}} = signal<{{entityCapitalized}} | null>(null);
   totalPages = signal(0);
   totalElements = signal(0);
@@ -101,7 +102,7 @@ export class {{entityCapitalized}}Service {
   }
 
   search(field: string, value: string): Observable<{{entityCapitalized}}[]> {
-    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} = ?`, [value])).pipe(
+    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ?`, ['%'+value+'%'])).pipe(
       tap(rows => this.{{entityPluralLower}}.set(rows)),
       catchError(err => {
         console.error(err);
@@ -122,4 +123,82 @@ export class {{entityCapitalized}}Service {
       })
     );
   }
+
+ fetchAll(): Observable<{{entity}}[]> {
+    return from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME}`)).pipe(
+        tap(rows => this.{{entityPluralLower}}All.set(rows)),
+        catchError(err => {
+          console.error(err);
+          this.alert.show(`Erreur lors du chargement complet des {{entityPluralLower}} !`, 'error');
+          return of([]);
+        })
+    );
+  }
+
+    currentPage = signal(0);
+    searchField = signal<string | null>(null);
+    searchValue = signal<string | null>(null);
+
+    setPage(page: number): void {
+        this.currentPage.set(page);
+        const field = this.searchField();
+        const value = this.searchValue();
+
+        if (field && value) {
+            this.searchWithPagination(field, value, page).subscribe();
+        } else {
+            this.fetch(page).subscribe();
+        }
+    }
+
+
+    nextPage(): void {
+        const next = this.currentPage() + 1;
+        if (next < this.totalPages()) {
+            this.setPage(next);
+        }
+    }
+
+    previousPage(): void {
+        const prev = this.currentPage() - 1;
+        if (prev >= 0) {
+            this.setPage(prev);
+        }
+    }
+
+    refresh(): void {
+        this.fetch(this.currentPage()).subscribe();
+    }
+
+  searchWithPagination(field: string, value: string, page = 0, limit = 10): Observable<{
+        readonly content?: any;
+        readonly totalPages?: any;
+        readonly totalElements?: any
+    }> {
+        const offset = page * limit;
+
+        return forkJoin({
+            content: from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ? LIMIT ? OFFSET ?`, ['%'+value+'%', limit, offset])),
+            countRows: from(this.db.select<{ count: number }>(`SELECT COUNT(*) AS count FROM ${TABLE_NAME} WHERE ${field} like ?`, ['%'+value+'%']))
+        }).pipe(
+            map(({ content, countRows }) => {
+                const total = countRows[0]?.count ?? 0;
+                return { content, totalPages: Math.ceil(total / limit), totalElements: total };
+            }),
+            tap(({ content, totalPages, totalElements }) => {
+                this.{{entityPluralLower}}.set(content);
+                this.totalPages.set(totalPages);
+                this.totalElements.set(totalElements);
+                this.searchField.set(field);
+                this.searchValue.set(value);
+                this.currentPage.set(page);
+            }),
+            catchError(err => {
+                console.error(err);
+                this.alert.show(`Erreur recherche paginée !`, 'error');
+                return of();
+            })
+        );
+    }
+
 }

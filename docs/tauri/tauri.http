@@ -1,0 +1,438 @@
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "User",
+	"table": "users",
+	"plural": "users",
+	"tauri": true,
+	"header": "name",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "User",
+	"fields": [
+	  { "name": "id",       "type": "String", "inputType": "hidden" },
+	  { "name": "name",     "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
+	  { "name": "username", "type": "String", "inputType": "text",                 "displayName": "Username" },
+	  { "name": "password", "type": "String", "inputType": "text",                 "displayName": "Password" },
+	  { "name": "email",    "type": "String", "inputType": "text",                 "displayName": "Email" },
+	  { "name": "role",     "type": "String", "inputType": "text",                 "displayName": "Role" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"plural": "categories",
+	"tauri": true,
+	"header": "name",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Category",
+	"fields": [
+	  { "name": "id",       "type": "String", "inputType": "hidden" },
+	  { "name": "name",     "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
+	  { "name": "details",  "type": "String", "inputType": "text",                 "displayName": "Details" },
+	  { "name": "isActive", "type": "Boolean","inputType": "checkbox","defaultValue": false, "displayName": "Active" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Product",
+	"table": "products",
+	"plural": "products",
+	"tauri": true,
+	"header": "name",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": true,
+	"title": "Product",
+	"fields": [
+	  { "name": "id",           "type": "String",  "inputType": "hidden" },
+	  { "name": "name",         "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
+	  { "name": "description",  "type": "String",  "inputType": "text",                 "displayName": "Description" },
+	  { "name": "imageUri",     "type": "String",  "inputType": "text",                 "displayName": "Image URI" },
+	  { "name": "category",     "type": "String",  "inputType": "hidden", "entityType": "Category", "relation": "manyToOne", "nullable": true, "displayName": "Category" },
+	  { "name": "price",        "type": "Double",  "inputType": "number",               "displayName": "Price" },
+	  { "name": "stock",        "type": "Integer", "inputType": "number",               "displayName": "Stock" },
+	  { "name": "reorderLevel", "type": "Integer", "inputType": "number",               "displayName": "Reorder Level" },
+	  { "name": "isActive",     "type": "Boolean", "inputType": "checkbox","defaultValue": false,   "displayName": "Active" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Customer",
+	"table": "customers",
+	"plural": "customers",
+	"tauri": true,
+	"header": "name",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Customer",
+	"fields": [
+	  { "name": "id",      "type": "String", "inputType": "hidden" },
+	  { "name": "name",    "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
+	  { "name": "contact", "type": "String", "inputType": "text",                 "displayName": "Contact" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Sale",
+	"table": "sales",
+	"plural": "sales",
+	"tauri": true,
+	"header": "saleTime",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": true,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Sale",
+	"fields": [
+	  { "name": "id",          "type": "String",  "inputType": "hidden" },
+	  { "name": "user",        "type": "String",  "inputType": "hidden",  "entityType": "User",    "relation": "manyToOne", "nullable": true, "displayName": "Cashier" },
+	  { "name": "totalAmount", "type": "Double",  "inputType": "number",               "displayName": "Total Amount" },
+	  { "name": "saleTime",    "type": "Date",    "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Sale Time" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "SaleItem",
+	"table": "sale_items",
+	"plural": "saleItems",
+	"tauri": true,
+	"header": "lineTotal",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Sale Item",
+	"fields": [
+	  { "name": "id",        "type": "String",  "inputType": "hidden" },
+	  { "name": "sale",      "type": "String",  "inputType": "hidden",  "entityType": "Sale",    "relation": "manyToOne", "nullable": true, "displayName": "Sale" },
+	  { "name": "product",   "type": "String",  "inputType": "hidden",  "entityType": "Product", "relation": "manyToOne", "nullable": true, "displayName": "Product" },
+	  { "name": "quantity",  "type": "Integer", "inputType": "number",               "displayName": "Quantity" },
+	  { "name": "unitPrice", "type": "Double",  "inputType": "number",               "displayName": "Unit Price" },
+	  { "name": "lineTotal", "type": "Double",  "inputType": "number",               "displayName": "Line Total" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "SalePayment",
+	"table": "sale_payments",
+	"plural": "salePayments",
+	"tauri": true,
+	"header": "paymentType",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Sale Payment",
+	"fields": [
+	  { "name": "id",          "type": "String",  "inputType": "hidden" },
+	  { "name": "name",        "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
+	  { "name": "sale",        "type": "String",  "inputType": "hidden",  "entityType": "Sale",     "relation": "manyToOne", "nullable": true, "displayName": "Sale" },
+	  { "name": "paymentType", "type": "String",  "inputType": "text",                 "displayName": "Payment Type" },
+	  { "name": "amount",      "type": "Double",  "inputType": "number",               "displayName": "Amount" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Supplier",
+	"table": "suppliers",
+	"plural": "suppliers",
+	"tauri": true,
+	"header": "name",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Supplier",
+	"fields": [
+	  { "name": "id",       "type": "String",  "inputType": "hidden" },
+	  { "name": "name",     "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
+	  { "name": "contact",  "type": "String",  "inputType": "text",                 "displayName": "Contact" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Purchase",
+	"table": "purchases",
+	"plural": "purchases",
+	"tauri": true,
+	"header": "orderDate",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": true,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Purchase",
+	"fields": [
+	  { "name": "id",           "type": "String", "inputType": "hidden" },
+	  { "name": "supplier",     "type": "String", "inputType": "hidden","entityType":"Supplier","relation":"manyToOne","nullable":true,"displayName":"Supplier" },
+	  { "name": "totalAmount",  "type": "Double", "inputType": "number",               "displayName": "Total Amount" },
+	  { "name": "orderDate",    "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Order Date" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String", "inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "PurchaseItem",
+	"table": "purchase_items",
+	"plural": "purchaseItems",
+	"tauri": true,
+	"header": "lineTotal",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Purchase Item",
+	"fields": [
+	  { "name": "id",         "type": "String",  "inputType": "hidden" },
+	  { "name": "purchase",   "type": "String",  "inputType": "hidden","entityType":"Purchase","relation":"manyToOne","nullable":true,"displayName":"Purchase" },
+	  { "name": "product",    "type": "String",  "inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
+	  { "name": "quantity",   "type": "Integer","inputType": "number",               "displayName": "Quantity" },
+	  { "name": "unitCost",   "type": "Double", "inputType": "number",               "displayName": "Unit Cost" },
+	  { "name": "lineTotal",  "type": "Double", "inputType": "number",               "displayName": "Line Total" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String","inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String","inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "PurchasePayment",
+	"table": "purchase_payments",
+	"plural": "purchasePayments",
+	"tauri": true,
+	"header": "paymentType",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Purchase Payment",
+	"fields": [
+	  { "name": "id",          "type": "String", "inputType": "hidden" },
+	  { "name": "name",        "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
+	  { "name": "purchase",    "type": "String", "inputType": "hidden","entityType":"Purchase","relation":"manyToOne","nullable":true,"displayName":"Purchase" },
+	  { "name": "paymentType", "type": "String", "inputType": "text",                 "displayName": "Payment Type" },
+	  { "name": "amount",      "type": "Double", "inputType": "number",               "displayName": "Amount" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String","inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String","inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "StockMovement",
+	"table": "stock_movements",
+	"plural": "stockMovements",
+	"tauri": true,
+	"header": "reason",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Stock Movement",
+	"fields": [
+	  { "name": "id",             "type": "String","inputType": "hidden" },
+	  { "name": "product",        "type": "String","inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
+	  { "name": "quantityChange","type": "Integer","inputType": "number",               "displayName":"Quantity Change" },
+	  { "name": "reason",         "type": "String","inputType": "text",                 "displayName":"Reason" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String","inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String","inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "StockAlert",
+	"table": "stock_alerts",
+	"plural": "stockAlerts",
+	"tauri": true,
+	"header": "thresholdLevel",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": false,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Stock Alert",
+	"fields": [
+	  { "name": "id",             "type": "String","inputType": "hidden" },
+	  { "name": "product",        "type": "String","inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
+	  { "name": "thresholdLevel","type": "Integer","inputType": "number",               "displayName":"Threshold Level" },
+	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "createdBy","type": "String","inputType": "hidden" },
+	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
+	  { "name": "updatedBy","type": "String","inputType": "hidden" },
+	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
+	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	]
+  }
+}

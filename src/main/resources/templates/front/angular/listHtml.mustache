@@ -29,6 +29,29 @@
         (refresh)="refresh()"
       />
     </div>
+
+    <div>
+      <button class="btn btn-sm btn-outline btn-primary" (click)="openImportDrawer()">Importer</button>
+      <button class="btn btn-sm btn-outline btn-accent" (click)="exportAll()">Exporter tout</button>
+      <app-importer-drawer
+              [visible]="drawerImportVisible"
+              [title]="'Importer des {{entityPluralLower}}'"
+              [entityName]="'{{entityLowerCase}}'"
+              [importFields]="['name', 'details', 'isActive']"
+              (closeDrawer)="closeImportDrawer()"
+              (importData)="handleImport($event)"
+      />
+      <app-exporter-drawer
+              [visible]="drawerExportVisible"
+              [title]="'Exporter les {{entityPluralLower}}'"
+              [entityName]="'{{entityLowerCase}}'"
+              [data]="listAll()"
+              [fileName]="'{{entityPluralLower}}'"
+              [allFields]="getFieldNameOnly()"
+              (closeDrawer)="drawerExportVisible.set(false)"
+      />
+    </div>
+
   </div>
 
   @if (isLoading()) {
