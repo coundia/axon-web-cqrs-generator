@@ -21,8 +21,8 @@ import {SHARED_IMPORTS} from '../../../shared/constantes/shared-imports';
 import {getDefaultValue, toDatetimeLocalString} from '../../../shared/hooks/Parsing';
 {{#fields}}
 {{#isManyToOne}}
-import {{openOne}} {{nameCapitalized}} } from '../../{{name}}/models/{{name}}.model';
-import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{{name}}.service';
+import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
+import  {{openOne}} {{nameCapitalized}}Service } from '../../{{nameLowerCase}}/services/{{nameLowerCase}}.service';
 {{/isManyToOne}}
 {{/fields}}
 
@@ -91,7 +91,7 @@ export class {{entity}}ListComponent implements OnInit {
 
     {{#fields}}
     {{#isManyToOne}}
-    private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
+    private readonly  {{nameLowerCase}}Service = inject({{nameCapitalized}}Service);
     {{name}}  =   signal<{{nameCapitalized}} | null>(null);
     {{name}}s  =   signal<{{nameCapitalized}}[]>([]);
     {{/isManyToOne}}
@@ -196,7 +196,7 @@ export class {{entity}}ListComponent implements OnInit {
      {{#fields}}
     {{#isManyToOne}}
      if (item.{{name}}) {
-        this.{{name}}Service.getById(item.{{name}}).subscribe({
+        this.{{nameLowerCase}}Service.getById(item.{{name}}).subscribe({
           next: {{name}} => {
              item.{{name}}Model = {{name}};
               this.selectedItem.set({
@@ -374,7 +374,7 @@ export class {{entity}}ListComponent implements OnInit {
 
         {{#fields}}
         {{#isManyToOne}}
-        this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
+        this.{{nameLowerCase}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
         {{/isManyToOne}}
         {{/fields}}
 

@@ -20,8 +20,8 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 
 {{#fields}}
 {{#isManyToOne}}
-import {{openOne}} {{nameCapitalized}} } from '../../{{name}}/models/{{name}}.model';
-import  {{openOne}} {{nameCapitalized}}Service } from '../../{{name}}/services/{{name}}.service';
+import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
+import  {{openOne}} {{nameCapitalized}}Service } from '../../{{nameLowerCase}}/services/{{nameLowerCase}}.service';
 {{/isManyToOne}}
 {{/fields}}
 

@@ -86,7 +86,7 @@ public class AngularGeneratorService {
 		if (definition.getTauri()) {
 			templates.add(
 					new SharedTemplate(
-							entity + ".service",
+							Utils.unCapitalize(entity) + ".service",
 							"front/angular/service.tauri.mustache",
 							null,
 							outputDir + "/services",
@@ -96,7 +96,7 @@ public class AngularGeneratorService {
 			);
 		} else {
 			templates.add(
-					new SharedTemplate(entity + ".service",
+					new SharedTemplate(Utils.unCapitalize(entity) + ".service",
 							"front/angular/service.mustache",
 							null,
 							outputDir + "/services",
@@ -111,6 +111,7 @@ public class AngularGeneratorService {
 	private void generateFile(SharedTemplate template, EntityDefinition definition) {
 		Map<String, Object> context = new HashMap<>();
 		context.put("entity", definition.getName());
+		context.put("table", definition.getTable());
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()) );
 		context.put("tableName", Utils.unCapitalize(definition.getName()) );

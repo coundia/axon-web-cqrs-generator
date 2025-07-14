@@ -1,5 +1,5 @@
 # add to side panel
- src/app/shared/side-panel/side-panel.component.html
+ src/app/side-panel/side-panel.component.html
 ```
 <app-side-link
 	link="/setting"

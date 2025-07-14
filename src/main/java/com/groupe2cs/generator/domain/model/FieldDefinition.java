@@ -35,6 +35,14 @@ public class FieldDefinition implements Serializable {
 	private String inputType;
 	private Boolean isFiles = false;
 	private String plural ;
+	private String table ;
+
+	public String getTable() {
+		if (table == null || table.isEmpty()) {
+			return Utils.pluralize(name);
+		}
+		return table;
+	}
 
 	public String getEntityType() {
 
