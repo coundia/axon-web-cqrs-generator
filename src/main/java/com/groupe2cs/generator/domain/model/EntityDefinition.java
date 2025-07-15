@@ -31,6 +31,7 @@ public class EntityDefinition implements Serializable {
 	private List<FieldDefinition> fields;
 	private List<String> stack = new ArrayList<>();
 	private List<String> skip = new ArrayList<>();
+	private List<String> items = new ArrayList<>();
 	private String module;
 	private Boolean auditable = false;
 	private Boolean multiTenant = false;
@@ -54,6 +55,15 @@ public class EntityDefinition implements Serializable {
 	private String header = "";
 	private Boolean tauri = false;
 	private String plural ;
+	private Boolean isPos ;
+
+	public Boolean getIsPos() {
+		if (isPos == null) {
+			return false;
+		}
+
+		return isPos;
+	}
 
 	public String getPlural() {
 

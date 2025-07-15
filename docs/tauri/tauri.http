@@ -154,6 +154,10 @@ Content-Type: application/json
 	"transactional": false,
 	"hasCategory": false,
 	"title": "Sale",
+    "isPos": true,
+    "items": [
+      "saleItems"
+    ],
 	"fields": [
 	  { "name": "id",          "type": "String",  "inputType": "hidden" },
 	  { "name": "user",        "type": "String",  "inputType": "hidden",  "entityType": "User",    "relation": "manyToOne", "nullable": true, "displayName": "Cashier" },

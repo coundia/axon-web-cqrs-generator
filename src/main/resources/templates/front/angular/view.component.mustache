@@ -6,6 +6,9 @@ import { {{entity}} } from '../models/{{entityLowerCase}}.model';
 import { FieldDefinition } from '../../../shared/components/models/field-definition';
 import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
 import { AlertService } from '../../../shared/components/alert/alert.service';
+{{#isPos}}
+import { EntityItemListComponent } from '../../../modules/pos/entity-item-list/entity-item-list.component';
+{{/isPos}}
 
 {{#fields}}
 {{#isManyToOne}}
@@ -26,8 +29,8 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 @Component({
   selector: 'app-{{entityLowerCase}}-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, EntityToolbarActionComponent,
-{{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
+  imports: [CommonModule, RouterLink, EntityToolbarActionComponent, {{#isPos}} EntityItemListComponent, {{/isPos}}
+  {{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
 ],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
@@ -72,7 +75,19 @@ export class {{entity}}ViewComponent {
   ];
 
   constructor() {
+
+    let isFetchedUser = false;
+    let isFetchedModel1 = false;
+
     effect(() => {
+
+{{#items}}
+    if (!isFetchedItems && this.item()?.id) {
+        this.{{.}}All(this.item().id);
+        isFetchedItems = true;
+    }
+     {{/items}}
+
     this.fetchDeps();
       if (!this.item()) {
         this.isLoading.set(true);
@@ -89,11 +104,11 @@ export class {{entity}}ViewComponent {
       }
         {{#fields}}
         {{#isManyToOne}}
-        if (this.item() && !this.item()!.{{name}}Model) {
+        if (!isFetchedModel1 && this.item() && !this.item()!.{{name}}Model) {
             this.{{name}}Service.getById(this.item()!.{{name}}!).subscribe({
               next: {{name}} => {
                 this.{{name}}.set({{name}});
-
+                isFetchedModel1 = false;
                 this.item.set({
                   ...this.item()!,
                   {{name}}Model: {{name}}
@@ -161,4 +176,14 @@ export class {{entity}}ViewComponent {
 
     }
   {{/isFileManager}}
+
+  {{#items}}
+      saleItems = this.service.salesItems;
+    {{.}}All(id: string) {
+        this.service.{{.}}All(id).then(items => {
+            this.service.{{.}}.set(items);
+        });
+    }
+    {{/items}}
+
 }

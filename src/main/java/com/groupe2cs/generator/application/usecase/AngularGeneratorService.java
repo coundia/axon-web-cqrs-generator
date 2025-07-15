@@ -134,6 +134,8 @@ public class AngularGeneratorService {
 		context.put("hasManyToOne", definition.getHasManyToOne());
 		context.put("isFileManager", definition.getIsFileManager());
 		context.put("hasSummary", definition.getHasSummary());
+		context.put("isPos", definition.getIsPos());
+		context.put("items", definition.getItems());
 
 
 		String content = templateEngine.render(template.getTemplatePath(), context);

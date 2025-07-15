@@ -4,7 +4,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { AlertService } from '../../../shared/components/alert/alert.service';
 import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
-
+import {  getColumnsToInsert } from '../../../shared/hooks/get-column';
 const TABLE_NAME = '{{table}}';
 
 @Injectable({ providedIn: 'root' })
@@ -43,9 +43,17 @@ export class {{entityCapitalized}}Service {
 
   private getColumns(dto: Partial<{{entityCapitalized}}>): string[] {
 
-     const ignoredCols = ['id', 'createdAt', 'updatedAt', 'files'];
+    const ignoredCols = [];
+    const cols = getColumnsToInsert(dto);
 
-    return Object.keys(dto).filter(k => !ignoredCols.includes(k));
+    ignoredCols.forEach(col => {
+      const index = cols.indexOf(col);
+      if (index !== -1) {
+        cols.splice(index, 1);
+      }
+    });
+
+    return cols;
   }
 
   create(dto: Partial<{{entityCapitalized}}>, page = 0, limit = 10): Observable<void> {
@@ -199,6 +207,31 @@ export class {{entityCapitalized}}Service {
                 return of();
             })
         );
+    }
+
+    {{#items}}
+      {{.}}All(saleId: string): Promise<SaleItem[]> {
+        return this.db
+            .select<SaleItem>('SELECT si.*, p.name as name\n' +
+                '        FROM sale_items si\n' +
+                '        LEFT JOIN products p ON si.product = p.id\n' +
+                '        WHERE si.sale = ?', [saleId])
+            .then(items => items)
+            .catch(err => {
+                console.error(err);
+                this.alert.show(err , 'error');
+                return [];
+            });
+    }
+    {{/items}}
+
+    generate{{entity}}Id (): string {
+        const date = new Date();
+        const year = date.getFullYear().toString().slice(-2);
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `S${year}${month}${day}-${randomPart}`;
     }
 
 }
