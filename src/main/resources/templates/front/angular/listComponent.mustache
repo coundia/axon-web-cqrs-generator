@@ -19,6 +19,9 @@ import {SortHeaderComponent} from '../../../shared/components/tri/sort-header.co
 import {SortService} from '../../../shared/components/tri/sort.service';
 import {SHARED_IMPORTS} from '../../../shared/constantes/shared-imports';
 import {getDefaultValue, toDatetimeLocalString} from '../../../shared/hooks/Parsing';
+
+import { confirmation } from '../../../modules/pos/utils/confirmation';
+
 {{#fields}}
 {{#isManyToOne}}
 import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
@@ -77,7 +80,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly listAll = this.{{entityLowerCase}}Service.{{entityPluralLower}}All;
   readonly totalPages = this.{{entityLowerCase}}Service.totalPages;
   readonly isLoading = signal(false);
-  readonly page = signal(0);
+  readonly page = this.{{entityLowerCase}}Service.currentPage;
   readonly size = signal(10);
   files: File[] = [];
 
@@ -114,6 +117,7 @@ export class {{entity}}ListComponent implements OnInit {
     type: '{{type}}'{{#defaultValue}},
     defaultValue: '{{defaultValue}}'{{/defaultValue}} ,
     inputType: '{{inputType}}',
+    nullable: {{nullable}},
     entityType: '{{entityType}}',
     relation: '{{relation}}'
     },
@@ -127,6 +131,7 @@ export class {{entity}}ListComponent implements OnInit {
     displayName: '{{displayName}}',
     type: '{{type}}' ,
     entityType: '{{entityType}}' ,
+    nullable: {{nullable}},
     inputType: '{{inputType}}',
     relation: '{{relation}}'
     },
@@ -167,7 +172,7 @@ export class {{entity}}ListComponent implements OnInit {
 
   refresh(): void {
     this.isLoading.set(true);
-    this.{{entityLowerCase}}Service.fetch(this.page(), this.size()).subscribe({
+    this.{{entityLowerCase}}Service.refresh$().subscribe({
       next: () => this.isLoading.set(false),
       error: err => {
         this.alert.show('Erreur lors de la récupération des {{entityPluralLower}}.', 'error');
@@ -232,9 +237,8 @@ export class {{entity}}ListComponent implements OnInit {
     this.searchTerm = value;
     if (!value) return this.refresh();
     this.isLoading.set(true);
-    this.{{entityLowerCase}}Service.search(field, value).subscribe({
+    this.{{entityLowerCase}}Service.searchWithPagination(field, value).subscribe({
       next: items => {
-        this.list.set(items);
         this.isLoading.set(false);
       },
       error: err => {
@@ -250,17 +254,11 @@ export class {{entity}}ListComponent implements OnInit {
   }
 
   next(): void {
-    if (this.page() < this.totalPages() - 1) {
-      this.page.update(p => p + 1);
-      this.refresh();
-    }
+    this.{{entityLowerCase}}Service.nextPage();
   }
 
   prev(): void {
-    if (this.page() > 0) {
-      this.page.update(p => p - 1);
-      this.refresh();
-    }
+    this.{{entityLowerCase}}Service.previousPage();
   }
 
   getFieldValue(item: {{entity}}, field: string): any {
@@ -470,5 +468,13 @@ export class {{entity}}ListComponent implements OnInit {
     });
 
   }
+
+    async deleteAll() {
+      const ok = await confirmation("Voulez-vous vraiment supprimer ?");
+
+      if (ok){
+        this.{{entityLowerCase}}Service.deleteAll();
+      }
+    }
 
 }

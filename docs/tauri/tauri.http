@@ -1,3 +1,4 @@
+###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -17,21 +18,22 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "User",
 	"fields": [
-	  { "name": "id",       "type": "String", "inputType": "hidden" },
-	  { "name": "name",     "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
-	  { "name": "username", "type": "String", "inputType": "text",                 "displayName": "Username" },
-	  { "name": "password", "type": "String", "inputType": "text",                 "displayName": "Password" },
-	  { "name": "email",    "type": "String", "inputType": "text",                 "displayName": "Email" },
-	  { "name": "role",     "type": "String", "inputType": "text",                 "displayName": "Role" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",        "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",      "type": "String",  "inputType": "text",   "focus": true, "displayName": "Nom" },
+	  { "name": "username",  "type": "String",  "inputType": "text",   "displayName": "Nom d'utilisateur", "nullable": true },
+	  { "name": "password",  "type": "String",  "inputType": "text",   "displayName": "Mot de passe",     "nullable": true },
+	  { "name": "email",     "type": "String",  "inputType": "text",   "displayName": "Email",            "nullable": true },
+	  { "name": "role",      "type": "String",  "inputType": "text",   "displayName": "Rôle",             "nullable": true },
+	  { "name": "createdAt", "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy", "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "updatedAt", "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy", "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "syncAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",    "inputType": "date",   "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -52,19 +54,20 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Category",
 	"fields": [
-	  { "name": "id",       "type": "String", "inputType": "hidden" },
-	  { "name": "name",     "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
-	  { "name": "details",  "type": "String", "inputType": "text",                 "displayName": "Details" },
-	  { "name": "isActive", "type": "Boolean","inputType": "checkbox","defaultValue": false, "displayName": "Active" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",        "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "name",      "type": "String",  "inputType": "text",     "focus": true,    "displayName": "Nom" },
+	  { "name": "details",   "type": "String",  "inputType": "text",     "displayName": "Détails",        "nullable": true },
+	  { "name": "isActive",  "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
+	  { "name": "createdAt", "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy", "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "updatedAt", "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy", "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "syncAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",    "inputType": "date",     "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -85,24 +88,25 @@ Content-Type: application/json
 	"hasCategory": true,
 	"title": "Product",
 	"fields": [
-	  { "name": "id",           "type": "String",  "inputType": "hidden" },
-	  { "name": "name",         "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
-	  { "name": "description",  "type": "String",  "inputType": "text",                 "displayName": "Description" },
-	  { "name": "imageUri",     "type": "String",  "inputType": "text",                 "displayName": "Image URI" },
-	  { "name": "category",     "type": "String",  "inputType": "hidden", "entityType": "Category", "relation": "manyToOne", "nullable": true, "displayName": "Category" },
-	  { "name": "price",        "type": "Double",  "inputType": "number",               "displayName": "Price" },
-	  { "name": "stock",        "type": "Integer", "inputType": "number",               "displayName": "Stock" },
-	  { "name": "reorderLevel", "type": "Integer", "inputType": "number",               "displayName": "Reorder Level" },
-	  { "name": "isActive",     "type": "Boolean", "inputType": "checkbox","defaultValue": false,   "displayName": "Active" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",           "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "name",         "type": "String",  "inputType": "text",     "focus": true,    "displayName": "Nom" },
+	  { "name": "description",  "type": "String",  "inputType": "text",     "displayName": "Description",    "nullable": true },
+	  { "name": "imageUri",     "type": "String",  "inputType": "text",     "displayName": "Image",          "nullable": true },
+	  { "name": "category",     "type": "String",  "inputType": "hidden",   "entityType": "Category", "relation": "manyToOne", "nullable": true },
+	  { "name": "price",        "type": "Double",  "inputType": "number",   "displayName": "Prix" },
+	  { "name": "stock",        "type": "Integer", "inputType": "number",   "displayName": "Stock",          "nullable": true },
+	  { "name": "reorderLevel", "type": "Integer", "inputType": "number",   "displayName": "Niveau de réapprovisionnement", "nullable": true },
+	  { "name": "isActive",     "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
+	  { "name": "createdAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy",    "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "updatedAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",    "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "syncAt",       "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",    "inputType": "date",     "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -123,18 +127,19 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Customer",
 	"fields": [
-	  { "name": "id",      "type": "String", "inputType": "hidden" },
-	  { "name": "name",    "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
-	  { "name": "contact", "type": "String", "inputType": "text",                 "displayName": "Contact" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",        "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "name",      "type": "String", "inputType": "text",   "focus": true,    "displayName": "Nom" },
+	  { "name": "contact",   "type": "String", "inputType": "text",   "displayName": "Contact",        "nullable": true },
+	  { "name": "createdAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy", "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "updatedAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy", "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "syncAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",   "inputType": "date",   "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -154,24 +159,23 @@ Content-Type: application/json
 	"transactional": false,
 	"hasCategory": false,
 	"title": "Sale",
-    "isPos": true,
-    "items": [
-      "saleItems"
-    ],
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden" },
-	  { "name": "user",        "type": "String",  "inputType": "hidden",  "entityType": "User",    "relation": "manyToOne", "nullable": true, "displayName": "Cashier" },
-	  { "name": "totalAmount", "type": "Double",  "inputType": "number",               "displayName": "Total Amount" },
-	  { "name": "saleTime",    "type": "Date",    "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Sale Time" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Nom" },
+	  { "name": "user",        "type": "String",  "inputType": "hidden", "entityType": "User",     "relation": "manyToOne", "nullable": true },
+	  { "name": "customer",    "type": "String",  "inputType": "hidden", "entityType": "Customer", "relation": "manyToOne", "nullable": true },
+	  { "name": "totalAmount", "type": "Double",  "inputType": "number", "displayName": "Montant total",      "nullable": true },
+	  { "name": "saleTime",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de vente", "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -192,21 +196,23 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Sale Item",
 	"fields": [
-	  { "name": "id",        "type": "String",  "inputType": "hidden" },
-	  { "name": "sale",      "type": "String",  "inputType": "hidden",  "entityType": "Sale",    "relation": "manyToOne", "nullable": true, "displayName": "Sale" },
-	  { "name": "product",   "type": "String",  "inputType": "hidden",  "entityType": "Product", "relation": "manyToOne", "nullable": true, "displayName": "Product" },
-	  { "name": "quantity",  "type": "Integer", "inputType": "number",               "displayName": "Quantity" },
-	  { "name": "unitPrice", "type": "Double",  "inputType": "number",               "displayName": "Unit Price" },
-	  { "name": "lineTotal", "type": "Double",  "inputType": "number",               "displayName": "Line Total" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,           "displayName": "Nom" },
+	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",      "relation": "manyToOne", "nullable": true },
+	  { "name": "product",     "type": "String",  "inputType": "hidden", "entityType": "Product",   "relation": "manyToOne", "nullable": true },
+	  { "name": "quantity",    "type": "Integer", "inputType": "number", "displayName": "Quantité",           "nullable": true },
+	  { "name": "unitPrice",   "type": "Double",  "inputType": "number", "displayName": "Prix unitaire",      "nullable": true },
+	  { "name": "lineTotal",   "type": "Double",  "inputType": "number", "displayName": "Total de ligne",     "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -227,20 +233,21 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Sale Payment",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden" },
-	  { "name": "name",        "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
-	  { "name": "sale",        "type": "String",  "inputType": "hidden",  "entityType": "Sale",     "relation": "manyToOne", "nullable": true, "displayName": "Sale" },
-	  { "name": "paymentType", "type": "String",  "inputType": "text",                 "displayName": "Payment Type" },
-	  { "name": "amount",      "type": "Double",  "inputType": "number",               "displayName": "Amount" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,    "displayName": "Nom" },
+	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",     "relation": "manyToOne", "nullable": true },
+	  { "name": "paymentType", "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
+	  { "name": "amount",      "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy",   "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",   "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -261,18 +268,19 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Supplier",
 	"fields": [
-	  { "name": "id",       "type": "String",  "inputType": "hidden" },
-	  { "name": "name",     "type": "String",  "inputType": "text",    "focus": true, "displayName": "Name" },
-	  { "name": "contact",  "type": "String",  "inputType": "text",                 "displayName": "Contact" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",        "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "name",      "type": "String", "inputType": "text",   "focus": true,    "displayName": "Nom" },
+	  { "name": "contact",   "type": "String", "inputType": "text",   "displayName": "Contact",        "nullable": true },
+	  { "name": "createdAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy", "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "updatedAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy", "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "syncAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",   "inputType": "date",   "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -293,19 +301,21 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase",
 	"fields": [
-	  { "name": "id",           "type": "String", "inputType": "hidden" },
-	  { "name": "supplier",     "type": "String", "inputType": "hidden","entityType":"Supplier","relation":"manyToOne","nullable":true,"displayName":"Supplier" },
-	  { "name": "totalAmount",  "type": "Double", "inputType": "number",               "displayName": "Total Amount" },
-	  { "name": "orderDate",    "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Order Date" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String", "inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String", "inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",           "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "name",         "type": "String", "inputType": "text",   "focus": true,           "displayName": "Nom" },
+	  { "name": "supplier",     "type": "String", "inputType": "hidden", "entityType": "Supplier", "relation": "manyToOne", "nullable": true },
+	  { "name": "totalAmount",  "type": "Double", "inputType": "number", "displayName": "Montant total",      "nullable": true },
+	  { "name": "orderDate",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de commande", "nullable": true },
+	  { "name": "createdAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdBy",    "type": "String", "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",    "type": "String", "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",       "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",   "inputType": "date",                                               "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -326,21 +336,23 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase Item",
 	"fields": [
-	  { "name": "id",         "type": "String",  "inputType": "hidden" },
-	  { "name": "purchase",   "type": "String",  "inputType": "hidden","entityType":"Purchase","relation":"manyToOne","nullable":true,"displayName":"Purchase" },
-	  { "name": "product",    "type": "String",  "inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
-	  { "name": "quantity",   "type": "Integer","inputType": "number",               "displayName": "Quantity" },
-	  { "name": "unitCost",   "type": "Double", "inputType": "number",               "displayName": "Unit Cost" },
-	  { "name": "lineTotal",  "type": "Double", "inputType": "number",               "displayName": "Line Total" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String","inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String","inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",         "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",       "type": "String",  "inputType": "text",   "focus": true,           "displayName": "Nom" },
+	  { "name": "purchase",   "type": "String",  "inputType": "hidden", "entityType": "Purchase", "relation": "manyToOne", "nullable": true },
+	  { "name": "product",    "type": "String",  "inputType": "hidden", "entityType": "Product",  "relation": "manyToOne", "nullable": true },
+	  { "name": "quantity",   "type": "Integer", "inputType": "number", "displayName": "Quantité",           "nullable": true },
+	  { "name": "unitCost",   "type": "Double",  "inputType": "number", "displayName": "Coût unitaire",      "nullable": true },
+	  { "name": "lineTotal",  "type": "Double",  "inputType": "number", "displayName": "Total de ligne",     "nullable": true },
+	  { "name": "createdAt",  "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdBy",  "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",  "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",  "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",     "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",  "type": "Date",    "inputType": "date",                                               "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -361,20 +373,21 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase Payment",
 	"fields": [
-	  { "name": "id",          "type": "String", "inputType": "hidden" },
-	  { "name": "name",        "type": "String", "inputType": "text",   "focus": true, "displayName": "Name" },
-	  { "name": "purchase",    "type": "String", "inputType": "hidden","entityType":"Purchase","relation":"manyToOne","nullable":true,"displayName":"Purchase" },
-	  { "name": "paymentType", "type": "String", "inputType": "text",                 "displayName": "Payment Type" },
-	  { "name": "amount",      "type": "Double", "inputType": "number",               "displayName": "Amount" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String","inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String","inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",           "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",         "type": "String",  "inputType": "text",   "focus": true,    "displayName": "Nom" },
+	  { "name": "purchase",     "type": "String",  "inputType": "hidden", "entityType": "Purchase", "relation": "manyToOne", "nullable": true },
+	  { "name": "paymentType",  "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
+	  { "name": "amount",       "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
+	  { "name": "createdAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdBy",    "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "updatedAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",    "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "syncAt",       "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",    "inputType": "date",   "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -395,19 +408,21 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Stock Movement",
 	"fields": [
-	  { "name": "id",             "type": "String","inputType": "hidden" },
-	  { "name": "product",        "type": "String","inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
-	  { "name": "quantityChange","type": "Integer","inputType": "number",               "displayName":"Quantity Change" },
-	  { "name": "reason",         "type": "String","inputType": "text",                 "displayName":"Reason" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String","inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String","inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",             "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "name",           "type": "String",  "inputType": "text",     "focus": true,            "displayName": "Nom" },
+	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
+	  { "name": "quantityChange", "type": "Integer", "inputType": "number",   "displayName": "Variation de quantité", "nullable": true },
+	  { "name": "reason",         "type": "String",  "inputType": "text",     "displayName": "Raison",              "nullable": true },
+	  { "name": "createdAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "createdBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
+	  { "name": "updatedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
+	  { "name": "syncAt",         "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "deletedAt",      "type": "Date",    "inputType": "date",                                           "nullable": true }
 	]
   }
 }
+
 ###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
@@ -428,15 +443,17 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Stock Alert",
 	"fields": [
-	  { "name": "id",             "type": "String","inputType": "hidden" },
-	  { "name": "product",        "type": "String","inputType": "hidden","entityType":"Product","relation":"manyToOne","nullable":true,"displayName":"Product" },
-	  { "name": "thresholdLevel","type": "Integer","inputType": "number",               "displayName":"Threshold Level" },
-	  { "name": "createdAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "createdBy","type": "String","inputType": "hidden" },
-	  { "name": "updatedAt","type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()", "displayName": "Updated At" },
-	  { "name": "updatedBy","type": "String","inputType": "hidden" },
-	  { "name": "syncAt",   "type": "Date",   "inputType": "date",                 "defaultValue": "new Date().toISOString()" },
-	  { "name": "deletedAt","type": "Date",   "inputType": "date",                 "nullable": true }
+	  { "name": "id",             "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "name",           "type": "String",  "inputType": "text",     "focus": true,            "displayName": "Nom" },
+	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
+	  { "name": "thresholdLevel", "type": "Integer","inputType": "number",   "displayName": "Seuil d'alerte",    "nullable": true },
+	  { "name": "alertedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date d'alerte",  "nullable": true },
+	  { "name": "createdAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "createdBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
+	  { "name": "updatedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
+	  { "name": "syncAt",         "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "deletedAt",      "type": "Date",    "inputType": "date",                                           "nullable": true }
 	]
   }
 }

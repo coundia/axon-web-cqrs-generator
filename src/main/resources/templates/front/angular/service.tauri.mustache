@@ -175,7 +175,11 @@ export class {{entityCapitalized}}Service {
     }
 
     refresh(): void {
-        this.fetch(this.currentPage()).subscribe();
+        this.refresh$().subscribe();
+    }
+
+    refresh$(): Observable<{ content: {{entity}}[]; totalPages: number; totalElements: number }> {
+       return this.fetch(this.currentPage());
     }
 
   searchWithPagination(field: string, value: string, page = 0, limit = 10): Observable<{
@@ -233,5 +237,38 @@ export class {{entityCapitalized}}Service {
         const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
         return `S${year}${month}${day}-${randomPart}`;
     }
+
+    deleteAll(
+    ): Observable<void> {
+
+        let field = this.searchField();
+        let value = this.searchValue();
+
+        if(!field || !value) {
+            this.alert.show('Aucun critère de recherche défini !', 'error');
+            return of(undefined);
+        }
+
+        const query = `DELETE FROM ${TABLE_NAME} WHERE ${field} like ?`;
+
+        return from(
+            this.db.execute(
+                query,[`%${value}%`]
+            )
+        ).pipe(
+            tap(() => {
+                this.alert.show('{{entity}} supprimées', 'success');
+                this.refresh();
+            }),
+            map(() => undefined),
+            catchError(err => {
+                console.error(err);
+                this.alert.show('Erreur suppression par critère !', 'error');
+                throw err;
+            })
+        );
+    }
+
+
 
 }
