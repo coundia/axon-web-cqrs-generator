@@ -1,7 +1,7 @@
 import {Component, computed, EventEmitter, inject, Input, OnInit, Output, signal} from '@angular/core';
 import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
 import { {{entity}} } from '../models/{{entityLowerCase}}.model';
-import {NgClass, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
+import {DatePipe, DecimalPipe, NgClass, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault} from '@angular/common';
 import {FormBuilder, FormControl, FormGroup, FormsModule, Validators} from '@angular/forms';
 import { ToastService } from '../../../shared/components/toast/toast.service';
 import { AlertService } from '../../../shared/components/alert/alert.service';
@@ -67,6 +67,8 @@ import { RouterLink } from '@angular/router';
 
     ImporterDrawerComponent,
     ExporterDrawerComponent,
+     DatePipe,
+        DecimalPipe,
 
   ],
   templateUrl: './{{entityLowerCase}}-list.component.html',
@@ -473,7 +475,15 @@ export class {{entity}}ListComponent implements OnInit {
       const ok = await confirmation("Voulez-vous vraiment supprimer ?");
 
       if (ok){
-        this.{{entityLowerCase}}Service.deleteAll();
+        this.{{entityLowerCase}}Service.deleteAll().subscribe({
+            next: () => {
+                this.alert.show('Suppression réussie.', 'success');
+                this.refresh();
+            },
+            error: () => {
+                this.alert.show('Erreur lors de la suppression de tous les users.', 'error');
+            }
+        });
       }
     }
 

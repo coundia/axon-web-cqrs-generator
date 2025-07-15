@@ -1,5 +1,5 @@
 import { Component, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule,DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
 import { {{entity}} } from '../models/{{entityLowerCase}}.model';
@@ -29,7 +29,13 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 @Component({
   selector: 'app-{{entityLowerCase}}-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, EntityToolbarActionComponent, {{#isPos}} EntityItemListComponent, {{/isPos}}
+  imports: [
+   DatePipe,
+    DecimalPipe,
+  CommonModule,
+  RouterLink,
+   EntityToolbarActionComponent,
+{{#isPos}} EntityItemListComponent, {{/isPos}}
   {{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
 ],
   templateUrl: './{{entityLowerCase}}-view.component.html',
@@ -65,8 +71,11 @@ export class {{entity}}ViewComponent {
     {{^isFiles}}
     {{^isId}}
         { name: '{{name}}',
-        displayName: '{{displayName}}', type: '{{type}}'{{#options}}, options: {{options}}{{/options}},
+        displayName: '{{displayName}}',
+        type: '{{type}}'{{#options}},
+         options: {{options}}{{/options}},
         entityType: '{{entityType}}',
+         inputType: '{{inputType}}',
         relation: '{{relation}}'
         },
         {{/isId}}

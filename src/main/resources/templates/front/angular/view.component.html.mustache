@@ -49,7 +49,19 @@
                     <span class="badge" [ngClass]="getFieldValue(item()!, field.name) ? 'badge-success' : 'badge-error'">
                       {{open}} getFieldValue(item()!, field.name) ? 'Oui' : 'Non' {{close}}
                     </span>
-                  } @else {
+                  } @else if (field.inputType === 'date') {
+                    <span class="badge badge-sm">
+                    {{open}} getFieldValue(item()!, field.name) | date: 'long':'':'fr' }}
+                    </span>
+                } @else if (field.inputType === 'number') {
+                    <span class="badge badge-sm">
+                   {{open}} getFieldValue(item()!, field.name) | number:'1.0-0':'fr' }}
+                    </span>
+                } @else if (field.inputType === 'string') {
+                    <span class="badge badge-sm">
+                    {{open}} getFieldValue(item()!, field.name) || '—' }}
+                    </span>
+                } @else {
                     @let relatedModel = getRelatedModel(item()!, field.name);
                     @if (relatedModel) {
                       <a

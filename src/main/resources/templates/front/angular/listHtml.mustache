@@ -83,6 +83,21 @@
                   <span *ngSwitchCase="'boolean'">
                     <input type="checkbox" class="toggle toggle-primary" [checked]="getFieldValue(item, field.name)" disabled />
                   </span>
+
+                   <span *ngSwitchCase="'date'">
+                       {{open}} getFieldValue(item, field.name) | date: 'long':'':'fr' }}
+                    </span>
+
+                    <span *ngSwitchCase="'number'">
+                        {{open}} getFieldValue(item, field.name) | number:'1.0-0':'fr' }}
+                    </span>
+                    <span *ngSwitchCase="'string'">
+                        {{open}} getFieldValue(item, field.name) || '-' }}
+                    </span>
+                    <span *ngSwitchDefault class="text-left">
+                    {{open}} getFieldValue(item, field.name) || '-' }}
+                    </span>
+
                     <span *ngSwitchDefault class="text-left">
                     {{{open}}} getFieldValue(item, field.name) || '-' {{{close}}}
                     </span>

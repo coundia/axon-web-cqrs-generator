@@ -235,7 +235,8 @@ export class {{entityCapitalized}}Service {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const day = date.getDate().toString().padStart(2, '0');
         const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-        return `S${year}${month}${day}-${randomPart}`;
+        const firstLetter = '{{entity}}'.charAt(0).toUpperCase();
+        return `${firstLetter}${year}${month}${day}-${randomPart}`;
     }
 
     deleteAll(
