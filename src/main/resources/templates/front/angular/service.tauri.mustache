@@ -63,7 +63,6 @@ export class {{entityCapitalized}}Service {
 
     return from(this.db.execute(sql, params)).pipe(
       tap(() => {
-        this.alert.show('{{entityCapitalized}} créée', 'success');
         this.fetch(page, limit).subscribe();
       }),
       map(() => undefined),
@@ -82,8 +81,7 @@ export class {{entityCapitalized}}Service {
 
     return from(this.db.execute(sql, params)).pipe(
       tap(() => {
-        this.alert.show('{{entityCapitalized}} mise à jour', 'success');
-        this.fetch(page, limit).subscribe();
+         this.fetch(page, limit).subscribe();
       }),
       map(() => undefined),
       catchError(err => {
@@ -97,8 +95,7 @@ export class {{entityCapitalized}}Service {
   delete(id: string, page = 0, limit = 10): Observable<void> {
     return from(this.db.execute(`DELETE FROM ${TABLE_NAME} WHERE id = ?`, [id])).pipe(
       tap(() => {
-        this.alert.show('{{entityCapitalized}} supprimé', 'success');
-        this.fetch(page, limit).subscribe();
+         this.fetch(page, limit).subscribe();
       }),
       map(() => undefined),
       catchError(err => {
@@ -258,8 +255,7 @@ export class {{entityCapitalized}}Service {
             )
         ).pipe(
             tap(() => {
-                this.alert.show('{{entity}} supprimées', 'success');
-                this.refresh();
+                 this.refresh();
             }),
             map(() => undefined),
             catchError(err => {
