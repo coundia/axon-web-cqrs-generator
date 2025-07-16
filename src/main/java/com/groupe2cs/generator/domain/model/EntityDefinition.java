@@ -11,10 +11,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -32,6 +29,7 @@ public class EntityDefinition implements Serializable {
 	private List<String> stack = new ArrayList<>();
 	private List<String> skip = new ArrayList<>();
 	private List<String> items = new ArrayList<>();
+	private Set<ChildItem> childItems = new HashSet<>();
 	private String module;
 	private Boolean auditable = false;
 	private Boolean multiTenant = false;

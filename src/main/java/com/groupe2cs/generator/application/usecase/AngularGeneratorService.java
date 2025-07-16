@@ -135,7 +135,7 @@ public class AngularGeneratorService {
 		context.put("isFileManager", definition.getIsFileManager());
 		context.put("hasSummary", definition.getHasSummary());
 		context.put("isPos", definition.getIsPos());
-		context.put("items", definition.getItems());
+		context.put("childItems", definition.getChildItems());
 		context.put("shouldGenerateId", definition.getShouldGenerateId());
 
 

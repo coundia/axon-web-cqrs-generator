@@ -142,6 +142,7 @@ Content-Type: application/json
 }
 
 ###
+
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -160,9 +161,15 @@ Content-Type: application/json
 	"transactional": false,
 	"hasCategory": false,
 	"title": "Vente",
-    "items": [
-      "saleItems",
-      "salePayments"
+    "childItems": [
+	  {
+        "childModel": "SaleItem",
+        "childTable": "sale_items"
+      },
+	  {
+		"childModel": "SalePayment",
+		"childTable": "sale_payments"
+	  }
     ],
 	"fields": [
 	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true,            "displayName": "ID" },

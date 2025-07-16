@@ -6,7 +6,9 @@ import { AlertService } from '../../../shared/components/alert/alert.service';
 import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
 import {  getColumnsToInsert } from '../../../shared/hooks/get-column';
 import { generateId } from '../../../shared/hooks/generator';
-
+{{#childItems}}
+import { {{childModel}} } from '../../{{childModelLowerCase}}/models/{{childModelLowerCase}}.model';
+{{/childItems}}
 const TABLE_NAME = '{{table}}';
 
 @Injectable({ providedIn: 'root' })
@@ -251,11 +253,11 @@ export class {{entityCapitalized}}Service {
         );
     }
 
-     {{#linkedItems}}
+     {{#childItems}}
       get{{childModel}}ById(parentId: string): Promise<{{childModel}}[]> {
         return this.db
             .select<{{childModel}}>('SELECT * ' +
-                '        FROM {{childTableName}}  \n' +
+                '        FROM {{childTable}}  \n' +
                 '        WHERE  {{entityLowerCase}} = ? ORDER BY updatedAt DESC', [parentId])
             .then(items => items)
             .catch(err => {
@@ -264,6 +266,6 @@ export class {{entityCapitalized}}Service {
                 return [];
             });
         }
-      {{/linkedItems}}
+      {{/childItems}}
 
 }
