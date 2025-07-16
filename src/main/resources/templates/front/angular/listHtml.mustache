@@ -137,7 +137,7 @@
   *ngIf="selectedItem()"
   [item]="selectedItem()!"
   [title]= " '{{entityLowerCase}}.details' | translate  "
-  [fields]="fieldsToDisplay"
+  [fields]="allFields"
   (remove)="deleteById($event)"
    [editLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/edit'"
   [viewLink]="'/{{entityLowerCase}}/' + selectedItem()?.id  + '/view'"

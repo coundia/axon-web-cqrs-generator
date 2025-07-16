@@ -174,12 +174,12 @@ Content-Type: application/json
 	  }
     ],
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true,            "displayName": "ID" },
-	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Nom" },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true, "displayName": "Ref" },
+	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true },
 	  { "name": "status",        "type": "String",  "inputType": "text",  "displayName": "Status paiement" , "nullable": true},
 	  { "name": "settlementType",        "type": "String",  "inputType": "text",  "displayName": "Type de paiement" , "nullable": true },
 	  { "name": "user",        "type": "String",  "inputType": "readOnly", "entityType": "User",     "relation": "manyToOne", "nullable": true },
-	  { "name": "customer",    "type": "String",  "inputType": "readOnly", "entityType": "Customer", "relation": "manyToOne", "nullable": true },
+	  { "name": "customer",    "type": "String",  "inputType": "readOnly", "entityType": "Customer", "relation": "manyToOne", "nullable": true, "displayName": "Client" },
 	  { "name": "totalAmount", "type": "Double",  "inputType": "number", "displayName": "Montant total",      "nullable": true },
 	  { "name": "receivedAmount", "type": "Double",  "inputType": "number", "displayName": "Paiement reçu",   "nullable": true },
 	  { "name": "saleTime",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de vente", "nullable": true },
