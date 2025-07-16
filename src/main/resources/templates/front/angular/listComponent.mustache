@@ -206,10 +206,8 @@ export class {{entity}}ListComponent implements OnInit {
     if (!item) return;
 
     this.fetchDeps(item);
-
     this.selectedItem.set(null);
      {{#fields}}
-
     {{#isManyToOne}}
     let {{name}}Loaded = false;
      if (item.{{name}}  && !{{name}}Loaded) {
@@ -389,7 +387,6 @@ export class {{entity}}ListComponent implements OnInit {
         this.{{nameLowerCase}}Service.fetchAll().subscribe();
         {{/isManyToOne}}
         {{/fields}}
-
         {{^isFileManager}}
         this.getFileManager(item);
         {{/isFileManager}}
