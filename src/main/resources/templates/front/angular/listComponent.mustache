@@ -79,7 +79,7 @@ export class {{entity}}ListComponent implements OnInit {
   readonly sortService = inject(SortService);
 
   readonly list = this.{{entityLowerCase}}Service.{{entityPluralLower}};
-  readonly listAll = this.{{entityLowerCase}}Service.{{entityPluralLower}}All;
+  readonly listAll = this.{{entityLowerCase}}Service.{{entityLowerCase}}All;
   readonly totalPages = this.{{entityLowerCase}}Service.totalPages;
   readonly isLoading = signal(false);
   readonly page = this.{{entityLowerCase}}Service.currentPage;
@@ -106,7 +106,7 @@ export class {{entity}}ListComponent implements OnInit {
     {{#isManyToOne}}
     private readonly  {{nameLowerCase}}Service = inject({{nameCapitalized}}Service);
     {{name}}  =   signal<{{nameCapitalized}} | null>(null);
-    {{name}}s  =   signal<{{nameCapitalized}}[]>([]);
+    {{name}}s  =   this.{{nameLowerCase}}Service.{{name}}All;
     {{/isManyToOne}}
     {{/fields}}
 
@@ -209,10 +209,13 @@ export class {{entity}}ListComponent implements OnInit {
 
     this.selectedItem.set(null);
      {{#fields}}
+
     {{#isManyToOne}}
-     if (item.{{name}}) {
+    let {{name}}Loaded = false;
+     if (item.{{name}}  && !{{name}}Loaded) {
         this.{{nameLowerCase}}Service.getById(item.{{name}}).subscribe({
           next: {{name}} => {
+          {{name}}Loaded = true;
              item.{{name}}Model = {{name}};
               this.selectedItem.set({
               ...item,
@@ -220,8 +223,9 @@ export class {{entity}}ListComponent implements OnInit {
             });
           },
           error: err => {
+            console.log(err);
+            {{name}}Loaded = true;
             this.alert.show('Erreur lors de la récupération .', 'error');
-
           }
         });
     }
@@ -382,7 +386,7 @@ export class {{entity}}ListComponent implements OnInit {
 
         {{#fields}}
         {{#isManyToOne}}
-        this.{{nameLowerCase}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
+        this.{{nameLowerCase}}Service.fetchAll().subscribe();
         {{/isManyToOne}}
         {{/fields}}
 
@@ -459,7 +463,7 @@ export class {{entity}}ListComponent implements OnInit {
         this.{{entityLowerCase}}Service.fetchAll().subscribe({
           next: (items) => {
             this.drawerExportVisible.set(true);
-            this.{{entityLowerCase}}Service.{{entityPluralLower}}All.set(items);
+            this.{{entityLowerCase}}Service.{{entityLowerCase}}All.set(items);
           },
           error: () => {
             this.alert.show('Erreur lors de l\'exportation.', 'error');

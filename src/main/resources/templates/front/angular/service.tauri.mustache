@@ -15,7 +15,7 @@ export class {{entityCapitalized}}Service {
   private alert = inject(AlertService);
 
   {{entityPluralLower}} = signal<{{entityCapitalized}}[]>([]);
-  {{entityPluralLower}}All = signal<{{entityCapitalized}}[]>([]);
+  {{entityLowerCase}}All = signal<{{entityCapitalized}}[]>([]);
   selected{{entityCapitalized}} = signal<{{entityCapitalized}} | null>(null);
   totalPages = signal(0);
   totalElements = signal(0);
@@ -137,7 +137,7 @@ export class {{entityCapitalized}}Service {
 
  fetchAll(): Observable<{{entity}}[]> {
     return from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME} ORDER BY updatedAt DESC`)).pipe(
-        tap(rows => this.{{entityPluralLower}}All.set(rows)),
+        tap(rows => this.{{entityLowerCase}}All.set(rows)),
         catchError(err => {
           console.error(err);
           this.alert.show(`Erreur lors du chargement complet des {{entityPluralLower}} !`, 'error');
@@ -216,22 +216,6 @@ export class {{entityCapitalized}}Service {
         );
     }
 
-    {{#items}}
-      {{.}}All(saleId: string): Promise<SaleItem[]> {
-        return this.db
-            .select<SaleItem>('SELECT si.*, p.name as name\n' +
-                '        FROM sale_items si\n' +
-                '        LEFT JOIN products p ON si.product = p.id\n' +
-                '        WHERE si.sale = ? ORDER BY updatedAt DESC', [saleId])
-            .then(items => items)
-            .catch(err => {
-                console.error(err);
-                this.alert.show(err , 'error');
-                return [];
-            });
-    }
-    {{/items}}
-
     generate{{entity}}Id(): string {
       const prefix = '{{entity}}'.slice(0, 2).toUpperCase();
       return generateId(prefix);
@@ -267,6 +251,19 @@ export class {{entityCapitalized}}Service {
         );
     }
 
-
+     {{#linkedItems}}
+      get{{childModel}}ById(parentId: string): Promise<{{childModel}}[]> {
+        return this.db
+            .select<{{childModel}}>('SELECT * ' +
+                '        FROM {{childTableName}}  \n' +
+                '        WHERE  {{entityLowerCase}} = ? ORDER BY updatedAt DESC', [parentId])
+            .then(items => items)
+            .catch(err => {
+                console.error(err);
+                this.alert.show(err , 'error');
+                return [];
+            });
+        }
+      {{/linkedItems}}
 
 }

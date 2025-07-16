@@ -18,7 +18,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "User",
 	"fields": [
-	  { "name": "id",        "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",        "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "name",      "type": "String",  "inputType": "text",   "focus": true, "displayName": "Nom" },
 	  { "name": "username",  "type": "String",  "inputType": "text",   "displayName": "Nom d'utilisateur", "nullable": true },
 	  { "name": "password",  "type": "String",  "inputType": "text",   "displayName": "Mot de passe",     "nullable": true },
@@ -54,7 +54,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Category",
 	"fields": [
-	  { "name": "id",        "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "id",        "type": "String",  "inputType": "readOnly",   "nullable": true },
 	  { "name": "name",      "type": "String",  "inputType": "text",     "focus": true,    "displayName": "Nom" },
 	  { "name": "details",   "type": "String",  "inputType": "text",     "displayName": "Détails",        "nullable": true },
 	  { "name": "isActive",  "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
@@ -88,7 +88,7 @@ Content-Type: application/json
 	"hasCategory": true,
 	"title": "Product",
 	"fields": [
-	  { "name": "id",           "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "id",           "type": "String",  "inputType": "readOnly",   "nullable": true },
 	  { "name": "name",         "type": "String",  "inputType": "text",     "focus": true,    "displayName": "Nom" },
 	  { "name": "description",  "type": "String",  "inputType": "text",     "displayName": "Description",    "nullable": true },
 	  { "name": "imageUri",     "type": "String",  "inputType": "text",     "displayName": "Image",          "nullable": true },
@@ -128,7 +128,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Customer",
 	"fields": [
-	  { "name": "id",        "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "id",        "type": "String", "inputType": "readOnly", "nullable": true },
 	  { "name": "name",      "type": "String", "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "contact",   "type": "String", "inputType": "text",   "displayName": "Contact",        "nullable": true },
 	  { "name": "createdAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
@@ -160,13 +160,17 @@ Content-Type: application/json
 	"transactional": false,
 	"hasCategory": false,
 	"title": "Vente",
+    "items": [
+      "saleItems",
+      "salePayments"
+    ],
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true,            "displayName": "ID" },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true,            "displayName": "ID" },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Nom" },
 	  { "name": "status",        "type": "String",  "inputType": "text",  "displayName": "Status paiement" , "nullable": true},
 	  { "name": "settlementType",        "type": "String",  "inputType": "text",  "displayName": "Type de paiement" , "nullable": true },
-	  { "name": "user",        "type": "String",  "inputType": "hidden", "entityType": "User",     "relation": "manyToOne", "nullable": true },
-	  { "name": "customer",    "type": "String",  "inputType": "hidden", "entityType": "Customer", "relation": "manyToOne", "nullable": true },
+	  { "name": "user",        "type": "String",  "inputType": "readOnly", "entityType": "User",     "relation": "manyToOne", "nullable": true },
+	  { "name": "customer",    "type": "String",  "inputType": "readOnly", "entityType": "Customer", "relation": "manyToOne", "nullable": true },
 	  { "name": "totalAmount", "type": "Double",  "inputType": "number", "displayName": "Montant total",      "nullable": true },
 	  { "name": "receivedAmount", "type": "Double",  "inputType": "number", "displayName": "Paiement reçu",   "nullable": true },
 	  { "name": "saleTime",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de vente", "nullable": true },
@@ -200,7 +204,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Sale Item",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,           "displayName": "Nom" },
 	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",      "relation": "manyToOne", "nullable": true },
 	  { "name": "product",     "type": "String",  "inputType": "hidden", "entityType": "Product",   "relation": "manyToOne", "nullable": true },
@@ -237,7 +241,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Sale Payment",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true,    "displayName": "ID" },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true,    "displayName": "ID" },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",     "relation": "manyToOne", "nullable": true },
 	  { "name": "paymentType", "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
@@ -272,7 +276,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Supplier",
 	"fields": [
-	  { "name": "id",        "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "id",        "type": "String", "inputType": "readOnly", "nullable": true },
 	  { "name": "name",      "type": "String", "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "contact",   "type": "String", "inputType": "text",   "displayName": "Contact",        "nullable": true },
 	  { "name": "createdAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
@@ -305,7 +309,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase",
 	"fields": [
-	  { "name": "id",           "type": "String", "inputType": "hidden", "nullable": true },
+	  { "name": "id",           "type": "String", "inputType": "readOnly", "nullable": true },
 	  { "name": "name",         "type": "String", "inputType": "text",   "focus": true,           "displayName": "Nom" },
 	  { "name": "supplier",     "type": "String", "inputType": "hidden", "entityType": "Supplier", "relation": "manyToOne", "nullable": true },
 	  { "name": "totalAmount",  "type": "Double", "inputType": "number", "displayName": "Montant total",      "nullable": true },
@@ -340,7 +344,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase Item",
 	"fields": [
-	  { "name": "id",         "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",         "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "name",       "type": "String",  "inputType": "text",   "focus": true,           "displayName": "Nom" },
 	  { "name": "purchase",   "type": "String",  "inputType": "hidden", "entityType": "Purchase", "relation": "manyToOne", "nullable": true },
 	  { "name": "product",    "type": "String",  "inputType": "hidden", "entityType": "Product",  "relation": "manyToOne", "nullable": true },
@@ -377,7 +381,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Purchase Payment",
 	"fields": [
-	  { "name": "id",           "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",           "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "name",         "type": "String",  "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "purchase",     "type": "String",  "inputType": "hidden", "entityType": "Purchase", "relation": "manyToOne", "nullable": true },
 	  { "name": "paymentType",  "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
@@ -412,7 +416,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Stock Movement",
 	"fields": [
-	  { "name": "id",             "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "id",             "type": "String",  "inputType": "readOnly",   "nullable": true },
 	  { "name": "name",           "type": "String",  "inputType": "text",     "focus": true,            "displayName": "Nom" },
 	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
 	  { "name": "quantityChange", "type": "Integer", "inputType": "number",   "displayName": "Variation de quantité", "nullable": true },
@@ -447,7 +451,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Stock Alert",
 	"fields": [
-	  { "name": "id",             "type": "String",  "inputType": "hidden",   "nullable": true },
+	  { "name": "id",             "type": "String",  "inputType": "readOnly",   "nullable": true },
 	  { "name": "name",           "type": "String",  "inputType": "text",     "focus": true,            "displayName": "Nom" },
 	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
 	  { "name": "thresholdLevel", "type": "Integer","inputType": "number",   "displayName": "Seuil d'alerte",    "nullable": true },
@@ -485,7 +489,7 @@ Content-Type: application/json
 	"shouldGenerateId": true,
 	"title": "Configuration",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "configKey",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Clé" },
 	  { "name": "configValue",        "type": "String",  "inputType": "text",      "displayName": "Valeur" },
 	  { "name": "configType",        "type": "String",  "inputType": "text",             "displayName": "Type" },
@@ -520,7 +524,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Transactions",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",          "type": "String",  "inputType": "readOnly", "nullable": true },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,  "displayName": "Nom" },
 	  { "name": "amount",       "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
 	  { "name": "typeTransactionRaw",  "entityType":"enum",      "type": "String",  "inputType": "text", "displayName": "Type transaction" },
