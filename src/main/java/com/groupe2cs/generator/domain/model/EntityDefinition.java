@@ -56,6 +56,15 @@ public class EntityDefinition implements Serializable {
 	private Boolean tauri = false;
 	private String plural ;
 	private Boolean isPos ;
+	private Boolean shouldGenerateId = false ;
+
+	public Boolean getShouldGenerateId(){
+
+		if(shouldGenerateId == null){
+			return false;
+		}
+		return shouldGenerateId;
+	}
 
 	public Boolean getIsPos() {
 		if (isPos == null) {

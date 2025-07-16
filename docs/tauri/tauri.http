@@ -1,4 +1,4 @@
-### v3
+###
 POST http://127.0.0.1:8071/api/v1/generator/angular
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -93,7 +93,8 @@ Content-Type: application/json
 	  { "name": "description",  "type": "String",  "inputType": "text",     "displayName": "Description",    "nullable": true },
 	  { "name": "imageUri",     "type": "String",  "inputType": "text",     "displayName": "Image",          "nullable": true },
 	  { "name": "category",     "type": "String",  "inputType": "hidden",   "entityType": "Category", "relation": "manyToOne", "nullable": true },
-	  { "name": "price",        "type": "Double",  "inputType": "number",   "displayName": "Prix" },
+	  { "name": "price",        "type": "Double",  "inputType": "number",   "displayName": "Prix de vente" },
+	  { "name": "costPrice",        "type": "Double",  "inputType": "number",   "displayName": "Prix de revient" },
 	  { "name": "stock",        "type": "Integer", "inputType": "number",   "displayName": "Stock",          "nullable": true },
 	  { "name": "reorderLevel", "type": "Integer", "inputType": "number",   "displayName": "Niveau de réapprovisionnement", "nullable": true },
 	  { "name": "isActive",     "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
@@ -158,13 +159,16 @@ Content-Type: application/json
 	"hasDate": true,
 	"transactional": false,
 	"hasCategory": false,
-	"title": "Sale",
+	"title": "Vente",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true,            "displayName": "ID" },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Nom" },
+	  { "name": "status",        "type": "String",  "inputType": "text",  "displayName": "Status paiement" , "nullable": true},
+	  { "name": "settlementType",        "type": "String",  "inputType": "text",  "displayName": "Type de paiement" , "nullable": true },
 	  { "name": "user",        "type": "String",  "inputType": "hidden", "entityType": "User",     "relation": "manyToOne", "nullable": true },
 	  { "name": "customer",    "type": "String",  "inputType": "hidden", "entityType": "Customer", "relation": "manyToOne", "nullable": true },
 	  { "name": "totalAmount", "type": "Double",  "inputType": "number", "displayName": "Montant total",      "nullable": true },
+	  { "name": "receivedAmount", "type": "Double",  "inputType": "number", "displayName": "Paiement reçu",   "nullable": true },
 	  { "name": "saleTime",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de vente", "nullable": true },
 	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
@@ -233,7 +237,7 @@ Content-Type: application/json
 	"hasCategory": false,
 	"title": "Sale Payment",
 	"fields": [
-	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true,    "displayName": "ID" },
 	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",     "relation": "manyToOne", "nullable": true },
 	  { "name": "paymentType", "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
@@ -454,6 +458,80 @@ Content-Type: application/json
 	  { "name": "updatedBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
 	  { "name": "syncAt",         "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
 	  { "name": "deletedAt",      "type": "Date",    "inputType": "date",                                           "nullable": true }
+	]
+  }
+}
+
+
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Setting",
+	"table": "settings",
+	"plural": "settings",
+	"tauri": true,
+	"header": "settings",
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": true,
+	"transactional": false,
+	"hasCategory": false,
+	"shouldGenerateId": true,
+	"title": "Configuration",
+	"fields": [
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "configKey",        "type": "String",  "inputType": "text",   "focus": true,            "displayName": "Clé" },
+	  { "name": "configValue",        "type": "String",  "inputType": "text",      "displayName": "Valeur" },
+	  { "name": "configType",        "type": "String",  "inputType": "text",             "displayName": "Type" },
+
+	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
+	]
+  }
+}
+
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/angular
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/labs/tauri/tauri-pos/src/app/features",
+  "definition": {
+	"name": "Transaction",
+	"table": "transactions",
+	"plural": "transactions",
+	"tauri": true,
+	"hasSummary": false,
+	"hasType": false,
+	"hasDate": true,
+	"transactional": false,
+	"hasCategory": false,
+	"title": "Transactions",
+	"fields": [
+	  { "name": "id",          "type": "String",  "inputType": "hidden", "nullable": true },
+	  { "name": "name",        "type": "String",  "inputType": "text",   "focus": true,  "displayName": "Nom" },
+	  { "name": "amount",       "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
+	  { "name": "typeTransactionRaw",  "entityType":"enum",      "type": "String",  "inputType": "text", "displayName": "Type transaction" },
+	  { "name": "dateTransaction",   "type": "Date",    "inputType": "date", "displayName": "Date transaction",  "defaultValue": "new Date().toISOString()",  "nullable": true },
+	  { "name": "details",   "type": "String",    "inputType": "text",      "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",  "nullable": true },
+	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
+	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
+	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
 	]
   }
 }

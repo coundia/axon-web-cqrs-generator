@@ -5,6 +5,8 @@ import { DatabaseService } from '../../../shared/services/database.service';
 import { AlertService } from '../../../shared/components/alert/alert.service';
 import type { {{entityCapitalized}} } from '../models/{{entityLowerCase}}.model';
 import {  getColumnsToInsert } from '../../../shared/hooks/get-column';
+import { generateId } from '../../../shared/hooks/generator';
+
 const TABLE_NAME = '{{table}}';
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +23,7 @@ export class {{entityCapitalized}}Service {
   fetch(page = 0, limit = 10): Observable<{ content: {{entityCapitalized}}[]; totalPages: number; totalElements: number }> {
     const offset = page * limit;
     return forkJoin({
-      content: from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} LIMIT ? OFFSET ?`, [limit, offset])),
+      content: from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} order by updatedAt DESC LIMIT ? OFFSET ?`, [limit, offset])),
       countRows: from(this.db.select<{ count: number }>(`SELECT COUNT(*) AS count FROM ${TABLE_NAME}`, []))
     }).pipe(
       map(({ content, countRows }) => {
@@ -44,6 +46,10 @@ export class {{entityCapitalized}}Service {
   private getColumns(dto: Partial<{{entityCapitalized}}>): string[] {
 
     const ignoredCols = [];
+     {{#shouldGenerateId}}
+    ignoredCols.push("id");
+    {{/shouldGenerateId}}
+
     const cols = getColumnsToInsert(dto);
 
     ignoredCols.forEach(col => {
@@ -107,7 +113,7 @@ export class {{entityCapitalized}}Service {
   }
 
   search(field: string, value: string): Observable<{{entityCapitalized}}[]> {
-    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ?`, ['%'+value+'%'])).pipe(
+    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ? ORDER BY updatedAt DESC`, ['%'+value+'%'])).pipe(
       tap(rows => this.{{entityPluralLower}}.set(rows)),
       catchError(err => {
         console.error(err);
@@ -118,7 +124,7 @@ export class {{entityCapitalized}}Service {
   }
 
   getById(id: string): Observable<{{entityCapitalized}} | null> {
-    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE id = ?`, [id])).pipe(
+    return from(this.db.select<{{entityCapitalized}}>(`SELECT * FROM ${TABLE_NAME} WHERE id = ? ORDER BY updatedAt DESC`, [id])).pipe(
       map(rows => rows[0] ?? null),
       tap(item => this.selected{{entityCapitalized}}.set(item)),
       catchError(err => {
@@ -130,7 +136,7 @@ export class {{entityCapitalized}}Service {
   }
 
  fetchAll(): Observable<{{entity}}[]> {
-    return from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME}`)).pipe(
+    return from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME} ORDER BY updatedAt DESC`)).pipe(
         tap(rows => this.{{entityPluralLower}}All.set(rows)),
         catchError(err => {
           console.error(err);
@@ -187,8 +193,8 @@ export class {{entityCapitalized}}Service {
         const offset = page * limit;
 
         return forkJoin({
-            content: from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ? LIMIT ? OFFSET ?`, ['%'+value+'%', limit, offset])),
-            countRows: from(this.db.select<{ count: number }>(`SELECT COUNT(*) AS count FROM ${TABLE_NAME} WHERE ${field} like ?`, ['%'+value+'%']))
+            content: from(this.db.select<{{entity}}>(`SELECT * FROM ${TABLE_NAME} WHERE ${field} like ? ORDER BY updatedAt DESC LIMIT ? OFFSET ?`, ['%'+value+'%', limit, offset])),
+            countRows: from(this.db.select<{ count: number }>(`SELECT COUNT(*) AS count FROM ${TABLE_NAME} WHERE ${field} like ? `, ['%'+value+'%']))
         }).pipe(
             map(({ content, countRows }) => {
                 const total = countRows[0]?.count ?? 0;
@@ -216,7 +222,7 @@ export class {{entityCapitalized}}Service {
             .select<SaleItem>('SELECT si.*, p.name as name\n' +
                 '        FROM sale_items si\n' +
                 '        LEFT JOIN products p ON si.product = p.id\n' +
-                '        WHERE si.sale = ?', [saleId])
+                '        WHERE si.sale = ? ORDER BY updatedAt DESC', [saleId])
             .then(items => items)
             .catch(err => {
                 console.error(err);
@@ -226,14 +232,9 @@ export class {{entityCapitalized}}Service {
     }
     {{/items}}
 
-    generate{{entity}}Id (): string {
-        const date = new Date();
-        const year = date.getFullYear().toString().slice(-2);
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-        const firstLetter = '{{entity}}'.charAt(0).toUpperCase();
-        return `${firstLetter}${year}${month}${day}-${randomPart}`;
+    generate{{entity}}Id(): string {
+      const prefix = '{{entity}}'.slice(0, 2).toUpperCase();
+      return generateId(prefix);
     }
 
     deleteAll(
