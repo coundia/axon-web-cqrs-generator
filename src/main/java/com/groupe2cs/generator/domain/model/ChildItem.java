@@ -11,8 +11,9 @@ import lombok.*;
 public class ChildItem {
 	private String childModel;
 	private String childTable;
-//	private String childModelLowerCase;
+	private String childTitle;
 
+	//used in template
 	public String getChildModelLowerCase() {
 		return Utils.unCapitalize(childModel);
 	}

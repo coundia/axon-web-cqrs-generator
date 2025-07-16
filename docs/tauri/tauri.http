@@ -163,10 +163,12 @@ Content-Type: application/json
 	"title": "Vente",
     "childItems": [
 	  {
+        "childTitle": "Produits",
         "childModel": "SaleItem",
         "childTable": "sale_items"
       },
 	  {
+		"childTitle": "Paiements",
 		"childModel": "SalePayment",
 		"childTable": "sale_payments"
 	  }

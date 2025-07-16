@@ -94,6 +94,13 @@ export class {{entity}}ListComponent implements OnInit {
   {{#childItems}}
     {{childModelLowerCase}}Items = this.{{entityLowerCase}}Service.{{childModelLowerCase}}Items;
 {{/childItems}}
+    childItems = [{{#childItems}}
+            {
+                title: '{{childTitle}}',
+                items: this.{{childModelLowerCase}}Items,
+            },
+            {{/childItems}}
+        ];
 
   @Output() searchFieldChange = new EventEmitter<string>();
   @Output() searchTermChange = new EventEmitter<string>();
@@ -394,6 +401,10 @@ export class {{entity}}ListComponent implements OnInit {
         {{^isFileManager}}
         this.getFileManager(item);
         {{/isFileManager}}
+
+    {{#childItems}}
+        this.{{entityLowerCase}}Service.get{{childModel}}ById(item.id);
+    {{/childItems}}
     }
 
     getEntities(name: string) {
