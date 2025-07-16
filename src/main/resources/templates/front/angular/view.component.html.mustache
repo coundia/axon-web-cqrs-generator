@@ -12,6 +12,12 @@
       Détail {{entity}}
     </h2>
 
+    <div class="flex flex-row justify-between">
+    {{#childItems}}
+      <app-child-item [items]="{{childModelLowerCase}}Items()" [title]="'{{childModel}}'" />
+      {{/childItems}}
+    </div>
+
     {{#items}}
         <div class="flex flex-col gap-3 mt-8 md:mt-0">
             <div *ngIf="item()">

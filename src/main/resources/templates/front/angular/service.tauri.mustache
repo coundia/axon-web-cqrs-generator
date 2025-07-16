@@ -13,14 +13,17 @@ const TABLE_NAME = '{{table}}';
 
 @Injectable({ providedIn: 'root' })
 export class {{entityCapitalized}}Service {
-  private db = inject(DatabaseService);
-  private alert = inject(AlertService);
+    private db = inject(DatabaseService);
+    private alert = inject(AlertService);
 
-  {{entityPluralLower}} = signal<{{entityCapitalized}}[]>([]);
-  {{entityLowerCase}}All = signal<{{entityCapitalized}}[]>([]);
-  selected{{entityCapitalized}} = signal<{{entityCapitalized}} | null>(null);
-  totalPages = signal(0);
-  totalElements = signal(0);
+    {{entityPluralLower}} = signal<{{entityCapitalized}}[]>([]);
+    {{entityLowerCase}}All = signal<{{entityCapitalized}}[]>([]);
+    selected{{entityCapitalized}} = signal<{{entityCapitalized}} | null>(null);
+    totalPages = signal(0);
+    totalElements = signal(0);
+    {{#childItems}}
+    {{childModelLowerCase}}Items = signal<{{childModel}}[]>([]);
+    {{/childItems}}
 
   fetch(page = 0, limit = 10): Observable<{ content: {{entityCapitalized}}[]; totalPages: number; totalElements: number }> {
     const offset = page * limit;
@@ -259,7 +262,7 @@ export class {{entityCapitalized}}Service {
             .select<{{childModel}}>('SELECT * ' +
                 '        FROM {{childTable}}  \n' +
                 '        WHERE  {{entityLowerCase}} = ? ORDER BY updatedAt DESC', [parentId])
-            .then(items => items)
+            .then(items => { this.{{childModelLowerCase}}Items.set(items) ; return items; } )
             .catch(err => {
                 console.error(err);
                 this.alert.show(err , 'error');

@@ -51,6 +51,10 @@ export class {{entity}}FormComponent implements OnInit {
   readonly isEdit = signal(!!this.id);
   readonly isLoading = signal(false);
 
+    {{#childItems}}
+    {{childModelLowerCase}}Items = this.service.{{childModelLowerCase}}Items;
+{{/childItems}}
+
     {{#fields}}
     {{^isFiles}}
     {{#isManyToOne}}

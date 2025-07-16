@@ -91,6 +91,10 @@ export class {{entity}}ListComponent implements OnInit {
   searchField = 'name';
   searchTerm = '';
 
+  {{#childItems}}
+    {{childModelLowerCase}}Items = this.{{entityLowerCase}}Service.{{childModelLowerCase}}Items;
+{{/childItems}}
+
   @Output() searchFieldChange = new EventEmitter<string>();
   @Output() searchTermChange = new EventEmitter<string>();
 

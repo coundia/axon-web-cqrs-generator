@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect , OnInit} from '@angular/core';
 import { CommonModule,DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { {{entity}}Service } from '../services/{{entityLowerCase}}.service';
@@ -6,6 +6,8 @@ import { {{entity}} } from '../models/{{entityLowerCase}}.model';
 import { FieldDefinition } from '../../../shared/components/models/field-definition';
 import { EntityToolbarActionComponent } from '../../../shared/components/view-toolbar-actions/view-toolbar-actions';
 import { AlertService } from '../../../shared/components/alert/alert.service';
+import { ChildItemComponent } from '../../../shared/child-item/child-item.component';
+
 {{#isPos}}
 import { EntityItemListComponent } from '../../../modules/pos/entity-item-list/entity-item-list.component';
 {{/isPos}}
@@ -34,21 +36,79 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
     DecimalPipe,
   CommonModule,
   RouterLink,
+  ChildItemComponent,
    EntityToolbarActionComponent,
 {{#isPos}} EntityItemListComponent, {{/isPos}}
   {{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
 ],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
-export class {{entity}}ViewComponent {
+export class {{entity}}ViewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject({{entity}}Service);
   private readonly router = inject(Router);
   private readonly alert = inject(AlertService);
 
+{{#childItems}}
+    {{childModelLowerCase}}Items = this.service.{{childModelLowerCase}}Items;
+{{/childItems}}
   readonly id = this.route.snapshot.paramMap.get('id');
   readonly item = signal<{{entity}} | null>(this.service.{{entityPluralLower}}().find(e => e.id === this.id) ?? null);
   readonly isLoading = signal(false);
+
+   ngOnInit(): void {
+        {{#childItems}}
+        this.service.get{{childModel}}ById(this.id);
+       {{/childItems}}
+
+let isFetchedUser = false;
+let isFetchedModel1 = false;
+
+{{#items}}
+    if (!isFetchedItems && this.item()?.id) {
+        this.{{.}}All(this.item().id);
+        isFetchedItems = true;
+    }
+     {{/items}}
+
+    this.fetchDeps();
+      if (!this.item()) {
+        this.isLoading.set(true);
+        this.service.getById?.(this.id!).subscribe?.({
+          next: e => {
+            this.item.set(e);
+            this.isLoading.set(false);
+          },
+          error: _ => {
+            this.alert.show('{{entity}} introuvable', 'error');
+            this.isLoading.set(false);
+          }
+        });
+      }
+        {{#fields}}
+    {{#isManyToOne}}
+        if (!isFetchedModel1 && this.item() && !this.item()!.{{name}}Model) {
+            this.{{name}}Service.getById(this.item()!.{{name}}!).subscribe({
+              next: {{name}} => {
+                this.{{name}}.set({{name}});
+                isFetchedModel1 = false;
+                this.item.set({
+                  ...this.item()!,
+                  {{name}}Model: {{name}}
+                })
+
+              },
+              error: _ => {
+                this.alert.show('Erreur lors de la récupération {{name}}', 'error');
+              }
+            });
+          }
+        {{/isManyToOne}}
+{{/fields}}
+
+
+    }
+
     hasFiles = {{hasFiles}};
 
     {{#fields}}
@@ -82,57 +142,6 @@ export class {{entity}}ViewComponent {
     {{/isFiles}}
     {{/fields}}
   ];
-
-  constructor() {
-
-    let isFetchedUser = false;
-    let isFetchedModel1 = false;
-
-    effect(() => {
-
-{{#items}}
-    if (!isFetchedItems && this.item()?.id) {
-        this.{{.}}All(this.item().id);
-        isFetchedItems = true;
-    }
-     {{/items}}
-
-    this.fetchDeps();
-      if (!this.item()) {
-        this.isLoading.set(true);
-        this.service.getById?.(this.id!).subscribe?.({
-          next: e => {
-            this.item.set(e);
-            this.isLoading.set(false);
-          },
-          error: _ => {
-            this.alert.show('{{entity}} introuvable', 'error');
-            this.isLoading.set(false);
-          }
-        });
-      }
-        {{#fields}}
-        {{#isManyToOne}}
-        if (!isFetchedModel1 && this.item() && !this.item()!.{{name}}Model) {
-            this.{{name}}Service.getById(this.item()!.{{name}}!).subscribe({
-              next: {{name}} => {
-                this.{{name}}.set({{name}});
-                isFetchedModel1 = false;
-                this.item.set({
-                  ...this.item()!,
-                  {{name}}Model: {{name}}
-                })
-
-              },
-              error: _ => {
-                this.alert.show('Erreur lors de la récupération {{name}}', 'error');
-              }
-            });
-          }
-        {{/isManyToOne}}
-        {{/fields}}
-    });
-  }
 
    getFieldValue(item: {{entity}}, field: string): any {
     return (item as Record<string, any>)[field];
