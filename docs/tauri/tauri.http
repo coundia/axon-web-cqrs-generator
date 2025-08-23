@@ -24,12 +24,12 @@ Content-Type: application/json
 	  { "name": "password",  "type": "String",  "inputType": "text",   "displayName": "Mot de passe",     "nullable": true },
 	  { "name": "email",     "type": "String",  "inputType": "text",   "displayName": "Email",            "nullable": true },
 	  { "name": "role",      "type": "String",  "inputType": "text",   "displayName": "Rôle",             "nullable": true },
-	  { "name": "createdAt", "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt", "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy", "type": "String",  "inputType": "hidden", "nullable": true },
 	  { "name": "updatedAt", "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy", "type": "String",  "inputType": "hidden", "nullable": true },
-	  { "name": "syncAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt", "type": "Date",    "inputType": "date",   "nullable": true }
+	  { "name": "syncAt",    "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",    "inputType": "hidden",   "nullable": true }
 	]
   }
 }
@@ -58,12 +58,12 @@ Content-Type: application/json
 	  { "name": "name",      "type": "String",  "inputType": "text",     "focus": true,    "displayName": "Nom" },
 	  { "name": "details",   "type": "String",  "inputType": "text",     "displayName": "Détails",        "nullable": true },
 	  { "name": "isActive",  "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
-	  { "name": "createdAt", "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt", "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy", "type": "String",  "inputType": "hidden",   "nullable": true },
 	  { "name": "updatedAt", "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy", "type": "String",  "inputType": "hidden",   "nullable": true },
-	  { "name": "syncAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt", "type": "Date",    "inputType": "date",     "nullable": true }
+	  { "name": "syncAt",    "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",    "inputType": "hidden",     "nullable": true }
 	]
   }
 }
@@ -98,12 +98,12 @@ Content-Type: application/json
 	  { "name": "stock",        "type": "Integer", "inputType": "number",   "displayName": "Stock",          "nullable": true },
 	  { "name": "reorderLevel", "type": "Integer", "inputType": "number",   "displayName": "Niveau de réapprovisionnement", "nullable": true },
 	  { "name": "isActive",     "type": "Boolean", "inputType": "checkbox","defaultValue": false, "displayName": "Actif", "nullable": true },
-	  { "name": "createdAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt",    "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy",    "type": "String",  "inputType": "hidden",   "nullable": true },
 	  { "name": "updatedAt",    "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",    "type": "String",  "inputType": "hidden",   "nullable": true },
-	  { "name": "syncAt",       "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt",    "type": "Date",    "inputType": "date",     "nullable": true }
+	  { "name": "syncAt",       "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",    "inputType": "hidden",     "nullable": true }
 	]
   }
 }
@@ -131,12 +131,12 @@ Content-Type: application/json
 	  { "name": "id",        "type": "String", "inputType": "readOnly", "nullable": true },
 	  { "name": "name",      "type": "String", "inputType": "text",   "focus": true,    "displayName": "Nom" },
 	  { "name": "contact",   "type": "String", "inputType": "text",   "displayName": "Contact",        "nullable": true },
-	  { "name": "createdAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt", "type": "Date",   "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy", "type": "String", "inputType": "hidden", "nullable": true },
 	  { "name": "updatedAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy", "type": "String", "inputType": "hidden", "nullable": true },
-	  { "name": "syncAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt", "type": "Date",   "inputType": "date",   "nullable": true }
+	  { "name": "syncAt",    "type": "Date",   "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",   "inputType": "hidden",   "nullable": true }
 	]
   }
 }
@@ -183,12 +183,12 @@ Content-Type: application/json
 	  { "name": "totalAmount", "type": "Double",  "inputType": "number", "displayName": "Montant total",      "nullable": true },
 	  { "name": "receivedAmount", "type": "Double",  "inputType": "number", "displayName": "Paiement reçu",   "nullable": true },
 	  { "name": "saleTime",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de vente", "nullable": true },
-	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",      "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "hidden",      "nullable": true }
 	]
   }
 }
@@ -220,12 +220,12 @@ Content-Type: application/json
 	  { "name": "quantity",    "type": "Integer", "inputType": "number", "displayName": "Quantité",           "nullable": true },
 	  { "name": "unitPrice",   "type": "Double",  "inputType": "number", "displayName": "Prix unitaire",      "nullable": true },
 	  { "name": "lineTotal",   "type": "Double",  "inputType": "number", "displayName": "Total de ligne",     "nullable": true },
-	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",      "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "hidden",                                               "nullable": true }
 	]
   }
 }
@@ -255,12 +255,12 @@ Content-Type: application/json
 	  { "name": "sale",        "type": "String",  "inputType": "hidden", "entityType": "Sale",     "relation": "manyToOne", "nullable": true },
 	  { "name": "paymentType", "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
 	  { "name": "amount",      "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
-	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden", "nullable": true },
 	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden", "nullable": true },
-	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",   "nullable": true }
+	  { "name": "syncAt",      "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "hidden",   "nullable": true }
 	]
   }
 }
@@ -292,8 +292,8 @@ Content-Type: application/json
 	  { "name": "createdBy", "type": "String", "inputType": "hidden", "nullable": true },
 	  { "name": "updatedAt", "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy", "type": "String", "inputType": "hidden", "nullable": true },
-	  { "name": "syncAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt", "type": "Date",   "inputType": "date",   "nullable": true }
+	  { "name": "syncAt",    "type": "Date",   "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt", "type": "Date",   "inputType": "hidden",   "nullable": true }
 	]
   }
 }
@@ -323,12 +323,12 @@ Content-Type: application/json
 	  { "name": "supplier",     "type": "String", "inputType": "hidden", "entityType": "Supplier", "relation": "manyToOne", "nullable": true },
 	  { "name": "totalAmount",  "type": "Double", "inputType": "number", "displayName": "Montant total",      "nullable": true },
 	  { "name": "orderDate",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de commande", "nullable": true },
-	  { "name": "createdAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdAt",    "type": "Date",   "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
 	  { "name": "createdBy",    "type": "String", "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",    "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",    "type": "String", "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",       "type": "Date",   "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",    "type": "Date",   "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",       "type": "Date",   "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",   "inputType": "hidden",                                               "nullable": true }
 	]
   }
 }
@@ -360,12 +360,12 @@ Content-Type: application/json
 	  { "name": "quantity",   "type": "Integer", "inputType": "number", "displayName": "Quantité",           "nullable": true },
 	  { "name": "unitCost",   "type": "Double",  "inputType": "number", "displayName": "Coût unitaire",      "nullable": true },
 	  { "name": "lineTotal",  "type": "Double",  "inputType": "number", "displayName": "Total de ligne",     "nullable": true },
-	  { "name": "createdAt",  "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "createdAt",  "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
 	  { "name": "createdBy",  "type": "String",  "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",  "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",  "type": "String",  "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",     "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",  "type": "Date",    "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",     "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",  "type": "Date",    "inputType": "hidden",                                               "nullable": true }
 	]
   }
 }
@@ -395,12 +395,12 @@ Content-Type: application/json
 	  { "name": "purchase",     "type": "String",  "inputType": "hidden", "entityType": "Purchase", "relation": "manyToOne", "nullable": true },
 	  { "name": "paymentType",  "type": "String",  "inputType": "text",   "displayName": "Type de paiement", "nullable": true },
 	  { "name": "amount",       "type": "Double",  "inputType": "number", "displayName": "Montant",         "nullable": true },
-	  { "name": "createdAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "createdAt",    "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
 	  { "name": "createdBy",    "type": "String",  "inputType": "hidden", "nullable": true },
 	  { "name": "updatedAt",    "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",    "type": "String",  "inputType": "hidden", "nullable": true },
-	  { "name": "syncAt",       "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "nullable": true },
-	  { "name": "deletedAt",    "type": "Date",    "inputType": "date",   "nullable": true }
+	  { "name": "syncAt",       "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()", "nullable": true },
+	  { "name": "deletedAt",    "type": "Date",    "inputType": "hidden",   "nullable": true }
 	]
   }
 }
@@ -430,12 +430,12 @@ Content-Type: application/json
 	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
 	  { "name": "quantityChange", "type": "Integer", "inputType": "number",   "displayName": "Variation de quantité", "nullable": true },
 	  { "name": "reason",         "type": "String",  "inputType": "text",     "displayName": "Raison",              "nullable": true },
-	  { "name": "createdAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "createdAt",      "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
 	  { "name": "createdBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
 	  { "name": "updatedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
-	  { "name": "syncAt",         "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
-	  { "name": "deletedAt",      "type": "Date",    "inputType": "date",                                           "nullable": true }
+	  { "name": "syncAt",         "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "deletedAt",      "type": "Date",    "inputType": "hidden",                                           "nullable": true }
 	]
   }
 }
@@ -465,12 +465,12 @@ Content-Type: application/json
 	  { "name": "product",        "type": "String",  "inputType": "hidden",   "entityType": "Product",  "relation": "manyToOne",  "nullable": true },
 	  { "name": "thresholdLevel", "type": "Integer","inputType": "number",   "displayName": "Seuil d'alerte",    "nullable": true },
 	  { "name": "alertedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date d'alerte",  "nullable": true },
-	  { "name": "createdAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "createdAt",      "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
 	  { "name": "createdBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
 	  { "name": "updatedAt",      "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",      "type": "String",  "inputType": "hidden",  "nullable": true },
-	  { "name": "syncAt",         "type": "Date",    "inputType": "date",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
-	  { "name": "deletedAt",      "type": "Date",    "inputType": "date",                                           "nullable": true }
+	  { "name": "syncAt",         "type": "Date",    "inputType": "hidden",     "defaultValue": "new Date().toISOString()",                    "nullable": true },
+	  { "name": "deletedAt",      "type": "Date",    "inputType": "hidden",                                           "nullable": true }
 	]
   }
 }
@@ -507,8 +507,8 @@ Content-Type: application/json
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",      "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "hidden",                                               "nullable": true }
 	]
   }
 }
@@ -539,12 +539,12 @@ Content-Type: application/json
 	  { "name": "typeTransactionRaw",  "entityType":"enum",      "type": "String",  "inputType": "text", "displayName": "Type transaction" },
 	  { "name": "dateTransaction",   "type": "Date",    "inputType": "date", "displayName": "Date transaction",  "defaultValue": "new Date().toISOString()",  "nullable": true },
 	  { "name": "details",   "type": "String",    "inputType": "text",      "nullable": true },
-	  { "name": "createdAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",  "nullable": true },
+	  { "name": "createdAt",   "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",  "nullable": true },
 	  { "name": "createdBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
 	  { "name": "updatedAt",   "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()", "displayName": "Date de mise à jour", "nullable": true },
 	  { "name": "updatedBy",   "type": "String",  "inputType": "hidden",                                         "nullable": true },
-	  { "name": "syncAt",      "type": "Date",    "inputType": "date",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
-	  { "name": "deletedAt",   "type": "Date",    "inputType": "date",                                               "nullable": true }
+	  { "name": "syncAt",      "type": "Date",    "inputType": "hidden",   "defaultValue": "new Date().toISOString()",                     "nullable": true },
+	  { "name": "deletedAt",   "type": "Date",    "inputType": "hidden",                                               "nullable": true }
 	]
   }
 }

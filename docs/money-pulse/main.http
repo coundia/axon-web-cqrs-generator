@@ -1,0 +1,444 @@
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/accounts",
+  "definition": {
+	"name": "Account",
+	"table": "accounts",
+	"shared": true,
+
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "currency",
+		"type": "String",
+		"defaultValue": "\"XOF\""
+	  },
+	  {
+		"name": "currentBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "previousBalance",
+		"type": "Double",
+		"defaultValue": 0.0
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/accounts",
+  "definition": {
+	"name": "AccountUser",
+	"bind": "username",
+	"table": "account_users",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "user",
+		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/categories",
+  "definition": {
+	"name": "Category",
+	"table": "categories",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "code",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "remoteId",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "description",
+		"type": "String",
+		"displayName": "description",
+		"nullable": true
+	  },{
+		"name": "typeEntry",
+		"type": "String",
+		"displayName": "typeEntry",
+		"nullable": true
+	  },
+	  {
+		"name": "version",
+		"type": "Integer",
+		"nullable": true
+	  },
+	  {
+		"name": "syncAt",
+		"type": "java.time.Instant",
+		"defaultValue": "java.time.Instant.now()",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
+  "definition": {
+	"name": "Transaction",
+	"shared": true,
+	"transactional": true,
+	"table": "transactions",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "amount",
+		"type": "Double"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "category",
+		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "typeTransactionRaw",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "java.time.Instant",
+		"defaultValue": "java.time.Instant.now()",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
+  "definition": {
+	"name": "TransactionUser",
+	"bind": "username",
+	"table": "transaction_users",
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String"
+	  },
+	  {
+		"name": "transaction",
+		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "user",
+		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "username",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/chats",
+  "definition": {
+	"name": "Chat",
+	"table": "chat",
+	"title": "Chat",
+	"isChat": true,
+	"hasFiles": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "messages",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Message"
+	  },
+	  {
+		"name": "responsesJson",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Réponse",
+		"nullable": true
+	  },
+	  {
+		"name": "responses",
+		"type": "String",
+		"columnDefinition": "Text",
+		"displayName": "Réponse",
+		"nullable": true
+	  },
+	  {
+		"name": "state",
+		"type": "String",
+		"displayName": "Etat",
+		"nullable": true
+	  },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "files",
+		"type": "FileManager",
+		"isFiles": true,
+		"columnDefinition" : "TEXT"
+	  },
+	  {
+		"name": "dateTransaction",
+		"type": "java.time.Instant",
+		"defaultValue": "java.time.Instant.now()",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/settings",
+  "definition": {
+	"name": "Setting",
+	"table": "settings",
+	"isPublic": true,
+	"isAdmin": true,
+	"fields": [
+	  {
+		"name": "id",
+		"type": "String"
+	  },
+	  {
+		"name": "name",
+		"type": "String",
+		"displayName": "Key"
+	  },
+	  {
+		"name": "value",
+		"type": "String",
+		"displayName": "Value"
+	  },
+	  {
+		"name": "locale",
+		"type": "String",
+		"displayName": "Langue"
+	  },
+	  {
+		"name": "details",
+		"type": "String",
+		"displayName": "Description",
+		"nullable": true
+	  },
+	  {
+		"name": "isActive",
+		"type": "Boolean",
+		"defaultValue": true
+	  }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/notifications",
+  "definition": {
+	"name": "Notification",
+	"table": "notifications",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "deviceToken", "type": "String", "nullable": true },
+	  { "name": "title", "type": "String",
+        "columnDefinition": "Text",
+        "displayName": "Title"},
+	  { "name": "message", "type": "String" ,
+		"columnDefinition": "Text",
+		"nullable": true},
+	  { "name": "status", "type": "String" , "nullable": true},
+	  { "name": "reserved", "type": "String" , "nullable": true},
+	  { "name": "errorMessage", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/fileManager",
+  "definition": {
+	"name": "FileManager",
+	"table": "file_manager",
+	"title": "FileManager",
+	"isFileManager": true,
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "details", "type": "String",
+		"columnDefinition": "Text",
+		"nullable": true },
+	  { "name": "objectId", "type": "String" ,"nullable": true },
+	  { "name": "objectName", "type": "String" ,"nullable": true },
+	  { "name": "originalName", "type": "String" ,"nullable": true,"displayName": "Nom" },
+	  { "name": "mimeType", "type": "String","nullable": true },
+	  { "name": "size", "type": "Long" ,"nullable": true},
+	  { "name": "path", "type": "String" ,"nullable": true},
+	  { "name": "uri", "type": "String","nullable": true },
+	  { "name": "isPublic", "type": "Boolean", "nullable": true }
+	]
+  }
+}

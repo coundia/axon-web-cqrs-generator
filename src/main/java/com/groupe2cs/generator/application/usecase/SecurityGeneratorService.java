@@ -150,6 +150,24 @@ public class SecurityGeneratorService {
 								FieldDefinition.builder().name("permission").type("Permission").relation("ManyToOne").build()
 						))
 						.table("role_permissions")
+						.build(),
+
+				EntityDefinition.builder()
+						.name("VerificationCode")
+						.auditable(true)
+						.fields(List.of(
+								FieldDefinition.builder().name("id").type("String").build(),
+								FieldDefinition.builder().name("notes").columnDefinition("TEXT").nullable(true).type("String").build(),
+								FieldDefinition.builder().name("token").columnDefinition("TEXT").nullable(true).type("String").build(),
+								FieldDefinition.builder().name("username").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("phone").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("email").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("code").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("status").type("String").nullable(true).build(),
+								FieldDefinition.builder().name("source").type("String").nullable(true).build(),
+ 								FieldDefinition.builder().name("expiration").nullable(true).type("java.time.Instant").build()
+						))
+						.table("verification_codes")
 						.build()
 		);
 

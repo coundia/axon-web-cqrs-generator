@@ -14,6 +14,11 @@ tasks:
     cmds:
       - mvn spring-boot:run
     interactive: false
+  dev:
+    desc: Run the Spring Boot application services individually
+    cmds:
+      - mvn spring-boot:run
+    interactive: false
 
   stop:
     desc: Stop apps

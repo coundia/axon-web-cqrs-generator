@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
+import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @Schema(name = "{{className}}", description = "Delta DTO for {{nameLowercase}} changes")
 public class {{className}} implements Serializable {
 

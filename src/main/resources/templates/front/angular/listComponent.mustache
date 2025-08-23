@@ -42,6 +42,7 @@ import {ImporterDrawerComponent} from "../../../shared/importer-drawer/importer-
 import {ExporterDrawerComponent} from "../../../shared/exporter-drawer/exporter-drawer.component";
 
 import { RouterLink } from '@angular/router';
+import { Stat, StatsComponent } from '../../../shared/components/stats/stats.component';
 
 @Component({
   selector: 'app-{{entityLowerCase}}-list',
@@ -67,8 +68,10 @@ import { RouterLink } from '@angular/router';
 
     ImporterDrawerComponent,
     ExporterDrawerComponent,
-     DatePipe,
-        DecimalPipe,
+    DatePipe,
+    DecimalPipe,
+    StatsComponent,
+
 
   ],
   templateUrl: './{{entityLowerCase}}-list.component.html',
@@ -502,5 +505,48 @@ export class {{entity}}ListComponent implements OnInit {
         });
       }
     }
+
+//todo
+      readonly entityStats = computed<Stat[]>(() => {
+      /*
+        this.{{entityLowerCase}}Service.fetchAll().subscribe();
+        let {{entityLowerCase}}s = this.{{entityLowerCase}}Service.{{entityLowerCase}}All();
+
+        if(this.{{entityLowerCase}}Service.searchField()){
+            {{entityLowerCase}}s = this.{{entityLowerCase}}Service.{{entityLowerCase}}s();
+        }
+        let stats :Stat[] = [];
+
+        const totalAmountSum = {{entityLowerCase}}s.reduce(
+            (sum, s) => sum + (s.status === 'PAID' ? s.totalAmount ?? 0 : 0),
+            0
+        );
+        stats.push(
+            { label: 'totalAmountSum', valueNumber: totalAmountSum }
+        );
+
+        const statusNb = {{entityLowerCase}}s.filter(s => s.status === 'PAID').length;
+
+        stats.push(
+            { label: 'statusNb', valueNumber: statusNb }
+        );
+
+         stats.push(
+             { label: this.{{entityLowerCase}}Service.searchField(), value: this.{{entityLowerCase}}Service.searchValue() }
+        );
+
+        return stats;*/
+
+       /* return [
+            { label: this.{{entityLowerCase}}Service.searchField(), value: this.saleService.searchValue() },
+            { label: 'Nombre de ventes', valueNumber: totalCount },
+            { label: 'Nombre de ventes payées', valueNumber: paidCount },
+            { label: 'Total ventes', valueNumber: totalVentes },
+            { label: 'Total reçus', valueNumber: totalReceived },
+            { label: 'Total credit', valueNumber: restantCredit }
+        ];*/
+
+
+    });
 
 }

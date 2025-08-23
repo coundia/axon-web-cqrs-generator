@@ -59,6 +59,14 @@
   }
 
   @if (list().length > 0) {
+
+    <div class="flex justify-center">
+      <app-stats
+          [stats]="entityStats()"
+          [vertical]="false"
+      ></app-stats>
+    </div>
+
     <div class="rounded-xl border border-base-300 shadow bg-base-200">
 
       <table class="table table-xs table-fixed w-full">
@@ -66,7 +74,7 @@
         <tr>
           <th>#</th>
           @for (field of fieldsToDisplay; track field.name) {
-            <th class="text-left ">
+            <th class="text-right ">
               <app-sort-header [field]="field.name" [label]="field.displayName" />
             </th>
           }
@@ -78,7 +86,11 @@
             <tr class="hover">
               <th>{{{open}}}  i + 1 {{{close}}} </th>
               @for (field of fieldsToDisplay; track field.name) {
-                <td [ngSwitch]="field.type" class="truncate max-w-[12rem] pl-8">
+                <td
+                      [ngSwitch]="field.inputType"
+                      class="truncate max-w-[12rem] pl-8"
+                      [class.text-right]="field.inputType === 'number'"
+                  >
 
                   <span *ngSwitchCase="'boolean'">
                     <input type="checkbox" class="toggle toggle-primary" [checked]="getFieldValue(item, field.name)" disabled />

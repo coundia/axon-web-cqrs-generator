@@ -47,6 +47,9 @@ public class {{className}} {
 	@Valid @RequestBody {{name}}SyncRequest request) {
 			try {
 
+			log.info("d ***** payload *****");
+				log.info(request.getDeltas().toString());
+
 			MetaRequest metaRequest = MetaRequest.builder()
 				.userId(RequestContext.getUserId(jwt)){{#isMultiTenant}}
 				.tenantId(RequestContext.getTenantId(jwt)){{/isMultiTenant}}
