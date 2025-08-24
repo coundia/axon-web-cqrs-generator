@@ -6,6 +6,7 @@ import com.groupe2cs.generator.domain.engine.TemplateEngine;
 import com.groupe2cs.generator.infrastructure.config.GeneratorProperties;
 import com.groupe2cs.generator.domain.model.EntityDefinition;
 import com.groupe2cs.generator.shared.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class FindByFieldControllerGeneratorService {
 
@@ -37,6 +39,18 @@ public class FindByFieldControllerGeneratorService {
         context.put("security", definition.isInStack("security"));
 
         for (var field : fields) {
+
+            boolean isId = field.isId() ;
+            boolean isDate =   field.isDate();
+
+            if (
+					!(isDate || isId)
+            ) {
+                log.info("🚨 Skipping field name {} of type {} ",
+                        field.getName(), field.getType());
+                continue;
+            }
+
             Map<String, Object> fieldContext = new HashMap<>(context);
             field.setNameCapitalized(capitalize(field.getName()));
             fieldContext.put("field", field);

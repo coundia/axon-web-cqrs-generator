@@ -9,47 +9,29 @@ Content-Type: application/json
 	"name": "Account",
 	"table": "accounts",
 	"shared": true,
-
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String"
-	  },
-	  {
-		"name": "currency",
-		"type": "String",
-		"defaultValue": "\"XOF\""
-	  },
-	  {
-		"name": "currentBalance",
-		"type": "Double",
-		"defaultValue": 0.0
-	  },
-	  {
-		"name": "previousBalance",
-		"type": "Double",
-		"defaultValue": 0.0
-	  },
-	  {
-		"name": "details",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "isActive",
-		"type": "Boolean",
-		"defaultValue": true
-	  }
+	  { "name": "id", "type": "String" },
+	  { "name": "code", "type": "String", "nullable": true  },
+	  { "name": "name", "type": "String", "nullable": true  },
+	  { "name": "status", "type": "String", "nullable": true  },
+	  { "name": "currency", "type": "String", "defaultValue": "\"XOF\"" },
+	  { "name": "typeAccount", "type": "String", "nullable": true  },
+	  { "name": "balance", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balancePrev", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceBlocked", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceInit", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceGoal", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceLimit", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "description", "type": "String", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true },
+	  { "name": "isDefault", "type": "Boolean", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
+
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -61,14 +43,8 @@ Content-Type: application/json
 	"bind": "username",
 	"table": "account_users",
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String"
-	  },
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
 	  {
 		"name": "account",
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
@@ -81,26 +57,14 @@ Content-Type: application/json
 		"relation": "manyToOne",
 		"nullable": true
 	  },
-	  {
-		"name": "username",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "details",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "isActive",
-		"type": "Boolean",
-		"defaultValue": true
-	  }
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "username", "type": "String", "nullable": true },
+	  { "name": "details", "type": "String", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true }
 	]
   }
 }
 
-###
 ###
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
@@ -112,51 +76,19 @@ Content-Type: application/json
 	"name": "Category",
 	"table": "categories",
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "code",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String"
-	  },
-	  {
-		"name": "remoteId",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "description",
-		"type": "String",
-		"displayName": "description",
-		"nullable": true
-	  },{
-		"name": "typeEntry",
-		"type": "String",
-		"displayName": "typeEntry",
-		"nullable": true
-	  },
-	  {
-		"name": "version",
-		"type": "Integer",
-		"nullable": true
-	  },
-	  {
-		"name": "syncAt",
-		"type": "java.time.Instant",
-		"defaultValue": "java.time.Instant.now()",
-		"nullable": true
-	  }
+	  { "name": "id", "type": "String" },
+	  { "name": "code", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "description", "type": "String", "displayName": "description", "nullable": true },
+	  { "name": "typeEntry", "type": "String", "displayName": "typeEntry", "nullable": true },
+	  { "name": "version", "type": "Integer", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -169,28 +101,13 @@ Content-Type: application/json
 	"transactional": true,
 	"table": "transactions",
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String"
-	  },
-	  {
-		"name": "amount",
-		"type": "Double"
-	  },
-	  {
-		"name": "details",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "isActive",
-		"type": "Boolean",
-		"defaultValue": true
-	  },
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "amount", "type": "Double" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "details", "type": "String", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "account",
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
@@ -203,23 +120,14 @@ Content-Type: application/json
 		"relation": "manyToOne",
 		"nullable": true
 	  },
-	  {
-		"name": "typeTransactionRaw",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "dateTransaction",
-		"type": "java.time.Instant",
-		"defaultValue": "java.time.Instant.now()",
-		"nullable": true
-	  }
+	  { "name": "typeEntry", "type": "String", "nullable": true },
+	  { "name": "typeTransactionRaw", "type": "String", "nullable": true },
+	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -231,14 +139,9 @@ Content-Type: application/json
 	"bind": "username",
 	"table": "transaction_users",
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String"
-	  },
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
 	  {
 		"name": "transaction",
 		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
@@ -251,27 +154,15 @@ Content-Type: application/json
 		"relation": "manyToOne",
 		"nullable": true
 	  },
-	  {
-		"name": "username",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "details",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "isActive",
-		"type": "Boolean",
-		"defaultValue": true
-	  }
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "username", "type": "String", "nullable": true },
+	  { "name": "details", "type": "String", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -285,60 +176,26 @@ Content-Type: application/json
 	"isChat": true,
 	"hasFiles": true,
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "messages",
-		"type": "String",
-		"columnDefinition": "Text",
-		"displayName": "Message"
-	  },
-	  {
-		"name": "responsesJson",
-		"type": "String",
-		"columnDefinition": "Text",
-		"displayName": "Réponse",
-		"nullable": true
-	  },
-	  {
-		"name": "responses",
-		"type": "String",
-		"columnDefinition": "Text",
-		"displayName": "Réponse",
-		"nullable": true
-	  },
-	  {
-		"name": "state",
-		"type": "String",
-		"displayName": "Etat",
-		"nullable": true
-	  },
+	  { "name": "id", "type": "String" },
+	  { "name": "messages", "type": "String", "columnDefinition": "Text", "displayName": "Message" },
+	  { "name": "responsesJson", "type": "String", "columnDefinition": "Text", "displayName": "Réponse", "nullable": true },
+	  { "name": "responses", "type": "String", "columnDefinition": "Text", "displayName": "Réponse", "nullable": true },
+	  { "name": "state", "type": "String", "displayName": "Etat", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "remoteId", "type": "String", "nullable": true },
 	  {
 		"name": "account",
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
 		"relation": "manyToOne",
 		"nullable": true
 	  },
-	  {
-		"name": "files",
-		"type": "FileManager",
-		"isFiles": true,
-		"columnDefinition" : "TEXT"
-	  },
-	  {
-		"name": "dateTransaction",
-		"type": "java.time.Instant",
-		"defaultValue": "java.time.Instant.now()",
-		"nullable": true
-	  }
+	  { "name": "files", "type": "FileManager", "isFiles": true, "columnDefinition": "TEXT" },
+	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -351,42 +208,19 @@ Content-Type: application/json
 	"isPublic": true,
 	"isAdmin": true,
 	"fields": [
-	  {
-		"name": "id",
-		"type": "String"
-	  },
-	  {
-		"name": "name",
-		"type": "String",
-		"displayName": "Key"
-	  },
-	  {
-		"name": "value",
-		"type": "String",
-		"displayName": "Value"
-	  },
-	  {
-		"name": "locale",
-		"type": "String",
-		"displayName": "Langue"
-	  },
-	  {
-		"name": "details",
-		"type": "String",
-		"displayName": "Description",
-		"nullable": true
-	  },
-	  {
-		"name": "isActive",
-		"type": "Boolean",
-		"defaultValue": true
-	  }
+	  { "name": "id", "type": "String" },
+	  { "name": "name", "type": "String", "displayName": "Key" },
+	  { "name": "value", "type": "String", "displayName": "Value" },
+	  { "name": "locale", "type": "String", "displayName": "Langue" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -399,21 +233,18 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "deviceToken", "type": "String", "nullable": true },
-	  { "name": "title", "type": "String",
-        "columnDefinition": "Text",
-        "displayName": "Title"},
-	  { "name": "message", "type": "String" ,
-		"columnDefinition": "Text",
-		"nullable": true},
-	  { "name": "status", "type": "String" , "nullable": true},
-	  { "name": "reserved", "type": "String" , "nullable": true},
+	  { "name": "title", "type": "String", "columnDefinition": "Text", "displayName": "Title" },
+	  { "name": "message", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  { "name": "status", "type": "String", "nullable": true },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "reserved", "type": "String", "nullable": true },
 	  { "name": "errorMessage", "type": "String", "nullable": true }
 	]
   }
 }
 
 ###
-
 POST http://127.0.0.1:8071/api/v1/generator/all
 Accept: application/x-ndjson
 Content-Type: application/json
@@ -428,17 +259,383 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String" },
-	  { "name": "details", "type": "String",
-		"columnDefinition": "Text",
-		"nullable": true },
-	  { "name": "objectId", "type": "String" ,"nullable": true },
-	  { "name": "objectName", "type": "String" ,"nullable": true },
-	  { "name": "originalName", "type": "String" ,"nullable": true,"displayName": "Nom" },
-	  { "name": "mimeType", "type": "String","nullable": true },
-	  { "name": "size", "type": "Long" ,"nullable": true},
-	  { "name": "path", "type": "String" ,"nullable": true},
-	  { "name": "uri", "type": "String","nullable": true },
+	  { "name": "details", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  { "name": "objectId", "type": "String", "nullable": true },
+	  { "name": "objectName", "type": "String", "nullable": true },
+	  { "name": "originalName", "type": "String", "nullable": true, "displayName": "Nom" },
+	  { "name": "mimeType", "type": "String", "nullable": true },
+	  { "name": "size", "type": "Long", "nullable": true },
+	  { "name": "path", "type": "String", "nullable": true },
+	  { "name": "uri", "type": "String", "nullable": true },
 	  { "name": "isPublic", "type": "Boolean", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/units",
+  "definition": {
+	"name": "Unit",
+	"table": "unit",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String" , "nullable": true },
+	  { "name": "name", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "description", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/products",
+  "definition": {
+	"name": "Product",
+	"table": "product",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String" },
+	  { "name": "name", "type": "String" },
+	  { "name": "description", "type": "String", "nullable": true },
+	  { "name": "barcode", "type": "String", "nullable": true },
+	  {
+		"name": "unit",
+		"type": "com.groupe2cs.bizyhub.units.infrastructure.entity.Unit",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  {
+		"name": "category",
+		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "defaultPrice", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "statuses", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  { "name": "purchasePrice", "type": "Double", "defaultValue": 0.0 }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/companies",
+  "definition": {
+	"name": "Company",
+	"table": "company",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String" },
+	  { "name": "name", "type": "String", "nullable": true },
+	  { "name": "description", "type": "String", "nullable": true },
+	  { "name": "phone", "type": "String", "nullable": true },
+	  { "name": "email", "type": "String", "nullable": true },
+	  { "name": "website", "type": "String", "nullable": true },
+	  { "name": "taxId", "type": "String", "nullable": true },
+	  { "name": "currency", "type": "String", "nullable": true },
+	  { "name": "addressLine1", "type": "String", "nullable": true },
+	  { "name": "addressLine2", "type": "String", "nullable": true },
+	  { "name": "city", "type": "String", "nullable": true },
+	  { "name": "region", "type": "String", "nullable": true },
+	  { "name": "country", "type": "String", "nullable": true },
+	  { "name": "postalCode", "type": "String", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "isDefault", "type": "Boolean", "defaultValue": false }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/customers",
+  "definition": {
+	"name": "Customer",
+	"table": "customer",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String", "nullable": true },
+	  { "name": "firstName", "type": "String", "nullable": true },
+	  { "name": "lastName", "type": "String", "nullable": true },
+	  { "name": "fullName", "type": "String", "nullable": true },
+	  { "name": "balance", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceDebt", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "phone", "type": "String", "nullable": true },
+	  { "name": "email", "type": "String", "nullable": true },
+	  { "name": "notes", "type": "String", "nullable": true },
+	  { "name": "status", "type": "String", "nullable": true },
+	  {
+		"name": "company",
+		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "addressLine1", "type": "String", "nullable": true },
+	  { "name": "addressLine2", "type": "String", "nullable": true },
+	  { "name": "city", "type": "String", "nullable": true },
+	  { "name": "region", "type": "String", "nullable": true },
+	  { "name": "country", "type": "String", "nullable": true },
+	  { "name": "postalCode", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "isActive", "type": "Boolean", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
+  "definition": {
+	"name": "TransactionEntry",
+	"table": "transaction_entry",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String", "nullable": true },
+	  { "name": "description", "type": "String", "nullable": true },
+	  { "name": "amount", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "typeEntry", "type": "String", "defaultValue": "\"DEBIT\"" },
+	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "status", "type": "String", "nullable": true },
+	  { "name": "entityName", "type": "String", "nullable": true },
+	  { "name": "entityId", "type": "String", "nullable": true },
+	  {
+		"name": "account",
+		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  {
+		"name": "category",
+		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "company",
+		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "customer",
+		"type": "com.groupe2cs.bizyhub.customers.infrastructure.entity.Customer",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  {
+		"name": "debt",
+		"type": "com.groupe2cs.bizyhub.debts.infrastructure.entity.Debt",
+		"relation": "manyToOne",
+		"nullable": true
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
+  "definition": {
+	"name": "TransactionItem",
+	"table": "transaction_item",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  {
+		"name": "transaction",
+		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
+		"relation": "manyToOne"
+	  },
+	  {
+		"name": "product",
+		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "label", "type": "String", "nullable": true },
+	  { "name": "quantity", "type": "Integer", "defaultValue": 1 },
+	  {
+		"name": "unit",
+		"type": "com.groupe2cs.bizyhub.units.infrastructure.entity.Unit",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "unitPrice", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "total", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "notes", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/stock",
+  "definition": {
+	"name": "StockLevel",
+	"table": "stock_level",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "stockOnHand", "type": "Integer", "nullable": true },
+	  { "name": "stockAllocated", "type": "Integer", "nullable": true },
+	  {
+		"name": "productVariant",
+		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
+		"relation": "manyToOne"
+	  },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  {
+		"name": "company",
+		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
+		"relation": "manyToOne"
+	  }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/stock",
+  "definition": {
+	"name": "StockMovement",
+	"table": "stock_movement",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "typeStockMovement", "type": "String" },
+	  { "name": "quantity", "type": "Integer" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  {
+		"name": "company",
+		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
+		"relation": "manyToOne"
+	  },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  {
+		"name": "productVariant",
+		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
+		"relation": "manyToOne"
+	  },
+	  { "name": "orderLineId", "type": "String", "nullable": true },
+	  { "name": "discriminator", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/debts",
+  "definition": {
+	"name": "Debt",
+	"table": "debt",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "code", "type": "String", "nullable": true },
+	  { "name": "notes", "type": "String", "nullable": true },
+	  { "name": "balance", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "balanceDebt", "type": "Double", "defaultValue": 0.0 },
+	  { "name": "dueDate", "type": "java.time.Instant", "nullable": true },
+	  { "name": "statuses", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  {
+		"name": "customer",
+		"type": "com.groupe2cs.bizyhub.customers.infrastructure.entity.Customer",
+		"relation": "manyToOne",
+		"nullable": true
+	  },
+	  { "name": "isActive", "type": "Boolean", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/sync",
+  "definition": {
+	"name": "ChangeLog",
+	"table": "change_log",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "entityTable", "type": "String" },
+	  { "name": "entityId", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "operation", "type": "String", "nullable": true },
+	  { "name": "payload", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  { "name": "status", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "attempts", "type": "Integer", "defaultValue": 0 },
+	  { "name": "error", "type": "String", "nullable": true }
+	]
+  }
+}
+
+###
+POST http://127.0.0.1:8071/api/v1/generator/all
+Accept: application/x-ndjson
+Content-Type: application/json
+
+{
+  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/sync",
+  "definition": {
+	"name": "SyncState",
+	"table": "sync_state",
+	"fields": [
+	  { "name": "id", "type": "String" },
+	  { "name": "entityTable", "type": "String" },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
+	  { "name": "lastSyncAt", "type": "java.time.Instant", "nullable": true },
+	  { "name": "lastCursor", "type": "String", "nullable": true }
 	]
   }
 }

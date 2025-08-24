@@ -200,7 +200,14 @@ public class FieldDefinition implements Serializable {
 	public boolean isDate() {
 
 		return type.equalsIgnoreCase("date") ||
-				type.equalsIgnoreCase("datetime")
+				type.equalsIgnoreCase("datetime") ||
+				type.equalsIgnoreCase("localdate") ||
+				type.equalsIgnoreCase("localdatetime") ||
+				type.equalsIgnoreCase("java.util.date") ||
+				type.toLowerCase().contains("date") ||
+				type.toLowerCase().contains("instant") ||
+				type.toLowerCase().contains("localdatetime") ||
+				type.toLowerCase().contains("timestamp")
 				;
 	}
 
@@ -213,7 +220,8 @@ public class FieldDefinition implements Serializable {
 	}
 
 	public boolean isId() {
-		return name.equalsIgnoreCase("id");
+		return name.equalsIgnoreCase("id")
+				;
 	}
 
 	public boolean isUnique() {

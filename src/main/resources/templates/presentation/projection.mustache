@@ -147,13 +147,13 @@ public void apply{{name}}ToAccount(String accountId, Double amount, String type)
 			throw new IllegalArgumentException("{{name}} amount cannot be negative");
 		}
 
-		if ("IN".equalsIgnoreCase(type)) {
-			account.setCurrentBalance(account.getCurrentBalance() + amount);
+		if ("IN".equalsIgnoreCase(type) ) {
+			account.setBalance(account.getBalance() + amount);
 			log.info("Account updated with credit amount: {}, account:{}", amount, account.getId());
 		}
 
 		if ("OUT".equalsIgnoreCase(type)) {
-			account.setCurrentBalance(account.getCurrentBalance() - amount);
+			account.setBalance(account.getBalance() - amount);
 			log.info("Account updated with debit amount: {}, account:{}", amount, account.getId());
 		}
 
