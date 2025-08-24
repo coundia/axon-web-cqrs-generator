@@ -25,6 +25,8 @@ Content-Type: application/json
 	  { "name": "description", "type": "String", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true },
 	  { "name": "isDefault", "type": "Boolean", "nullable": true },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
 
 	]
@@ -60,6 +62,8 @@ Content-Type: application/json
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "username", "type": "String", "nullable": true },
 	  { "name": "details", "type": "String", "nullable": true },
+	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true }
 	]
   }
@@ -80,6 +84,7 @@ Content-Type: application/json
 	  { "name": "code", "type": "String" },
 	  { "name": "name", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "description", "type": "String", "displayName": "description", "nullable": true },
 	  { "name": "typeEntry", "type": "String", "displayName": "typeEntry", "nullable": true },
 	  { "name": "version", "type": "Integer", "nullable": true },
@@ -105,6 +110,7 @@ Content-Type: application/json
 	  { "name": "name", "type": "String" },
 	  { "name": "amount", "type": "Double" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "details", "type": "String", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -142,6 +148,7 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "transaction",
 		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
@@ -183,6 +190,7 @@ Content-Type: application/json
 	  { "name": "state", "type": "String", "displayName": "Etat", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "account",
 		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
@@ -213,6 +221,7 @@ Content-Type: application/json
 	  { "name": "value", "type": "String", "displayName": "Value" },
 	  { "name": "locale", "type": "String", "displayName": "Langue" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true }
@@ -237,6 +246,7 @@ Content-Type: application/json
 	  { "name": "message", "type": "String", "columnDefinition": "Text", "nullable": true },
 	  { "name": "status", "type": "String", "nullable": true },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "reserved", "type": "String", "nullable": true },
 	  { "name": "errorMessage", "type": "String", "nullable": true }
@@ -285,6 +295,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String" , "nullable": true },
 	  { "name": "name", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -306,6 +317,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String" },
 	  { "name": "name", "type": "String" },
 	  { "name": "description", "type": "String", "nullable": true },
@@ -343,6 +355,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String" },
 	  { "name": "name", "type": "String", "nullable": true },
 	  { "name": "description", "type": "String", "nullable": true },
@@ -377,6 +390,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String", "nullable": true },
 	  { "name": "firstName", "type": "String", "nullable": true },
 	  { "name": "lastName", "type": "String", "nullable": true },
@@ -418,6 +432,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String", "nullable": true },
 	  { "name": "description", "type": "String", "nullable": true },
 	  { "name": "amount", "type": "Double", "defaultValue": 0.0 },
@@ -493,6 +508,7 @@ Content-Type: application/json
 		"nullable": true
 	  },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "unitPrice", "type": "Double", "defaultValue": 0.0 },
 	  { "name": "total", "type": "Double", "defaultValue": 0.0 },
@@ -514,6 +530,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "stockOnHand", "type": "Integer", "nullable": true },
 	  { "name": "stockAllocated", "type": "Integer", "nullable": true },
 	  {
@@ -546,6 +563,7 @@ Content-Type: application/json
 	  { "name": "typeStockMovement", "type": "String" },
 	  { "name": "quantity", "type": "Integer" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "company",
 		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
@@ -576,6 +594,7 @@ Content-Type: application/json
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "code", "type": "String", "nullable": true },
 	  { "name": "notes", "type": "String", "nullable": true },
 	  { "name": "balance", "type": "Double", "defaultValue": 0.0 },
@@ -609,6 +628,7 @@ Content-Type: application/json
 	  { "name": "entityTable", "type": "String" },
 	  { "name": "entityId", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "operation", "type": "String", "nullable": true },
 	  { "name": "payload", "type": "String", "columnDefinition": "Text", "nullable": true },
 	  { "name": "status", "type": "String", "nullable": true },
@@ -633,6 +653,7 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  { "name": "entityTable", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "lastSyncAt", "type": "java.time.Instant", "nullable": true },
 	  { "name": "lastCursor", "type": "String", "nullable": true }
