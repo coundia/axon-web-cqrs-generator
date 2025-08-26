@@ -8,7 +8,6 @@ Content-Type: application/json
   "definition": {
 	"name": "Account",
 	"table": "accounts",
-	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "code", "type": "String", "nullable": true  },
@@ -49,14 +48,12 @@ Content-Type: application/json
 	  { "name": "name", "type": "String" },
 	  {
 		"name": "account",
-		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  {
 		"name": "user",
-		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -101,46 +98,6 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
   "definition": {
-	"name": "Transaction",
-	"shared": true,
-	"transactional": true,
-	"table": "transactions",
-	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "amount", "type": "Double" },
-	  { "name": "remoteId", "type": "String", "nullable": true },
-	  { "name": "localId", "type": "String", "nullable": true },
-	  { "name": "details", "type": "String", "nullable": true },
-	  { "name": "isActive", "type": "Boolean", "nullable": true },
-	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-	  {
-		"name": "account",
-		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
-		"relation": "manyToOne",
-		"nullable": true
-	  },
-	  {
-		"name": "category",
-		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
-		"relation": "manyToOne",
-		"nullable": true
-	  },
-	  { "name": "typeEntry", "type": "String", "nullable": true },
-	  { "name": "typeTransactionRaw", "type": "String", "nullable": true },
-	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
-	]
-  }
-}
-
-###
-POST http://127.0.0.1:8071/api/v1/generator/all
-Accept: application/x-ndjson
-Content-Type: application/json
-
-{
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
-  "definition": {
 	"name": "TransactionUser",
 	"bind": "username",
 	"table": "transaction_users",
@@ -151,14 +108,12 @@ Content-Type: application/json
 	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "transaction",
-		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  {
 		"name": "user",
-		"type": "com.groupe2cs.bizyhub.security.infrastructure.entity.User",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -193,8 +148,7 @@ Content-Type: application/json
 	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "account",
-		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "files", "type": "FileManager", "isFiles": true, "columnDefinition": "TEXT" },
@@ -324,15 +278,13 @@ Content-Type: application/json
 	  { "name": "barcode", "type": "String", "nullable": true },
 	  {
 		"name": "unit",
-		"type": "com.groupe2cs.bizyhub.units.infrastructure.entity.Unit",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "category",
-		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "defaultPrice", "type": "Double", "defaultValue": 0.0 },
@@ -403,8 +355,7 @@ Content-Type: application/json
 	  { "name": "status", "type": "String", "nullable": true },
 	  {
 		"name": "company",
-		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "addressLine1", "type": "String", "nullable": true },
@@ -427,8 +378,8 @@ Content-Type: application/json
 {
   "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
   "definition": {
-	"name": "TransactionEntry",
-	"table": "transaction_entry",
+	"name": "Transaction",
+	"table": "transactions",
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -443,33 +394,28 @@ Content-Type: application/json
 	  { "name": "entityId", "type": "String", "nullable": true },
 	  {
 		"name": "account",
-		"type": "com.groupe2cs.bizyhub.accounts.infrastructure.entity.Account",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "category",
-		"type": "com.groupe2cs.bizyhub.categories.infrastructure.entity.Category",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  {
 		"name": "company",
-		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  {
 		"name": "customer",
-		"type": "com.groupe2cs.bizyhub.customers.infrastructure.entity.Customer",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  {
 		"name": "debt",
-		"type": "com.groupe2cs.bizyhub.debts.infrastructure.entity.Debt",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  }
 	]
@@ -490,21 +436,19 @@ Content-Type: application/json
 	  { "name": "id", "type": "String" },
 	  {
 		"name": "transaction",
-		"type": "com.groupe2cs.bizyhub.transactions.infrastructure.entity.Transaction",
-		"relation": "manyToOne"
+		"type": "String",
+		"nullable": true
 	  },
 	  {
 		"name": "product",
-		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "label", "type": "String", "nullable": true },
 	  { "name": "quantity", "type": "Integer", "defaultValue": 1 },
 	  {
 		"name": "unit",
-		"type": "com.groupe2cs.bizyhub.units.infrastructure.entity.Unit",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -535,14 +479,14 @@ Content-Type: application/json
 	  { "name": "stockAllocated", "type": "Integer", "nullable": true },
 	  {
 		"name": "productVariant",
-		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
-		"relation": "manyToOne"
+		"type": "String",
+		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "company",
-		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
-		"relation": "manyToOne"
+		"type": "String",
+		"nullable": true
 	  }
 	]
   }
@@ -566,14 +510,14 @@ Content-Type: application/json
 	  { "name": "localId", "type": "String", "nullable": true },
 	  {
 		"name": "company",
-		"type": "com.groupe2cs.bizyhub.companies.infrastructure.entity.Company",
-		"relation": "manyToOne"
+		"type": "String",
+		"nullable": true
 	  },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "productVariant",
-		"type": "com.groupe2cs.bizyhub.products.infrastructure.entity.Product",
-		"relation": "manyToOne"
+		"type": "String",
+		"nullable": true
 	  },
 	  { "name": "orderLineId", "type": "String", "nullable": true },
 	  { "name": "discriminator", "type": "String", "nullable": true }
@@ -604,8 +548,7 @@ Content-Type: application/json
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "customer",
-		"type": "com.groupe2cs.bizyhub.customers.infrastructure.entity.Customer",
-		"relation": "manyToOne",
+		"type": "String",
 		"nullable": true
 	  },
 	  { "name": "isActive", "type": "Boolean", "nullable": true }

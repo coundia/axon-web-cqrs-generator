@@ -26,6 +26,11 @@ public class {{name}}Projection {
 
 private final {{name}}Repository repository;
 
+
+private static boolean hasId(Object s) {
+    return s != null ;
+}
+
 {{#transactional}}
 private final AccountRepository accountRepository;
 {{/transactional}}
@@ -33,22 +38,27 @@ private final AccountRepository accountRepository;
 @EventHandler
 public void on({{name}}CreatedEvent event) {
 try {
-{{entity}} entity = {{entity}}.builder()
+{{entity}} entity = {{entity}}.builder().build();
 {{#editableFields}}
 	{{^isOneToMany}} {{^isManyToOne}}
-		.{{nameLowerCase}}(event.get{{nameCapitalized}}() == null ? null : event.get{{nameCapitalized}}().value())
+		if(event.get{{nameCapitalized}}() !=null  && hasId(event.get{{nameCapitalized}}().value()) ) {
+            entity.set{{nameCapitalized}}( event.get{{nameCapitalized}}().value());
+        }
 	{{/isManyToOne}} {{/isOneToMany}}
 	{{#isManyToOne}}
-		.{{nameLowerCase}}( event.get{{nameCapitalized}}() == null ? null : new {{realType}}(event.get{{nameCapitalized}}().value()))
+		if(event.get{{nameCapitalized}}() !=null  && hasId(event.get{{nameCapitalized}}().value())){
+            entity.set{{nameCapitalized}}( new {{realType}}(event.get{{nameCapitalized}}().value()));
+        }
+
 	{{/isManyToOne}}
 {{/editableFields}}
-.build();
 
-entity.setId(event.getId().value());
 
-if(event.getCreatedBy() !=null){
-	entity.setCreatedBy( new User(event.getCreatedBy().value()));
-}
+    entity.setId(event.getId().value());
+
+    if(event.getCreatedBy() !=null){
+        entity.setCreatedBy( new User(event.getCreatedBy().value()));
+    }
 {{#isMultiTenant}}
 	if(event.getTenant() != null) {
 	entity.setTenant(new Tenant(event.getTenant().value()));
@@ -83,12 +93,12 @@ try {
 {{#editableFields}}
 	{{#isManyToOne}}
 
-     if(event.get{{nameCapitalized}}() != null) {
+     if(event.get{{nameCapitalized}}() != null  && hasId(event.get{{nameCapitalized}}().value())) {
 		  entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
 	  }
 	{{/isManyToOne}}
 	{{^isManyToOne}}
-	if(event.get{{nameCapitalized}}() != null) {
+	if(event.get{{nameCapitalized}}() != null  && hasId(event.get{{nameCapitalized}}().value())) {
 		entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
     }
 	{{/isManyToOne}}
