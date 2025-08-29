@@ -15,51 +15,51 @@ import java.util.Set;
 @Service
 public class FindAllQueryHandlerGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public FindAllQueryHandlerGeneratorService(
-            TemplateEngine templateEngine,
-            FileWriterService fileWriterService,
-            GeneratorProperties generatorProperties
-    ) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public FindAllQueryHandlerGeneratorService(
+			TemplateEngine templateEngine,
+			FileWriterService fileWriterService,
+			GeneratorProperties generatorProperties
+	) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        Map<String, Object> context = new HashMap<>();
+	public void generate(EntityDefinition definition, String baseDir) {
+		Map<String, Object> context = new HashMap<>();
 
-        String outputDir = baseDir + "/" + generatorProperties.getQueryHandlerPackage();
-        context.put("package", Utils.getPackage(outputDir));
-        context.put("entity", definition.getEntity());
-        context.put("nameAggregate", definition.getName());
-        context.put("name", definition.getName());
-        context.put("entityLower", Utils.unCapitalize(definition.getName()));
+		String outputDir = baseDir + "/" + generatorProperties.getQueryHandlerPackage();
+		context.put("package", Utils.getPackage(outputDir));
+		context.put("entity", definition.getEntity());
+		context.put("nameAggregate", definition.getName());
+		context.put("name", definition.getName());
+		context.put("entityLower", Utils.unCapitalize(definition.getName()));
 
-        Set<String> imports = new LinkedHashSet<>();
-        imports.add("org.axonframework.queryhandling.QueryHandler");
-        imports.add("org.springframework.stereotype.Component");
+		Set<String> imports = new LinkedHashSet<>();
+		imports.add("org.axonframework.queryhandling.QueryHandler");
+		imports.add("org.springframework.stereotype.Component");
 
-        String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+		String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
 
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
-        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
+		imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
 
 
-        context.put("imports", imports);
+		context.put("imports", imports);
 
-        context.put("isMultiTenant", definition.getMultiTenant());
-        context.put("shared", definition.getShared());
-        context.put("transactional", definition.getTransactional());
+		context.put("isMultiTenant", definition.getMultiTenant());
+		context.put("shared", definition.getShared());
+		context.put("transactional", definition.getTransactional());
 
-        String content = templateEngine.render("application/findAllQueryHandler.mustache", context);
-        fileWriterService.write(outputDir, "FindAll" + definition.getName() + "QueryHandler.java", content);
-    }
+		String content = templateEngine.render("application/findAllQueryHandler.mustache", context);
+		fileWriterService.write(outputDir, "FindAll" + definition.getName() + "QueryHandler.java", content);
+	}
 }

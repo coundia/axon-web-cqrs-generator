@@ -52,169 +52,9 @@ public class EntityDefinition implements Serializable {
 	private String bind = "";
 	private String header = "";
 	private Boolean tauri = false;
-	private String plural ;
-	private Boolean isPos ;
-	private Boolean shouldGenerateId = false ;
-
-	public Boolean getShouldGenerateId(){
-
-		if(shouldGenerateId == null){
-			return false;
-		}
-		return shouldGenerateId;
-	}
-
-	public Boolean getIsPos() {
-		if (isPos == null) {
-			return false;
-		}
-
-		return isPos;
-	}
-
-	public String getPlural() {
-
-		if( plural == null || plural.isEmpty()) {
-			return Utils.pluralize(name);
-		}
-		return plural;
-	}
-
-	public  Boolean getTauri() {
-		if (tauri == null) {
-			return false;
-		}
-
-		return tauri;
-	}
-
-	public Boolean getIsFileManager(){
-		if (isFileManager == null) {
-			return false;
-		}
-
-		return isFileManager;
-	}
-
-	public Boolean getHasFiles(){
-		if (hasFiles == null) {
-			return false;
-		}
-
-		return hasFiles;
-	}
-
-
-	public String getApiPrefix() {
-		if (apiPrefix == null) {
-			return "";
-		}
-
-		return apiPrefix;
-	}
-
-	public Boolean getIsPublic() {
-		if (isPublic == null) {
-			return false;
-		}
-
-		return isPublic;
-	}
-
-	public String getTitle() {
-		if (title == null || title.isEmpty()) {
-			return Utils.capitalize(name);
-		}
-
-		return  Utils.capitalize(title);
-	}
-
-	public Boolean getMultiTenant() {
-
-		if (multiTenant == null) {
-			return false;
-		}
-
-		return multiTenant;
-	}
-
-	public String getName(){
-		if (name == null) {
-			return "";
-		}
-
-		return name;
-	}
-
-	public String getEntity() {
-		if (entity == null) {
-			return getName();
-		}
-
-		return entity;
-	}
-
-	public Boolean getIsGenerated() {
-
-		if (isGenerated == null) {
-			return false;
-		}
-
-		return isGenerated;
-	}
-
-
-	public String getTable() {
-		return table;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setTable(String table) {
-		this.table = table;
-	}
-
-	public void setFields(List<FieldDefinition> fields) {
-		this.fields = fields;
-	}
-
-	public List<FieldDefinition> getFields() {
-		return fields.stream()
-				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.collect(Collectors.toList());
-	}
-
-	public List<FieldDefinition> getFieldsWithoutRelations() {
-		return fields.stream()
-				.filter(f -> !f.isFileType())
-				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.collect(Collectors.toList());
-	}
-
-	public List<FieldDefinition> getFieldsWithRelations() {
-		return fields.stream()
-				.filter(f -> !f.isFileType())
-				.collect(Collectors.toList());
-	}
-
-	public List<FieldDefinition> getFieldsWithoutId() {
-		return fields.stream()
-				.filter(f -> !f.isId())
-				.collect(Collectors.toList());
-	}
-
-	public List<FieldDefinition> getAllFields() {
-		return fields;
-	}
-
-	public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
-		return fields.stream()
-				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
-				.collect(Collectors.toList());
-
-	}
+	private String plural;
+	private Boolean isPos;
+	private Boolean shouldGenerateId = false;
 
 	public EntityDefinition(String name, List<FieldDefinition> fields, String table) {
 		this.name = name;
@@ -276,6 +116,169 @@ public class EntityDefinition implements Serializable {
 		return new EntityDefinition(clazz.getSimpleName(), fields);
 	}
 
+	private static String getSimpleName(String className) {
+		int lastDot = className.lastIndexOf(".");
+		return lastDot != -1 ? className.substring(lastDot + 1) : className;
+	}
+
+	public Boolean getShouldGenerateId() {
+
+		if (shouldGenerateId == null) {
+			return false;
+		}
+		return shouldGenerateId;
+	}
+
+	public Boolean getIsPos() {
+		if (isPos == null) {
+			return false;
+		}
+
+		return isPos;
+	}
+
+	public String getPlural() {
+
+		if (plural == null || plural.isEmpty()) {
+			return Utils.pluralize(name);
+		}
+		return plural;
+	}
+
+	public Boolean getTauri() {
+		if (tauri == null) {
+			return false;
+		}
+
+		return tauri;
+	}
+
+	public Boolean getIsFileManager() {
+		if (isFileManager == null) {
+			return false;
+		}
+
+		return isFileManager;
+	}
+
+	public Boolean getHasFiles() {
+		if (hasFiles == null) {
+			return false;
+		}
+
+		return hasFiles;
+	}
+
+	public String getApiPrefix() {
+		if (apiPrefix == null) {
+			return "";
+		}
+
+		return apiPrefix;
+	}
+
+	public Boolean getIsPublic() {
+		if (isPublic == null) {
+			return false;
+		}
+
+		return isPublic;
+	}
+
+	public String getTitle() {
+		if (title == null || title.isEmpty()) {
+			return Utils.capitalize(name);
+		}
+
+		return Utils.capitalize(title);
+	}
+
+	public Boolean getMultiTenant() {
+
+		if (multiTenant == null) {
+			return false;
+		}
+
+		return multiTenant;
+	}
+
+	public String getName() {
+		if (name == null) {
+			return "";
+		}
+
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEntity() {
+		if (entity == null) {
+			return getName();
+		}
+
+		return entity;
+	}
+
+	public Boolean getIsGenerated() {
+
+		if (isGenerated == null) {
+			return false;
+		}
+
+		return isGenerated;
+	}
+
+	public String getTable() {
+		return table;
+	}
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+
+	public List<FieldDefinition> getFields() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.collect(Collectors.toList());
+	}
+
+	public void setFields(List<FieldDefinition> fields) {
+		this.fields = fields;
+	}
+
+	public List<FieldDefinition> getFieldsWithoutRelations() {
+		return fields.stream()
+				.filter(f -> !f.isFileType())
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.collect(Collectors.toList());
+	}
+
+	public List<FieldDefinition> getFieldsWithRelations() {
+		return fields.stream()
+				.filter(f -> !f.isFileType())
+				.collect(Collectors.toList());
+	}
+
+	public List<FieldDefinition> getFieldsWithoutId() {
+		return fields.stream()
+				.filter(f -> !f.isId())
+				.collect(Collectors.toList());
+	}
+
+	public List<FieldDefinition> getAllFields() {
+		return fields;
+	}
+
+	public List<FieldDefinition> getAllFieldsWithoutOneToMany() {
+		return fields.stream()
+				.filter(f -> !"oneToMany".equalsIgnoreCase(f.getRelation()))
+				.collect(Collectors.toList());
+
+	}
+
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = new HashMap<>();
 		map.put("name", name);
@@ -300,11 +303,6 @@ public class EntityDefinition implements Serializable {
 				.map(FieldDefinition::getType)
 				.findFirst()
 				.orElse("String");
-	}
-
-	private static String getSimpleName(String className) {
-		int lastDot = className.lastIndexOf(".");
-		return lastDot != -1 ? className.substring(lastDot + 1) : className;
 	}
 
 	public String getIdentifier() {
@@ -378,7 +376,7 @@ public class EntityDefinition implements Serializable {
 	}
 
 
-	public boolean hasManyToOne(){
+	public boolean hasManyToOne() {
 
 		return fields.stream()
 				.filter(f -> f.getRelation() != null)
@@ -396,8 +394,8 @@ public class EntityDefinition implements Serializable {
 				.filter(f -> {
 					String n = f.getName().toLowerCase();
 					return n.equalsIgnoreCase("name")
-							||  n.equals("title")
-							||  n.equals("messages")
+							|| n.equals("title")
+							|| n.equals("messages")
 							;
 				})
 				.collect(Collectors.toList());
@@ -408,7 +406,7 @@ public class EntityDefinition implements Serializable {
 				.filter(
 						f -> f.getDisplayName() != null
 								&& !f.getDisplayName().isEmpty()
-						&& !"manyToOne".equalsIgnoreCase(f.getRelation())
+								&& !"manyToOne".equalsIgnoreCase(f.getRelation())
 				)
 				.collect(Collectors.toList());
 	}
@@ -450,7 +448,7 @@ public class EntityDefinition implements Serializable {
 	}
 
 
-	public Boolean  getHasManyToOne(){
+	public Boolean getHasManyToOne() {
 		return fields.stream()
 				.filter(f -> f.getRelation() != null)
 				.anyMatch(f -> f.getRelation().equalsIgnoreCase("manyToOne")

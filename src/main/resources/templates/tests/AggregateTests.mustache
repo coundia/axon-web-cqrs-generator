@@ -10,9 +10,9 @@ public class {{className}} extends BaseUnitTests {
 @Test
 void it_should_create_{{lowerName}}_with_valid_values() {
 {{#fields}}
-	{{type}} {{name}} = {{type}}.create({{{testDomainValue}}});
+    {{type}} {{name}} = {{type}}.create({{{testDomainValue}}});
 {{/fields}}
-	{{aggregateName}} aggregate{{aggregateName}} = new {{aggregateName}}({{#fields}}{{name}}{{^last}}, {{/last}}{{/fields}});
+{{aggregateName}} aggregate{{aggregateName}} = new {{aggregateName}}({{#fields}}{{name}}{{^last}}, {{/last}}{{/fields}});
 	assertThat(aggregate{{aggregateName}}.getId()).isNotNull();
 {{#fields}}
 	assertThat(aggregate{{aggregateName}}.get{{nameCapitalized}}()).isEqualTo({{name}});
@@ -20,15 +20,15 @@ void it_should_create_{{lowerName}}_with_valid_values() {
 }
 
 {{#editableFields}}
-	{{#hasValidation}}
-	{{^nullable}}
+    {{#hasValidation}}
+        {{^nullable}}
 		@Test
 		void it_should_throw_when_{{name}}_is_invalid() {
 		{{exceptionName}} error = assertThrows({{exceptionName}}.class, () -> {{type}}.create({{{errorTestValue}}}));
 		assertThat(error.getMessage()).isEqualTo("{{errorMessage}}");
 		}
 	{{/nullable}}
-	{{/hasValidation}}
+    {{/hasValidation}}
 {{/editableFields}}
 
 }

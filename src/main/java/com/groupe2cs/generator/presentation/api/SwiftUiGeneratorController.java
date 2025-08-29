@@ -21,7 +21,7 @@ public class SwiftUiGeneratorController {
 
 	@PostMapping(value = "/swiftui", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Flux<String> generate(@RequestBody EntityDefinitionDTO request) {
-		String output = request.getOutputDir() + "/"+ request.getDefinition().getName();
+		String output = request.getOutputDir() + "/" + request.getDefinition().getName();
 
 		EntityDefinition entityDefinition = request.getDefinition();
 

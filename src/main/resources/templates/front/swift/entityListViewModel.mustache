@@ -59,7 +59,7 @@ var filtered{{entity}}s: [{{entity}}] {
         {{^hasDate}}
             guard let date = $0.updatedAt,
             {{/hasDate}}
-            {{#hasDate}}
+{{#hasDate}}
             guard let date = $0.date{{entity}},
             {{/hasDate}}
                 let sd = selectedStartDate,
@@ -82,7 +82,7 @@ var filtered{{entity}}s: [{{entity}}] {
             {{^hasDate}}
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
             {{/hasDate}}
-            {{#hasDate}}
+{{#hasDate}}
             sortBy: [SortDescriptor(\.date{{entity}}, order: .reverse)]
             {{/hasDate}}
         )
@@ -109,7 +109,7 @@ var filtered{{entity}}s: [{{entity}}] {
             {{^hasDate}}
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
             {{/hasDate}}
-            {{#hasDate}}
+{{#hasDate}}
             sortBy: [SortDescriptor(\.date{{entity}}, order: .reverse)]
             {{/hasDate}}
         )
@@ -124,33 +124,33 @@ var filtered{{entity}}s: [{{entity}}] {
 
     func createEntity(
         {{#fields}}
-        {{^isId}}
+    {{^isId}}
         {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
         {{/isId}}
-        {{#isManyToOne}}
+    {{#isManyToOne}}
         {{name}}LocalId: String? = nil,
         {{/isManyToOne}}
-        {{/fields}}
+{{/fields}}
             ) -> {{entity}} {
 
              print("[{{entity}}ListViewModel.createEntity]")
 
         let item = {{entity}}(
         {{#fields}}
-        {{^isId}}
+    {{^isId}}
         {{name}}: {{name}},
         {{/isId}}
-        {{/fields}}
+{{/fields}}
         )
         item.user = user
         item.createdBy = user.username
         item.reference = item.id
 
         {{#fields}}
-        {{#isManyToOne}}
+    {{#isManyToOne}}
         item.{{name}}LocalId = {{name}}LocalId
         {{/isManyToOne}}
-        {{/fields}}
+{{/fields}}
 
         print("createEntity \(item.id)")
         modelContext.insert(item)
@@ -160,20 +160,20 @@ var filtered{{entity}}s: [{{entity}}] {
 
 func updateEntity(_ item: {{entity}},
     {{#fields}}
-        {{name}}: {{realType}},
+    {{name}}: {{realType}},
         {{#isManyToOne}}
         {{name}}LocalId: String? = nil,
         {{/isManyToOne}}
-    {{/fields}}
+{{/fields}}
     ) -> {{entity}} {
 
     print("[{{entity}}ListViewModel.updateEntity]")
         {{#fields}}
             item.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
-        {{#isManyToOne}}
+{{#isManyToOne}}
             item.{{name}}LocalId = {{name}}LocalId
         {{/isManyToOne}}
-        {{/fields}}
+{{/fields}}
 
         if item.remoteId == nil {
             print("[updateEntity] remoteId is nil  \(item.id)")
@@ -253,7 +253,7 @@ public func saveContext() {
             let matchesDate: Bool
             if let sd = self.selectedStartDate, let ed = self.selectedEndDate
             {{#hasDate}}, let date = item.date{{entity}} {{/hasDate}}
-            {{^hasDate}}, let date = item.updatedAt {{/hasDate}}
+{{^hasDate}}, let date = item.updatedAt {{/hasDate}}
              {
                 matchesDate = date >= sd && date <= ed
             } else {

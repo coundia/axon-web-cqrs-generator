@@ -14,225 +14,236 @@ import java.util.*;
 @Service
 public class SharedGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public SharedGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public SharedGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
+	public void generate(EntityDefinition definition, String baseDir) {
 
-        if(
-                "Security".equalsIgnoreCase(definition.getModule())
-        ){
-            return;
-        }
+		if (
+				"Security".equalsIgnoreCase(definition.getModule())
+		) {
+			return;
+		}
 
-        String rootDir = Utils.getRootDir(baseDir, definition.getName());
+		String rootDir = Utils.getRootDir(baseDir, definition.getName());
 
-        String outputShared = Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
-
-
-        List<SharedTemplate> sharedTemplates = List.of(
-                new SharedTemplate(
-                        "StatusController",
-                        "shared/status/statusController.mustache",
-                        Set.of(
-                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto"
-                        ),
-                        outputShared + "/" + generatorProperties.getPresentationPackage()+"/status"
-                ),
-                new SharedTemplate(
-                        "ApiResponseDto",
-                        "shared/apiResponseDto.mustache",
-                        Set.of("lombok.Builder"),
-                        outputShared + "/" + generatorProperties.getApplicationPackage()
-                ),
-                new SharedTemplate(
-                        "FileStorageService",
-                        "shared/fileStorageService.mustache",
-                        Set.of(
-                                "org.springframework.web.multipart.MultipartFile",
-                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) + ".MetaRequest"
-                        ),
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()
-                )
-                ,
-                new SharedTemplate(
-                        "FileStorageServiceImpl",
-                        "shared/fileStorageServiceImpl.mustache",
-                        Set.of(
-                                "org.springframework.stereotype.Service",
-                                "org.springframework.web.multipart.MultipartFile",
-                                "java.io.IOException",
-                                "java.nio.file.Files",
-                                "java.nio.file.Path",
-                                "java.nio.file.Paths",
-                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
-                                Utils.getPackage(rootDir + "/fileManager/" + generatorProperties.getApplicationUseCasePackage()) + ".FileManagerCreateApplicationService",
-                                Utils.getPackage(rootDir + "/fileManager/" + generatorProperties.getDtoPackage()) + ".FileManagerRequest",
-                                "java.util.UUID"
-                        ),
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()
-                )
-                ,
-                new SharedTemplate(
-                        "RetryTwoTimesHandler",
-                        "shared/retryTwoTimesHandler.mustache",
-                        null,
-                        outputShared + "/" +generatorProperties.getInfrastructurePackage()+ "/axon"
-                )
-                ,
-                new SharedTemplate(
-                        "AxonConfig",
-                        "shared/axonConfig.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+ "/axon"
-                )
-                ,
-                new SharedTemplate(
-                        "AxonNotificationErrorHandler",
-                        "shared/AxonNotificationErrorHandler.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+ "/axon"
-                )
-                ,
-                new SharedTemplate(
-                        "AbstractAuditableEntity",
-                        "shared/audit/abstractAuditableEntity.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
-
-                new SharedTemplate(
-                        "Auditable",
-                        "shared/audit/auditable.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
-
-                new SharedTemplate(
-                        "RequestContext",
-                        "shared/audit/requestContext.mustache",
-                        Set.of(
-                                Utils.getPackage(rootDir + "/security/" + generatorProperties.getServicePackage()) + ".UserPrincipal"
-                        ),
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
-
-                new SharedTemplate(
-                        "IdentifiableUser",
-                        "shared/audit/identifiableUser.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
+		String
+				outputShared =
+				Utils.getRootDir(baseDir, definition.getName()) + "/" + generatorProperties.getSharedPackage();
 
 
-                new SharedTemplate(
-                        "AuditListener",
-                        "shared/audit/auditListener.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/audit"
-                ),
+		List<SharedTemplate> sharedTemplates = List.of(
+				new SharedTemplate(
+						"StatusController",
+						"shared/status/statusController.mustache",
+						Set.of(
+								Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) +
+										".ApiResponseDto"
+						),
+						outputShared + "/" + generatorProperties.getPresentationPackage() + "/status"
+				),
+				new SharedTemplate(
+						"ApiResponseDto",
+						"shared/apiResponseDto.mustache",
+						Set.of("lombok.Builder"),
+						outputShared + "/" + generatorProperties.getApplicationPackage()
+				),
+				new SharedTemplate(
+						"FileStorageService",
+						"shared/fileStorageService.mustache",
+						Set.of(
+								"org.springframework.web.multipart.MultipartFile",
+								Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) +
+										".MetaRequest"
+						),
+						outputShared + "/" + generatorProperties.getInfrastructurePackage()
+				)
+				,
+				new SharedTemplate(
+						"FileStorageServiceImpl",
+						"shared/fileStorageServiceImpl.mustache",
+						Set.of(
+								"org.springframework.stereotype.Service",
+								"org.springframework.web.multipart.MultipartFile",
+								"java.io.IOException",
+								"java.nio.file.Files",
+								"java.nio.file.Path",
+								"java.nio.file.Paths",
+								Utils.getPackage(rootDir + "/shared/" + generatorProperties.getDtoPackage()) +
+										".MetaRequest",
+								Utils.getPackage(rootDir +
+										"/fileManager/" +
+										generatorProperties.getApplicationUseCasePackage()) +
+										".FileManagerCreateApplicationService",
+								Utils.getPackage(rootDir + "/fileManager/" + generatorProperties.getDtoPackage()) +
+										".FileManagerRequest",
+								"java.util.UUID"
+						),
+						outputShared + "/" + generatorProperties.getInfrastructurePackage()
+				)
+				,
+				new SharedTemplate(
+						"RetryTwoTimesHandler",
+						"shared/retryTwoTimesHandler.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/axon"
+				)
+				,
+				new SharedTemplate(
+						"AxonConfig",
+						"shared/axonConfig.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/axon"
+				)
+				,
+				new SharedTemplate(
+						"AxonNotificationErrorHandler",
+						"shared/AxonNotificationErrorHandler.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/axon"
+				)
+				,
+				new SharedTemplate(
+						"AbstractAuditableEntity",
+						"shared/audit/abstractAuditableEntity.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/audit"
+				),
 
-                new SharedTemplate(
-                        "MetaRequest",
-                        "shared/dto/metaRequest.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getDtoPackage()
-                )
-                ,
-                new SharedTemplate(
-                        "FlywayConfig",
-                        "shared/flyway/flywayConfig.mustache",
-                        null,
-                        outputShared + "/" + generatorProperties.getInfrastructurePackage()+"/flyway"
-                )
-                ,
-                new SharedTemplate(
-                        "V1__insert_security_defaults",
-                        "shared/flyway/V1__insert_security_defaults.mustache",
-                        null,
-                        Utils.getSrcDir(baseDir) +"/main/resources/db/migration",
-                        null,
-                        ".sql"
-                )
+				new SharedTemplate(
+						"Auditable",
+						"shared/audit/auditable.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/audit"
+				),
+
+				new SharedTemplate(
+						"RequestContext",
+						"shared/audit/requestContext.mustache",
+						Set.of(
+								Utils.getPackage(rootDir + "/security/" + generatorProperties.getServicePackage()) +
+										".UserPrincipal"
+						),
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/audit"
+				),
+
+				new SharedTemplate(
+						"IdentifiableUser",
+						"shared/audit/identifiableUser.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/audit"
+				),
 
 
-        );
+				new SharedTemplate(
+						"AuditListener",
+						"shared/audit/auditListener.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/audit"
+				),
 
-        sharedTemplates.forEach(template -> generateSharedFile(template, definition));
-
-        //tests
-        List<SharedTemplate> testTemplates = List.of(
-                new SharedTemplate(
-                          "StatusControllerTest",
-                        "shared/status/statusControllerTest.mustache",
-                        Set.of(
-                                Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) + ".ApiResponseDto",
-                                Utils.getPackage(outputShared) + ".BaseUnitTests"
-                        ),
-                        outputShared + "/" + generatorProperties.getPresentationPackage()+"/status"
-                )
-        );
-
-        testTemplates.forEach(template -> generateSharedTestFile(template, definition));
-    }
-
-    private void generateSharedFile(SharedTemplate template, EntityDefinition definition) {
-        Map<String, Object> context = new HashMap<>();
-
-        String outputDir = template.getOutput();
-
-        context.put("package", Utils.getPackage(outputDir));
-
-
-        context.put("imports", template.getImports());
-        context.put("name", Utils.capitalize(definition.getName()));
-        context.put("className", template.getClassName());
-        context.put("entity", Utils.capitalize(definition.getEntity()));
-
-        context.put("nameAggregate", definition.getName());
-
-        context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
-
-        context.put("isMultiTenant", definition.getMultiTenant());
-        context.put("apiPrefix", definition.getApiPrefix());
-
-        String content = templateEngine.render(template.getTemplatePath(), context);
-        fileWriterService.write(outputDir, template.getClassName() + template.getExt(), content);
-    }
+				new SharedTemplate(
+						"MetaRequest",
+						"shared/dto/metaRequest.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getDtoPackage()
+				)
+				,
+				new SharedTemplate(
+						"FlywayConfig",
+						"shared/flyway/flywayConfig.mustache",
+						null,
+						outputShared + "/" + generatorProperties.getInfrastructurePackage() + "/flyway"
+				)
+				,
+				new SharedTemplate(
+						"V1__insert_security_defaults",
+						"shared/flyway/V1__insert_security_defaults.mustache",
+						null,
+						Utils.getSrcDir(baseDir) + "/main/resources/db/migration",
+						null,
+						".sql"
+				)
 
 
-    private void generateSharedTestFile(SharedTemplate template, EntityDefinition definition) {
-        Map<String, Object> context = new HashMap<>();
+		);
+
+		sharedTemplates.forEach(template -> generateSharedFile(template, definition));
+
+		//tests
+		List<SharedTemplate> testTemplates = List.of(
+				new SharedTemplate(
+						"StatusControllerTest",
+						"shared/status/statusControllerTest.mustache",
+						Set.of(
+								Utils.getPackage(rootDir + "/shared/" + generatorProperties.getApplicationPackage()) +
+										".ApiResponseDto",
+								Utils.getPackage(outputShared) + ".BaseUnitTests"
+						),
+						outputShared + "/" + generatorProperties.getPresentationPackage() + "/status"
+				)
+		);
+
+		testTemplates.forEach(template -> generateSharedTestFile(template, definition));
+	}
+
+	private void generateSharedFile(SharedTemplate template, EntityDefinition definition) {
+		Map<String, Object> context = new HashMap<>();
+
+		String outputDir = template.getOutput();
+
+		context.put("package", Utils.getPackage(outputDir));
 
 
-        String fullPath = template.getOutput();
-        String packageName = Utils.getTestPackage(fullPath);
-        String outputDir = Utils.getTestDir(fullPath);
+		context.put("imports", template.getImports());
+		context.put("name", Utils.capitalize(definition.getName()));
+		context.put("className", template.getClassName());
+		context.put("entity", Utils.capitalize(definition.getEntity()));
 
-        String className = template.getClassName();
-        String aggregateName = definition.getName() + "Aggregate";
-        String lowerName = Character.toLowerCase(definition.getName().charAt(0)) + definition.getName().substring(1);
+		context.put("nameAggregate", definition.getName());
 
-        context.put("package", packageName);
-        context.put("className", className);
-        context.put("aggregateName", aggregateName);
-        context.put("lowerName", lowerName);
+		context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
 
-        var fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
-        context.put("fields", fields);
+		context.put("isMultiTenant", definition.getMultiTenant());
+		context.put("apiPrefix", definition.getApiPrefix());
 
-        context.put("imports", template.getImports());
+		String content = templateEngine.render(template.getTemplatePath(), context);
+		fileWriterService.write(outputDir, template.getClassName() + template.getExt(), content);
+	}
 
-        String content = templateEngine.render(template.getTemplatePath(), context);
-        fileWriterService.write(outputDir, className + ".java", content);
-    }
+
+	private void generateSharedTestFile(SharedTemplate template, EntityDefinition definition) {
+		Map<String, Object> context = new HashMap<>();
+
+
+		String fullPath = template.getOutput();
+		String packageName = Utils.getTestPackage(fullPath);
+		String outputDir = Utils.getTestDir(fullPath);
+
+		String className = template.getClassName();
+		String aggregateName = definition.getName() + "Aggregate";
+		String lowerName = Character.toLowerCase(definition.getName().charAt(0)) + definition.getName().substring(1);
+
+		context.put("package", packageName);
+		context.put("className", className);
+		context.put("aggregateName", aggregateName);
+		context.put("lowerName", lowerName);
+
+		var fields = FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName());
+		context.put("fields", fields);
+
+		context.put("imports", template.getImports());
+
+		String content = templateEngine.render(template.getTemplatePath(), context);
+		fileWriterService.write(outputDir, className + ".java", content);
+	}
 
 }
 

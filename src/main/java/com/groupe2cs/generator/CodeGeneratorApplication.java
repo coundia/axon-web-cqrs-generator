@@ -5,18 +5,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CodeGeneratorApplication  {
+public class CodeGeneratorApplication {
 
-    final GroupMainGenerator groupMainGenerator;
+	final GroupMainGenerator groupMainGenerator;
 
-    public CodeGeneratorApplication(GroupMainGenerator groupMainGenerator
+	public CodeGeneratorApplication(GroupMainGenerator groupMainGenerator
 
-    ) {
-        this.groupMainGenerator = groupMainGenerator;
-    }
+	) {
+		this.groupMainGenerator = groupMainGenerator;
+	}
 
-    public static void main(String[] args) {
-        SpringApplication.run(CodeGeneratorApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(CodeGeneratorApplication.class, args);
+	}
 
 }

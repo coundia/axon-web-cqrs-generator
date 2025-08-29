@@ -33,18 +33,18 @@ public class {{name}}Command implements Serializable {
 	private {{entity}}Id id = {{entity}}Id.create(UUID.randomUUID().toString());
 {{/isCreated}}
 {{#fields}}
-	{{^isId}}
- 	{{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
-	{{/isId}}
+    {{^isId}}
+        {{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
+    {{/isId}}
 {{/fields}}
 {{#isCreated}}
 	public {{name}}Command(
 		{{#fields}} {{^isId}}  {{entity}}{{nameCapitalized}} {{nameLowerCase}} {{^last}},{{/last}} {{/isId}}
-		{{/fields}}
+{{/fields}}
 		){
 			this.id = {{entity}}Id.create(UUID.randomUUID().toString());
 			{{#fields}} {{^isId}} this.{{name}} = {{nameLowerCase}} ; {{/isId}}
-			{{/fields}}
+{{/fields}}
 	}
 {{/isCreated}}
 

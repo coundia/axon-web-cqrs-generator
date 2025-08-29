@@ -7,10 +7,10 @@ let content: [Remote{{entity}}]
 
 struct Remote{{entity}}: Decodable {
 {{#fields}}
-{{^isManyToOne}}
+    {{^isManyToOne}}
 	let {{name}}: {{realType}}{{#nullable}}?{{/nullable}}
-{{/isManyToOne}}
-{{#isManyToOne}}
+    {{/isManyToOne}}
+    {{#isManyToOne}}
 	let {{name}}: String?
 {{/isManyToOne}}
 {{/fields}}

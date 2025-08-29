@@ -20,7 +20,7 @@ private CommandGateway commandGateway;
 private {{name}}Repository repository;
 
 {{#fields}}
-{{#hasRepository}}
+    {{#hasRepository}}
 @Autowired
 private {{repository}} ;
 {{/hasRepository}}

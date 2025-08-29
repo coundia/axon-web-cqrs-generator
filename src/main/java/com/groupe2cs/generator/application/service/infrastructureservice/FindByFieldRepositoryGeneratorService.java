@@ -13,37 +13,37 @@ import java.util.Map;
 @Service
 public class FindByFieldRepositoryGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public FindByFieldRepositoryGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public FindByFieldRepositoryGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        String outputDir = baseDir + "/" + generatorProperties.getRepositoryPackage();
-        String packageName = Utils.getPackage(outputDir);
+	public void generate(EntityDefinition definition, String baseDir) {
+		String outputDir = baseDir + "/" + generatorProperties.getRepositoryPackage();
+		String packageName = Utils.getPackage(outputDir);
 
-        var fields = definition.getFields().stream().filter(p -> p.isFilable()).toList();
+		var fields = definition.getFields().stream().filter(p -> p.isFilable()).toList();
 
-        Map<String, Object> context = new HashMap<>();
+		Map<String, Object> context = new HashMap<>();
 
-        context.put("nameAggregate", definition.getName());
-        context.put("entity", definition.getEntity());
-        context.put("name", definition.getName());
+		context.put("nameAggregate", definition.getName());
+		context.put("entity", definition.getEntity());
+		context.put("name", definition.getName());
 
-        context.put("package", packageName);
-        context.put("className", definition.getName() + "Repository");
-        context.put("fields", fields);
-        context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
+		context.put("package", packageName);
+		context.put("className", definition.getName() + "Repository");
+		context.put("fields", fields);
+		context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
 
-        context.put("isMultiTenant", definition.getMultiTenant());
+		context.put("isMultiTenant", definition.getMultiTenant());
 
-        String content = templateEngine.render("infrastructure/findByFieldRepository.mustache", context);
-        fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);
-    }
+		String content = templateEngine.render("infrastructure/findByFieldRepository.mustache", context);
+		fileWriterService.write(outputDir, definition.getName() + "Repository.java", content);
+	}
 }
 

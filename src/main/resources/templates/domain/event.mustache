@@ -20,7 +20,7 @@ import java.util.*;
 public class {{name}}{{eventType}}Event implements Serializable {
 
 {{#fields}}
-	{{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
+    {{^isDeleted}}private {{type}} {{name}};{{/isDeleted}}
 {{/fields}}
 
 {{#isDeleted}}private {{name}}Id id;{{/isDeleted}}

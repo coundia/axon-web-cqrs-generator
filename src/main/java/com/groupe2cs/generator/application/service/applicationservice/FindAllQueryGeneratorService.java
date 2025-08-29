@@ -15,34 +15,34 @@ import java.util.Set;
 @Service
 public class FindAllQueryGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public FindAllQueryGeneratorService(
-            TemplateEngine templateEngine,
-            FileWriterService fileWriterService,
-            GeneratorProperties generatorProperties
-    ) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public FindAllQueryGeneratorService(
+			TemplateEngine templateEngine,
+			FileWriterService fileWriterService,
+			GeneratorProperties generatorProperties
+	) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        String outputDir = baseDir + "/" + generatorProperties.getQueryPackage();
-        String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+	public void generate(EntityDefinition definition, String baseDir) {
+		String outputDir = baseDir + "/" + generatorProperties.getQueryPackage();
+		String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
 
-        Map<String, Object> context = new HashMap<>();
-        context.put("package", Utils.getPackage(outputDir));
-        context.put("name", definition.getName());
+		Map<String, Object> context = new HashMap<>();
+		context.put("package", Utils.getPackage(outputDir));
+		context.put("name", definition.getName());
 
-        Set<String> imports = new LinkedHashSet<>();
+		Set<String> imports = new LinkedHashSet<>();
 
-        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
-        context.put("imports", imports);
+		imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+		context.put("imports", imports);
 
-        String content = templateEngine.render("application/findAllQuery.mustache", context);
-        fileWriterService.write(outputDir, "FindAll" + definition.getName() + "Query.java", content);
-    }
+		String content = templateEngine.render("application/findAllQuery.mustache", context);
+		fileWriterService.write(outputDir, "FindAll" + definition.getName() + "Query.java", content);
+	}
 }

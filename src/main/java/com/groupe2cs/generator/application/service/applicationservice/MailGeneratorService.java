@@ -83,7 +83,7 @@ public class MailGeneratorService {
 						"presentation/sendMailController.mustache",
 						Set.of(
 								domainPkg + ".MailSender",
-								applicationPkg+".NotificationService"
+								applicationPkg + ".NotificationService"
 						),
 						presentationDir
 				)

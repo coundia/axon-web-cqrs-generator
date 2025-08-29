@@ -26,7 +26,7 @@ private {{name}}Repository {{nameLower}}Repository;
     @Autowired
     private {{repository}} ;
     {{/hasRepository}}
-    {{/fields}}
+{{/fields}}
 
 	@Test
 	void it_should_initiate_sync_of_{{nameLowercase}}s() {
@@ -34,9 +34,9 @@ private {{name}}Repository {{nameLower}}Repository;
 		.deltas(List.of(
 		{{name}}DeltaDto.builder()
 		{{#editableFields}}
-			{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
+    {{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 			{{/isId}}
-		{{/editableFields}}
+{{/editableFields}}
 		.type("CREATE")
 		.build()
 		))
@@ -62,9 +62,9 @@ private {{name}}Repository {{nameLower}}Repository;
 			{{name}}DeltaDto.builder()
 			.id(existingId)
 			{{#editableFields}}
-				{{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
+    {{^isId}}.{{nameUnCapitalized}}({{{testValue}}})
 				{{/isId}}
-			{{/editableFields}}
+{{/editableFields}}
 			.type("UPDATE")
 			.build()
 			))

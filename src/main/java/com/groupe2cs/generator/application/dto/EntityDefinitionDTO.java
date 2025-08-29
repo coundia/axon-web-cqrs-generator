@@ -11,6 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EntityDefinitionDTO implements Serializable {
-    private String outputDir;
-    private EntityDefinition definition;
+	private String outputDir;
+	private EntityDefinition definition;
 }

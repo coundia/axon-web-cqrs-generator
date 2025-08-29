@@ -10,7 +10,7 @@ import { EntityToolbarActionComponent } from '../../../shared/components/view-to
 import {toDatetimeLocalString} from '../../../shared/hooks/Parsing';
 import {EntityPickerComponent} from '../../../shared/picker/app-entity-picker';
 {{#hasFiles}}
-{{^isFileManager}}
+    {{^isFileManager}}
 import {FileManager} from "../../fileManager/models/fileManager.model";
 import {FileManagerService} from "../../fileManager/services/fileManager.service";
 import {MultiFileInputComponent} from '../../../shared/components/files/multi-file-input.component';
@@ -19,7 +19,7 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
 {{/hasFiles}}
 
 {{#fields}}
-{{#isManyToOne}}
+    {{#isManyToOne}}
 import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
 import  {{openOne}} {{nameCapitalized}}Service } from '../../{{nameLowerCase}}/services/{{nameLowerCase}}.service';
 {{/isManyToOne}}
@@ -55,17 +55,17 @@ export class {{entity}}FormComponent implements OnInit {
     {{childModelLowerCase}}Items = this.service.{{childModelLowerCase}}Items;
 {{/childItems}}
 
-    {{#fields}}
+{{#fields}}
     {{^isFiles}}
-    {{#isManyToOne}}
+        {{#isManyToOne}}
     private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
     {{name}}s  =   signal<{{nameCapitalized}}[]>([]);
     {{/isManyToOne}}
     {{/isFiles}}
     {{#isFiles}}
-    {{name}}: File[] = [];
+        {{name}}: File[] = [];
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
 
 {{#hasFiles}}
 fileManagers  =   signal<FileManager[]>([]);
@@ -77,14 +77,14 @@ fileManagerService = inject(FileManagerService);
     id: [ ""  ],
     {{#fields}}
     {{^isFiles}}
-    {{^isId}}
-    {{name}}: [ {{{defaultValue}}} {{^nullable}}, Validators.required{{/nullable}} ],
+        {{^isId}}
+            {{name}}: [ {{{defaultValue}}} {{^nullable}}, Validators.required{{/nullable}} ],
     {{/isId}}
     {{/isFiles}}
     {{#isFiles}}
-    {{name}}: [null],
+        {{name}}: [null],
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
   });
 
   readonly fields: FieldDefinition[] = [
@@ -100,7 +100,7 @@ fileManagerService = inject(FileManagerService);
 
       },
       {{/isFiles}}
-    {{/editableFields}}
+{{/editableFields}}
   ];
 
   ngOnInit() {
@@ -109,13 +109,13 @@ fileManagerService = inject(FileManagerService);
       if (existing) {
         this.form.patchValue({
           {{#editableFields}}
-                 {{^isDate}}
-                {{name}}: existing.{{name}},
+    {{^isDate}}
+        {{name}}: existing.{{name}},
                 {{/isDate}}
-                {{#isDate}}
-                {{name}}: toDatetimeLocalString(existing.{{name}}) || '',
+    {{#isDate}}
+        {{name}}: toDatetimeLocalString(existing.{{name}}) || '',
                 {{/isDate}}
-          {{/editableFields}}
+{{/editableFields}}
         });
       } else {
         this.isLoading.set(true);
@@ -124,13 +124,13 @@ fileManagerService = inject(FileManagerService);
             if (e) {
               this.form.patchValue({
                 {{#editableFields}}
-                    {{^isDate}}
-                    {{name}}: e.{{name}},
+    {{^isDate}}
+        {{name}}: e.{{name}},
                     {{/isDate}}
-                    {{#isDate}}
-                    {{name}}: toDatetimeLocalString(e.{{name}}) || '',
+    {{#isDate}}
+        {{name}}: toDatetimeLocalString(e.{{name}}) || '',
                     {{/isDate}}
-                {{/editableFields}}
+{{/editableFields}}
               });
             }
             this.isLoading.set(false);
@@ -165,7 +165,7 @@ fileManagerService = inject(FileManagerService);
     {{#isFiles}}
     data.{{name}} = this.{{name}}?.length ? this.{{name}} : undefined;
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
 
     const request = this.isEdit()
       ? this.service.update(this.id!, data)
@@ -198,26 +198,26 @@ fileManagerService = inject(FileManagerService);
       }
   fetchDeps() {
     {{#hasManyToOne}}
-        {{#fields}}
+    {{#fields}}
         {{#isManyToOne}}
          this.{{name}}Service.fetch(0,1000).subscribe(data => this.{{name}}s.set(data.content));
         {{/isManyToOne}}
-        {{/fields}}
-        {{#hasFiles}}
+    {{/fields}}
+    {{#hasFiles}}
          if(this.id){
            this.fileManagerService.search("objectId",this.id).subscribe(
                data => this.fileManagers.set(data)
            );
          }
         {{/hasFiles}}
-    {{/hasManyToOne}}
+{{/hasManyToOne}}
   }
     getEntities(name: string) {
         {{#fields}}
-        {{#isManyToOne}}
+    {{#isManyToOne}}
         if (name === '{{name}}') return this.{{name}}s();
         {{/isManyToOne}}
-        {{/fields}}
+{{/fields}}
     return [];
     }
     {{#hasFiles}}

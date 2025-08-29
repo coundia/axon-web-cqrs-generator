@@ -16,7 +16,7 @@ extension {{entity}}ListViewModel {
             {{^transactional}}
             try await manager.pullAndMerge{{entity}}s()
             {{/transactional}}
-            {{#transactional}}
+{{#transactional}}
             let remoteId = currentAccount?.remoteId ?? ""
 
             if(remoteId.isEmpty) {

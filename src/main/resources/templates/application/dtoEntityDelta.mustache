@@ -30,10 +30,10 @@ public class {{className}} implements Serializable {
     private String type = "CREATE";
 
 	{{#editableFields}}
-		{{^isId}}
+    {{^isId}}
 		@Schema(description = "{{description}}", example = "{{{primitiveValue}}}")
 		private {{primitiveType}} {{name}};
 		{{/isId}}
-	{{/editableFields}}
+{{/editableFields}}
 
 }

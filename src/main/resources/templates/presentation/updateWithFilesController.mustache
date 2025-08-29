@@ -54,16 +54,16 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 	@AuthenticationPrincipal Jwt jwt,
 	@PathVariable String id,
 	{{#hasFiles}}
-		{{#fieldFiles}}
+    {{#fieldFiles}}
 			@RequestPart(value ="{{nameUnCapitalized}}", required = false) List<MultipartFile> {{nameUnCapitalized}}{{^last}},{{/last}}{{/fieldFiles}},
 	{{/hasFiles}}
-	{{#editableFields}}
-		{{^isId}}
-            {{^isFiles}}
+{{#editableFields}}
+    {{^isId}}
+        {{^isFiles}}
 			@RequestPart(value ="{{nameUnCapitalized}}", required = false) {{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
-            {{/isFiles}}
-		{{/isId}}
-	{{/editableFields}}
+        {{/isFiles}}
+    {{/isId}}
+{{/editableFields}}
 	) {
 	try {
 
@@ -77,7 +77,7 @@ public ResponseEntity<{{name}}Response> add{{name}}(
 	{{name}}Response response = applicationService.update{{name}}(
 	{{name}}Id.create(id),
 	{{#hasFiles}}{{#fieldFiles}}{{nameUnCapitalized}},{{/fieldFiles}}{{/hasFiles}}{{#editableFields}}{{^isFiles}}{{^isId}}
-		{{nameUnCapitalized}}{{^last}},{{/last}}{{/isId}}{{/isFiles}}{{/editableFields}},
+    {{nameUnCapitalized}}{{^last}},{{/last}}{{/isId}}{{/isFiles}}{{/editableFields}},
 	metaRequest
 	);
 

@@ -31,11 +31,11 @@ public class SecurityGeneratorController {
 
 		definition.setFields(new ArrayList<>());
 
-		String output = request.getOutputDir()+"/tmp";
+		String output = request.getOutputDir() + "/tmp";
 
 		return securityGeneratorService
 				.generate(definition, output)
-				.doOnNext(msg    -> log.info("Message généré: {}", msg))
+				.doOnNext(msg -> log.info("Message généré: {}", msg))
 				.doOnError(error -> log.error("Erreur de génération: {}", error.getMessage()))
 				.doOnComplete(() -> log.info("Génération de la sécurité terminée"));
 	}

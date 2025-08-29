@@ -32,10 +32,10 @@ struct {{entity}}EditView: View {
             Form {
                 Section(header: Text("{{entity}} Information")) {
                     {{#fields}}
-                    {{^readOnly}}
-                        {{> SwiftFieldInput }}
-                    {{/readOnly}}
-                {{/fields}}
+    {{^readOnly}}
+        {{> SwiftFieldInput }}
+    {{/readOnly}}
+{{/fields}}
                 }
 
                 Section {
@@ -70,7 +70,7 @@ struct {{entity}}EditView: View {
         {{name}}LocalId: {{name}}LocalId,
                {{/isManyToOne}}
 
-                {{/fields}}
+{{/fields}}
             )
 
               if isShared {

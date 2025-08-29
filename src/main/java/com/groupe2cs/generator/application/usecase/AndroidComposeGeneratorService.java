@@ -26,16 +26,66 @@ public class AndroidComposeGeneratorService {
 
 		List<SharedTemplate> templates = new ArrayList<>(List.of(
 				new SharedTemplate(entity, "front/android/model.mustache", null, outputDir + "/model", null, ".kt"),
-				new SharedTemplate(entity + "ListViewModel", "front/android/entityListViewModel.mustache", null, outputDir + "/viewmodel", null, ".kt"),
-				new SharedTemplate(entity + "PagedResponse", "front/android/entityPagedResponse.mustache", null, outputDir + "/dto", null, ".kt"),
-				new SharedTemplate(entity + "Status", "front/android/entityStatus.mustache", null, outputDir + "/dto", null, ".kt"),
-				new SharedTemplate(entity + "PullService", "front/android/entityPullService.mustache", null, outputDir + "/service", null, ".kt"),
-				new SharedTemplate(entity + "PushService", "front/android/entityPushService.mustache", null, outputDir + "/service", null, ".kt"),
-				new SharedTemplate(entity + "FormScreen", "front/android/entityFormScreen.mustache", null, outputDir + "/ui", null, ".kt"),
-				new SharedTemplate(entity + "ListScreen", "front/android/entityListScreen.mustache", null, outputDir + "/ui", null, ".kt"),
-				new SharedTemplate(entity + "RowItem", "front/android/entityRowItem.mustache", null, outputDir + "/ui", null, ".kt"),
-				new SharedTemplate(entity + "SyncScreen", "front/android/entitySyncScreen.mustache", null, outputDir + "/ui", null, ".kt"),
-				new SharedTemplate(entity + "ApiService", "front/android/apiEntity.mustache", null, outputDir + "/service", null, ".kt")
+				new SharedTemplate(entity + "ListViewModel",
+						"front/android/entityListViewModel.mustache",
+						null,
+						outputDir + "/viewmodel",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "PagedResponse",
+						"front/android/entityPagedResponse.mustache",
+						null,
+						outputDir + "/dto",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "Status",
+						"front/android/entityStatus.mustache",
+						null,
+						outputDir + "/dto",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "PullService",
+						"front/android/entityPullService.mustache",
+						null,
+						outputDir + "/service",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "PushService",
+						"front/android/entityPushService.mustache",
+						null,
+						outputDir + "/service",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "FormScreen",
+						"front/android/entityFormScreen.mustache",
+						null,
+						outputDir + "/ui",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "ListScreen",
+						"front/android/entityListScreen.mustache",
+						null,
+						outputDir + "/ui",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "RowItem",
+						"front/android/entityRowItem.mustache",
+						null,
+						outputDir + "/ui",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "SyncScreen",
+						"front/android/entitySyncScreen.mustache",
+						null,
+						outputDir + "/ui",
+						null,
+						".kt"),
+				new SharedTemplate(entity + "ApiService",
+						"front/android/apiEntity.mustache",
+						null,
+						outputDir + "/service",
+						null,
+						".kt")
 		));
 
 		return Flux.fromIterable(templates)
@@ -68,7 +118,8 @@ public class AndroidComposeGeneratorService {
 		context.put("fieldsDisplayed", definition.getFieldsToDisplay());
 		context.put("fieldsAmount", definition.getFieldsAmount());
 
-		context.put("editableFields", AndroidComposeFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("editableFields",
+				AndroidComposeFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 		context.put("fields", AndroidComposeFieldTransformer.transform(definition.getFields(), definition.getName()));
 		context.put("hasFiles", definition.getHasFiles());
 

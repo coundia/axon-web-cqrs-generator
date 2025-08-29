@@ -53,16 +53,16 @@ content = @Content)
 public ResponseEntity<{{name}}Response> add{{name}}(
 	@AuthenticationPrincipal Jwt jwt,
 	{{#hasFiles}}
-	{{#fieldFiles}}
+    {{#fieldFiles}}
 		@RequestPart(value ="{{nameUnCapitalized}}", required = false) List<MultipartFile> {{nameUnCapitalized}}{{^last}},{{/last}}{{/fieldFiles}},
 	{{/hasFiles}}
-	{{#editableFields}}
-        {{^isFiles}}
-    {{^isId}}
+{{#editableFields}}
+    {{^isFiles}}
+        {{^isId}}
         @RequestPart(value ="{{nameUnCapitalized}}", required = false) {{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
-    {{/isId}}
+        {{/isId}}
     {{/isFiles}}
-	{{/editableFields}}
+{{/editableFields}}
 	) {
 	try {
 

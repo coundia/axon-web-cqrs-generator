@@ -13,33 +13,33 @@ import java.util.*;
 @Service
 public class DtoResponseGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public DtoResponseGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public DtoResponseGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        Map<String, Object> context = new HashMap<>(definition.toMap());
+	public void generate(EntityDefinition definition, String baseDir) {
+		Map<String, Object> context = new HashMap<>(definition.toMap());
 
-        String outputDir = baseDir + "/" + generatorProperties.getDtoPackage();
-        context.put("package", Utils.getPackage(outputDir));
+		String outputDir = baseDir + "/" + generatorProperties.getDtoPackage();
+		context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.getAllFieldsWithoutOneToMany();
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-        context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
-        context.put("dtoFields", FieldTransformer.transform(definition.getDtoFields(), definition.getName()));
+		var fields = definition.getAllFieldsWithoutOneToMany();
+		context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+		context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("dtoFields", FieldTransformer.transform(definition.getDtoFields(), definition.getName()));
 
-        Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
-        context.put("imports", imports);
+		Set<String> imports = new LinkedHashSet<>();
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*");
+		context.put("imports", imports);
 
-        String content = templateEngine.render("application/dtoResponse.mustache", context);
-        fileWriterService.write(outputDir, definition.getName() + "Response.java", content);
-    }
+		String content = templateEngine.render("application/dtoResponse.mustache", context);
+		fileWriterService.write(outputDir, definition.getName() + "Response.java", content);
+	}
 }

@@ -36,7 +36,7 @@ public {{name}}Response findBy{{name}}Id({{name}}Id value, MetaRequest metaReque
 
 
 {{#searchFields}}
-{{^isId}}
+    {{^isId}}
 public List<{{nameAggregate}}Response> findBy{{nameAggregate}}{{nameCapitalized}}(
 	{{nameAggregate}}{{nameCapitalized}} value,
 	MetaRequest metaRequest

@@ -68,10 +68,10 @@ init(modelContext: ModelContext, user: User) {
     {{#header}}
     _{{headerLowerCase}}ViewModel = StateObject(wrappedValue: {{headerUpperCase}}ListViewModel(modelContext: modelContext, user: user))
     {{/header}}
-    {{#hasCategory}}
+{{#hasCategory}}
     _categoryViewModel = StateObject(wrappedValue: CategoryListViewModel(modelContext: modelContext, user: user))
     {{/hasCategory}}
-    {{#isChat}}
+{{#isChat}}
     _transactionViewModel = StateObject(wrappedValue: TransactionListViewModel(modelContext: modelContext, user: user))
      {{/isChat}}
 }
@@ -100,7 +100,7 @@ var body: some View {
                 viewModel.current{{headerUpperCase}}Id = acct?.id
             }
             {{#hasSummary}}
-        {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
+    {{entity}}SummaryView({{entityLowerCase}}s: viewModel.filtered{{entity}}s, defaultCurrency: "")
 
              Button {
                 Task {
@@ -118,7 +118,7 @@ var body: some View {
             .accessibilityLabel("Afficher les statistiques")
 
 {{/hasSummary}}
-            {{/header}}
+{{/header}}
 
              HStack {
                     if !searchText.isEmpty {
@@ -154,7 +154,7 @@ var body: some View {
                             {{#header}}
                             await {{headerLowerCase}}ViewModel.sync()
                             {{/header}}
-                            {{#hasCategory}}
+{{#hasCategory}}
                             await categoryViewModel.sync()
                             {{/hasCategory}}
                             await viewModel.sync()
@@ -189,7 +189,7 @@ var body: some View {
 
             }
 {{/isChat}}
-            {{#isChat}}
+{{#isChat}}
              else {
                  ScrollViewReader { proxy in
                     {{entity}}ListContentView(
@@ -235,7 +235,7 @@ var body: some View {
         {{^header}}
          .navigationTitle(showingTrash ? "Corbeille" : "{{title}}")
         {{/header}}
-        {{^isChat}}
+{{^isChat}}
         //btn
         VStack {
                 Spacer()
@@ -275,7 +275,7 @@ var body: some View {
                             }
                        }
             {{/isPremium}}
-            {{#header}}
+{{#header}}
              ToolbarItem(placement: .principal) {
                     Button { show{{headerUpperCase}}Picker = true } label: {
                         HStack {
@@ -444,7 +444,7 @@ var body: some View {
                 await {{headerLowerCase}}ViewModel.syncIfNeeded()
                 {{/header}}
 
-            {{#hasCategory}}
+{{#hasCategory}}
                 await categoryViewModel.syncIfNeeded()
                 {{/hasCategory}}
 
@@ -493,7 +493,7 @@ var body: some View {
             selectedForDelete = nil
             selected = nil
             {{^isChat}}
-            {{#header}}
+    {{#header}}
             Task {
                 await MainActor.run {
                     isLoading = true
@@ -508,7 +508,7 @@ var body: some View {
                 }
             }
             {{/header}}
-            {{/isChat}}
+{{/isChat}}
         }
 
 
@@ -533,7 +533,7 @@ var body: some View {
             responses: "",
             state: "",
             {{#header}}
-            {{headerLowerCase}}: selected{{headerUpperCase}}?.remoteId,
+    {{headerLowerCase}}: selected{{headerUpperCase}}?.remoteId,
             {{headerLowerCase}}LocalId: selected{{headerUpperCase}}?.id,
             {{/header}}
             updatedAt: Date(),

@@ -20,12 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CodeGeneratorController {
 
-    private final Generator generator;
+	private final Generator generator;
 
-    @PostMapping(value = "/all", produces = MediaType.APPLICATION_NDJSON_VALUE)
-    public Flux<ApiResponseDto> generate(@RequestBody EntityDefinitionDTO request) {
+	@PostMapping(value = "/all", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Flux<ApiResponseDto> generate(@RequestBody EntityDefinitionDTO request) {
 
 
-        return generator.generate(request);
-    }
+		return generator.generate(request);
+	}
 }

@@ -13,59 +13,59 @@ import java.util.*;
 @Service
 public class AggregateGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public AggregateGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public AggregateGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        Map<String, Object> context = new HashMap<>(definition.toMap());
+	public void generate(EntityDefinition definition, String baseDir) {
+		Map<String, Object> context = new HashMap<>(definition.toMap());
 
-        String outputDir = baseDir + "/" + generatorProperties.getDomainPackage();
-        context.put("package", Utils.getPackage(outputDir));
+		String outputDir = baseDir + "/" + generatorProperties.getDomainPackage();
+		context.put("package", Utils.getPackage(outputDir));
 
-        var fields = definition.getAllFieldsWithoutOneToMany();
-        var idField = fields.stream()
-                .filter(f -> f.getName().equalsIgnoreCase("id"))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No field named 'id' found"));
+		var fields = definition.getAllFieldsWithoutOneToMany();
+		var idField = fields.stream()
+				.filter(f -> f.getName().equalsIgnoreCase("id"))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("No field named 'id' found"));
 
-        context.put("aggregateIdField", idField.getName());
-        context.put("aggregateIdType", definition.getName() + "Id");
+		context.put("aggregateIdField", idField.getName());
+		context.put("aggregateIdType", definition.getName() + "Id");
 
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-        context.put("imports", buildImports(baseDir));
-        var fieldFiles = definition.getFieldFiles();
-        context.put("hasFiles", !fieldFiles.isEmpty());
-        context.put("shared", definition.getShared());
+		context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+		context.put("imports", buildImports(baseDir));
+		var fieldFiles = definition.getFieldFiles();
+		context.put("hasFiles", !fieldFiles.isEmpty());
+		context.put("shared", definition.getShared());
 
-        if (!fieldFiles.isEmpty()) {
-            context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
-        }
+		if (!fieldFiles.isEmpty()) {
+			context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
+		}
 
-        String content = templateEngine.render("domain/aggregate.mustache", context);
-        fileWriterService.write(outputDir, definition.getName() + "Aggregate.java", content);
-    }
+		String content = templateEngine.render("domain/aggregate.mustache", context);
+		fileWriterService.write(outputDir, definition.getName() + "Aggregate.java", content);
+	}
 
-    private Set<String> buildImports(String baseDir) {
-        Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
+	private Set<String> buildImports(String baseDir) {
+		Set<String> imports = new LinkedHashSet<>();
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getEventPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getCommandPackage()) + ".*");
 
-        imports.addAll(List.of(
-                "org.axonframework.commandhandling.CommandHandler",
-                "org.axonframework.eventsourcing.EventSourcingHandler",
-                "org.axonframework.modelling.command.AggregateIdentifier",
-                "org.axonframework.spring.stereotype.Aggregate",
-                "static org.axonframework.modelling.command.AggregateLifecycle.apply"
-        ));
+		imports.addAll(List.of(
+				"org.axonframework.commandhandling.CommandHandler",
+				"org.axonframework.eventsourcing.EventSourcingHandler",
+				"org.axonframework.modelling.command.AggregateIdentifier",
+				"org.axonframework.spring.stereotype.Aggregate",
+				"static org.axonframework.modelling.command.AggregateLifecycle.apply"
+		));
 
-        return imports;
-    }
+		return imports;
+	}
 }

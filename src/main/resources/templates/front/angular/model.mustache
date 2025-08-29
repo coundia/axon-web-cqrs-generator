@@ -1,5 +1,5 @@
 {{#fields}}
-{{#isManyToOne}}
+    {{#isManyToOne}}
 import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
 {{/isManyToOne}}
 {{/fields}}
@@ -9,14 +9,14 @@ export type Type{{entity}} = 'TYPE1' | 'TYPE2';
 export interface {{entity}} {
     {{#fields}}
     {{^isFiles}}
-    {{name}}{{#nullable}}?{{/nullable}}: {{type}};
+        {{name}}{{#nullable}}?{{/nullable}}: {{type}};
     {{#isManyToOne}}
-    {{name}}Model?: {{nameCapitalized}};
+            {{name}}Model?: {{nameCapitalized}};
     {{/isManyToOne}}
     {{/isFiles}}
     {{#isFiles}}
-    {{name}}?: any;
+        {{name}}?: any;
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
 }
 

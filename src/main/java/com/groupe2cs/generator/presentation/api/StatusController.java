@@ -11,40 +11,40 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/v1")
 public class StatusController {
 
-    @Value("${message:Query}")
-    private String message;
+	@Value("${message:Query}")
+	private String message;
 
-    @GetMapping("/status")
-    public Mono<ApiResponseDto> getStatusGateway(){
-        return Mono.just(
-                ApiResponseDto
-                        .builder()
-                        .code(1)
-                        .message("I am "+message+".")
-                        .build()
-        );
-    }
+	@GetMapping("/status")
+	public Mono<ApiResponseDto> getStatusGateway() {
+		return Mono.just(
+				ApiResponseDto
+						.builder()
+						.code(1)
+						.message("I am " + message + ".")
+						.build()
+		);
+	}
 
 
-    @GetMapping("/status/fallback")
-    public Mono<ApiResponseDto> getStatusFallbackGateway(){
-        return Mono.just(
-                ApiResponseDto
-                        .builder()
-                        .code(1)
-                        .message("I am "+message+" fallback.")
-                        .build()
-        );
-    }
+	@GetMapping("/status/fallback")
+	public Mono<ApiResponseDto> getStatusFallbackGateway() {
+		return Mono.just(
+				ApiResponseDto
+						.builder()
+						.code(1)
+						.message("I am " + message + " fallback.")
+						.build()
+		);
+	}
 
-    @GetMapping("/admin/status")
-    public Mono<ApiResponseDto> getStatusAdmin(){
-        return Mono.just(
-                ApiResponseDto
-                        .builder()
-                        .code(1)
-                        .message("I am "+message+" in admin.")
-                        .build()
-        );
-    }
+	@GetMapping("/admin/status")
+	public Mono<ApiResponseDto> getStatusAdmin() {
+		return Mono.just(
+				ApiResponseDto
+						.builder()
+						.code(1)
+						.message("I am " + message + " in admin.")
+						.build()
+		);
+	}
 }

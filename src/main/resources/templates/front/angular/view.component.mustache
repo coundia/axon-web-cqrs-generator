@@ -13,7 +13,7 @@ import { EntityItemListComponent } from '../../../modules/pos/entity-item-list/e
 {{/isPos}}
 
 {{#fields}}
-{{#isManyToOne}}
+    {{#isManyToOne}}
 import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
 import  {{openOne}} {{nameCapitalized}}Service } from '../../{{nameLowerCase}}/services/{{nameLowerCase}}.service';
 {{/isManyToOne}}
@@ -39,7 +39,7 @@ import {FileViewerComponent} from "../../../shared/components/files/file-viewer.
   ChildItemComponent,
    EntityToolbarActionComponent,
 {{#isPos}} EntityItemListComponent, {{/isPos}}
-  {{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
+{{#hasFiles}} FileViewerComponent{{/hasFiles}}{{#isFileManager}} FileViewerComponent{{/isFileManager}}
 ],
   templateUrl: './{{entityLowerCase}}-view.component.html',
 })
@@ -116,20 +116,20 @@ let isFetchedModel1 = false;
     private readonly  {{name}}Service = inject({{nameCapitalized}}Service);
     {{name}}  =   signal<{{nameCapitalized}} | null>(null);
     {{/isManyToOne}}
-    {{/fields}}
+{{/fields}}
 
-    {{#hasFiles}}
+{{#hasFiles}}
     fileManagers  =   signal<FileManager[]>([]);
     fileManagerService = inject(FileManagerService);
     {{/hasFiles}}
-    {{#isFileManager}}
+{{#isFileManager}}
     fileManagers  =   signal<FileManager[]>([]);
     {{/isFileManager}}
 
   readonly fields: FieldDefinition[] = [
     {{#fields}}
     {{^isFiles}}
-    {{^isId}}
+        {{^isId}}
         { name: '{{name}}',
         displayName: '{{displayName}}',
         type: '{{type}}'{{#options}},
@@ -140,7 +140,7 @@ let isFetchedModel1 = false;
         },
         {{/isId}}
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
   ];
 
    getFieldValue(item: {{entity}}, field: string): any {
@@ -195,7 +195,7 @@ let isFetchedModel1 = false;
     }
   {{/isFileManager}}
 
-  {{#items}}
+{{#items}}
       saleItems = this.service.salesItems;
     {{.}}All(id: string) {
         this.service.{{.}}All(id).then(items => {

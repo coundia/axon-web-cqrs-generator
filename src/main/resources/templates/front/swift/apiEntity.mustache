@@ -16,7 +16,7 @@ struct API{{entity}} {
         {{^isPublic}}
      components.path = APIConfiguration.baseURL.appendingPathComponent("v1/queries/{{entityLowerCase}}s").path
         {{/isPublic}}
-        {{#isPublic}}
+{{#isPublic}}
      components.path = APIConfiguration.baseURL.appendingPathComponent("public/queries/{{entityLowerCase}}s").path
         {{/isPublic}}
         components.queryItems = [

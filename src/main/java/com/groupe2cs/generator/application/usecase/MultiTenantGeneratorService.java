@@ -37,7 +37,8 @@ public class MultiTenantGeneratorService {
 						FieldDefinition.builder().name("id").type("String").build(),
 						FieldDefinition.builder().name("name").unique(true).type("String").build(),
 
-						FieldDefinition.builder().name("description").type("String").columnDefinition("TEXT").nullable(true).build(),
+						FieldDefinition.builder().name("description").type("String").columnDefinition("TEXT")
+								.nullable(true).build(),
 						FieldDefinition.builder().name("domain").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("language").type("String").nullable(true).build(),
 						FieldDefinition.builder().name("active").type("Boolean").nullable(true).build(),
@@ -51,8 +52,8 @@ public class MultiTenantGeneratorService {
 				.stack(List.of("Tenant"))
 				.build();
 
-			tenant.setMultiTenant(parentEntityDefinition.getMultiTenant());
-			tenant.setIsGenerated(parentEntityDefinition.getIsGenerated());
+		tenant.setMultiTenant(parentEntityDefinition.getMultiTenant());
+		tenant.setIsGenerated(parentEntityDefinition.getIsGenerated());
 
 		return groupMainGenerator.generateStreaming(
 				EntityDefinitionDTO.builder()
@@ -70,7 +71,7 @@ public class MultiTenantGeneratorService {
 
 		String baseDir = Utils.getParent(fullDir) + "/" + generatorProperties.getTenantPackage();
 
-		return createTenantEntity(baseDir,definition)
+		return createTenantEntity(baseDir, definition)
 				.then();
 	}
 }

@@ -9,10 +9,10 @@ public class {{nameAggregate}}Mapper {
 public static {{nameAggregate}}Response toResponse({{entity}} entity) {
 return {{nameAggregate}}Response.builder()
 {{#editableFields}}
-	{{#isManyToOne}}
+    {{#isManyToOne}}
 		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}() != null ? entity.get{{nameCapitalized}}().getId() : null)
 	{{/isManyToOne}}
-	{{^isManyToOne}}
+    {{^isManyToOne}}
 		.{{nameUnCapitalized}}(entity.get{{nameCapitalized}}())
 	{{/isManyToOne}}
 {{/editableFields}}
@@ -52,10 +52,10 @@ return Create{{nameAggregate}}Command.builder()
 	return Update{{nameAggregate}}Command.builder()
 	.id(id)
 	{{#editableFields}}
-	{{^isId}}
+    {{^isId}}
 		.{{nameUnCapitalized}}({{nameAggregate}}{{nameCapitalized}}.create(request.get{{nameCapitalized}}()))
     {{/isId}}
-	 {{/editableFields}}
+{{/editableFields}}
 	.build();
 	}
 {{/hasFiles}}

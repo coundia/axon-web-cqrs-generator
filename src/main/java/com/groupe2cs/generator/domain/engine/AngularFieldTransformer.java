@@ -58,7 +58,7 @@ public class AngularFieldTransformer {
 
 	private static String getDefaultValue(FieldDefinition field) {
 
- 		String tsType = toTsType(field.getType());
+		String tsType = toTsType(field.getType());
 
 		if (field.getDefaultValue() != null) {
 			return field.getDefaultValue();

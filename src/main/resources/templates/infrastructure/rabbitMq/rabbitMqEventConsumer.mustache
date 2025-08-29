@@ -20,8 +20,8 @@ public class {{className}} {
 	public void handleCreated({{entity}}CreatedEvent e) {
 	try {
 	{{entity}} entity = {{entity}}.builder(){{#fields}}
-		{{#isManyToOne}}.{{nameLowerCase}}(new {{realType}}(e.get{{nameCapitalized}}().value())){{/isManyToOne}}
-		{{^isManyToOne}}.{{nameLowerCase}}(e.get{{nameCapitalized}}().value()){{/isManyToOne}}{{/fields}}
+    {{#isManyToOne}}.{{nameLowerCase}}(new {{realType}}(e.get{{nameCapitalized}}().value())){{/isManyToOne}}
+    {{^isManyToOne}}.{{nameLowerCase}}(e.get{{nameCapitalized}}().value()){{/isManyToOne}}{{/fields}}
 	.build();
 	repository.save(entity);
 	log.info("Persisted from RabbitMQ: {}", entity);
@@ -37,7 +37,7 @@ public class {{className}} {
 	{{#fields}}{{^isId}}{{#isManyToOne}}
 		existing.set{{nameCapitalized}}(new {{realType}}( e.get{{nameCapitalized}}().value()));  {{/isManyToOne}}{{^isManyToOne}}
 		existing.set{{nameCapitalized}}(e.get{{nameCapitalized}}().value());  {{/isManyToOne}}{{/isId}}
-	{{/fields}}
+{{/fields}}
 	repository.save(existing);
 	log.info("Updated from RabbitMQ: {}", existing);
 	}, () -> log.warn("{{entity}} not found for update: {}", e.getId().value()));

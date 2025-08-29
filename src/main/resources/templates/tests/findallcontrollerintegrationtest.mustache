@@ -30,7 +30,7 @@ private CommandGateway commandGateway;
 private {{name}}Repository {{entityUnCapitalized}}Repository;
 
 {{#fields}}
-{{#hasRepository}}
+    {{#hasRepository}}
 @Autowired
 private {{repository}} ;
 {{/hasRepository}}
@@ -43,8 +43,8 @@ List<Create{{name}}Command> userCommands =
 {{name}}Fixtures.randomManyViaCommand(
 commandGateway,{{entityUnCapitalized}}Repository,
  {{#fields}}
-{{#hasRepository}}
-{{nameUnCapitalized}}DataRepository,
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
 {{/hasRepository}}
 {{/fields}}
  3, login("user", "user"));
@@ -86,10 +86,10 @@ void it_should_return_all_{{entityUnCapitalized}}s_for_admin() throws Exception 
         commandGateway,
         {{entityUnCapitalized}}Repository,
         {{#fields}}
-            {{#hasRepository}}
-         {{nameUnCapitalized}}DataRepository,
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
         {{/hasRepository}}
-        {{/fields}}
+{{/fields}}
          5, login("user", "user")
       );
     userCommands.forEach(cmd ->

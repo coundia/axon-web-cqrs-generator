@@ -97,12 +97,12 @@ final class {{entity}}PullService {
 
     private func update(local: {{entity}}, with remote: Remote{{entity}}) {
         {{#fields}}
-            {{^isId}}
-            {{^isParentRelation}}
+    {{^isId}}
+        {{^isParentRelation}}
               local.{{name}} = remote.{{name}}
-            {{/isParentRelation}}
-           {{/isId}}
-        {{/fields}}
+        {{/isParentRelation}}
+    {{/isId}}
+{{/fields}}
 
         local.remoteId = remote.id
         local.syncAt = Date()
@@ -113,10 +113,10 @@ final class {{entity}}PullService {
     private func make{{entity}}(from remote: Remote{{entity}}) -> {{entity}} {
         let entity = {{entity}}(
              {{#fields}}
-                {{^isId}}
-                {{name}}: remote.{{name}},
+    {{^isId}}
+        {{name}}: remote.{{name}},
                 {{/isId}}
-            {{/fields}}
+{{/fields}}
         )
         entity.remoteId = remote.id
 
@@ -126,10 +126,10 @@ final class {{entity}}PullService {
 
         entity.reference = remote.reference
         {{#fields}}
-            {{#isManyToOne}}
+    {{#isManyToOne}}
         entity.{{name}}LocalId = remote.{{name}}
-            {{/isManyToOne}}
-        {{/fields}}
+    {{/isManyToOne}}
+{{/fields}}
         entity.id =  remote.id
 
         entity.syncAt = Date()

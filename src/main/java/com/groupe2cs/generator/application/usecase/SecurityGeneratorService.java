@@ -49,7 +49,8 @@ public class SecurityGeneratorService {
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("username").type("String").build(),
 								FieldDefinition.builder().name("password").type("String").build(),
-								FieldDefinition.builder().name("firstName").type("String").nullable(true).defaultValue("").build(),
+								FieldDefinition.builder().name("firstName").type("String").nullable(true)
+										.defaultValue("").build(),
 								FieldDefinition.builder().name("lastName").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("email").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("telephone").type("String").nullable(true).build(),
@@ -66,7 +67,8 @@ public class SecurityGeneratorService {
 										.columnDefinition("Text")
 										.nullable(true).build(),
 
-								FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany").build()
+								FieldDefinition.builder().name("userRoles").type("Set<UserRole>").relation("OneToMany")
+										.build()
 						))
 						.auditable(true)
 						//.entity("User")
@@ -94,7 +96,8 @@ public class SecurityGeneratorService {
 						.apiPrefix("/admin")
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
-								FieldDefinition.builder().name("appKey").columnDefinition("TEXT").type("String").build(),
+								FieldDefinition.builder().name("appKey").columnDefinition("TEXT").type("String")
+										.build(),
 								FieldDefinition.builder().name("username").type("String").build(),
 								FieldDefinition.builder().name("active").type("Boolean").build(),
 								FieldDefinition.builder().name("createdAt").type("java.time.Instant").build(),
@@ -113,7 +116,8 @@ public class SecurityGeneratorService {
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("name").type("String").build(),
-								FieldDefinition.builder().name("rolePermissions").type("Set<RolePermission>").relation("OneToMany").build()
+								FieldDefinition.builder().name("rolePermissions").type("Set<RolePermission>")
+										.relation("OneToMany").build()
 						))
 						.build(),
 
@@ -147,7 +151,8 @@ public class SecurityGeneratorService {
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
 								FieldDefinition.builder().name("role").type("Role").relation("ManyToOne").build(),
-								FieldDefinition.builder().name("permission").type("Permission").relation("ManyToOne").build()
+								FieldDefinition.builder().name("permission").type("Permission").relation("ManyToOne")
+										.build()
 						))
 						.table("role_permissions")
 						.build(),
@@ -157,15 +162,18 @@ public class SecurityGeneratorService {
 						.auditable(true)
 						.fields(List.of(
 								FieldDefinition.builder().name("id").type("String").build(),
-								FieldDefinition.builder().name("notes").columnDefinition("TEXT").nullable(true).type("String").build(),
-								FieldDefinition.builder().name("token").columnDefinition("TEXT").nullable(true).type("String").build(),
+								FieldDefinition.builder().name("notes").columnDefinition("TEXT").nullable(true)
+										.type("String").build(),
+								FieldDefinition.builder().name("token").columnDefinition("TEXT").nullable(true)
+										.type("String").build(),
 								FieldDefinition.builder().name("username").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("phone").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("email").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("code").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("status").type("String").nullable(true).build(),
 								FieldDefinition.builder().name("source").type("String").nullable(true).build(),
- 								FieldDefinition.builder().name("expiration").nullable(true).type("java.time.Instant").build()
+								FieldDefinition.builder().name("expiration").nullable(true).type("java.time.Instant")
+										.build()
 						))
 						.table("verification_codes")
 						.build()
@@ -206,9 +214,11 @@ public class SecurityGeneratorService {
 
 		Set<String> importInit = new HashSet<>(
 				Set.of(
-			"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.*"
+						"static " +
+								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+								".ConstanteConfig.*"
 
-						)
+				)
 		);
 
 		String rootDir = Utils.getParent(fullDir);
@@ -228,9 +238,10 @@ public class SecurityGeneratorService {
 		if (definition.getMultiTenant()) {
 			importInit.add(Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
 			importsRegisterUser.add(
-					Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) +".Tenant");
+					Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant");
 			importInit.add(
-					Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository"
+					Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) +
+							".TenantRepository"
 			);
 		}
 
@@ -240,8 +251,12 @@ public class SecurityGeneratorService {
 				new SharedTemplate("SecurityConfig",
 						"infrastructure/security/securityConfig.mustache",
 						Set.of(
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.API_KEY_HEADER",
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.TENANT_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.API_KEY_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.TENANT_HEADER",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) +
 										".CustomUserDetailsService"
 						),
@@ -250,7 +265,7 @@ public class SecurityGeneratorService {
 				new SharedTemplate("WebConfig",
 						"infrastructure/security/webConfig.mustache",
 						null
-						 ,
+						,
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
 				new SharedTemplate("ConstanteConfig",
@@ -261,8 +276,11 @@ public class SecurityGeneratorService {
 				new SharedTemplate("CurrentTenantIdentifierResolverImpl",
 						"infrastructure/security/currentTenantIdentifierResolverImpl.mustache",
 						Set.of(
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.*",
-								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository"
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.*",
+								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) +
+										".TenantRepository"
 						),
 						baseDir + "/" + generatorProperties.getConfigPackage()),
 
@@ -275,8 +293,12 @@ public class SecurityGeneratorService {
 				new SharedTemplate("ApiKeyFilter",
 						"infrastructure/security/apiKeyFilter.mustache",
 						Set.of(
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.API_KEY_HEADER",
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.TENANT_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.API_KEY_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.TENANT_HEADER",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) +
 										".ApiKeyResponse",
@@ -298,9 +320,11 @@ public class SecurityGeneratorService {
 				new SharedTemplate("JwtService",
 						"infrastructure/security/jwtService.mustache",
 						Set.of(
-								 Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
-								 Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
-								"static "+ Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.*"
+								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.*"
 						),
 						baseDir + "/" + generatorProperties.getServicePackage()),
 
@@ -364,7 +388,8 @@ public class SecurityGeneratorService {
 				new SharedTemplate("AuthMe",
 						"infrastructure/security/authMe.mustache",
 						Set.of(
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",
@@ -409,13 +434,18 @@ public class SecurityGeneratorService {
 				new SharedTemplate("RefreshTokenService",
 						"infrastructure/security/refreshTokenService.mustache",
 						Set.of(
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".RefreshTokenRepository",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".RefreshToken",
-								Utils.getPackage(Utils.getParent(shareDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) +
+										".RefreshTokenRepository",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) +
+										".RefreshToken",
+								Utils.getPackage(Utils.getParent(shareDir) +
+										"/tenant/" +
+										generatorProperties.getEntityPackage()) + ".Tenant",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".User",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext"
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext"
 						),
 						baseDir + "/" + generatorProperties.getServicePackage()),
 
@@ -431,21 +461,28 @@ public class SecurityGeneratorService {
 				new SharedTemplate("CustomFindByApiKeyAppKeyHandler",
 						"infrastructure/security/customFindByApiKeyAppKeyHandler.mustache",
 						Set.of(
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
-								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +".ApiResponseDto",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".ApiKeyResponse",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".ApiKeyMapper",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".FindByApiKeyAppKeyQuery",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
+										".ApiResponseDto",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) +
+										".ApiKeyResponse",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) +
+										".ApiKeyMapper",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) +
+										".FindByApiKeyAppKeyQuery",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".ApiKey",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".ApiKeyRepository"
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) +
+										".ApiKeyRepository"
 						),
 						baseDir + "/" + generatorProperties.getQueryHandlerPackage()),
 
 				new SharedTemplate("RefreshTokenController",
 						"infrastructure/security/refreshTokenController.mustache",
 						Set.of(
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",
@@ -457,12 +494,14 @@ public class SecurityGeneratorService {
 				new SharedTemplate("LogoutController",
 						"infrastructure/security/logoutController.mustache",
 						Set.of(
-								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
+								Utils.getPackage(shareDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getApplicationPackage()) +
 										".ApiResponseDto",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".RefreshTokenRepository",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) +
+										".RefreshTokenRepository",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
 						),
 						baseDir + "/" + generatorProperties.getControllerPackage())
@@ -492,15 +531,21 @@ public class SecurityGeneratorService {
 						"infrastructure/security/registerUserTests.mustache",
 						Set.of(
 								"com.fasterxml.jackson.databind.ObjectMapper",
-								"static "+Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.API_KEY_HEADER",
-								"static "+Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.TENANT_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.API_KEY_HEADER",
+								"static " +
+										Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) +
+										".ConstanteConfig.TENANT_HEADER",
 								Utils.getPackage(shareDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getConfigPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
-								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository",
-								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) + ".Tenant",
+								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getRepositoryPackage()) +
+										".TenantRepository",
+								Utils.getPackage(rootDir + "/tenant/" + generatorProperties.getEntityPackage()) +
+										".Tenant",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getServicePackage()) + ".*"
 						),
 						fullDir),
@@ -583,7 +628,9 @@ public class SecurityGeneratorService {
 		Set<String> allImports = new HashSet<>(template.getImports());
 
 		allImports.add(
-				"static "+Utils.getPackage(fullPath+ "/" + generatorProperties.getConfigPackage()) + ".ConstanteConfig.*"
+				"static " +
+						Utils.getPackage(fullPath + "/" + generatorProperties.getConfigPackage()) +
+						".ConstanteConfig.*"
 		);
 
 		context.put("package", packageName);

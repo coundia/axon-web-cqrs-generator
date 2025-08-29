@@ -11,12 +11,12 @@ enum {{entity}}Type: String, Codable, CaseIterable {
 final class {{entity}} {
     @Attribute(.unique) var id: String
     {{#fields}}
-        {{^isId}}var {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{/isId}}
+    {{^isId}}var {{name}}: {{realType}}{{#nullable}}?{{/nullable}}{{/isId}}
 
-      {{#isManyToOne}}
+    {{#isManyToOne}}
           var {{name}}LocalId: {{realType}}{{#nullable}}?{{/nullable}}
-      {{/isManyToOne}}
-    {{/fields}}
+    {{/isManyToOne}}
+{{/fields}}
 
     var user: User?
 
@@ -38,22 +38,22 @@ final class {{entity}} {
 
     init(
         {{#fields}}
-            {{^isId}}
-                {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
+    {{^isId}}
+        {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}},
              {{/isId}}
-            {{/fields}}
+{{/fields}}
                 type{{entity}}: {{entity}}Type = .type1,
                 order: Int = 0
             ) {
                 self.id = UUID().uuidString
         {{#fields}}
-            {{^isId}}
+    {{^isId}}
             self.{{name}} = {{name}}{{#isLowerCase}}.lowercased(){{/isLowerCase}}
-            {{/isId}}
-            {{#isManyToOne}}
+    {{/isId}}
+    {{#isManyToOne}}
                 self.{{name}}LocalId = {{name}}
-            {{/isManyToOne}}
-        {{/fields}}
+    {{/isManyToOne}}
+{{/fields}}
         self.type{{entity}} = type{{entity}}
         self.order = order
         self.statusRaw = {{entity}}Status.create.rawValue

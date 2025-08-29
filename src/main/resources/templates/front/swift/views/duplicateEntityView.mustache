@@ -23,10 +23,10 @@ struct Duplicate{{entity}}View: View {
             Form {
                 Section(header: Text(t("Duplication {{entity}}"))) {
                     {{#fields}}
-                    {{^readOnly}}
-                        {{> SwiftFieldInput }}
-                    {{/readOnly}}
-                {{/fields}}
+    {{^readOnly}}
+        {{> SwiftFieldInput }}
+    {{/readOnly}}
+{{/fields}}
                 }
 
                 Section {
@@ -34,10 +34,10 @@ struct Duplicate{{entity}}View: View {
                     print("[Save]  ")
                         let duplicate = {{entity}}(
                             {{#fields}}
-                                {{^isId}}
-                                    {{name}}: {{nameLowerCase}},
+    {{^isId}}
+        {{name}}: {{nameLowerCase}},
                                                         {{/isId}}
-                            {{/fields}}
+{{/fields}}
                         )
                         duplicate.status = .create
                         duplicate.id = UUID().uuidString

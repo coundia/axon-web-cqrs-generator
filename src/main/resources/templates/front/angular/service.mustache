@@ -59,7 +59,7 @@ export class {{entity}}Service {
         form.append('{{name}}', dto.{{name}});
     }
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
 
     return this.http.post<{{entity}}>(`${this.base}/commands/{{entityLowerCase}}`, form);
   }
@@ -90,7 +90,7 @@ export class {{entity}}Service {
     form.append('{{name}}', dto.{{name}});
     }
     {{/isFiles}}
-    {{/fields}}
+{{/fields}}
 
     return this.http.put(`${this.base}/commands/{{entityLowerCase}}/${id}`, form);
   }

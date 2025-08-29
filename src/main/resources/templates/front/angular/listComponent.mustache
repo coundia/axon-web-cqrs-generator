@@ -23,7 +23,7 @@ import {getDefaultValue, toDatetimeLocalString} from '../../../shared/hooks/Pars
 import { confirmation } from '../../../modules/pos/utils/confirmation';
 
 {{#fields}}
-{{#isManyToOne}}
+    {{#isManyToOne}}
 import {{openOne}} {{nameCapitalized}} } from '../../{{nameLowerCase}}/models/{{nameLowerCase}}.model';
 import  {{openOne}} {{nameCapitalized}}Service } from '../../{{nameLowerCase}}/services/{{nameLowerCase}}.service';
 {{/isManyToOne}}
@@ -112,17 +112,17 @@ export class {{entity}}ListComponent implements OnInit {
     fileManagers  =   signal<FileManager[]>([]);
     fileManagerService = inject(FileManagerService);
     {{/hasFiles}}
-  {{#isFileManager}}
+{{#isFileManager}}
     fileManagers  =   signal<FileManager[]>([]);
     {{/isFileManager}}
 
-    {{#fields}}
+{{#fields}}
     {{#isManyToOne}}
     private readonly  {{nameLowerCase}}Service = inject({{nameCapitalized}}Service);
     {{name}}  =   signal<{{nameCapitalized}} | null>(null);
     {{name}}s  =   this.{{nameLowerCase}}Service.{{name}}All;
     {{/isManyToOne}}
-    {{/fields}}
+{{/fields}}
 
   readonly selectedItem = signal<{{entity}} | null>(null);
   readonly allFields: FieldDefinition[] = [
@@ -138,7 +138,7 @@ export class {{entity}}ListComponent implements OnInit {
     relation: '{{relation}}'
     },
      {{/isFiles}}
-    {{/allFields}}
+{{/allFields}}
   ];
 
   readonly fieldsToDisplay: FieldDefinition[] = [
@@ -242,9 +242,9 @@ export class {{entity}}ListComponent implements OnInit {
         });
     }
     {{/isManyToOne}}
-    {{/fields}}
+{{/fields}}
 
-    {{^hasManyToOne}}
+{{^hasManyToOne}}
      setTimeout(() => this.selectedItem.set(item), 0);
     {{/hasManyToOne}}
 
@@ -397,15 +397,15 @@ export class {{entity}}ListComponent implements OnInit {
     fetchDeps(item?: {{entity}}): void {
 
         {{#fields}}
-        {{#isManyToOne}}
+    {{#isManyToOne}}
         this.{{nameLowerCase}}Service.fetchAll().subscribe();
         {{/isManyToOne}}
-        {{/fields}}
-        {{^isFileManager}}
+{{/fields}}
+{{^isFileManager}}
         this.getFileManager(item);
         {{/isFileManager}}
 
-    {{#childItems}}
+{{#childItems}}
         this.{{entityLowerCase}}Service.get{{childModel}}ById(item.id);
     {{/childItems}}
     }

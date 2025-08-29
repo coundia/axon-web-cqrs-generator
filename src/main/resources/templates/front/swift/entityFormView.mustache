@@ -11,14 +11,14 @@ struct {{entity}}FormView: View {
     {{/header}}
     var viewModel: {{entity}}ListViewModel
     {{#fields}}
-        {{^isEnum}}
+    {{^isEnum}}
             @State private var {{name}}: {{realType}}{{#nullable}}? = nil{{/nullable}}{{^nullable}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}{{/nullable}}
-            {{#isManyToOne}}
+    {{#isManyToOne}}
              @State private var show{{entityType}}Picker = false
              @State private var selected{{entityType}}: {{entityType}}? = nil
              @State private var  {{name}}LocalId: String? = nil
             {{/isManyToOne}}
-        {{/isEnum}}
+    {{/isEnum}}
     {{#isDouble}}
         @State private var {{name}}String: String = ""
     {{/isDouble}}
@@ -27,7 +27,7 @@ struct {{entity}}FormView: View {
         @FocusState private var is{{nameCapitalized}}Focused: Bool
     {{/focus}}
 
-    {{/fields}}
+{{/fields}}
 
 @State private var type{{entity}}: {{entity}}Type = {{entity}}Type.allCases.first!
 @State private var type{{entity}}Raw: String = t({{entity}}Type.allCases.first!.rawValue) ?? ""
@@ -44,14 +44,14 @@ struct {{entity}}FormView: View {
             Form {
                 Section(header: Text("{{entity}} ")) {
                     {{#fields}}
-                        {{^readOnly}}
-                        {{^isEnum}}
-                        {{> SwiftFieldInput }}
-                        {{/isEnum}}
-                        {{/readOnly}}
-                    {{/fields}}
+    {{^readOnly}}
+        {{^isEnum}}
+            {{> SwiftFieldInput }}
+        {{/isEnum}}
+    {{/readOnly}}
+{{/fields}}
 
-                    {{#hasType}}
+{{#hasType}}
 
                       Picker(
                         "Type",
@@ -103,13 +103,13 @@ struct {{entity}}FormView: View {
         {{name}}: Double({{name}}String) ?? 0.0,
     {{/isDouble}}
     {{^isDouble}}
-    {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
+        {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
 
                 {{/isDouble}}
-             {{#isManyToOne}}
-                  {{name}}LocalId: {{name}}LocalId,
+    {{#isManyToOne}}
+        {{name}}LocalId: {{name}}LocalId,
                {{/isManyToOne}}
-                {{/fields}}
+{{/fields}}
             )
 
             entityToSync = e
@@ -122,8 +122,8 @@ struct {{entity}}FormView: View {
         {{name}}: Double({{name}}String) ?? 0.0,
     {{/isDouble}}
     {{^isDouble}}
-    {{^isId}}
-    {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
+        {{^isId}}
+            {{name}}: {{#nullable}}{{name}} ?? {{#isText}}""{{/isText}}{{#isInt}}0{{/isInt}}{{#isDouble}}0.0{{/isDouble}}{{#isBool}}false{{/isBool}}{{#isDate}}Date(){{/isDate}}{{/nullable}}{{^nullable}}{{name}}{{/nullable}},
              {{/isId}}
 
     {{/isDouble}}
@@ -164,7 +164,7 @@ struct {{entity}}FormView: View {
                 selected{{headerUpperCase}} = acc
             }
         {{/header}}
-        {{#hasCategory}}
+{{#hasCategory}}
         if selectedCategory == nil {
                 let categories = try? modelContext.fetch(FetchDescriptor<Category>())
                 if let lastId = lastUsedCategoryId,
@@ -182,14 +182,14 @@ struct {{entity}}FormView: View {
 
                 if let e = entity {
                     {{#fields}}
-            {{name}} = e.{{name}}
+    {{name}} = e.{{name}}
 
-            {{#isDouble}}
-            {{name}}String = String(format: "%.0f", e.{{name}} ?? 0.0)
+    {{#isDouble}}
+        {{name}}String = String(format: "%.0f", e.{{name}} ?? 0.0)
             {{/isDouble}}
-        {{/fields}}
+{{/fields}}
 
-            {{#header}}
+{{#header}}
                 if selected{{headerUpperCase}} == nil, let accId = e.account {
                     let descriptor = FetchDescriptor<{{headerUpperCase}}>(
                         predicate: #Predicate {

@@ -19,26 +19,26 @@ private final CommandGateway commandGateway;
 {{#hasFiles}}
 public {{name}}Response update{{name}}(
 {{name}}Id id, {{#hasFiles}}
-{{#fieldFiles}}List<MultipartFile> {{nameUnCapitalized}}MultipartFile, {{/fieldFiles}}{{/hasFiles}}
+    {{#fieldFiles}}List<MultipartFile> {{nameUnCapitalized}}MultipartFile, {{/fieldFiles}}{{/hasFiles}}
 {{#editableFields}}
-	{{^isId}}
-	{{^isFiles}}
-		{{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
-	{{/isFiles}}
-	{{/isId}}
+    {{^isId}}
+        {{^isFiles}}
+            {{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
+        {{/isFiles}}
+    {{/isId}}
 {{/editableFields}},
 MetaRequest metaRequest
 ) {
 
 {{^hasFiles}}
-{{name}}Request request = new {{name}}Request(
+    {{name}}Request request = new {{name}}Request(
 {{#editableFields}}
-    {{^isId}}
-{{^isFiles}}
-	{{^isId}}{{nameUnCapitalized}}{{^last}},{{/last}}{{/isId}}
-{{/isFiles}}
-{{/isId}}
-{{/editableFields}}
+        {{^isId}}
+            {{^isFiles}}
+                {{^isId}}{{nameUnCapitalized}}{{^last}},{{/last}}{{/isId}}
+            {{/isFiles}}
+        {{/isId}}
+    {{/editableFields}}
 );
 {{/hasFiles}}
 Update{{name}}Command command = {{name}}Mapper.toUpdateCommand(

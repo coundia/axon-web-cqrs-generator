@@ -22,7 +22,7 @@ public class SyncGeneratorService {
 
 	public void generate(EntityDefinition definition, String baseDir) {
 		String outputDto = baseDir + "/" + generatorProperties.getDtoPackage();
-		String useCaseDir = baseDir + "/" + generatorProperties.getApplicationUseCasePackage() ;
+		String useCaseDir = baseDir + "/" + generatorProperties.getApplicationUseCasePackage();
 		String outputController = baseDir + "/" + generatorProperties.getControllerPackage();
 
 		String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
@@ -45,7 +45,9 @@ public class SyncGeneratorService {
 						definition.getName() + "SyncApplicationService",
 						"application/syncApplicationService.mustache",
 						Set.of(
-								Utils.getPackage(Utils.getParent(baseDir) + "/security/" + generatorProperties.getRepositoryPackage()) + ".UserRepository",
+								Utils.getPackage(Utils.getParent(baseDir) +
+										"/security/" +
+										generatorProperties.getRepositoryPackage()) + ".UserRepository",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
@@ -54,11 +56,13 @@ public class SyncGeneratorService {
 						useCaseDir
 				),
 				new SharedTemplate(
-						 definition.getName() + "SyncController",
+						definition.getName() + "SyncController",
 						"presentation/syncController.mustache",
 						Set.of(
-								Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext",
-								Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*",
+								Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) +
+										".audit.RequestContext",
+								Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) +
+										".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*"
@@ -69,13 +73,23 @@ public class SyncGeneratorService {
 						definition.getName() + "SyncControllerTests",
 						"tests/syncControllerTests.mustache",
 						Set.of(
-								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getEntityPackage()) + ".UserFixtures",
-								Utils.getTestPackage(Utils.getParent(sharedDir) + "/security/" + generatorProperties.getRepositoryPackage()) + ".UserRepository",
-								Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getRepositoryPackage()) + ".TenantRepository",
-								Utils.getTestPackage(Utils.getParent(sharedDir) + "/tenant/" + generatorProperties.getEntityPackage()) + ".TenantFixtures",
+								Utils.getTestPackage(Utils.getParent(sharedDir) +
+										"/security/" +
+										generatorProperties.getEntityPackage()) + ".UserFixtures",
+								Utils.getTestPackage(Utils.getParent(sharedDir) +
+										"/security/" +
+										generatorProperties.getRepositoryPackage()) + ".UserRepository",
+								Utils.getTestPackage(Utils.getParent(sharedDir) +
+										"/tenant/" +
+										generatorProperties.getRepositoryPackage()) + ".TenantRepository",
+								Utils.getTestPackage(Utils.getParent(sharedDir) +
+										"/tenant/" +
+										generatorProperties.getEntityPackage()) + ".TenantFixtures",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(sharedDir + "/" + generatorProperties.getApplicationPackage()) + ".*",
-								Utils.getTestPackage(Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage()) + ".*",
+								Utils.getTestPackage(Utils.getParent(baseDir) +
+										"/" +
+										generatorProperties.getSharedPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getEntityPackage()) + ".*",
 								Utils.getPackage(baseDir + "/" + generatorProperties.getRepositoryPackage()) + ".*"
@@ -90,11 +104,11 @@ public class SyncGeneratorService {
 
 	private void generateSyncFile(SharedTemplate template, EntityDefinition definition) {
 
-		 String packageName = template.getPackageName();
+		String packageName = template.getPackageName();
 
-		 if(packageName == null || packageName.isEmpty() || packageName.equals("null")) {
-			 packageName = Utils.getPackage(template.getOutput());
-		 }
+		if (packageName == null || packageName.isEmpty() || packageName.equals("null")) {
+			packageName = Utils.getPackage(template.getOutput());
+		}
 
 		Map<String, Object> context = new HashMap<>();
 
@@ -106,7 +120,8 @@ public class SyncGeneratorService {
 		context.put("className", template.getClassName());
 		context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
-		context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
+		context.put("allFields",
+				FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
 		context.put("hasFiles", !definition.getFieldFiles().isEmpty());
 		context.put("fieldFiles", FieldTransformer.transform(definition.getFieldFiles(), definition.getName()));
 		context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));

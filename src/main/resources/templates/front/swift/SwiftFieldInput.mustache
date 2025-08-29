@@ -1,44 +1,44 @@
 {{^isManyToOne}}
-{{#isText}}
-    {{#nullable}}
+    {{#isText}}
+        {{#nullable}}
 textField("{{displayName}}", text: Binding(get: { {{name}} ?? "" }, set: { {{name}} = $0 }))
     {{/nullable}}
-    {{^nullable}}
+        {{^nullable}}
 textField("{{displayName}}", text: ${{name}})
     {{/nullable}}
-{{/isText}}
+    {{/isText}}
 
-{{#isDouble}}
+    {{#isDouble}}
     TextField("{{displayName}}", text: ${{name}}String)
     .keyboardType(.decimalPad)
 {{/isDouble}}
 
-{{#isInt}}
-    {{#nullable}}
+    {{#isInt}}
+        {{#nullable}}
 intField("{{displayName}}", value: Binding(get: { {{name}} ?? 0 }, set: { {{name}} = $0 }))
     {{/nullable}}
-    {{^nullable}}
+        {{^nullable}}
 intField("{{displayName}}", value: ${{name}})
     {{/nullable}}
-{{/isInt}}
+    {{/isInt}}
 
-{{#isBool}}
-    {{#nullable}}
+    {{#isBool}}
+        {{#nullable}}
 Toggle("{{displayName}}", isOn: Binding(get: { {{name}} ?? false }, set: { {{name}} = $0 }))
     {{/nullable}}
-    {{^nullable}}
+        {{^nullable}}
 Toggle("{{displayName}}", isOn: ${{name}})
     {{/nullable}}
-{{/isBool}}
+    {{/isBool}}
 
-{{#isDate}}
+    {{#isDate}}
         {{#nullable}}
         dateField("{{displayName}}", date: Binding(get: { {{name}} ?? Date() }, set: { {{name}} = $0 }))
         {{/nullable}}
         {{^nullable}}
         dateField("{{displayName}}", date: ${{name}})
         {{/nullable}}
-{{/isDate}}
+    {{/isDate}}
 
 {{/isManyToOne}}
 

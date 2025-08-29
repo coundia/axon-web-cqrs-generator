@@ -35,20 +35,20 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 	private String id;
 
 {{#fields}}
-{{^isId}}
-{{^isFiles}}
-{{#relation}}
-{{#isOneToMany}}
+    {{^isId}}
+        {{^isFiles}}
+            {{#relation}}
+                {{#isOneToMany}}
 	@OneToMany(mappedBy = "{{entityLowerCase}}",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private {{{realType}}} {{nameLowerCase}} = new HashSet<>();
 {{/isOneToMany}}
-{{#isManyToOne}}
+                {{#isManyToOne}}
 	@ManyToOne
 	@JoinColumn(name = "{{nameLowerCase}}_id", nullable = {{nullable}})
 	private {{realType}} {{nameLowerCase}};
 {{/isManyToOne}}
-{{/relation}}
-{{^relation}}
+            {{/relation}}
+            {{^relation}}
 
 	@Column(nullable = {{nullable}}, {{#columnDefinition}}
 		columnDefinition = "{{columnDefinition}}",{{/columnDefinition}}
@@ -60,8 +60,8 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 
 	private {{primitiveType}} {{nameLowerCase}} {{#defaultValue}} = {{{defaultValue}}} {{/defaultValue}};
 {{/relation}}
-{{/isFiles}}
-{{/isId}}
+        {{/isFiles}}
+    {{/isId}}
 {{/fields}}
 	public {{entity}}(String id) {
 		this.id = id;
@@ -73,11 +73,11 @@ public class {{entity}} {{#isAuditable}}  extends AbstractAuditableEntity {{/isA
 		"id='" + id + '\'' +
 		{{#fields}}
     {{^isFiles}}
-		{{^isId}}
+        {{^isId}}
 			", {{nameLowerCase}}=" + {{nameLowerCase}} +
 		{{/isId}}
-        {{/isFiles}}
-		{{/fields}}
+    {{/isFiles}}
+{{/fields}}
 		'}';
 	}
 }

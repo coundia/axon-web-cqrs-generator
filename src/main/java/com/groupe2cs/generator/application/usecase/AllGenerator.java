@@ -16,6 +16,7 @@ import reactor.core.publisher.Sinks;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -63,8 +64,6 @@ public class AllGenerator implements Generator {
 		Flux<ApiResponseDto> groupMainFlux = groupMainGenerator.generateStreaming(request);
 
 		return Flux.merge(fileManagerFlux, securityFlux, multiTenantFlux, groupMainFlux);
-
-
 
 
 	}

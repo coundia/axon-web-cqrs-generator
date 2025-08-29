@@ -13,60 +13,63 @@ import java.util.*;
 @Service
 public class CreateControllerGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public CreateControllerGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public CreateControllerGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        Map<String, Object> context = new HashMap<>(definition.toMap());
+	public void generate(EntityDefinition definition, String baseDir) {
+		Map<String, Object> context = new HashMap<>(definition.toMap());
 
-        String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
+		String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
 
-        context.put("package", Utils.getPackage(outputDir));
-        context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
-        context.put("nameUpperCase", definition.getName().toUpperCase());
-        context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
+		context.put("package", Utils.getPackage(outputDir));
+		context.put("nameLowercase", Utils.unCapitalize(definition.getName()));
+		context.put("nameUpperCase", definition.getName().toUpperCase());
+		context.put("dtoPackage", Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()));
 
-        var fields = definition.getFields();
-        Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
+		var fields = definition.getFields();
+		Set<String> imports = new LinkedHashSet<>();
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
 
-        String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
-        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
-        imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
+		String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+		imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) +
+				".audit.RequestContext");
+		imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
 
-        context.put("imports", imports);
-        context.put("security", definition.isInStack("security"));
-        context.put("isMultiTenant", definition.getMultiTenant());
-        context.put("apiPrefix", definition.getApiPrefix());
+		context.put("imports", imports);
+		context.put("security", definition.isInStack("security"));
+		context.put("isMultiTenant", definition.getMultiTenant());
+		context.put("apiPrefix", definition.getApiPrefix());
 
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-        String content = templateEngine.render("presentation/createController.mustache", context);
+		context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+		String content = templateEngine.render("presentation/createController.mustache", context);
 
-        var fieldFiles = definition.getFieldFiles();
-        context.put("hasFiles", !fieldFiles.isEmpty());
-        if (!fieldFiles.isEmpty()) {
-            Set<String> importsBis = new LinkedHashSet<>();
-            context.put("editableFields", FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		var fieldFiles = definition.getFieldFiles();
+		context.put("hasFiles", !fieldFiles.isEmpty());
+		if (!fieldFiles.isEmpty()) {
+			Set<String> importsBis = new LinkedHashSet<>();
+			context.put("editableFields",
+					FieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 
-            importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
-            importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
-            importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
-            importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
-            context.put("imports", importsBis);
-            context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
-            content = templateEngine.render("presentation/createWithFilesController.mustache", context);
-        }
+			importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+			importsBis.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+			importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) +
+					".audit.RequestContext");
+			importsBis.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
+			context.put("imports", importsBis);
+			context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
+			content = templateEngine.render("presentation/createWithFilesController.mustache", context);
+		}
 
-        fileWriterService.write(outputDir, "Add" + definition.getName() + "Controller.java", content);
-    }
+		fileWriterService.write(outputDir, "Add" + definition.getName() + "Controller.java", content);
+	}
 }

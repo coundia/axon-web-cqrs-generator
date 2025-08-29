@@ -18,69 +18,70 @@ import java.util.Set;
 @Service
 public class FindByFieldControllerGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public FindByFieldControllerGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public FindByFieldControllerGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        Map<String, Object> context = new HashMap<>(definition.toMap());
+	public void generate(EntityDefinition definition, String baseDir) {
+		Map<String, Object> context = new HashMap<>(definition.toMap());
 
-        String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
-        context.put("package", Utils.getPackage(outputDir));
-        context.put("nameUpperCase", definition.getName().toUpperCase());
-        var fields = definition.getFieldsWithoutRelations();
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
-        context.put("security", definition.isInStack("security"));
+		String outputDir = baseDir + "/" + generatorProperties.getControllerPackage();
+		context.put("package", Utils.getPackage(outputDir));
+		context.put("nameUpperCase", definition.getName().toUpperCase());
+		var fields = definition.getFieldsWithoutRelations();
+		context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+		context.put("security", definition.isInStack("security"));
 
-        for (var field : fields) {
+		for (var field : fields) {
 
-            boolean isId = field.isId() ;
-            boolean isDate =   field.isDate();
+			boolean isId = field.isId();
+			boolean isDate = field.isDate();
 
-            if (
+			if (
 					!(isDate || isId)
-            ) {
-                log.info("🚨 Skipping field name {} of type {} ",
-                        field.getName(), field.getType());
-                continue;
-            }
+			) {
+				log.info("🚨 Skipping field name {} of type {} ",
+						field.getName(), field.getType());
+				continue;
+			}
 
-            Map<String, Object> fieldContext = new HashMap<>(context);
-            field.setNameCapitalized(capitalize(field.getName()));
-            fieldContext.put("field", field);
-            String className = "FindBy" + capitalize(field.getName()) + definition.getName() + "Controller";
-            fieldContext.put("className", className);
-            fieldContext.put("nameLowercase", Utils.unCapitalize(definition.getName()));
-            fieldContext.put("isId", field.isId());
+			Map<String, Object> fieldContext = new HashMap<>(context);
+			field.setNameCapitalized(capitalize(field.getName()));
+			fieldContext.put("field", field);
+			String className = "FindBy" + capitalize(field.getName()) + definition.getName() + "Controller";
+			fieldContext.put("className", className);
+			fieldContext.put("nameLowercase", Utils.unCapitalize(definition.getName()));
+			fieldContext.put("isId", field.isId());
 
-            Set<String> imports = new LinkedHashSet<>();
-            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
-            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
-            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
-            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
-            imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
+			Set<String> imports = new LinkedHashSet<>();
+			imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+			imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getQueryPackage()) + ".*");
+			imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getMapperPackage()) + ".*");
+			imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getDtoPackage()) + ".*");
+			imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getApplicationUseCasePackage()) + ".*");
 
-            String sharedDir = Utils.getParent(baseDir)+"/"+generatorProperties.getSharedPackage();
-            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) + ".audit.RequestContext");
-            imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
+			String sharedDir = Utils.getParent(baseDir) + "/" + generatorProperties.getSharedPackage();
+			imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getInfrastructurePackage()) +
+					".audit.RequestContext");
+			imports.add(Utils.getPackage(sharedDir + "/" + generatorProperties.getDtoPackage()) + ".MetaRequest");
 
-            fieldContext.put("imports", imports);
+			fieldContext.put("imports", imports);
 
-            fieldContext.put("isMultiTenant", definition.getMultiTenant());
-            fieldContext.put("apiPrefix", definition.getApiPrefix());
+			fieldContext.put("isMultiTenant", definition.getMultiTenant());
+			fieldContext.put("apiPrefix", definition.getApiPrefix());
 
-            String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);
-            fileWriterService.write(outputDir, className+".java", content);
-        }
-    }
+			String content = templateEngine.render("presentation/findByFieldController.mustache", fieldContext);
+			fileWriterService.write(outputDir, className + ".java", content);
+		}
+	}
 
-    private String capitalize(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
+	private String capitalize(String name) {
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
 }

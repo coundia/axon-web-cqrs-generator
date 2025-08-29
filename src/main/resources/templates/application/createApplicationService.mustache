@@ -23,19 +23,19 @@ private final CommandGateway commandGateway;
 public {{name}}Response create{{name}}(
 {{#hasFiles}}{{#fieldFiles}}List<MultipartFile> {{nameUnCapitalized}},{{/fieldFiles}}{{/hasFiles}}
 {{#editableFields}}
-{{^isId}}
-		{{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
-        {{/isId}}
+    {{^isId}}
+        {{primitiveType}} {{nameUnCapitalized}}{{^last}},{{/last}}
+    {{/isId}}
 {{/editableFields}},
 MetaRequest metaRequest
 ) {
 
     {{name}}Request request = new {{name}}Request(
         {{#editableFields}}
-        {{^isId}}
+    {{^isId}}
         {{nameUnCapitalized}}{{^last}},{{/last}}
-        {{/isId}}
-        {{/editableFields}}
+    {{/isId}}
+{{/editableFields}}
     );
 
 Create{{name}}Command command = {{name}}Mapper.toCommand(
@@ -50,7 +50,7 @@ commandGateway.sendAndWait(command);
 metaRequest.setObjectId(command.getId().value());
 metaRequest.setObjectName("{{entityLowerCase}}");
 {{#fieldFiles}}
-{{entity}}{{nameCapitalized}}.create(
+    {{entity}}{{nameCapitalized}}.create(
     fileStorageService.storeFile({{nameUnCapitalized}}, metaRequest)
     );
 {{/fieldFiles}}

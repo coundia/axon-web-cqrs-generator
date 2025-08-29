@@ -8,187 +8,192 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class FieldTransformer {
 
-    public static List<Map<String, Object>> transform(List<FieldDefinition> fields, String entityName) {
-        List<Map<String, Object>> result = new ArrayList<>();
+	public static List<Map<String, Object>> transform(List<FieldDefinition> fields, String entityName) {
+		List<Map<String, Object>> result = new ArrayList<>();
 
-        for (int i = 0; i < fields.size(); i++) {
-            FieldDefinition field = fields.get(i);
-            Map<String, Object> f = new HashMap<>();
+		for (int i = 0; i < fields.size(); i++) {
+			FieldDefinition field = fields.get(i);
+			Map<String, Object> f = new HashMap<>();
 
-            String nameJpa  = Utils.capitalize(field.getName());
-            String nameJpaUnCapitalized  = Utils.unCapitalize(field.getName());
+			String nameJpa = Utils.capitalize(field.getName());
+			String nameJpaUnCapitalized = Utils.unCapitalize(field.getName());
 
-            if("manyToOne".equalsIgnoreCase(field.getRelation())) {
-                nameJpa = nameJpa+ "Id";
-                nameJpaUnCapitalized = Utils.unCapitalize(nameJpaUnCapitalized)+ ".id";
-            }
+			if ("manyToOne".equalsIgnoreCase(field.getRelation())) {
+				nameJpa = nameJpa + "Id";
+				nameJpaUnCapitalized = Utils.unCapitalize(nameJpaUnCapitalized) + ".id";
+			}
 
-            f.put("name", field.getName());
-            f.put("nameCapitalized", Utils.capitalize(field.getName()));
-            f.put("nameJpa", nameJpa);
-            f.put("isSyncAt", nameJpa.equalsIgnoreCase("syncAt"));
+			f.put("name", field.getName());
+			f.put("nameCapitalized", Utils.capitalize(field.getName()));
+			f.put("nameJpa", nameJpa);
+			f.put("isSyncAt", nameJpa.equalsIgnoreCase("syncAt"));
 
-            f.put("nameJpaUnCapitalized", nameJpaUnCapitalized);
-            f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
-            f.put("nameLowerCase", Utils.unCapitalize(field.getName()));
-            f.put("nameCamelCase", Utils.camelCase(field.getName()));
-            f.put("type", entityName + Utils.capitalize(field.getName()));
-            f.put("realType", field.getType());
-            f.put("isId", field.getName().equalsIgnoreCase("id"));
-            f.put("last", i == fields.size() - 1);
-            f.put("isPrimitiveType", field.isPrimitiveType());
-            f.put("primitiveType", field.getPrimitiveType());
-            f.put("isFileType", field.isFileType());
+			f.put("nameJpaUnCapitalized", nameJpaUnCapitalized);
+			f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
+			f.put("nameLowerCase", Utils.unCapitalize(field.getName()));
+			f.put("nameCamelCase", Utils.camelCase(field.getName()));
+			f.put("type", entityName + Utils.capitalize(field.getName()));
+			f.put("realType", field.getType());
+			f.put("isId", field.getName().equalsIgnoreCase("id"));
+			f.put("last", i == fields.size() - 1);
+			f.put("isPrimitiveType", field.isPrimitiveType());
+			f.put("primitiveType", field.getPrimitiveType());
+			f.put("isFileType", field.isFileType());
 
-            f.put("testValue", getTestValue(field));
-            f.put("testDomainValue", getTestDomainValue(field));
-            f.put("primitiveValue", getPrimitiveValue(field));
+			f.put("testValue", getTestValue(field));
+			f.put("testDomainValue", getTestDomainValue(field));
+			f.put("primitiveValue", getPrimitiveValue(field));
 
-            f.put("hasValidation", true);
-            f.put("errorType", "IllegalArgumentException");
-            f.put("errorTestValue", getErrorTestValue(field));
-            f.put("errorMessage", Utils.capitalize(field.getName()) + " is invalid");
-            String exceptionName = entityName + Utils.capitalize(field.getName()) + "NotValid";
-            f.put("exceptionName", exceptionName);
+			f.put("hasValidation", true);
+			f.put("errorType", "IllegalArgumentException");
+			f.put("errorTestValue", getErrorTestValue(field));
+			f.put("errorMessage", Utils.capitalize(field.getName()) + " is invalid");
+			String exceptionName = entityName + Utils.capitalize(field.getName()) + "NotValid";
+			f.put("exceptionName", exceptionName);
 
-            f.put("relation", field.getRelation());
+			f.put("relation", field.getRelation());
 
-            f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()) );
-            f.put("isManyToOne", "manyToOne".equalsIgnoreCase(field.getRelation()));
+			f.put("isOneToMany", "oneToMany".equalsIgnoreCase(field.getRelation()));
+			f.put("isManyToOne", "manyToOne".equalsIgnoreCase(field.getRelation()));
 
-            f.put("unique", field.getUnique());
-
-
-            f.put("nullable", field.getNullable());
-            f.put("isUnique", field.getUnique() || field.isId());
-
-            f.put("size", field.getSize());
-            f.put("columnDefinition", field.getColumnDefinition());
-            f.put("defaultValue", field.getDefaultValue());
-
-            f.put("repository",  field.getRepository());
-            f.put("hasRepository",  field.hasRepository());
-            f.put("focus",  field.getFocus());
-            f.put("hasLike",  field.getPrimitiveType().equalsIgnoreCase("String"));
-            f.put("hasNameField", hasNameField(fields));
-            f.put("isDate", field.getType().toLowerCase().contains("date")
-                    || field.getType().toLowerCase().contains("instant") ||
-                    field.getType().toLowerCase().contains("localdatetime") ||
-                    field.getType().toLowerCase().contains("timestamp")
-            );
-
-            f.put("isFiles", field.getIsFiles());
-
-            result.add(f);
-        }
-
-        return result;
-    }
-
-    private static Boolean hasNameField(List<FieldDefinition> fields) {
-        return fields.stream()
-                .anyMatch(field -> field.getName().equalsIgnoreCase("name") );
-    }
-
-    private static String getTestValue(FieldDefinition field) {
-        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
-        String type = field.getType().toLowerCase();
-
-        if (type.contains("price") || type.contains("amount")) {
-            double value = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 1000.0) * 100.0) / 100.0;
-            return String.valueOf(value);
-        }
-
-        if (type.contains("name") || type.contains("title") || type.contains("facture")) {
-            return "\"TestValue" + ThreadLocalRandom.current().nextInt(1000) + "\"";
-        }
-
-        if (type.contains("id")) {
-            return "\"" + UUID.randomUUID().toString() + "\"";
-        }
-        if (type.contains("date")) {
-            return "java.time.LocalDateTime.now()";
-        }
-        if(type.contains("instant")) {
-            return "java.time.Instant.now().plusSeconds(3600)";
-        }
-
-        if(type.contains("url")) {
-            return "\"https://example.com/test" + ThreadLocalRandom.current().nextInt(1000) + ".jpg\"";
-        }
-
-        if (field.getRelation()!= null && field.getRelation().equalsIgnoreCase("manyToOne")) {
-
-            String typeField = field.getType();
-            String typeFieldLower = Utils.unCapitalize(field.getName());
-
-            if(typeField.equalsIgnoreCase("User")) {
-                return "UserFixtures.randomOneViaCommand(commandGateway,"+typeFieldLower+"DataRepository,user).getId().value()";
-            }
-
-            return typeField+"Fixtures.randomOneViaCommand(commandGateway,"+typeFieldLower+"DataRepository, user).getId().value()";
-        }
-
-        if(field.getRelation()!= null && field.getRelation().equalsIgnoreCase("oneToMany")) {
-            return "null";
-        }
-
-        if(type.contains("email")) {
-            return "\"test" + ThreadLocalRandom.current().nextInt(1000) + "@example.com\"";
-        }
-
-        return switch (primitive) {
-            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
-            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
-            case "double" -> {
-                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
-                yield String.valueOf(d);
-            }
-            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
-            default -> "UUID.randomUUID().toString()";
-        };
-    }
-
-    private static String getTestDomainValue(FieldDefinition field) {
-        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
-        return switch (primitive) {
-            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
-            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
-            case "double" -> {
-                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
-                yield String.valueOf(d);
-            }
-            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
-            case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
-            case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
-            default -> "UUID.randomUUID().toString()";
-        };
-    }
-
-    private static String getPrimitiveValue(FieldDefinition field) {
-        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
-        return switch (primitive) {
-            case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
-            case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
-            case "double" -> {
-                double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
-                yield String.valueOf(d);
-            }
-            case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
-            case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
-            case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
-            default ->   UUID.randomUUID().toString();
-        };
-    }
+			f.put("unique", field.getUnique());
 
 
-    private static String getErrorTestValue(FieldDefinition field) {
-        String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
-        return switch (primitive) {
-            case "int", "integer" -> "-1";
-            case "long" -> "-999L";
-            case "string" -> "\"\"";
-            default -> "null";
-        };
-    }
+			f.put("nullable", field.getNullable());
+			f.put("isUnique", field.getUnique() || field.isId());
+
+			f.put("size", field.getSize());
+			f.put("columnDefinition", field.getColumnDefinition());
+			f.put("defaultValue", field.getDefaultValue());
+
+			f.put("repository", field.getRepository());
+			f.put("hasRepository", field.hasRepository());
+			f.put("focus", field.getFocus());
+			f.put("hasLike", field.getPrimitiveType().equalsIgnoreCase("String"));
+			f.put("hasNameField", hasNameField(fields));
+			f.put("isDate", field.getType().toLowerCase().contains("date")
+					|| field.getType().toLowerCase().contains("instant") ||
+					field.getType().toLowerCase().contains("localdatetime") ||
+					field.getType().toLowerCase().contains("timestamp")
+			);
+
+			f.put("isFiles", field.getIsFiles());
+
+			result.add(f);
+		}
+
+		return result;
+	}
+
+	private static Boolean hasNameField(List<FieldDefinition> fields) {
+		return fields.stream()
+				.anyMatch(field -> field.getName().equalsIgnoreCase("name"));
+	}
+
+	private static String getTestValue(FieldDefinition field) {
+		String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+		String type = field.getType().toLowerCase();
+
+		if (type.contains("price") || type.contains("amount")) {
+			double value = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 1000.0) * 100.0) / 100.0;
+			return String.valueOf(value);
+		}
+
+		if (type.contains("name") || type.contains("title") || type.contains("facture")) {
+			return "\"TestValue" + ThreadLocalRandom.current().nextInt(1000) + "\"";
+		}
+
+		if (type.contains("id")) {
+			return "\"" + UUID.randomUUID().toString() + "\"";
+		}
+		if (type.contains("date")) {
+			return "java.time.LocalDateTime.now()";
+		}
+		if (type.contains("instant")) {
+			return "java.time.Instant.now().plusSeconds(3600)";
+		}
+
+		if (type.contains("url")) {
+			return "\"https://example.com/test" + ThreadLocalRandom.current().nextInt(1000) + ".jpg\"";
+		}
+
+		if (field.getRelation() != null && field.getRelation().equalsIgnoreCase("manyToOne")) {
+
+			String typeField = field.getType();
+			String typeFieldLower = Utils.unCapitalize(field.getName());
+
+			if (typeField.equalsIgnoreCase("User")) {
+				return "UserFixtures.randomOneViaCommand(commandGateway," +
+						typeFieldLower +
+						"DataRepository,user).getId().value()";
+			}
+
+			return typeField +
+					"Fixtures.randomOneViaCommand(commandGateway," +
+					typeFieldLower +
+					"DataRepository, user).getId().value()";
+		}
+
+		if (field.getRelation() != null && field.getRelation().equalsIgnoreCase("oneToMany")) {
+			return "null";
+		}
+
+		if (type.contains("email")) {
+			return "\"test" + ThreadLocalRandom.current().nextInt(1000) + "@example.com\"";
+		}
+
+		return switch (primitive) {
+			case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+			case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+			case "double" -> {
+				double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+				yield String.valueOf(d);
+			}
+			case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+			default -> "UUID.randomUUID().toString()";
+		};
+	}
+
+	private static String getTestDomainValue(FieldDefinition field) {
+		String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+		return switch (primitive) {
+			case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+			case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+			case "double" -> {
+				double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+				yield String.valueOf(d);
+			}
+			case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+			case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
+			case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
+			default -> "UUID.randomUUID().toString()";
+		};
+	}
+
+	private static String getPrimitiveValue(FieldDefinition field) {
+		String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+		return switch (primitive) {
+			case "int", "integer" -> String.valueOf(ThreadLocalRandom.current().nextInt(1, 100));
+			case "long" -> ThreadLocalRandom.current().nextLong(1000, 99999) + "L";
+			case "double" -> {
+				double d = Math.round(ThreadLocalRandom.current().nextDouble(10.0, 10000.0) * 100.0) / 100.0;
+				yield String.valueOf(d);
+			}
+			case "boolean" -> String.valueOf(ThreadLocalRandom.current().nextBoolean());
+			case "java.time.instant" -> "java.time.Instant.now().plusSeconds(3600)";
+			case "java.time.localdatetime" -> "java.time.LocalDateTime.now()";
+			default -> UUID.randomUUID().toString();
+		};
+	}
+
+
+	private static String getErrorTestValue(FieldDefinition field) {
+		String primitive = Optional.ofNullable(field.getPrimitiveType()).orElse("").toLowerCase();
+		return switch (primitive) {
+			case "int", "integer" -> "-1";
+			case "long" -> "-999L";
+			case "string" -> "\"\"";
+			default -> "null";
+		};
+	}
 }

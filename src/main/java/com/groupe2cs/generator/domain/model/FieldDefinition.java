@@ -34,8 +34,15 @@ public class FieldDefinition implements Serializable {
 	private String entityType;
 	private String inputType;
 	private Boolean isFiles = false;
-	private String plural ;
-	private String table ;
+	private String plural;
+	private String table;
+
+	public FieldDefinition(String type, String name) {
+		this.type = type;
+		this.name = name;
+		this.nameCapitalized = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
+		this.isId = this.isId();
+	}
 
 	public String getTable() {
 		if (table == null || table.isEmpty()) {
@@ -64,9 +71,9 @@ public class FieldDefinition implements Serializable {
 
 	public String getPlural() {
 
-		 if( plural == null || plural.isEmpty()) {
-			 return Utils.pluralize(name);
-		 }
+		if (plural == null || plural.isEmpty()) {
+			return Utils.pluralize(name);
+		}
 		return plural;
 	}
 
@@ -93,13 +100,6 @@ public class FieldDefinition implements Serializable {
 		}
 
 		return Utils.capitalize(displayName);
-	}
-
-	public FieldDefinition(String type, String name) {
-		this.type = type;
-		this.name = name;
-		this.nameCapitalized = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
-		this.isId = this.isId();
 	}
 
 	public Boolean getReadOnly() {
@@ -185,10 +185,6 @@ public class FieldDefinition implements Serializable {
 		return isId;
 	}
 
-	public void setId(Boolean id) {
-		isId = id;
-	}
-
 	public String getRelation() {
 		return relation;
 	}
@@ -222,6 +218,10 @@ public class FieldDefinition implements Serializable {
 	public boolean isId() {
 		return name.equalsIgnoreCase("id")
 				;
+	}
+
+	public void setId(Boolean id) {
+		isId = id;
 	}
 
 	public boolean isUnique() {

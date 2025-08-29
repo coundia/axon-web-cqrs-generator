@@ -258,7 +258,6 @@ public class SwiftUiGeneratorService {
 						".swift")
 
 
-
 		));
 
 
@@ -289,9 +288,12 @@ public class SwiftUiGeneratorService {
 
 		context.put("entityLowerCase", Utils.unCapitalize(definition.getName()));
 		context.put("fields", SwiftFieldTransformer.transform(definition.getFields(), definition.getName()));
-		context.put("fieldsDisplayed", SwiftFieldTransformer.transform(definition.getFieldsToDisplay(), definition.getName()));
-		context.put("fieldsAmount", SwiftFieldTransformer.transform(definition.getFieldsAmount(), definition.getName()));
-		context.put("editableFields", AngularFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
+		context.put("fieldsDisplayed",
+				SwiftFieldTransformer.transform(definition.getFieldsToDisplay(), definition.getName()));
+		context.put("fieldsAmount",
+				SwiftFieldTransformer.transform(definition.getFieldsAmount(), definition.getName()));
+		context.put("editableFields",
+				AngularFieldTransformer.transform(definition.getEditableFields(), definition.getName()));
 		context.put("hasFiles", definition.getHasFiles());
 
 

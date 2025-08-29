@@ -13,41 +13,41 @@ import java.util.*;
 @Service
 public class EventGeneratorService {
 
-    private final TemplateEngine templateEngine;
-    private final FileWriterService fileWriterService;
-    private final GeneratorProperties generatorProperties;
+	private final TemplateEngine templateEngine;
+	private final FileWriterService fileWriterService;
+	private final GeneratorProperties generatorProperties;
 
-    public EventGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
-        this.templateEngine = templateEngine;
-        this.fileWriterService = fileWriterService;
-        this.generatorProperties = generatorProperties;
-    }
+	public EventGeneratorService(TemplateEngine templateEngine, FileWriterService fileWriterService, GeneratorProperties generatorProperties) {
+		this.templateEngine = templateEngine;
+		this.fileWriterService = fileWriterService;
+		this.generatorProperties = generatorProperties;
+	}
 
-    public void generate(EntityDefinition definition, String baseDir) {
-        List<String> eventTypes = List.of("Created", "Updated", "Deleted");
+	public void generate(EntityDefinition definition, String baseDir) {
+		List<String> eventTypes = List.of("Created", "Updated", "Deleted");
 
-        for (String type : eventTypes) {
-            generateEvent(definition, baseDir, type);
-        }
-    }
+		for (String type : eventTypes) {
+			generateEvent(definition, baseDir, type);
+		}
+	}
 
-    private void generateEvent(EntityDefinition definition, String baseDir, String eventType) {
-        Map<String, Object> context = new HashMap<>(definition.toMap());
+	private void generateEvent(EntityDefinition definition, String baseDir, String eventType) {
+		Map<String, Object> context = new HashMap<>(definition.toMap());
 
-        String outputDir = baseDir + "/" + generatorProperties.getEventPackage();
-        context.put("package", Utils.getPackage(outputDir));
-        context.put("eventType", eventType);
+		String outputDir = baseDir + "/" + generatorProperties.getEventPackage();
+		context.put("package", Utils.getPackage(outputDir));
+		context.put("eventType", eventType);
 
-        var fields = definition.getAllFieldsWithoutOneToMany();
-        context.put("fields", FieldTransformer.transform(fields, definition.getName()));
+		var fields = definition.getAllFieldsWithoutOneToMany();
+		context.put("fields", FieldTransformer.transform(fields, definition.getName()));
 
-        Set<String> imports = new LinkedHashSet<>();
-        imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
-        context.put("imports", imports);
+		Set<String> imports = new LinkedHashSet<>();
+		imports.add(Utils.getPackage(baseDir + "/" + generatorProperties.getVoPackage()) + ".*");
+		context.put("imports", imports);
 
-        context.put("isDeleted", eventType.equalsIgnoreCase("Deleted"));
+		context.put("isDeleted", eventType.equalsIgnoreCase("Deleted"));
 
-        String content = templateEngine.render("domain/event.mustache", context);
-        fileWriterService.write(outputDir, definition.getName() + eventType + "Event.java", content);
-    }
+		String content = templateEngine.render("domain/event.mustache", context);
+		fileWriterService.write(outputDir, definition.getName() + eventType + "Event.java", content);
+	}
 }

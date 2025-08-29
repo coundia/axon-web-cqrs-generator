@@ -3,7 +3,7 @@ import Foundation
 enum {{entity}}SearchCriteria: String, CaseIterable, Identifiable {
     {{#fieldsDisplayed}}
     case {{nameLowerCase}}
-    {{/fieldsDisplayed}}
+{{/fieldsDisplayed}}
 
  var id: String { rawValue }
 

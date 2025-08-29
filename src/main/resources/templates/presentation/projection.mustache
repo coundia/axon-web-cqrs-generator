@@ -40,12 +40,12 @@ public void on({{name}}CreatedEvent event) {
 try {
 {{entity}} entity = {{entity}}.builder().build();
 {{#editableFields}}
-	{{^isOneToMany}} {{^isManyToOne}}
+    {{^isOneToMany}} {{^isManyToOne}}
 		if(event.get{{nameCapitalized}}() !=null  && hasId(event.get{{nameCapitalized}}().value()) ) {
             entity.set{{nameCapitalized}}( event.get{{nameCapitalized}}().value());
         }
 	{{/isManyToOne}} {{/isOneToMany}}
-	{{#isManyToOne}}
+    {{#isManyToOne}}
 		if(event.get{{nameCapitalized}}() !=null  && hasId(event.get{{nameCapitalized}}().value())){
             entity.set{{nameCapitalized}}( new {{realType}}(event.get{{nameCapitalized}}().value()));
         }
@@ -91,13 +91,13 @@ try {
 {{/transactional}}
 
 {{#editableFields}}
-	{{#isManyToOne}}
+    {{#isManyToOne}}
 
      if(event.get{{nameCapitalized}}() != null  && hasId(event.get{{nameCapitalized}}().value())) {
 		  entity.set{{nameCapitalized}}(new {{realType}}(event.get{{nameCapitalized}}().value()));
 	  }
 	{{/isManyToOne}}
-	{{^isManyToOne}}
+    {{^isManyToOne}}
 	if(event.get{{nameCapitalized}}() != null  && hasId(event.get{{nameCapitalized}}().value())) {
 		entity.set{{nameCapitalized}}(event.get{{nameCapitalized}}().value());
     }
@@ -133,7 +133,7 @@ public void on({{name}}DeletedEvent event) {
 try {
 
 {{#transactional}}
-{{name}} entity = repository.findById(event.getId().value())
+    {{name}} entity = repository.findById(event.getId().value())
 					.orElseThrow(() -> new RuntimeException("{{name}} not found"));
 this.refund{{name}}(entity.getAccount().getId(),entity.getAmount(),entity.getType{{name}}Raw());
 {{/transactional}}

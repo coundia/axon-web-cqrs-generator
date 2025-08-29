@@ -33,10 +33,10 @@ public class {{name}}Fixtures {
 		CommandGateway commandGateway,
 		{{name}}Repository repository,
 		{{#fields}}
-        {{#hasRepository}}
+    {{#hasRepository}}
         {{repository}},
         {{/hasRepository}}
-        {{/fields}}
+{{/fields}}
 		int count,
 		User user
 	) {
@@ -46,10 +46,10 @@ public class {{name}}Fixtures {
 			commandGateway,
 			 repository,
 			 {{#fields}}
-            {{#hasRepository}}
-            {{nameUnCapitalized}}DataRepository,
+    {{#hasRepository}}
+        {{nameUnCapitalized}}DataRepository,
             {{/hasRepository}}
-            {{/fields}}
+{{/fields}}
 			 user);
 			items.add(command);
 		}
@@ -64,10 +64,10 @@ public class {{name}}Fixtures {
 		CommandGateway commandGateway,
 		{{name}}Repository  repository,
 		{{#fields}}
-        {{#hasRepository}}
+    {{#hasRepository}}
         {{repository}},
         {{/hasRepository}}
-        {{/fields}}
+{{/fields}}
 		 User user) {
 			{{#hasFiles}}
 				MockMultipartFile files = new MockMultipartFile("fake", "fake.txt", "text/plain", "Hello".getBytes());
@@ -78,11 +78,11 @@ public class {{name}}Fixtures {
 			{{#editableFields}}{{^isId}}
 				.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create({{{testValue}}}))
 			{{/isId}}{{/editableFields}}
-			{{#hasFiles}}
-				{{#fieldFiles}}
+{{#hasFiles}}
+    {{#fieldFiles}}
 					.{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create(fileName))
 				{{/fieldFiles}}
-			{{/hasFiles}}
+{{/hasFiles}}
 			.build();
 
 		command.setCreatedBy({{name}}CreatedBy.create(user.getId()));
@@ -106,17 +106,17 @@ public class {{name}}Fixtures {
 
         Create{{name}}Command command = Create{{name}}Command.builder()
         {{#editableFields}}
-        {{^hasRepository}}
-    {{^isId}}
+    {{^hasRepository}}
+        {{^isId}}
         .{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create({{{testValue}}}))
         {{/isId}}
-        {{/hasRepository}}
-        {{/editableFields}}
-        {{#hasFiles}}
-        {{#fieldFiles}}
+    {{/hasRepository}}
+{{/editableFields}}
+{{#hasFiles}}
+    {{#fieldFiles}}
         .{{nameLowerCase}}({{nameAggregate}}{{nameCapitalized}}.create(fileName))
         {{/fieldFiles}}
-        {{/hasFiles}}
+{{/hasFiles}}
         .build();
 
 		command.setCreatedBy({{name}}CreatedBy.create(user.getId()));
