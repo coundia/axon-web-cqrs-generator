@@ -83,6 +83,15 @@ public class {{className}} {
 			return false;
 		}
 		{{entity}} entity = opt.get();
+
+		 {{#shared}}
+		boolean  ok = repository.isOwner( entity.getId(), userId);
+		if (ok) {
+			log.info("It is owner granted: userId {} is shared user of Account {}", userId, objectId);
+			 return true;
+		}
+		{{/shared}}
+
 		boolean result = entity.getCreatedBy() != null && userId.equals(entity.getCreatedBy().getId());
 		log.info("canDelete result for userId {} on {{entity}} {}: {}", userId, objectId, result);
 		return result;

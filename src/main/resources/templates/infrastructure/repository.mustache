@@ -71,6 +71,7 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         {{/isId}}
         {{/isDate}}
         {{#isDate}}
+        {{^isSyncAt}}
         @Query("""
         SELECT e FROM {{entityName}} e
         WHERE e.{{nameJpaUnCapitalized}} >= :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
@@ -78,7 +79,7 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
         ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC
         """)
          List<{{entityName}}> findBy{{nameJpa}}AndCreatedById({{primitiveType}} {{nameJpaUnCapitalized}}, String createdById);
-
+         {{/isSyncAt}}
          @Query("""
         SELECT e FROM {{entityName}} e
         WHERE e.{{nameJpaUnCapitalized}} >= :#{#{{nameJpaUnCapitalized}}.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
@@ -88,19 +89,51 @@ public interface {{name}}Repository extends JpaRepository<{{entityName}}, String
          List<{{entityName}}> findBy{{nameJpa}}AndTenantId({{primitiveType}} {{nameJpaUnCapitalized}}, String tenantId);
 
 
+
          {{/isDate}}
 	{{/fields}}
 
 	{{#shared}}
-    @Query("""
-    SELECT DISTINCT s FROM {{entityName}} s
-    LEFT JOIN {{entityName}}User su ON su.{{entityNameLowerCase}} = s
-    WHERE s.tenant.id = :tenantId AND (s.createdBy.id = :userId OR su.user.id = :userId)
-    ORDER BY s.updatedAtAudit DESC, s.createdAtAudit  DESC
-    """)
-	Page<{{entityName}}> findAllOwnedOrShared(@Param("userId") String userId, @Param("tenantId") String tenantId, Pageable pageable);
 
+	@Query("""
+        SELECT e FROM {{entityName}}  e
+        WHERE e.syncAt >= :#{#syncAt.atZone(T(java.time.ZoneOffset).UTC).toLocalDate().atStartOfDay(T(java.time.ZoneOffset).UTC).toInstant()}
+         AND (
+                 e.createdBy.id = :createdById
+                 OR EXISTS (
+                      SELECT 1
+                      FROM AccountUser au, User u
+                      WHERE au.account = e.account
+                        AND (
+                              (au.identity IS NOT NULL AND au.identity = u.username)
+                           OR (au.email    IS NOT NULL AND au.email    = u.email)
+                           OR (au.phone    IS NOT NULL AND au.phone    = u.telephone)
+                        )
+                 )
+            )
+        ORDER BY e.updatedAtAudit DESC, e.createdAtAudit  DESC
+        """)
+         List<{{entityName}}> findBySyncAtAndCreatedById(java.time.Instant syncAt, String createdById);
 
+         @Query("""
+            select case when count(e)>0 then true else false end
+                 from {{entityName}}  e
+                     where e.id=:id
+                        and (
+                            e.createdBy.id = :userId
+                            or exists (
+                                select 1
+                                    from AccountUser au, User u
+                                    where au.account = e.account
+                                    and (
+                                    (au.identity is not null and au.identity = u.username)
+                                        or (au.email is not null and au.email = u.email)
+                                        or (au.phone is not null and au.phone = u.telephone)
+                                    )
+                        )
+            )
+            """)
+    boolean isOwner( @Param("id") String id,@Param("userId") String userId);
 	{{/shared}}
 
 

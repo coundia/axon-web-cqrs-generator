@@ -42,6 +42,8 @@ public class AggregateGeneratorService {
         context.put("imports", buildImports(baseDir));
         var fieldFiles = definition.getFieldFiles();
         context.put("hasFiles", !fieldFiles.isEmpty());
+        context.put("shared", definition.getShared());
+
         if (!fieldFiles.isEmpty()) {
             context.put("fieldFiles", FieldTransformer.transform(fieldFiles, definition.getName()));
         }

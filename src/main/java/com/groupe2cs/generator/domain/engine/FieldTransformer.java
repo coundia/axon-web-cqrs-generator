@@ -26,6 +26,8 @@ public class FieldTransformer {
             f.put("name", field.getName());
             f.put("nameCapitalized", Utils.capitalize(field.getName()));
             f.put("nameJpa", nameJpa);
+            f.put("isSyncAt", nameJpa.equalsIgnoreCase("syncAt"));
+
             f.put("nameJpaUnCapitalized", nameJpaUnCapitalized);
             f.put("nameUnCapitalized", Utils.unCapitalize(field.getName()));
             f.put("nameLowerCase", Utils.unCapitalize(field.getName()));

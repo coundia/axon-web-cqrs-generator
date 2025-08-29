@@ -8,6 +8,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Account",
 	"table": "accounts",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "code", "type": "String", "nullable": true  },
@@ -41,24 +42,29 @@ Content-Type: application/json
   "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/accounts",
   "definition": {
 	"name": "AccountUser",
-	"bind": "username",
 	"table": "account_users",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  {
-		"name": "account",
-		"type": "String",
-		"nullable": true
-	  },
+	  {"name": "account", "type": "String", "nullable": true},
 	  {
 		"name": "user",
 		"type": "String",
 		"nullable": true
 	  },
+	  { "name": "identity", "type": "String", "nullable": true },
+	  { "name": "phone", "type": "String", "nullable": true },
+	  { "name": "email", "type": "String", "nullable": true },
+	  { "name": "role", "type": "String", "nullable": true },
+	  { "name": "status", "type": "String", "nullable": true },
+	  { "name": "invitedBy", "type": "String", "nullable": true },
+
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-	  { "name": "username", "type": "String", "nullable": true },
-	  { "name": "details", "type": "String", "nullable": true },
+
+      { "name": "acceptedAt", "type": "java.time.Instant",   "nullable": true },
+      { "name": "revokedAt", "type": "java.time.Instant",   "nullable": true },
+
+	  { "name": "message", "type": "String", "columnDefinition": "Text", "nullable": true },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true }
@@ -76,50 +82,18 @@ Content-Type: application/json
   "definition": {
 	"name": "Category",
 	"table": "categories",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "code", "type": "String" },
 	  { "name": "name", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "description", "type": "String", "displayName": "description", "nullable": true },
 	  { "name": "typeEntry", "type": "String", "displayName": "typeEntry", "nullable": true },
 	  { "name": "version", "type": "Integer", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
-	]
-  }
-}
-
-###
-POST http://127.0.0.1:8071/api/v1/generator/all
-Accept: application/x-ndjson
-Content-Type: application/json
-
-{
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/transactions",
-  "definition": {
-	"name": "TransactionUser",
-	"bind": "username",
-	"table": "transaction_users",
-	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "name", "type": "String" },
-	  { "name": "remoteId", "type": "String", "nullable": true },
-	  { "name": "localId", "type": "String", "nullable": true },
-	  {
-		"name": "transaction",
-		"type": "String",
-		"nullable": true
-	  },
-	  {
-		"name": "user",
-		"type": "String",
-		"nullable": true
-	  },
-	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-	  { "name": "username", "type": "String", "nullable": true },
-	  { "name": "details", "type": "String", "nullable": true },
-	  { "name": "isActive", "type": "Boolean", "nullable": true }
 	]
   }
 }
@@ -136,7 +110,7 @@ Content-Type: application/json
 	"table": "chat",
 	"title": "Chat",
 	"isChat": true,
-	"hasFiles": true,
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "messages", "type": "String", "columnDefinition": "Text", "displayName": "Message" },
@@ -151,8 +125,7 @@ Content-Type: application/json
 		"type": "String",
 		"nullable": true
 	  },
-	  { "name": "files", "type": "FileManager", "isFiles": true, "columnDefinition": "TEXT" },
-	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
+ 	  { "name": "dateTransaction", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true }
 	]
   }
 }
@@ -169,6 +142,7 @@ Content-Type: application/json
 	"table": "settings",
 	"isPublic": true,
 	"isAdmin": true,
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "name", "type": "String", "displayName": "Key" },
@@ -176,6 +150,7 @@ Content-Type: application/json
 	  { "name": "locale", "type": "String", "displayName": "Langue" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "details", "type": "String", "displayName": "Description", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true }
@@ -193,6 +168,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Notification",
 	"table": "notifications",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "deviceToken", "type": "String", "nullable": true },
@@ -200,6 +176,7 @@ Content-Type: application/json
 	  { "name": "message", "type": "String", "columnDefinition": "Text", "nullable": true },
 	  { "name": "status", "type": "String", "nullable": true },
 	  { "name": "remoteId", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "reserved", "type": "String", "nullable": true },
@@ -236,27 +213,6 @@ Content-Type: application/json
   }
 }
 
-###
-POST http://127.0.0.1:8071/api/v1/generator/all
-Accept: application/x-ndjson
-Content-Type: application/json
-
-{
-  "outputDir": "/Users/pcoundia/projects/spring-axon-rabbitmq-web-jpa-starter/src/main/java/com/groupe2cs/bizyhub/units",
-  "definition": {
-	"name": "Unit",
-	"table": "unit",
-	"fields": [
-	  { "name": "id", "type": "String" },
-	  { "name": "remoteId", "type": "String", "nullable": true },
-	  { "name": "localId", "type": "String", "nullable": true },
-	  { "name": "code", "type": "String" , "nullable": true },
-	  { "name": "name", "type": "String", "nullable": true },
-	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
-	  { "name": "description", "type": "String", "nullable": true }
-	]
-  }
-}
 
 ###
 POST http://127.0.0.1:8071/api/v1/generator/all
@@ -268,6 +224,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Product",
 	"table": "product",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -287,6 +244,7 @@ Content-Type: application/json
 		"type": "String",
 		"nullable": true
 	  },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "defaultPrice", "type": "Double", "defaultValue": 0.0 },
 	  { "name": "statuses", "type": "String", "columnDefinition": "Text", "nullable": true },
 	  { "name": "purchasePrice", "type": "Double", "defaultValue": 0.0 }
@@ -304,6 +262,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Company",
 	"table": "company",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -321,6 +280,7 @@ Content-Type: application/json
 	  { "name": "city", "type": "String", "nullable": true },
 	  { "name": "region", "type": "String", "nullable": true },
 	  { "name": "country", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "postalCode", "type": "String", "nullable": true },
 	  { "name": "isActive", "type": "Boolean", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -339,6 +299,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Customer",
 	"table": "customer",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -353,11 +314,8 @@ Content-Type: application/json
 	  { "name": "email", "type": "String", "nullable": true },
 	  { "name": "notes", "type": "String", "nullable": true },
 	  { "name": "status", "type": "String", "nullable": true },
-	  {
-		"name": "company",
-		"type": "String",
-		"nullable": true
-	  },
+	  {"name": "account", "type": "String", "nullable": true},
+	  {"name": "company", "type": "String", "nullable": true},
 	  { "name": "addressLine1", "type": "String", "nullable": true },
 	  { "name": "addressLine2", "type": "String", "nullable": true },
 	  { "name": "city", "type": "String", "nullable": true },
@@ -380,6 +338,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Transaction",
 	"table": "transactions",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -392,11 +351,7 @@ Content-Type: application/json
 	  { "name": "status", "type": "String", "nullable": true },
 	  { "name": "entityName", "type": "String", "nullable": true },
 	  { "name": "entityId", "type": "String", "nullable": true },
-	  {
-		"name": "account",
-		"type": "String",
-		"nullable": true
-	  },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "category",
@@ -432,6 +387,7 @@ Content-Type: application/json
   "definition": {
 	"name": "TransactionItem",
 	"table": "transaction_item",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  {
@@ -451,6 +407,7 @@ Content-Type: application/json
 		"type": "String",
 		"nullable": true
 	  },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
@@ -471,12 +428,14 @@ Content-Type: application/json
   "definition": {
 	"name": "StockLevel",
 	"table": "stock_level",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "stockOnHand", "type": "Integer", "nullable": true },
 	  { "name": "stockAllocated", "type": "Integer", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  {
 		"name": "productVariant",
 		"type": "String",
@@ -502,12 +461,14 @@ Content-Type: application/json
   "definition": {
 	"name": "StockMovement",
 	"table": "stock_movement",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "typeStockMovement", "type": "String" },
 	  { "name": "quantity", "type": "Integer" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  {
 		"name": "company",
 		"type": "String",
@@ -535,6 +496,7 @@ Content-Type: application/json
   "definition": {
 	"name": "Debt",
 	"table": "debt",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
@@ -545,6 +507,7 @@ Content-Type: application/json
 	  { "name": "balanceDebt", "type": "Double", "defaultValue": 0.0 },
 	  { "name": "dueDate", "type": "java.time.Instant", "nullable": true },
 	  { "name": "statuses", "type": "String", "columnDefinition": "Text", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  {
 		"name": "customer",
@@ -566,10 +529,11 @@ Content-Type: application/json
   "definition": {
 	"name": "ChangeLog",
 	"table": "change_log",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "entityTable", "type": "String" },
-	  { "name": "entityId", "type": "String" },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
 	  { "name": "operation", "type": "String", "nullable": true },
@@ -592,11 +556,13 @@ Content-Type: application/json
   "definition": {
 	"name": "SyncState",
 	"table": "sync_state",
+	"shared": true,
 	"fields": [
 	  { "name": "id", "type": "String" },
 	  { "name": "entityTable", "type": "String" },
 	  { "name": "remoteId", "type": "String", "nullable": true },
 	  { "name": "localId", "type": "String", "nullable": true },
+	  {"name": "account", "type": "String", "nullable": true},
 	  { "name": "syncAt", "type": "java.time.Instant", "defaultValue": "java.time.Instant.now()", "nullable": true },
 	  { "name": "lastSyncAt", "type": "java.time.Instant", "nullable": true },
 	  { "name": "lastCursor", "type": "String", "nullable": true }

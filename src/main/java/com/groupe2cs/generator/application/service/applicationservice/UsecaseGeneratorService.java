@@ -158,6 +158,8 @@ public class UsecaseGeneratorService {
 
         context.put("isMultiTenant", definition.getMultiTenant());
 
+        context.put("shared", definition.getShared());
+
         String content = templateEngine.render(template.getTemplatePath(), context);
         fileWriterService.write(outputDir, template.getClassName() + ".java", content);
     }
@@ -176,6 +178,8 @@ public class UsecaseGeneratorService {
         context.put("entityLowerCase", Utils.unCapitalize(definition.getEntity()));
 
         context.put("className", template.getClassName());
+
+        context.put("shared", definition.getShared());
 
         context.put("fields", FieldTransformer.transform(definition.getFields(), definition.getName()));
         context.put("allFields", FieldTransformer.transform(definition.getAllFieldsWithoutOneToMany(), definition.getName()));
